@@ -14,11 +14,9 @@ jobs:
     runs-on: self-hosted
     container:
       image: node:22
-      #cic계정으로 설정
-      options: --user 1004:1004
       volumes:
-        # pnpm 캐시만 로컬 호스트에서 마운트 (user 변경으로 경로 수정)
-        - /home/cic/.pnpm-store:/home/node/.pnpm-store
+        # pnpm 캐시만 로컬 호스트에서 마운트
+        - /home/cic/.pnpm-store:/root/.pnpm-store
         
     steps:
       - name: Checkout
@@ -49,6 +47,13 @@ jobs:
         run: pnpm build
         env:
           NODE_ENV: production
+
+      # 빌드 결과물 권한 변경
+      - name: Fix build output permissions
+        run: |
+          chmod -R 755 .next/
+          chmod -R 755 public/
+          chmod 644 Dockerfile .dockerignore
 
       # 빌드 아티팩트 및 Docker 파일 업로드
       - name: Upload build and Docker files
