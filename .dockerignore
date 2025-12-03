@@ -1,0 +1,46 @@
+# 의존성
+node_modules
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 빌드 결과물
+.next
+out
+
+# 환경 변수 파일
+.env*
+
+# Git
+.git
+.gitignore
+
+# IDE 설정
+.vscode
+.idea
+
+# OS 파일
+.DS_Store
+Thumbs.db
+
+# 테스트
+coverage
+*.tgz
+*.tar.gz
+
+# 로그
+logs
+*.log
+
+# 캐시
+.turbo
+
+# 개발용 파일
+README.md
+CHANGELOG.md
+.eslintrc.json
+tsconfig.json
+
+# GitHub Actions
+.github
