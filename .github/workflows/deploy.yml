@@ -60,6 +60,18 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: nextjs-build
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+        
+      # 다운로드 확인
+      - name: Verify download
+        run: |
+          echo "Checking downloaded files..."
+          ls -la
+          if [ ! -f "Dockerfile" ]; then
+            echo "Dockerfile not found - download may have failed"
+            exit 1
+          fi
 
       # Docker 이미지 빌드
       - name: Build Docker image
