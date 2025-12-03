@@ -5,9 +5,13 @@ pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# 빌드 결과물
-.next
+# 개발용 빌드 결과물 제외 (프로덕션 빌드는 포함)
+# .next  <- 제거: Docker에서 standalone 빌드 결과 필요
 out
+
+# 개발용 캐시만 제외 (빌드 결과는 포함)
+.next/cache
+.turbo
 
 # 환경 변수 파일
 .env*
@@ -32,9 +36,6 @@ coverage
 # 로그
 logs
 *.log
-
-# 캐시
-.turbo
 
 # 개발용 파일
 README.md
