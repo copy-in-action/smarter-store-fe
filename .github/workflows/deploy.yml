@@ -14,9 +14,11 @@ jobs:
     runs-on: self-hosted
     container:
       image: node:22
+      #cic계정으로 설정
+      options: --user 1004:1004
       volumes:
-        # pnpm 캐시만 로컬 호스트에서 마운트
-        - /home/cic/.pnpm-store:/root/.pnpm-store
+        # pnpm 캐시만 로컬 호스트에서 마운트 (user 변경으로 경로 수정)
+        - /home/cic/.pnpm-store:/home/node/.pnpm-store
         
     steps:
       - name: Checkout
@@ -72,20 +74,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
         
-      # 다운로드 확인 및 상세 디렉토리 구조 확인
-      - name: Verify download and directory structure
-        run: |
-          echo "=== Current directory ==="
-          pwd
-          echo "=== Root directory contents ==="
-          ls -la
-          echo "=== .next directory contents ==="
-          ls -la .next/ || echo ".next directory not found"
-          echo "=== .next/static directory ==="
-          ls -la .next/static/ || echo ".next/static directory not found"
-          echo "=== Dockerfile exists? ==="
-          [ -f "Dockerfile" ] && echo "Dockerfile found" || echo "Dockerfile not found"
-
       # Docker 이미지 빌드
       - name: Build Docker image
         run: docker build -t ${{ env.DOCKER_IMAGE_NAME }} .
