@@ -16,8 +16,8 @@ jobs:
       image: node:22
       volumes:
         # 러너 호스트의 기존 캐시 디렉토리를 컨테이너에 마운트
-        - ~/.pnpm-store:/root/.pnpm-store
-        - ~/.cache/next:/github/workspace/.next/cache
+        - /home/cic/.pnpm-store:/root/.pnpm-store
+        - /home/cic/.cache/next:/github/workspace/.next/cache
         
     steps:
       - name: Checkout
