@@ -38,9 +38,11 @@ jobs:
           corepack enable
           corepack prepare pnpm@latest --activate
 
-      # 의존성 설치
+      # pnpm store 설정 및 의존성 설치
       - name: Install dependencies
-        run: pnpm i
+        run: |
+          pnpm config set store-dir /root/.pnpm-store
+          pnpm i
 
       # 빌드
       - name: Build
