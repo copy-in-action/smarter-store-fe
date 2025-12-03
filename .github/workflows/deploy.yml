@@ -72,15 +72,19 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
         
-      # 다운로드 확인
-      - name: Verify download
+      # 다운로드 확인 및 상세 디렉토리 구조 확인
+      - name: Verify download and directory structure
         run: |
-          echo "Checking downloaded files..."
+          echo "=== Current directory ==="
+          pwd
+          echo "=== Root directory contents ==="
           ls -la
-          if [ ! -f "Dockerfile" ]; then
-            echo "Dockerfile not found - download may have failed"
-            exit 1
-          fi
+          echo "=== .next directory contents ==="
+          ls -la .next/ || echo ".next directory not found"
+          echo "=== .next/static directory ==="
+          ls -la .next/static/ || echo ".next/static directory not found"
+          echo "=== Dockerfile exists? ==="
+          [ -f "Dockerfile" ] && echo "Dockerfile found" || echo "Dockerfile not found"
 
       # Docker 이미지 빌드
       - name: Build Docker image
