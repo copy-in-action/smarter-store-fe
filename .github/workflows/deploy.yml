@@ -57,30 +57,10 @@ jobs:
           chmod -R 755 public/
           chmod 644 Dockerfile .dockerignore
 
-      # 빌드 아티팩트 및 Docker 파일 업로드
-      - name: Upload build and Docker files
-        uses: actions/upload-artifact@v4
-        with:
-          name: nextjs-build
-          path: |
-            .next/
-            public/
-            Dockerfile
-            .dockerignore
-          retention-days: 1
-
   deploy:
     runs-on: self-hosted
     needs: build
     steps:
-      # 빌드 결과 및 Docker 파일 다운로드
-      - name: Download build and Docker files
-        uses: actions/download-artifact@v4
-        with:
-          name: nextjs-build
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
-        
       # Docker 이미지 빌드
       - name: Build Docker image
         run: docker build -t ${{ env.DOCKER_IMAGE_NAME }} .
