@@ -8,6 +8,10 @@ on:
 
 env:
   DOCKER_IMAGE_NAME: ticket-fe
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  # 브랜치명-PR번호 형태 태그 생성
+  IMAGE_TAG: ${{ github.head_ref || github.ref_name }}-${{ github.event.number || github.run_number }}
 
 jobs:
   build:
@@ -61,13 +65,27 @@ jobs:
     runs-on: self-hosted
     needs: build
     steps:
-      # Docker 이미지 빌드
+      # Docker 이미지 빌드 (로컬용 태그들)
       - name: Build Docker image
-        run: docker build -t ${{ env.DOCKER_IMAGE_NAME }} .
+        run: |
+          docker build -t ${{ env.DOCKER_IMAGE_NAME }}:latest \
+                       -t ${{ env.DOCKER_IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
 
       # Docker Compose로 배포
       - name: Deploy with Docker Compose
         run: |
           cd ${{ vars.DOCKER_COMPOSE_PATH }}
-          docker-compose down ${{ env.DOCKER_IMAGE_NAME }} || true
-          docker-compose up -d ${{ env.DOCKER_IMAGE_NAME }}
+          docker compose down || true
+          docker compose up -d
+
+      # GitHub Container Registry에 이미지 푸시
+      - name: Push to GitHub Container Registry
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
+          
+          # GitHub Container Registry용 태그 생성 및 푸시
+          docker tag ${{ env.DOCKER_IMAGE_NAME }}:${{ env.IMAGE_TAG }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          docker tag ${{ env.DOCKER_IMAGE_NAME }}:latest ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
