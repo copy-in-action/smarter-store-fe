@@ -15,24 +15,24 @@ export function Header() {
       <div
         className={cn(
           "w-full bg-background flex flex-col items-center justify-center pt-6 mx-none wrapper",
-          "md:flex-row md:h-[100px] md:pt-0",
+          "sm:flex-row sm:h-[100px] sm:pt-0",
         )}
       >
         <div
           className={cn(
             "relative flex justify-center w-full mb-3",
-            "md:w-auto md:mb-0",
+            "sm:w-auto sm:mb-0",
           )}
         >
           <Logo />
-          <span className="absolute right-0 mb-2 md:hidden">
+          <span className="absolute right-0 mb-2 sm:hidden">
             <CartButton />
           </span>
         </div>
-        <div className={cn("w-full h-10", "md:max-w-xl md:h-14 md:ms-6")}>
+        <div className={cn("w-full h-10", "sm:max-w-xl sm:h-14 sm:ms-6")}>
           <SearchInput />
         </div>
-        <div className={cn("hidden ps-2 ms-auto", "md:gap-2 md:flex")}>
+        <div className={cn("hidden ps-2 ms-auto", "sm:gap-2 sm:flex")}>
           <MyButton />
           <LikeButton />
           <CartButton />
@@ -42,7 +42,7 @@ export function Header() {
       <div
         className={cn(
           "bg-gradient-to-r from-purple-500 via-blue-600 via-blue-500 to-sky-400 h-[1px] hidden",
-          "md:block",
+          "sm:block",
         )}
       ></div>
     </header>

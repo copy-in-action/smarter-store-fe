@@ -12,7 +12,7 @@ export function Logo() {
         fill="none"
         role="img"
         aria-label="NOL 로고"
-        className="md:w-[100px] w-[72px]"
+        className="sm:w-[100px] w-[72px]"
       >
         <title>NOL 로고</title>
         <path

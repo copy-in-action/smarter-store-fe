@@ -49,7 +49,7 @@ export function BottomNavigation({
         "fixed bottom-0 left-0 right-0 z-50",
         "bg-background border-t border-border",
         "px-4",
-        "md:hidden",
+        "sm:hidden",
         className,
       )}
     >
