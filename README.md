@@ -15,6 +15,7 @@ FSD (Feature-Sliced Design) 아키텍처 적용
 
 ### 스타일링
 - **Tailwind CSS v4** - Utility-first CSS 프레임워크
+- **Shadcn UI** - 재사용 가능한 컴포넌트 라이브러리
 
 ### API 통신
 - **REST API** - 별도 API 서버와 통신
@@ -57,8 +58,9 @@ smarter-store-fe/
 │   │
 │   └── shared/                 # 공통 코드
 │       ├── api/               # API 클라이언트
-│       ├── ui/                # 공통 UI 컴포넌트
+│       ├── ui/                # 공통 UI 컴포넌트 (Shadcn UI 포함)
 │       ├── lib/               # 유틸리티 함수
+│       ├── hooks/             # 공통 커스텀 훅
 │       ├── types/             # 공통 타입
 │       └── config/            # 설정 파일
 │
@@ -144,6 +146,9 @@ pnpm lint
 
 # 코드 포맷팅
 pnpm format
+
+# Shadcn UI 컴포넌트 추가
+pnpm dlx shadcn@latest add button
 ```
 
 ## 개발 가이드
@@ -156,6 +161,7 @@ pnpm format
 - SSR/SEO 최적화
 - FSD 아키텍처 준수
 - Public API를 통한 export
+- Shadcn UI 컴포넌트는 `shared/ui`에 설치
 
 ## 문제 해결
 
