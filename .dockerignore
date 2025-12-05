@@ -1,0 +1,47 @@
+# 의존성
+node_modules
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 개발용 빌드 결과물 제외 (프로덕션 빌드는 포함)
+# .next  <- 제거: Docker에서 standalone 빌드 결과 필요
+out
+
+# 개발용 캐시만 제외 (빌드 결과는 포함)
+.next/cache
+.turbo
+
+# 환경 변수 파일
+.env*
+
+# Git
+.git
+.gitignore
+
+# IDE 설정
+.vscode
+.idea
+
+# OS 파일
+.DS_Store
+Thumbs.db
+
+# 테스트
+coverage
+*.tgz
+*.tar.gz
+
+# 로그
+logs
+*.log
+
+# 개발용 파일
+README.md
+CHANGELOG.md
+.eslintrc.json
+tsconfig.json
+
+# GitHub Actions
+.github
