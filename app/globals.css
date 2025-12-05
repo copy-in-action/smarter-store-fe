@@ -120,3 +120,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .wrapper {
+    @apply px-5 mx-auto max-w-7xl md:px-0;
+  }
+}

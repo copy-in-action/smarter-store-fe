@@ -8,9 +8,9 @@ export function LikeButton() {
   return (
     <Button
       variant="ghost"
-      className="h-full md:flex-col md:gap-0 md:h-[73px] md:justify-between md:min-w-20"
+      className="flex-col justify-between h-full gap-2.5 min-w-[75px]"
     >
-      <Heart className="stroke-[1.5px] size-5 md:size-7" />
+      <Heart className="stroke-[1.5px] size-7" />
       <div className="hidden font-bold tracking-tighter md:block">찜</div>
     </Button>
   );

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/widgets/header";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -29,8 +28,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${notoSansKR.variable} font-sans antialiased h-auto`}
       >
-        <Header />
-        <main className="container">{children}</main>
+        {children}
       </body>
     </html>
   );
