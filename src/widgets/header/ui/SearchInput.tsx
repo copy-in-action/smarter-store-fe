@@ -10,7 +10,7 @@ export function SearchInput() {
       <Search className="absolute start-5 size-4 text-muted-foreground" />
       <Input
         placeholder="어디로 떠나볼까요 ?"
-        className="h-full py-0 border-blue-600 rounded-full ps-10 pe-5 placeholder:text-sm md:bg-gray-100 md:border-transparent md:placeholder:text-lg"
+        className="h-full py-0 border-blue-600 rounded-full ps-10 pe-5 placeholder:text-sm sm:bg-gray-100 sm:border-transparent sm:placeholder:text-lg"
         type="search"
       />
     </div>

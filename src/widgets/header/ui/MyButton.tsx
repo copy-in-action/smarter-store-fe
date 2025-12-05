@@ -11,7 +11,7 @@ export function MyButton() {
       className="flex-col justify-between h-full gap-2.5 min-w-[75px]"
     >
       <User className="stroke-[1.5px] size-7" />
-      <div className="hidden font-bold tracking-tighter md:block">마이</div>
+      <div className="hidden font-bold tracking-tighter sm:block">마이</div>
     </Button>
   );
 }

@@ -11,7 +11,7 @@ export function RecentViewButton() {
       className="flex-col justify-between h-full gap-2.5 min-w-[75px]"
     >
       <Clock className="stroke-[1.5px] size-7" />
-      <div className="hidden font-bold tracking-tighter md:block">
+      <div className="hidden font-bold tracking-tighter sm:block">
         최근 본 상품
       </div>
     </Button>

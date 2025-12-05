@@ -11,7 +11,7 @@ export function LikeButton() {
       className="flex-col justify-between h-full gap-2.5 min-w-[75px]"
     >
       <Heart className="stroke-[1.5px] size-7" />
-      <div className="hidden font-bold tracking-tighter md:block">찜</div>
+      <div className="hidden font-bold tracking-tighter sm:block">찜</div>
     </Button>
   );
 }
