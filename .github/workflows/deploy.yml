@@ -2,8 +2,6 @@ name: Deploy Next.js
 
 on:
   push:
-    branches: [ci-github-action]
-  pull_request:
     branches: [main]
 
 env:
