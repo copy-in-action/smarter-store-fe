@@ -10,6 +10,7 @@
 - ✅ **SSR/SEO 우선**: generateMetadata, fetch 캐싱 활용
 - ✅ **FSD Public API**: index.ts를 통한 export만 허용
 - ✅ **pnpm 사용**: npm, yarn 사용 금지
+- ✅ **Shadcn UI**: shared/ui에 설치, `@/shared/ui`로 import
 
 ### FSD 레이어 의존성 규칙
 ```
@@ -30,7 +31,7 @@ app → views → widgets → features → entities → shared
 ### 1. shared (공유 레이어)
 - 프로젝트 전체에서 사용되는 공통 코드
 - 다른 레이어에 의존하지 않음
-- UI 컴포넌트, 유틸, API 클라이언트 등
+- UI 컴포넌트 (Shadcn UI 포함), 유틸, API 클라이언트 등
 
 ### 2. entities (엔티티 레이어)
 - 비즈니스 엔티티 (Product, User, Order 등)
@@ -285,6 +286,44 @@ export async function getProducts(
 }
 ```
 
+### Shadcn UI 사용법
+
+#### 컴포넌트 설치
+```bash
+# 버튼 컴포넌트 설치
+pnpm dlx shadcn@latest add button
+
+# 카드 컴포넌트 설치
+pnpm dlx shadcn@latest add card
+
+# 입력 컴포넌트 설치
+pnpm dlx shadcn@latest add input
+```
+
+#### Import 및 사용
+```typescript
+import { Button } from '@/shared/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
+import { Input } from '@/shared/ui/input';
+
+/**
+ * Shadcn UI 컴포넌트 사용 예시
+ */
+export function ExampleComponent() {
+  return (
+    <Card className="w-full max-w-md">
+      <CardHeader>
+        <CardTitle>로그인</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Input placeholder="이메일을 입력하세요" />
+        <Button className="w-full mt-4">로그인</Button>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
 ### 컴포넌트 작성
 
 #### Server Component
@@ -317,6 +356,8 @@ export default async function ProductListView({
 // src/features/cart/ui/AddToCartButton.tsx
 'use client';
 
+import { Button } from '@/shared/ui/button';
+
 /**
  * 장바구니 추가 버튼 속성
  */
@@ -338,7 +379,11 @@ export function AddToCartButton({ productId, productName }: AddToCartButtonProps
     // 구현
   };
 
-  return <button onClick={handleAddToCart}>장바구니 담기</button>;
+  return (
+    <Button onClick={handleAddToCart} variant="default">
+      장바구니 담기
+    </Button>
+  );
 }
 ```
 

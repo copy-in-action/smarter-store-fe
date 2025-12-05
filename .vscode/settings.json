@@ -29,5 +29,9 @@
   },
   "[jsonc]": {
     "editor.defaultFormatter": "biomejs.biome"
-  }
+  },
+
+  // Headwind - Tailwind CSS 클래스 자동 정렬
+  "headwind.runOnSave": true,
+  "headwind.sortTailwindClasses": true
 }
