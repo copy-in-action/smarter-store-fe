@@ -22,6 +22,14 @@ export const PAGES = {
         title: "로그인 | NOL",
         description: "NOL에 로그인하고 스마트한 쇼핑을 시작하세요",
       } as Metadata,
+
+      EMAIL: {
+        path: "/auth/login/email",
+        metadata: {
+          title: "로그인 | NOL",
+          description: "NOL에 로그인하고 스마트한 쇼핑을 시작하세요",
+        } as Metadata,
+      },
     },
     /** 회원가입 */
     REGISTER: {
