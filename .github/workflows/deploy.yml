@@ -83,5 +83,5 @@ jobs:
       - name: Deploy with Docker Compose
         run: |
           cd ${{ vars.DOCKER_COMPOSE_PATH }}
-          docker compose down || true
-          docker compose up -d
+          docker compose down ticket-fe || true
+          docker compose up -d ticket-fe
