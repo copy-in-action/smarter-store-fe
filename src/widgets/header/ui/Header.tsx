@@ -1,7 +1,7 @@
 import { cn } from "@/shared/lib/utils";
+import { Logo } from "@/shared/ui/Logo";
 import { CartButton } from "./CartButton";
 import { LikeButton } from "./LikeButton";
-import { Logo } from "./Logo";
 import { MyButton } from "./MyButton";
 import { RecentViewButton } from "./RecentViewButton";
 import { SearchInput } from "./SearchInput";
