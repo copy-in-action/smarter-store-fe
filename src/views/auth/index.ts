@@ -1,2 +1,1 @@
-export { LoginView } from './ui/LoginView';
-export { EmailLoginView } from './ui/EmailLoginView';
+export { LoginView } from "./ui/LoginView";
