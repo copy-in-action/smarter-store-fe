@@ -39,6 +39,14 @@ export const PAGES = {
         description: "NOL 회원가입으로 다양한 혜택을 누려보세요",
       } as Metadata,
     },
+    /** 아이디 찾기 */
+    FORGOT_ID: {
+      path: "/auth/forgot-id",
+      metadata: {
+        title: "아이디 찾기 | NOL",
+        description: "잊어버린 아이디를 찾아드립니다",
+      } as Metadata,
+    },
     /** 비밀번호 찾기 */
     FORGOT_PASSWORD: {
       path: "/auth/forgot-password",

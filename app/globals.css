@@ -125,4 +125,7 @@
   .wrapper {
     @apply px-5 mx-auto max-w-7xl sm:px-2;
   }
+  .auth-wrapper {
+    @apply max-w-lg px-5 mx-auto sm:px-2;
+  }
 }
