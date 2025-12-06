@@ -1,7 +1,9 @@
+import Link from "next/link";
+import { PAGES } from "@/shared/constants";
 import { cn } from "@/shared/lib/utils";
+import { Logo } from "@/shared/ui/Logo";
 import { CartButton } from "./CartButton";
 import { LikeButton } from "./LikeButton";
-import { Logo } from "./Logo";
 import { MyButton } from "./MyButton";
 import { RecentViewButton } from "./RecentViewButton";
 import { SearchInput } from "./SearchInput";
@@ -24,7 +26,9 @@ export function Header() {
             "sm:w-auto sm:mb-0",
           )}
         >
-          <Logo />
+          <Link href={PAGES.HOME.path}>
+            <Logo />
+          </Link>
           <span className="absolute right-0 mb-2 sm:hidden">
             <CartButton />
           </span>
