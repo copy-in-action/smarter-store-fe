@@ -10,7 +10,7 @@ import { Logo } from "@/shared/ui/Logo";
  */
 export function AuthHeader() {
   return (
-    <header className="sticky top-[-20px] sm:top-0 sm:border-b border-b-gray-100 border-b-0">
+    <header className="sticky top-[-20px] sm:top-0 sm:border-b border-b-gray-100 border-b-0 z-50">
       <div
         className={cn(
           "w-full bg-background flex h-[52px] items-center mx-none wrapper",
