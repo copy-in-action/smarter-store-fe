@@ -221,6 +221,34 @@ async function fetchProduct(id: string) {
 - 이벤트 핸들러
 - 브라우저 API 사용
 
+### 페이지 라우트와 메타데이터 관리
+
+#### 통합 상수 사용
+```typescript
+// src/shared/constants/routes.ts 사용
+import { PAGES } from '@/shared/constants/routes';
+
+// ✅ 링크 생성
+<Link href={PAGES.AUTH.LOGIN.path}>로그인</Link>
+
+// ✅ 메타데이터 설정
+export const metadata = PAGES.AUTH.LOGIN.metadata;
+
+// ✅ 동적 라우트
+<Link href={PAGES.PRODUCT.DETAIL.path(productId)}>상품 상세</Link>
+
+// ✅ 동적 메타데이터
+export async function generateMetadata({ params }) {
+  const product = await getProduct(params.id);
+  return PAGES.PRODUCT.DETAIL.metadata(product.name, product.description);
+}
+```
+
+#### 새 페이지 추가 시
+1. `PAGES` 객체에 `path`와 `metadata`를 함께 추가
+2. 한 곳에서 URL과 메타데이터를 동시 관리
+3. 수정 시 한 곳만 변경하면 전체 반영
+
 ### API 통신
 
 #### API 클라이언트 구조
