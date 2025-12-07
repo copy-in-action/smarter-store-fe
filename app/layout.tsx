@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
+import { QueryProvider } from "@/app/providers";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -28,7 +29,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${notoSansKR.variable} font-sans antialiased h-auto`}
       >
-        {children}
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );
