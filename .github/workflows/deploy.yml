@@ -19,11 +19,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # pnpm 설치 (Node.js 설정 전에!)
+      # pnpm 설치
       - name: Install pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
 
       # Node.js 22 설정
       - name: Setup Node.js 22
