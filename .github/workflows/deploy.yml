@@ -19,7 +19,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Node.js 22 설정 (가장 먼저!)
+      # pnpm 설치 (Node.js 설정 전에!)
+      - name: Install pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      # Node.js 22 설정
       - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
@@ -36,12 +42,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-turbo-${{ hashFiles('**/pnpm-lock.yaml') }}-
             ${{ runner.os }}-nextjs-turbo-
-
-      # pnpm 설치
-      - name: Install pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
 
       # 의존성 설치
       - name: Install dependencies
