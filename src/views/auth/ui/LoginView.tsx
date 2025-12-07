@@ -56,9 +56,10 @@ export function LoginView() {
         {/* oAuths */}
         {oAuths.map((oAuth) => (
           <Button
+            size={"lg"}
             variant={"outline"}
             key={oAuth.title}
-            className="h-[52px] cursor-pointer text-base font-semibold shadow-none relative rounded-2xl"
+            className="relative px-2"
           >
             <Image
               src={oAuth.icon}
