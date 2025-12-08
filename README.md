@@ -118,7 +118,7 @@ pnpm install
 
 ```bash
 # API 서버 URL
-NEXT_PUBLIC_API_URL=http://localhost:8000/api
+NEXT_PUBLIC_API_SERVER=http://localhost:8000/api
 ```
 
 ### 개발 서버 실행
@@ -140,12 +140,6 @@ pnpm build
 
 # 프로덕션 서버 실행
 pnpm start
-
-# Lint 검사
-pnpm lint
-
-# 코드 포맷팅
-pnpm format
 
 # Shadcn UI 컴포넌트 추가
 pnpm dlx shadcn@latest add button
@@ -181,31 +175,7 @@ pnpm install
 - TypeScript 버전 확인
 - `pnpm install` 재실행
 
-### Biome 에러
-```bash
-pnpm format
-# 수동 수정 후
-pnpm lint
-```
 
-## 배포
-
-### Vercel (권장)
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/smarter-store-fe)
-
-1. Vercel에 프로젝트 import
-2. 환경변수 설정 (`NEXT_PUBLIC_API_URL`)
-3. 배포
-
-### 기타 플랫폼
-
-프로덕션 빌드 후 배포:
-
-```bash
-pnpm build
-pnpm start
-```
 
 ## 참고 자료
 

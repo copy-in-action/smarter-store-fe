@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/app/providers";
+import { Toaster } from "@/shared/ui/sonner";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -30,6 +31,7 @@ export default function RootLayout({
         className={`${inter.variable} ${notoSansKR.variable} font-sans antialiased h-auto`}
       >
         <QueryProvider>{children}</QueryProvider>
+        <Toaster position="top-center" richColors theme="light" />
       </body>
     </html>
   );
