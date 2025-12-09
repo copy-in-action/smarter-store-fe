@@ -137,4 +137,13 @@ export const PAGES = {
       description: "선택한 상품들을 확인하고 주문하세요",
     } as Metadata,
   },
+
+  /** 관리자 */
+  ADMIN: {
+    path: "/admin",
+    metadata: {
+      title: "관리자 | NOL",
+      description: "NOL 관리자 페이지",
+    } as Metadata,
+  },
 } as const;
