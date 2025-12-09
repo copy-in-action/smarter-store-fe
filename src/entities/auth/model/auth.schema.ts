@@ -109,11 +109,79 @@ export const errorResponseSchema = z.object({
 });
 
 /**
+ * 휴대폰 번호와 이름 입력 스키마 (1단계)
+ */
+export const phoneVerificationSchema = z.object({
+  /** 사용자 이름 */
+  username: z
+    .string()
+    .min(1, "이름을 입력해주세요")
+    .min(2, "이름은 2자 이상이어야 합니다")
+    .max(20, "이름은 20자 이하여야 합니다")
+    .regex(
+      /^[가-힣a-zA-Z\s]+$/,
+      "이름은 한글 또는 영문만 입력 가능합니다",
+    ),
+  /** 휴대폰 번호 */
+  phoneNumber: z
+    .string()
+    .min(1, "휴대폰 번호를 입력해주세요")
+    .regex(
+      /^(01[016789])-?[0-9]{3,4}-?[0-9]{4}$/,
+      "올바른 휴대폰 번호 형식이 아닙니다",
+    ),
+});
+
+/**
+ * 이메일 입력 스키마 (2단계)
+ */
+export const emailInputSchema = z.object({
+  /** 이메일 주소 */
+  email: z
+    .email("올바른 이메일 형식이 아닙니다")
+    .min(1, "이메일을 입력해주세요"),
+});
+
+/**
+ * 이메일 인증 코드 입력 스키마 (3단계)
+ */
+export const emailVerificationSchema = z.object({
+  /** 인증 코드 (6자리 숫자) */
+  verificationCode: z
+    .string()
+    .min(1, "인증번호를 입력해주세요")
+    .length(6, "인증번호는 6자리입니다")
+    .regex(/^[0-9]+$/, "인증번호는 숫자만 입력 가능합니다"),
+});
+
+/**
+ * 비밀번호 설정 스키마 (4단계)
+ */
+export const passwordSetupSchema = z
+  .object({
+    /** 비밀번호 */
+    password: z
+      .string()
+      .min(1, "비밀번호를 입력해주세요")
+      .min(8, "비밀번호는 8자 이상이어야 합니다"),
+    /** 비밀번호 확인 */
+    confirmPassword: z.string().min(1, "비밀번호 확인을 입력해주세요"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "비밀번호가 일치하지 않습니다",
+    path: ["confirmPassword"],
+  });
+
+/**
  * 타입 정의들
  */
 export type LoginRequestData = z.infer<typeof loginRequestSchema>;
 export type SignupRequestData = z.infer<typeof signupRequestSchema>;
 export type SignupWithConfirmData = z.infer<typeof signupWithConfirmSchema>;
+export type PhoneVerificationData = z.infer<typeof phoneVerificationSchema>;
+export type EmailInputData = z.infer<typeof emailInputSchema>;
+export type EmailVerificationData = z.infer<typeof emailVerificationSchema>;
+export type PasswordSetupData = z.infer<typeof passwordSetupSchema>;
 export type RefreshTokenRequestData = z.infer<typeof refreshTokenRequestSchema>;
 export type TokenResponseData = z.infer<typeof tokenResponseSchema>;
 export type UserResponseData = z.infer<typeof userResponseSchema>;

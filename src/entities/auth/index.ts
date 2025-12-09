@@ -5,8 +5,12 @@
 
 // 타입들
 export type {
+  EmailInputData,
+  EmailVerificationData,
   ErrorResponseData,
   LoginRequestData,
+  PasswordSetupData,
+  PhoneVerificationData,
   RefreshTokenRequestData,
   SignupRequestData,
   SignupWithConfirmData,
@@ -15,8 +19,12 @@ export type {
 } from "./model/auth.schema";
 // Zod 스키마들
 export {
+  emailInputSchema,
+  emailVerificationSchema,
   errorResponseSchema,
   loginRequestSchema,
+  passwordSetupSchema,
+  phoneVerificationSchema,
   refreshTokenRequestSchema,
   signupRequestSchema,
   signupWithConfirmSchema,
