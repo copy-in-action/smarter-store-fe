@@ -145,5 +145,14 @@ export const PAGES = {
       title: "관리자 | NOL",
       description: "NOL 관리자 페이지",
     } as Metadata,
+    AUTH: {
+      LOGIN: {
+        path: "/admin/auth/login",
+        metadata: {
+          title: "관리자 로그인 | NOL",
+          description: "관리자 계정으로 로그인하여 시스템을 관리하세요",
+        } as Metadata,
+      },
+    },
   },
 } as const;
