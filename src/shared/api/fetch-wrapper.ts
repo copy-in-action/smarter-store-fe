@@ -1,4 +1,5 @@
 import { toast } from "sonner";
+import { PAGES } from "../constants";
 
 /**
  * 토큰 갱신 상태 관리
@@ -154,7 +155,12 @@ export const apiClient = async <T = any>(
     const response = await fetch(fullUrl, config);
 
     // 401 에러 처리 - 토큰 갱신 시도
-    if (response.status === 401 && !isRetry) {
+    if (
+      response.status === 401 &&
+      !isRetry &&
+      response.url.lastIndexOf("/api/auth/login") !== -1 &&
+      response.url.lastIndexOf("/api/admin/auth/login") !== -1
+    ) {
       console.log("🔄 401 응답 - 토큰 갱신 시도");
 
       const newToken = await refreshAccessToken();

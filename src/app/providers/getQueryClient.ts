@@ -1,12 +1,12 @@
 /**
  * TanStack Query Client 설정 및 전역 에러 처리
- * 
+ *
  * ## 주요 기능
  * - SSR/클라이언트 일관된 QueryClient 제공
  * - TanStack Query v5 호환 전역 에러 처리
  * - httpOnly 쿠키 기반 인증에서 401 에러 시 클라이언트에서만 리다이렉트
  * - 서버/클라이언트 환경 분리 대응
- * 
+ *
  * @see {@link ../../document/API_아키텍쳐.md} 전체 API 아키텍처 및 플로우
  */
 
@@ -15,12 +15,11 @@ import {
   isServer,
   QueryClient,
 } from "@tanstack/react-query";
-import { toast } from "sonner";
 import { ApiErrorClass } from "@/shared/api/fetch-wrapper";
 
 /**
  * 401 에러 시 로그인 페이지로 리다이렉트하는 핸들러
- * 
+ *
  * httpOnly 쿠키 방식에서는:
  * - 서버: 쿠키 만료 시 로깅만 처리 (리다이렉트는 클라이언트에 위임)
  * - 클라이언트: 토스트 표시 및 로그인 페이지로 리다이렉트
@@ -29,13 +28,18 @@ const handleAuthError = (error: unknown) => {
   if (error instanceof ApiErrorClass && error.status === 401) {
     if (typeof window !== "undefined") {
       // 클라이언트 환경: 사용자에게 알리고 리다이렉트
-      console.log("🔄 클라이언트: 401 에러 감지 - httpOnly 쿠키 만료 또는 인증 실패");
-      toast.error("로그인이 필요합니다.");
-      
+      console.log(
+        "🔄 클라이언트: 401 에러 감지 - httpOnly 쿠키 만료 또는 인증 실패",
+      );
+
       // 지연 후 리다이렉트 (토스트 메시지 표시 시간 확보)
-      setTimeout(() => {
-        window.location.href = "/auth/login";
-      }, 1000);
+      /*  setTimeout(() => {
+        if (
+          window.location.href.lastIndexOf(PAGES.AUTH.LOGIN.path) !== -1 &&
+          window.location.href.lastIndexOf(PAGES.ADMIN.AUTH.LOGIN.path) !== -1
+        )
+          window.location.href = "/auth/login";
+      }, 1000); */
     } else {
       // 서버 환경: 로깅만 처리, 리다이렉트는 클라이언트에 위임
       console.log("🔄 서버: 401 에러 감지 - httpOnly 쿠키 만료 또는 인증 실패");
