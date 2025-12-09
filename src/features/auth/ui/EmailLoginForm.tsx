@@ -68,7 +68,9 @@ export function EmailLoginForm() {
           className="w-full rounded-2xl"
           variant={"outline"}
           size={"lg"}
-          onClick={() => router.push(PAGES.AUTH.SIGNUP.EMAIL.path)}
+          onClick={() =>
+            router.push(PAGES.AUTH.SIGNUP.EMAIL.OCCUPANCY_VERIFICATION.path)
+          }
         >
           이메일로 가입하기
         </Button>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { EmailLoginForm } from "@/features/auth";
 import { PAGES } from "@/shared/constants";
+import { AuthTitle } from "./AuthTitle";
 
 /**
  * 이메일 로그인 페이지 뷰
@@ -9,13 +10,11 @@ import { PAGES } from "@/shared/constants";
 export function EmailLoginView() {
   return (
     <div className="auth-wrapper sm:mb-[120px]">
-      <div className="pt-5 pb-8 sm:text-center">
-        <h1 className="text-2xl font-bold">
-          이메일로
-          <br />
-          로그인 해주세요
-        </h1>
-      </div>
+      <AuthTitle>
+        이메일로
+        <br />
+        로그인 해주세요
+      </AuthTitle>
 
       <EmailLoginForm />
 
