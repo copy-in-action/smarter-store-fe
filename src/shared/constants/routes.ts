@@ -34,11 +34,32 @@ export const PAGES = {
     /** 회원가입 */
     SIGNUP: {
       EMAIL: {
-        path: "/auth/signup/email",
-        metadata: {
-          title: "이메일 회원가입 | NOL",
-          description: "NOL 회원가입으로 다양한 혜택을 누려보세요",
-        } as Metadata,
+        /** 이름, 휴대폰 번호 입력 (1단계) */
+        OCCUPANCY_VERIFICATION: {
+          path: "/auth/signup/email/occupancy-verification",
+          metadata: {
+            title: "회원가입 - 정보 입력 | NOL",
+            description: "이름과 휴대폰 번호를 입력해주세요",
+          } as Metadata,
+        },
+
+        /** 이메일 인증 (3단계) */
+        EMAIL_VERIFICATION: {
+          path: "/auth/signup/email/email-verification",
+          metadata: {
+            title: "회원가입 - 이메일 인증 | NOL",
+            description: "이메일로 전송된 인증번호를 입력해주세요",
+          } as Metadata,
+        },
+
+        /** 비밀번호 설정 (4단계) */
+        PASSWORD_CONFIRM: {
+          path: "/auth/signup/email/password-confirm",
+          metadata: {
+            title: "회원가입 - 비밀번호 설정 | NOL",
+            description: "로그인에 사용할 비밀번호를 설정해주세요",
+          } as Metadata,
+        },
       },
     },
     /** 아이디 찾기 */
