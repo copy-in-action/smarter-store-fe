@@ -54,32 +54,47 @@ function groupPagesByCategory(obj: Record<string, unknown>): Array<{
     if (categoryValue && typeof categoryValue === "object") {
       const pages: Array<PageType> = [];
 
-      // 카테고리 내의 페이지들을 평면화
-      function flattenCategoryPages(subObj: Record<string, unknown>): void {
-        for (const [key, value] of Object.entries(subObj)) {
-          if (value && typeof value === "object") {
-            if ("path" in value && "metadata" in value) {
-              // 단일 페이지 객체
-              const pageValue = value as {
-                path: string;
-                metadata: { title: string; description: string };
-              };
-              if (typeof pageValue.path === "string") {
-                pages.push({
-                  title: pageValue.metadata.title,
-                  path: pageValue.path,
-                  description: pageValue.metadata.description,
-                });
+      // 직접 페이지 객체인 경우 (CART, ADMIN 등)
+      if ("path" in categoryValue && "metadata" in categoryValue) {
+        const pageValue = categoryValue as {
+          path: string;
+          metadata: { title: string; description: string };
+        };
+        if (typeof pageValue.path === "string") {
+          pages.push({
+            title: pageValue.metadata.title,
+            path: pageValue.path,
+            description: pageValue.metadata.description,
+          });
+        }
+      } else {
+        // 카테고리 내의 페이지들을 평면화
+        function flattenCategoryPages(subObj: Record<string, unknown>): void {
+          for (const [key, value] of Object.entries(subObj)) {
+            if (value && typeof value === "object") {
+              if ("path" in value && "metadata" in value) {
+                // 단일 페이지 객체
+                const pageValue = value as {
+                  path: string;
+                  metadata: { title: string; description: string };
+                };
+                if (typeof pageValue.path === "string") {
+                  pages.push({
+                    title: pageValue.metadata.title,
+                    path: pageValue.path,
+                    description: pageValue.metadata.description,
+                  });
+                }
               }
-            }
 
-            // path와 metadata가 있어도 중첩된 객체가 있을 수 있으므로 항상 재귀 탐색
-            flattenCategoryPages(value as Record<string, unknown>);
+              // path와 metadata가 있어도 중첩된 객체가 있을 수 있으므로 항상 재귀 탐색
+              flattenCategoryPages(value as Record<string, unknown>);
+            }
           }
         }
-      }
 
-      flattenCategoryPages(categoryValue as Record<string, unknown>);
+        flattenCategoryPages(categoryValue as Record<string, unknown>);
+      }
 
       if (pages.length > 0) {
         result.push({
