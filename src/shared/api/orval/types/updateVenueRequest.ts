@@ -17,11 +17,11 @@ export interface UpdateVenueRequest {
    */
   name: string;
   /**
-   * 수정할 주소
+   * 수정할 공연장 주소
    * @minLength 0
    * @maxLength 255
    */
   address?: string;
-  /** 수정할 좌석 배치도 이미지 URL */
+  /** 수정할 공연장 좌석 배치도 이미지 URL */
   seatingChartUrl?: string;
 }

@@ -6,6 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
+  EmailVerificationConfirm,
+  EmailVerificationRequest,
   ErrorResponse,
   LoginRequest,
   RefreshTokenRequest,
@@ -184,6 +186,104 @@ export const login = async (loginRequest: LoginRequest, options?: RequestInit): 
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       loginRequest,)
+  }
+);}
+
+
+/**
+ * 지정된 이메일 주소로 인증 이메일을 보냅니다.
+ * @summary 이메일 인증 요청
+ */
+export type requestEmailVerificationResponse200 = {
+  data: void
+  status: 200
+}
+
+export type requestEmailVerificationResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+
+export type requestEmailVerificationResponse409 = {
+  data: ErrorResponse
+  status: 409
+}
+    
+export type requestEmailVerificationResponseSuccess = (requestEmailVerificationResponse200) & {
+  headers: Headers;
+};
+export type requestEmailVerificationResponseError = (requestEmailVerificationResponse404 | requestEmailVerificationResponse409) & {
+  headers: Headers;
+};
+
+export type requestEmailVerificationResponse = (requestEmailVerificationResponseSuccess | requestEmailVerificationResponseError)
+
+export const getRequestEmailVerificationUrl = () => {
+
+
+  
+
+  return `https://api.ticket.devhong.cc/api/auth/email-verification/request`
+}
+
+export const requestEmailVerification = async (emailVerificationRequest: EmailVerificationRequest, options?: RequestInit): Promise<requestEmailVerificationResponse> => {
+  
+  return orvalFetch<requestEmailVerificationResponse>(getRequestEmailVerificationUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      emailVerificationRequest,)
+  }
+);}
+
+
+/**
+ * 받은 토큰으로 이메일 인증을 완료합니다.
+ * @summary 이메일 인증 확인
+ */
+export type confirmEmailVerificationResponse200 = {
+  data: void
+  status: 200
+}
+
+export type confirmEmailVerificationResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type confirmEmailVerificationResponse409 = {
+  data: ErrorResponse
+  status: 409
+}
+    
+export type confirmEmailVerificationResponseSuccess = (confirmEmailVerificationResponse200) & {
+  headers: Headers;
+};
+export type confirmEmailVerificationResponseError = (confirmEmailVerificationResponse400 | confirmEmailVerificationResponse409) & {
+  headers: Headers;
+};
+
+export type confirmEmailVerificationResponse = (confirmEmailVerificationResponseSuccess | confirmEmailVerificationResponseError)
+
+export const getConfirmEmailVerificationUrl = () => {
+
+
+  
+
+  return `https://api.ticket.devhong.cc/api/auth/email-verification/confirm`
+}
+
+export const confirmEmailVerification = async (emailVerificationConfirm: EmailVerificationConfirm, options?: RequestInit): Promise<confirmEmailVerificationResponse> => {
+  
+  return orvalFetch<confirmEmailVerificationResponse>(getConfirmEmailVerificationUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      emailVerificationConfirm,)
   }
 );}
 

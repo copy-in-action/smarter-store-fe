@@ -7,9 +7,11 @@
  */
 
 /**
- * 토큰 갱신 요청 DTO
+ * 좌석 해제 응답 DTO
  */
-export interface RefreshTokenRequest {
-  /** 리프레시 토큰 */
-  refreshToken: string;
+export interface ReleaseSeatsResponse {
+  /** 성공 여부 */
+  success: boolean;
+  /** 해제된 좌석 수 */
+  releasedCount: number;
 }

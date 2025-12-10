@@ -11,25 +11,27 @@
  */
 export interface CreatePerformanceRequest {
   /**
-   * 공연명
+   * 생성할 공연명
    * @minLength 0
    * @maxLength 255
    */
   title: string;
-  /** 공연 설명 */
+  /** 생성할 공연 상세 설명 */
   description?: string;
-  /** 카테고리 */
+  /** 생성할 공연 카테고리 */
   category: string;
-  /** 공연 시간 (분) */
+  /** 생성할 공연 시간 (분) */
   runningTime?: number;
-  /** 관람 연령 */
+  /** 생성할 공연 관람 연령 */
   ageRating?: string;
-  /** 대표 이미지 URL */
+  /** 생성할 공연 대표 이미지 URL */
   mainImageUrl?: string;
-  /** 공연장 ID */
+  /** 공연 노출 여부 */
+  visible: boolean;
+  /** 공연이 열릴 공연장 ID */
   venueId?: number;
-  /** 공연 시작일 */
+  /** 생성할 공연 시작일 */
   startDate: string;
-  /** 공연 종료일 */
+  /** 생성할 공연 종료일 */
   endDate: string;
 }

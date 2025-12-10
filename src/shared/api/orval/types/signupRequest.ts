@@ -10,10 +10,10 @@
  * 회원가입 요청 DTO
  */
 export interface SignupRequest {
-  /** 이메일 */
+  /** 사용자 이메일 */
   email: string;
-  /** 사용자이름 */
+  /** 사용자 이름 */
   username: string;
-  /** 비밀번호 */
+  /** 사용자 비밀번호 */
   password: string;
 }

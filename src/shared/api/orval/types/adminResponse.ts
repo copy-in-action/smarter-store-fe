@@ -12,10 +12,10 @@
 export interface AdminResponse {
   /** 관리자 ID */
   id: number;
-  /** 로그인 ID */
+  /** 관리자 로그인 ID */
   loginId: string;
-  /** 이름 */
+  /** 관리자 이름 */
   name: string;
-  /** 생성일시 */
+  /** 관리자 생성일시 */
   createdAt?: string;
 }

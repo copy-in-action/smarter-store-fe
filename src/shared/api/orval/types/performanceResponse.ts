@@ -15,23 +15,25 @@ export interface PerformanceResponse {
   id: number;
   /** 공연명 */
   title: string;
-  /** 공연 설명 */
+  /** 공연 상세 설명 */
   description?: string;
-  /** 카테고리 */
+  /** 공연 카테고리 */
   category: string;
   /** 공연 시간 (분) */
   runningTime?: number;
-  /** 관람 연령 */
+  /** 공연 관람 연령 */
   ageRating?: string;
-  /** 대표 이미지 URL */
+  /** 공연 대표 이미지 URL */
   mainImageUrl?: string;
+  /** 공연 노출 여부 */
+  visible: boolean;
   venue?: VenueResponse;
   /** 공연 시작일 */
   startDate: string;
   /** 공연 종료일 */
   endDate: string;
-  /** 생성일시 */
+  /** 공연 정보 생성일시 */
   createdAt?: string;
-  /** 수정일시 */
+  /** 공연 정보 수정일시 */
   updatedAt?: string;
 }
