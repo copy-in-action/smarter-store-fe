@@ -36,7 +36,15 @@ export function useAdminLoginMutation() {
      */
     onSuccess: () => {
       toast.success("로그인 성공");
-      router.push(PAGES.ADMIN.path);
+      
+      // URL 쿼리 파라미터에서 redirect 값 확인
+      const searchParams = new URLSearchParams(window.location.search);
+      const redirectUrl = searchParams.get('redirect');
+      
+      // redirect 파라미터가 있으면 해당 페이지로, 없으면 기본 관리자 페이지로
+      const targetUrl = redirectUrl || PAGES.ADMIN.path;
+      
+      router.push(targetUrl);
       router.refresh();
     },
 

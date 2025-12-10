@@ -1,10 +1,23 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { PAGES } from "@/shared/constants/routes";
-import {
-  extractAdminTokenFromCookie,
-  verifyAdminToken,
-} from "@/shared/lib/auth/adminAuth";
+
+/**
+ * JWT 토큰을 디코딩하여 페이로드 추출 (검증 없이)
+ * @param token - JWT 토큰
+ * @returns 디코딩된 페이로드 또는 null
+ */
+function decodeJWT(token: string): any | null {
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    
+    const payload = JSON.parse(atob(parts[1]));
+    return payload;
+  } catch {
+    return null;
+  }
+}
 
 /**
  * 관리자 인증 미들웨어
@@ -29,43 +42,51 @@ export async function adminAuthMiddleware(
 
   console.log(`[Admin Auth] 관리자 페이지 접근 시도: ${pathname}`);
 
-  // 쿠키에서 관리자 토큰 추출
-  const cookieHeader = request.headers.get("cookie");
-  const token = extractAdminTokenFromCookie(cookieHeader);
-  console.log("🚀 ~ adminAuthMiddleware ~ token:", token);
+  // 쿠키에서 토큰 추출
+  const token = request.cookies.get("accessToken")?.value;
 
   if (!token) {
     console.log(
       "[Admin Auth] 관리자 토큰이 없습니다. 로그인 페이지로 리다이렉트",
     );
     const loginUrl = new URL(PAGES.ADMIN.AUTH.LOGIN.path, request.url);
+    // 원래 접근하려던 페이지를 쿼리 파라미터로 저장
+    loginUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  // JWT 토큰 검증
-  const adminPayload = await verifyAdminToken(token);
+  // JWT 디코딩하여 페이로드 확인
+  const payload = decodeJWT(token);
 
-  if (!adminPayload) {
-    console.log(
-      "[Admin Auth] 유효하지 않은 관리자 토큰입니다. 로그인 페이지로 리다이렉트",
-    );
+  if (!payload) {
+    console.log("[Admin Auth] 유효하지 않은 토큰 형식입니다. 로그인 페이지로 리다이렉트");
     const loginUrl = new URL(PAGES.ADMIN.AUTH.LOGIN.path, request.url);
-
-    // 쿠키 삭제를 위한 응답 생성
-    const response = NextResponse.redirect(loginUrl);
-    response.cookies.delete("admin_token");
-    response.cookies.delete("adminToken");
-    return response;
+    loginUrl.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
-  console.log(`[Admin Auth] 관리자 인증 성공: ${adminPayload.sub}`);
+  // 만료 시간 확인
+  if (payload.exp && payload.exp < Date.now() / 1000) {
+    console.log("[Admin Auth] 토큰이 만료되었습니다. 로그인 페이지로 리다이렉트");
+    const loginUrl = new URL(PAGES.ADMIN.AUTH.LOGIN.path, request.url);
+    loginUrl.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
 
-  // 검증된 관리자 정보를 헤더에 추가
+  // auth 권한 확인
+  if (payload.auth !== 'ROLE_ADMIN') {
+    console.log(`[Admin Auth] 관리자 권한이 없습니다. auth: ${payload.auth}`);
+    const loginUrl = new URL(PAGES.ADMIN.AUTH.LOGIN.path, request.url);
+    loginUrl.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  console.log(`[Admin Auth] 관리자 인증 성공: ${payload.sub}`);
+
+  // 디코딩된 정보를 헤더에 추가 (주의: 서명 검증되지 않은 정보)
   const response = NextResponse.next();
-  response.headers.set("x-admin-sub", adminPayload.sub);
-  response.headers.set("x-admin-auth", adminPayload.auth);
-  response.headers.set("x-admin-iat", adminPayload.iat.toString());
-  response.headers.set("x-admin-exp", adminPayload.exp.toString());
+  response.headers.set("x-admin-sub", payload.sub);
+  response.headers.set("x-admin-auth", payload.auth);
 
   return response;
 }
