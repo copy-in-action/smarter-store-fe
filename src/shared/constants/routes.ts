@@ -154,5 +154,20 @@ export const PAGES = {
         } as Metadata,
       },
     },
+    VENUES: {
+      path: "/admin/venues",
+      metadata: {
+        title: "공연장 리스트 | 관리자",
+        description: "공연장을 리스트 관리자 페이지",
+      } as Metadata,
+
+      CREATE: {
+        path: "/admin/venues/create",
+        metadata: {
+          title: "공연장 등록 | 관리자",
+          description: "새로운 공연장을 등록하는 관리자 페이지",
+        } as Metadata,
+      },
+    },
   },
 } as const;
