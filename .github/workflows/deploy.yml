@@ -11,8 +11,8 @@ env:
   DOCKER_IMAGE_NAME: ticket-fe
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  # 브랜치명-PR번호 형태 태그 생성
-  IMAGE_TAG: ${{ github.head_ref || github.ref_name }}-${{ github.event.number || github.run_number }}
+  # PR이 머지된 후에는 base 브랜치명과 run_number로 태그 생성
+  IMAGE_TAG: ${{ github.event.pull_request.base.ref }}-${{ github.run_number }}
 
 jobs:
   build:
