@@ -182,6 +182,15 @@ export const PAGES = {
           description: "새로운 공연장을 등록하는 관리자 페이지",
         } as Metadata,
       },
+
+      /** 공연장 수정 */
+      EDIT: {
+        path: (id: number) => `/admin/venues/${id}/edit`,
+        metadata: {
+          title: "공연장 수정 | 관리자",
+          description: "공연장 정보를 수정하는 관리자 페이지",
+        } as Metadata,
+      },
     },
   },
 } as const;

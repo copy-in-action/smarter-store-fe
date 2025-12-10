@@ -3,12 +3,17 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { CreateVenueRequest } from "@/shared/api/orval/types";
+import type {
+  CreateVenueRequest,
+  UpdateVenueRequest,
+  VenueResponse,
+} from "@/shared/api/orval/types";
 import {
   createVenue,
   deleteVenue,
   getAllVenues,
   getVenue,
+  updateVenue,
 } from "@/shared/api/orval/venues/venues";
 
 /**
@@ -45,7 +50,7 @@ export const useVenue = (id: number) => {
     queryKey: VENUE_QUERY_KEYS.detail(id),
     queryFn: async () => {
       const response = await getVenue(id);
-      return response.data;
+      return response.data as VenueResponse;
     },
     enabled: !!id,
   });
@@ -65,6 +70,32 @@ export const useCreateVenue = () => {
     onSuccess: () => {
       // 공연장 목록 쿼리 무효화하여 새로고침
       queryClient.invalidateQueries({ queryKey: VENUE_QUERY_KEYS.lists() });
+    },
+  });
+};
+
+/**
+ * 공연장 수정 뮤테이션 훅
+ */
+export const useUpdateVenue = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number;
+      data: UpdateVenueRequest;
+    }) => {
+      const response = await updateVenue(id, data);
+      return response.data;
+    },
+    onSuccess: (_, { id }) => {
+      // 공연장 목록 쿼리 무효화하여 새로고침
+      queryClient.invalidateQueries({ queryKey: VENUE_QUERY_KEYS.lists() });
+      // 수정된 공연장의 상세 쿼리도 무효화
+      queryClient.invalidateQueries({ queryKey: VENUE_QUERY_KEYS.detail(id) });
     },
   });
 };

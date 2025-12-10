@@ -60,8 +60,7 @@ export default function VenueListView() {
    * @param venue - 수정할 공연장 데이터
    */
   const handleEditVenue = (venue: VenueResponse) => {
-    // TODO: 공연장 수정 페이지로 라우팅
-    console.log("공연장 수정:", venue);
+    router.push(PAGES.ADMIN.VENUES.EDIT.path(venue.id));
   };
 
   /**
