@@ -154,26 +154,40 @@ export const apiClient = async <T = any>(
 
     const response = await fetch(fullUrl, config);
 
-    // 401 에러 처리 - 토큰 갱신 시도 (관리자 API 제외)
-    if (
-      response.status === 401 &&
-      !isRetry &&
-      !fullUrl.includes("/admin/") && // 모든 관리자 API 제외
-      !fullUrl.includes("/api/auth/login") // 일반 사용자 로그인 API 제외
-    ) {
-      console.log("🔄 401 응답 - 토큰 갱신 시도 (일반 사용자)");
+    // 401 에러 처리
+    if (response.status === 401 && !isRetry) {
+      // 관리자 API인 경우
+      if (fullUrl.includes("/api/admin/")) {
+        console.log("❌ 관리자 인증 실패 - 관리자 로그인 페이지로 이동");
+        
+        // 클라이언트 사이드에서만 리다이렉트
+        if (typeof window !== "undefined") {
+          window.location.href = PAGES.ADMIN.AUTH.LOGIN.path;
+        }
+        
+        throw new ApiErrorClass("관리자 인증이 필요합니다", 401);
+      }
+      
+      // 일반 사용자 API인 경우 - 토큰 갱신 시도
+      if (!fullUrl.includes("/api/auth/login")) {
+        console.log("🔄 401 응답 - 토큰 갱신 시도 (일반 사용자)");
 
-      const newToken = await refreshAccessToken();
+        const newToken = await refreshAccessToken();
 
-      if (newToken) {
-        // 토큰 갱신 성공 - 새로운 쿠키로 재시도
-        console.log("✅ 토큰 갱신 성공 - 요청 재시도");
-
-        return apiClient<T>(url, options, true);
-      } else {
-        // 토큰 갱신 실패 - 401 에러 처리
-        console.log("❌ 토큰 갱신 실패");
-        await handleResponseError(response);
+        if (newToken) {
+          // 토큰 갱신 성공 - 새로운 쿠키로 재시도
+          console.log("✅ 토큰 갱신 성공 - 요청 재시도");
+          return apiClient<T>(url, options, true);
+        } else {
+          // 토큰 갱신 실패 - 일반 로그인 페이지로 이동
+          console.log("❌ 토큰 갱신 실패 - 로그인 페이지로 이동");
+          
+          if (typeof window !== "undefined") {
+            window.location.href = PAGES.AUTH.LOGIN.path;
+          }
+          
+          throw new ApiErrorClass("인증이 필요합니다", 401);
+        }
       }
     }
 

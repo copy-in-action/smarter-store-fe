@@ -8,7 +8,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { useCreateVenue } from "@/entities/venue";
+import { useCreateVenue, type VenueResponse } from "@/entities/venue";
+import { PAGES } from "@/shared/constants";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Input } from "@/shared/ui/input";
@@ -50,10 +51,13 @@ export function VenueCreateForm() {
         seatingChartUrl: data.seatingChartUrl || undefined,
       };
 
-      await createVenueMutation.mutateAsync(submitData);
+      const newVenue = await createVenueMutation.mutateAsync(submitData);
 
       toast.success("공연장이 성공적으로 등록되었습니다.");
       reset();
+      router.push(
+        PAGES.ADMIN.VENUES.DETAIL.path((newVenue as VenueResponse).id),
+      );
     } catch (error) {
       toast.error("공연장 등록에 실패했습니다.");
       console.error("공연장 생성 오류:", error);

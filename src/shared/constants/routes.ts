@@ -155,12 +155,26 @@ export const PAGES = {
       },
     },
     VENUES: {
-      path: "/admin/venues",
-      metadata: {
-        title: "공연장 리스트 | 관리자",
-        description: "공연장을 리스트 관리자 페이지",
-      } as Metadata,
+      /** 공연장 목록 */
+      LIST: {
+        path: "/admin/venues",
+        metadata: {
+          title: "공연장 관리 | 관리자",
+          description:
+            "등록된 공연장을 관리하고 새로운 공연장을 추가할 수 있습니다.",
+        } as Metadata,
+      },
 
+      /** 공연장 상세 */
+      DETAIL: {
+        path: (id: number) => `/admin/venues/${id}`,
+        metadata: {
+          title: "공연장 상세 | 관리자",
+          description: "공연장 상세 페이지",
+        } as Metadata,
+      },
+
+      /** 공연장 생성 */
       CREATE: {
         path: "/admin/venues/create",
         metadata: {

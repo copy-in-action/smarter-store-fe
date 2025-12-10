@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { CreateVenueRequest } from "@/shared/api/orval/types";
 import {
   createVenue,
+  deleteVenue,
   getAllVenues,
   getVenue,
 } from "@/shared/api/orval/venues/venues";
@@ -64,6 +65,26 @@ export const useCreateVenue = () => {
     onSuccess: () => {
       // 공연장 목록 쿼리 무효화하여 새로고침
       queryClient.invalidateQueries({ queryKey: VENUE_QUERY_KEYS.lists() });
+    },
+  });
+};
+
+/**
+ * 공연장 삭제 뮤테이션 훅
+ */
+export const useDeleteVenue = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (venueId: number) => {
+      const response = await deleteVenue(venueId);
+      return response.data;
+    },
+    onSuccess: (_, venueId) => {
+      // 공연장 목록 쿼리 무효화하여 새로고침
+      queryClient.invalidateQueries({ queryKey: VENUE_QUERY_KEYS.lists() });
+      // 삭제된 공연장의 상세 쿼리도 무효화
+      queryClient.removeQueries({ queryKey: VENUE_QUERY_KEYS.detail(venueId) });
     },
   });
 };
