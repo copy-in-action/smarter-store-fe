@@ -4,10 +4,13 @@
  * ## 주요 기능
  * - SSR/클라이언트 일관된 QueryClient 제공
  * - TanStack Query v5 호환 전역 에러 처리
- * - httpOnly 쿠키 기반 인증에서 401 에러 시 클라이언트에서만 리다이렉트
+ * - httpOnly 쿠키 기반 인증에서 관리자/일반 사용자 차별화된 401 처리
+ * - 관리자: 리프레시 토큰 미사용으로 즉시 로그아웃 (보안 강화)
+ * - 일반 사용자: fetch-wrapper에서 리프레시 시도 후 실패 시 로그아웃
  * - 서버/클라이언트 환경 분리 대응
  *
  * @see {@link ../../document/API_아키텍쳐.md} 전체 API 아키텍처 및 플로우
+ * @see {@link ../../document/admin-auth-process.md} 관리자 인증 프로세스
  */
 
 import {
@@ -16,35 +19,58 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { ApiErrorClass } from "@/shared/api/fetch-wrapper";
+import { PAGES } from "@/shared/constants/routes";
 
 /**
- * 401 에러 시 로그인 페이지로 리다이렉트하는 핸들러
+ * 현재 페이지가 관리자 페이지인지 확인
+ */
+const isAdminPage = (): boolean => {
+  if (typeof window === "undefined") return false;
+  return window.location.pathname.startsWith("/admin");
+};
+
+/**
+ * 401 에러 시 적절한 로그인 페이지로 리다이렉트하는 핸들러
  *
- * httpOnly 쿠키 방식에서는:
- * - 서버: 쿠키 만료 시 로깅만 처리 (리다이렉트는 클라이언트에 위임)
- * - 클라이언트: 토스트 표시 및 로그인 페이지로 리다이렉트
+ * 현재 구현 방식:
+ * - fetch-wrapper에서 이미 관리자/일반 사용자 구분 처리
+ * - 관리자: 리프레시 토큰 시도 없이 즉시 401 반환 (보안 강화)
+ * - 일반 사용자: 리프레시 토큰 갱신 시도 후 실패 시 401 반환
+ * - QueryClient에서는 최종 401 에러에 대해서만 리다이렉트 처리
  */
 const handleAuthError = (error: unknown) => {
   if (error instanceof ApiErrorClass && error.status === 401) {
     if (typeof window !== "undefined") {
-      // 클라이언트 환경: 사용자에게 알리고 리다이렉트
-      console.log(
-        "🔄 클라이언트: 401 에러 감지 - httpOnly 쿠키 만료 또는 인증 실패",
-      );
+      // 클라이언트 환경에서만 리다이렉트 처리
+      const currentPath = window.location.pathname;
+      const isAdmin = isAdminPage();
 
-      // 지연 후 리다이렉트 (토스트 메시지 표시 시간 확보)
-      /*  setTimeout(() => {
-        if (
-          window.location.href.lastIndexOf(PAGES.AUTH.LOGIN.path) !== -1 &&
-          window.location.href.lastIndexOf(PAGES.ADMIN.AUTH.LOGIN.path) !== -1
-        )
-          window.location.href = "/auth/login";
-      }, 1000); */
+      if (isAdmin) {
+        console.log("🔄 관리자 401 에러: 토큰 만료 - 관리자 로그인으로 리다이렉트");
+        
+        // 관리자는 현재 페이지를 redirect 파라미터로 저장
+        const redirectUrl = `${PAGES.ADMIN.AUTH.LOGIN.path}?redirect=${encodeURIComponent(currentPath)}`;
+        
+        // 즉시 리다이렉트 (관리자는 보안상 지연 없음)
+        window.location.href = redirectUrl;
+      } else {
+        console.log("🔄 일반 사용자 401 에러: 리프레시 토큰 갱신 실패 - 로그인으로 리다이렉트");
+        
+        // 일반 사용자도 현재 페이지를 redirect 파라미터로 저장
+        const redirectUrl = `${PAGES.AUTH.LOGIN.path}?redirect=${encodeURIComponent(currentPath)}`;
+        
+        // 짧은 지연 후 리다이렉트 (사용자 경험 고려)
+        setTimeout(() => {
+          // 이미 로그인 페이지에 있으면 리다이렉트하지 않음
+          if (!window.location.pathname.includes("/auth/login") && 
+              !window.location.pathname.includes("/admin/auth/login")) {
+            window.location.href = redirectUrl;
+          }
+        }, 500);
+      }
     } else {
-      // 서버 환경: 로깅만 처리, 리다이렉트는 클라이언트에 위임
-      console.log("🔄 서버: 401 에러 감지 - httpOnly 쿠키 만료 또는 인증 실패");
-      // 서버에서는 toast나 window 접근 불가
-      // 에러는 클라이언트로 전파되어 클라이언튴에서 처리
+      // 서버 환경: 로깅만 처리, 리다이렉트는 미들웨어에서 담당
+      console.log("🔄 서버: 401 에러 감지 - 미들웨어에서 리다이렉트 처리 예정");
     }
   }
 };
@@ -63,7 +89,9 @@ function makeQueryClient() {
         gcTime: 1000 * 60 * 10,
         /** 에러 시 재시도 횟수 */
         retry: (failureCount, error) => {
-          // 401 에러는 재시도 하지 않음 (httpOnly 쿠키 만료/부정인증)
+          // 401 에러는 재시도 하지 않음
+          // 관리자: 리프레시 토큰 미사용으로 즉시 로그아웃
+          // 일반 사용자: 이미 fetch-wrapper에서 리프레시 시도 완료
           if (error instanceof ApiErrorClass && error.status === 401) {
             return false;
           }
@@ -78,7 +106,9 @@ function makeQueryClient() {
       mutations: {
         /** 뮤테이션 기본 옵션 */
         retry: (failureCount, error) => {
-          // 401 에러는 재시도 하지 않음 (httpOnly 쿠키 만료/부정인증)
+          // 401 에러는 재시도 하지 않음
+          // 관리자: 리프레시 토큰 미사용으로 즉시 로그아웃
+          // 일반 사용자: 이미 fetch-wrapper에서 리프레시 시도 완료
           if (error instanceof ApiErrorClass && error.status === 401) {
             return false;
           }

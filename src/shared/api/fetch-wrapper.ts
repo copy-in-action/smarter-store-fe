@@ -154,14 +154,14 @@ export const apiClient = async <T = any>(
 
     const response = await fetch(fullUrl, config);
 
-    // 401 에러 처리 - 토큰 갱신 시도
+    // 401 에러 처리 - 토큰 갱신 시도 (관리자 API 제외)
     if (
       response.status === 401 &&
       !isRetry &&
-      response.url.lastIndexOf("/api/auth/login") !== -1 &&
-      response.url.lastIndexOf("/api/admin/auth/login") !== -1
+      !fullUrl.includes("/admin/") && // 모든 관리자 API 제외
+      !fullUrl.includes("/api/auth/login") // 일반 사용자 로그인 API 제외
     ) {
-      console.log("🔄 401 응답 - 토큰 갱신 시도");
+      console.log("🔄 401 응답 - 토큰 갱신 시도 (일반 사용자)");
 
       const newToken = await refreshAccessToken();
 
