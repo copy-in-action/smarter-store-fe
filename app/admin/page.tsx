@@ -1,3 +1,6 @@
+import { redirect } from "next/navigation";
+import { PAGES } from "@/shared/constants";
+
 export default function AdminPage() {
-  return <div>admin</div>;
+  redirect(PAGES.ADMIN.VENUES.CREATE.path);
 }
