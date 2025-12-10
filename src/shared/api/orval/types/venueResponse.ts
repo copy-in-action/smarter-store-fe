@@ -14,12 +14,12 @@ export interface VenueResponse {
   id: number;
   /** 공연장 이름 */
   name: string;
-  /** 주소 */
+  /** 공연장 주소 */
   address?: string;
-  /** 좌석 배치도 이미지 URL */
+  /** 공연장 좌석 배치도 이미지 URL */
   seatingChartUrl?: string;
-  /** 생성일시 */
+  /** 공연장 정보 생성일시 */
   createdAt?: string;
-  /** 수정일시 */
+  /** 공연장 정보 수정일시 */
   updatedAt?: string;
 }

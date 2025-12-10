@@ -6,10 +6,6 @@
  * OpenAPI spec version: 1.0.0
  */
 
-/**
- * 토큰 갱신 요청 DTO
- */
-export interface RefreshTokenRequest {
-  /** 리프레시 토큰 */
-  refreshToken: string;
+export interface EmailVerificationConfirm {
+  token: string;
 }

@@ -6,10 +6,9 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export type GetMyHeldSeatsParams = {
 /**
- * 토큰 갱신 요청 DTO
+ * 세션 ID (비회원용)
  */
-export interface RefreshTokenRequest {
-  /** 리프레시 토큰 */
-  refreshToken: string;
-}
+sessionId?: string;
+};

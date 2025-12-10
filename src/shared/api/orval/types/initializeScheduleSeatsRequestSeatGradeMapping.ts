@@ -7,9 +7,6 @@
  */
 
 /**
- * 토큰 갱신 요청 DTO
+ * 좌석등급별 티켓옵션 ID 매핑 (SeatGrade -> TicketOption ID)
  */
-export interface RefreshTokenRequest {
-  /** 리프레시 토큰 */
-  refreshToken: string;
-}
+export type InitializeScheduleSeatsRequestSeatGradeMapping = {[key: string]: number};

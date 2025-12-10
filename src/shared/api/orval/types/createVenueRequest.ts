@@ -11,17 +11,17 @@
  */
 export interface CreateVenueRequest {
   /**
-   * 공연장 이름
+   * 생성할 공연장 이름
    * @minLength 0
    * @maxLength 100
    */
   name: string;
   /**
-   * 주소
+   * 생성할 공연장 주소
    * @minLength 0
    * @maxLength 255
    */
   address?: string;
-  /** 좌석 배치도 이미지 URL */
+  /** 생성할 공연장 좌석 배치도 이미지 URL */
   seatingChartUrl?: string;
 }

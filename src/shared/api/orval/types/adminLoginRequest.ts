@@ -10,8 +10,8 @@
  * 관리자 로그인 요청 DTO
  */
 export interface AdminLoginRequest {
-  /** 로그인 ID */
+  /** 관리자 로그인 ID */
   loginId: string;
-  /** 비밀번호 */
+  /** 관리자 비밀번호 */
   password: string;
 }

@@ -12,10 +12,10 @@
 export interface UserResponse {
   /** 사용자 ID */
   id: number;
-  /** 이메일 */
+  /** 사용자 이메일 */
   email: string;
-  /** 사용자이름 */
+  /** 사용자 이름 */
   username: string;
-  /** 생성일시 */
+  /** 사용자 생성일시 */
   createdAt?: string;
 }
