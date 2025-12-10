@@ -5,6 +5,7 @@ import {
   ShoppingCart,
   Users,
 } from "lucide-react";
+import { PAGES } from "@/shared/constants";
 import type { SidebarData } from "../model/types";
 
 /**
@@ -40,8 +41,18 @@ export const adminSidebarData: SidebarData = {
     },
     {
       title: "공연장",
-      url: "/admin/orders",
+      url: "#",
       icon: ShoppingCart,
+      items: [
+        {
+          title: "공연장 추가",
+          url: PAGES.ADMIN.VENUES.CREATE.path,
+        },
+        {
+          title: "공연장 리스트",
+          url: PAGES.ADMIN.VENUES.LIST.path,
+        },
+      ],
     },
     {
       title: "사용자 관리",
