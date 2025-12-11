@@ -18,6 +18,8 @@ export interface AdminSidebarMenuItem {
     title: string;
     /** 하위 메뉴 URL */
     url: string;
+    /** 활성 상태 */
+    isActive?: boolean;
   }[];
 }
 

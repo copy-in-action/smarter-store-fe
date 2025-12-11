@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import type * as React from "react";
 
 import {
@@ -8,7 +9,7 @@ import {
   SidebarFooter,
   SidebarRail,
 } from "@/shared/ui/sidebar";
-import { adminSidebarData } from "../lib/sidebarData";
+import { getActiveSidebarData } from "../lib/sidebarData";
 import type { SidebarData } from "../model/types";
 import { NavMain } from "./NavMain";
 import { NavUser } from "./NavUser";
@@ -25,17 +26,19 @@ interface AdminSidebarProps extends React.ComponentProps<typeof Sidebar> {
  * 관리자 사이드바 컴포넌트
  * 관리자 페이지의 메인 네비게이션을 제공합니다
  */
-export function AdminSidebar({
-  data = adminSidebarData,
-  ...props
-}: AdminSidebarProps) {
+export function AdminSidebar({ data, ...props }: AdminSidebarProps) {
+  const pathname = usePathname();
+
+  // 현재 경로를 기반으로 활성 상태가 적용된 사이드바 데이터 생성
+  const activeSidebarData = data || getActiveSidebarData(pathname);
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={activeSidebarData.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={activeSidebarData.user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

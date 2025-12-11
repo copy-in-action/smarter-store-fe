@@ -192,5 +192,43 @@ export const PAGES = {
         } as Metadata,
       },
     },
+    PERFORMANCES: {
+      /** 공연 목록 */
+      LIST: {
+        path: "/admin/performances",
+        metadata: {
+          title: "공연 관리 | 관리자",
+          description:
+            "등록된 공연을 관리하고 새로운 공연을 추가할 수 있습니다.",
+        } as Metadata,
+      },
+
+      /** 공연 상세 */
+      DETAIL: {
+        path: (id: number) => `/admin/performances/${id}`,
+        metadata: {
+          title: "공연 상세 | 관리자",
+          description: "공연 상세 페이지",
+        } as Metadata,
+      },
+
+      /** 공연 생성 */
+      CREATE: {
+        path: "/admin/performances/create",
+        metadata: {
+          title: "공연 등록 | 관리자",
+          description: "새로운 공연을 등록하는 관리자 페이지",
+        } as Metadata,
+      },
+
+      /** 공연 수정 */
+      EDIT: {
+        path: (id: number) => `/admin/performances/${id}/edit`,
+        metadata: {
+          title: "공연 수정 | 관리자",
+          description: "공연 정보를 수정하는 관리자 페이지",
+        } as Metadata,
+      },
+    },
   },
 } as const;
