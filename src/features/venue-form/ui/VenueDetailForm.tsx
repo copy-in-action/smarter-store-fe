@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { Button } from '@/shared/ui/button';
-import { PAGES } from '@/shared/constants';
-import type { VenueResponse } from '@/shared/api/orval/types';
-import { VenueForm } from './VenueForm';
-import type { VenueFormData } from '../model/venue-form.schema';
+import { useRouter } from "next/navigation";
+import type { VenueResponse } from "@/shared/api/orval/types";
+import { PAGES } from "@/shared/constants";
+import { Button } from "@/shared/ui/button";
+import type { VenueFormData } from "../model/venue-form.schema";
+import { VenueForm } from "./VenueForm";
 
 /**
  * 공연장 상세보기 폼 컴포넌트 속성
@@ -37,12 +37,8 @@ export function VenueDetailForm({ venue }: VenueDetailFormProps) {
 
   return (
     <div className="space-y-6">
-      <VenueForm
-        mode="view"
-        initialData={venue}
-        onSubmit={handleSubmit}
-      />
-      
+      <VenueForm mode="view" initialData={venue} onSubmit={handleSubmit} />
+
       {/* 추가 액션 버튼 */}
       <div className="flex justify-center">
         <Button onClick={handleEdit} className="w-32">
