@@ -96,7 +96,7 @@ export function PerformanceTable({
           </TableHeader>
           <TableBody>
             {Array.from({ length: 5 }).map((_, index) => (
-              <TableRow key={index}>
+              <TableRow key={index.toString()}>
                 <TableCell>
                   <div className="h-4 bg-gray-200 rounded animate-pulse" />
                 </TableCell>
