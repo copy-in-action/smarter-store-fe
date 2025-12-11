@@ -165,15 +165,11 @@ export function PerformanceTable({
         <TableBody>
           {performances.map((performance) => (
             <TableRow key={performance.id}>
-              <TableCell className="font-medium">
-                <div>
-                  <div className="font-semibold">{performance.title}</div>
-                  {performance.description && (
-                    <div className="text-sm text-gray-500 truncate max-w-[200px]">
-                      {performance.description}
-                    </div>
-                  )}
-                </div>
+              <TableCell
+                className="font-semibold"
+                onClick={() => onView?.(performance)}
+              >
+                {performance.title}
               </TableCell>
               <TableCell>
                 <Badge variant="outline">{performance.category}</Badge>
