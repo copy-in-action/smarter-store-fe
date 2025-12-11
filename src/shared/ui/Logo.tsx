@@ -1,7 +1,22 @@
 /**
+ * 로고 컴포넌트 props
+ */
+interface LogoProps {
+  /** 로고 크기 클래스 */
+  className?: string;
+  /** 로고 너비 */
+  width?: number;
+  /** 로고 높이 */
+  height?: number;
+}
+
+/**
  * 로고 컴포넌트
  */
-export function Logo() {
+export function Logo({
+  className = "sm:w-[100px] w-[72px]",
+  width = 100,
+}: LogoProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -9,7 +24,8 @@ export function Logo() {
       fill="none"
       role="img"
       aria-label="NOL 로고"
-      className="sm:w-[100px] w-[72px]"
+      className={className}
+      width={width}
     >
       <title>NOL 로고</title>
       <path

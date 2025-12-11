@@ -13,11 +13,11 @@ import { SearchInput } from "./SearchInput";
  */
 export function Header() {
   return (
-    <header className="sticky top-[-20px]">
+    <header className="sticky z-50 sm:top-0 -top-5">
       <div
         className={cn(
-          "w-full bg-background flex flex-col items-center justify-center pt-6 mx-none wrapper",
-          "sm:flex-row sm:h-[100px] sm:pt-0",
+          "w-full bg-background flex flex-col items-center justify-center pt-6 pb-2 mx-none wrapper",
+          "sm:flex-row sm:h-[100px] sm:py-0",
         )}
       >
         <div
@@ -44,10 +44,9 @@ export function Header() {
         </div>
       </div>
       <div
-        className={cn(
-          "bg-gradient-to-r from-purple-500 via-blue-600 via-blue-500 to-sky-400 h-[1px] hidden",
-          "sm:block",
-        )}
+        className={
+          "bg-gradient-to-r from-purple-500 via-blue-600 via-blue-500 to-sky-400 h-[1px]"
+        }
       ></div>
     </header>
   );
