@@ -15,7 +15,7 @@ export default function RootLayout({
   return (
     <>
       <Header />
-      <main className="wrapper sm:mb-14">{children}</main>
+      <main>{children}</main>
       <BottomNavigation />
     </>
   );

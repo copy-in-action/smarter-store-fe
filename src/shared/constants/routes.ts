@@ -1,16 +1,78 @@
 import type { Metadata } from "next";
 
 /**
+ * 공통 메타데이터 설정
+ */
+const BASE_METADATA = {
+  siteName: "NOL 티켓",
+  locale: "ko_KR",
+  type: "website" as const,
+  keywords: [
+    "공연 예매",
+    "뮤지컬",
+    "콘서트",
+    "연극",
+    "클래식",
+    "티켓",
+    "할인",
+    "공연 정보",
+  ],
+};
+
+/**
+ * 메타데이터 생성 헬퍼 함수
+ */
+function createMetadata(
+  title: string,
+  description: string,
+  additionalOptions?: Partial<Metadata>,
+): Metadata {
+  const fullTitle = title.includes("NOL")
+    ? title
+    : `${title} | ${BASE_METADATA.siteName}`;
+
+  return {
+    title: fullTitle,
+    description,
+    keywords: BASE_METADATA.keywords,
+    openGraph: {
+      title: fullTitle,
+      description,
+      type: BASE_METADATA.type,
+      locale: BASE_METADATA.locale,
+      siteName: BASE_METADATA.siteName,
+      ...additionalOptions?.openGraph,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: fullTitle,
+      description,
+      ...additionalOptions?.twitter,
+    },
+    ...additionalOptions,
+  };
+}
+
+/**
  * 애플리케이션 라우트와 메타데이터 통합 관리
  */
 export const PAGES = {
   /** 홈페이지 */
   HOME: {
     path: "/",
-    metadata: {
-      title: "NOL - 스마터 스토어",
-      description: "스마트한 쇼핑의 새로운 기준, NOL에서 만나보세요",
-    } as Metadata,
+    metadata: createMetadata(
+      "NOL 티켓 - 공연 예매의 모든 것",
+      "뮤지컬, 콘서트, 연극, 클래식 등 다양한 공연 정보와 할인 티켓을 만나보세요. 최신 공연 소식과 특가 이벤트를 놓치지 마세요!",
+      {
+        alternates: {
+          canonical: "/",
+        },
+        other: {
+          robots: "index, follow",
+          googlebot: "index, follow",
+        },
+      },
+    ),
   },
 
   /** 인증 관련 */

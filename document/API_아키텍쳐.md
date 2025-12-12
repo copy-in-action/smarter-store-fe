@@ -9,25 +9,32 @@
 ```
 src/
 ├── app/                          # Next.js App Router + 전역 설정
+│   ├── error.tsx                # 전역 에러 페이지 (400/500 에러 UI)
 │   └── providers/
 │       └── getQueryClient.ts     # TanStack Query 전역 에러 처리
 ├── shared/                       # 공통 레이어 (모든 레이어에서 사용)
-│   └── api/
-│       ├── orval/               # Orval 생성 코드 (자동)
-│       └── fetch-wrapper.ts     # HTTP 클라이언트 (수동)
+│   ├── api/
+│   │   ├── orval/               # Orval 생성 코드 (자동)
+│   │   ├── fetch-wrapper.ts     # 클라이언트 HTTP 클라이언트
+│   │   └── server-fetch-wrapper.ts  # 서버 HTTP 클라이언트
+│   └── lib/
+│       └── errors.ts            # 공통 에러 클래스 (ApiError, ClientError, ServerError)
 ├── entities/                     # 비즈니스 엔티티 레이어
 │   └── auth/
 │       ├── api/                 # API 래퍼 (Clean Architecture)
 │       ├── model/               # 도메인 모델 (Zod 스키마, 타입)
 │       └── index.ts             # Public API
 └── features/                     # 기능 레이어 (사용자 시나리오)
-    └── auth/
+    └── home/
+        ├── api/                 # 서버 사이드 데이터 페칭
+        │   └── home-server.api.ts
         ├── lib/                 # React Hook
         └── ui/                  # UI 컴포넌트
 ```
 
 ## 🔄 API 호출 전체 플로우
 
+### 클라이언트 사이드 (CSR)
 ```
 React Component (EmailLoginForm.tsx)
   ↓ (react-hook-form + Zod 검증)
@@ -42,6 +49,183 @@ orvalFetch (shared/api/fetch-wrapper.ts)
 Native Fetch API
   ↓
 Backend Server (OpenAPI)
+```
+
+### 서버 사이드 (SSR)
+```
+Server Component (PerformanceListServer.tsx)
+  ↓
+Feature API (home-server.api.ts)
+  ↓ (비즈니스 로직)
+serverFetch (shared/api/server-fetch-wrapper.ts)
+  ↓ (인증 체크, 에러 처리)
+Native Fetch API
+  ↓
+Backend Server (OpenAPI)
+  ↓
+❌ 에러 발생 시
+  ├─ 401: redirect(로그인 페이지)
+  ├─ 400번대: ClientError throw → app/error.tsx (errorCode + message)
+  └─ 500번대: ServerError throw → app/error.tsx (HTTP 코드)
+```
+
+## 🖥️ 서버 사이드 데이터 페칭
+
+### 서버 vs 클라이언트 구분
+
+| 구분 | 서버 컴포넌트 (SSR) | 클라이언트 컴포넌트 (CSR) |
+|------|-------------------|------------------------|
+| **Wrapper** | `server-fetch-wrapper.ts` | `fetch-wrapper.ts` |
+| **인증 방식** | `cookies()` API 사용 | `credentials: 'include'` |
+| **401 처리** | `redirect(로그인)` | 토큰 갱신 → 실패시 에러 throw |
+| **에러 처리** | `app/error.tsx` (Next.js) | React Query or try-catch |
+| **사용 위치** | Server Component | Client Component |
+
+### 서버 Fetch Wrapper 특징
+
+```typescript
+// shared/api/server-fetch-wrapper.ts
+
+/**
+ * 서버 컴포넌트용 API 클라이언트
+ * - 인증이 필요한 경우 쿠키 확인 후 없으면 redirect
+ * - 에러 발생 시 적절한 에러 객체 throw
+ */
+export async function serverFetch<T>(
+  url: string,
+  options: ServerFetchOptions = {},
+): Promise<T>
+```
+
+**주요 옵션:**
+- `requireAuth`: 일반 사용자 인증 필요 여부
+- `requireAdmin`: 관리자 인증 필요 여부
+- `cache`: Next.js fetch 캐시 옵션 (`no-store`, `force-cache` 등)
+
+### 에러 처리 플로우
+
+#### 1️⃣ 인증 에러 (401)
+```
+API 요청 → 401 응답
+  ↓
+serverFetch: UnauthorizedError throw
+  ↓
+Next.js가 자동으로 캐치
+  ↓
+redirect(로그인 페이지)
+```
+
+#### 2️⃣ 클라이언트 에러 (400번대, 401 제외)
+```
+API 요청 → 400/403/404 등
+  ↓
+serverFetch: ClientError throw (errorCode + message 포함)
+  ↓
+app/error.tsx
+  ↓
+UI에 errorCode와 message 표시
+  [에러 코드: VALIDATION_ERROR]
+  [필수 항목을 입력해주세요]
+```
+
+#### 3️⃣ 서버 에러 (500번대)
+```
+API 요청 → 500/502/503 등
+  ↓
+serverFetch: ServerError throw
+  ↓
+app/error.tsx
+  ↓
+통일된 UI + HTTP 코드 표시
+  [HTTP 500]
+  [일시적인 문제가 발생했습니다]
+```
+
+### 사용 예시
+
+```typescript
+// features/home/api/home-server.api.ts
+
+/**
+ * 서버에서 공연 목록을 직접 fetch
+ */
+export async function getPerformancesForServer(): Promise<PerformanceResponse[]> {
+  const response = await serverFetch<{ data: PerformanceResponse[] }>(
+    "/api/performances",
+    {
+      cache: "no-store",      // 실시간 데이터
+      requireAuth: false,     // 공개 API
+    },
+  );
+  return response.data || [];
+}
+```
+
+```typescript
+// features/home/ui/PerformanceListServer.tsx
+
+/**
+ * 서버 컴포넌트 - 데이터 fetch 및 렌더링
+ */
+export default async function PerformanceListServer() {
+  // 서버에서 직접 데이터 fetch
+  const performances = await getPerformancesForServer();
+
+  // 클라이언트 컴포넌트에 데이터 전달
+  return <PerformanceListClient initialData={performances} />;
+}
+```
+
+### 공통 에러 클래스
+
+```typescript
+// shared/lib/errors.ts
+
+/**
+ * HTTP 상태 코드에 따라 적절한 에러 객체 생성
+ */
+export function createApiError(
+  statusCode: number,
+  errorResponse?: ErrorResponse,  // { errorCode: string, message: string }
+): ApiError {
+  if (statusCode === 401) {
+    return new UnauthorizedError(errorResponse?.message, errorResponse);
+  }
+
+  if (statusCode >= 400 && statusCode < 500) {
+    return new ClientError(statusCode, errorResponse);
+  }
+
+  if (statusCode >= 500) {
+    return new ServerError(statusCode, errorResponse);
+  }
+
+  return new ApiError(errorResponse?.message, statusCode, errorResponse);
+}
+```
+
+### 전역 에러 페이지
+
+```typescript
+// app/error.tsx
+
+/**
+ * 서버/클라이언트 컴포넌트에서 발생한 에러를 캐치
+ */
+export default function ErrorPage({ error, reset }: ErrorPageProps) {
+  // ClientError: errorCode + message 표시
+  if (isClientError(error)) {
+    return <ClientErrorUI error={error} />;
+  }
+
+  // ServerError: HTTP 코드 + 통일된 메시지
+  if (isServerError(error)) {
+    return <ServerErrorUI error={error} />;
+  }
+
+  // 일반 에러
+  return <GenericErrorUI error={error} />;
+}
 ```
 
 ## 🛡️ 차별화된 인증 에러 처리
@@ -347,6 +531,9 @@ sequenceDiagram
 - 관리자/일반 사용자 보안 정책 구분
 - httpOnly 쿠키로 XSS 공격 방지
 - 계층별 적절한 수준의 검증 수행
+- **서버 컴포넌트에서 `serverFetch` 사용** (인증, 에러 처리 자동화)
+- **에러 타입별로 적절한 UI 표시** (ClientError: errorCode+message, ServerError: HTTP 코드)
+- **API 로직은 `api/` 슬라이스에 위치** (FSD 규칙 준수)
 
 ### DON'T ❌
 - Orval 생성 API 함수 직접 호출
@@ -356,6 +543,9 @@ sequenceDiagram
 - 관리자에게 Refresh Token 제공 (보안 위험)
 - 프론트엔드에서 JWT_SECRET 사용
 - fetch-wrapper 로직 우회하여 직접 fetch 사용
+- **서버 컴포넌트에서 클라이언트용 `fetch-wrapper.ts` 사용**
+- **에러 발생 시 빈 배열 등으로 숨기기** (에러는 throw하여 error.tsx가 처리)
+- **API 로직을 `lib/` 슬라이스에 위치** (`api/`가 올바른 위치)
 
 ## 🔄 마이그레이션 가이드
 
