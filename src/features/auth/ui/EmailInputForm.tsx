@@ -1,13 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { emailInputSchema, type EmailInputData } from "@/entities/auth";
-import { PAGES } from "@/shared/constants";
+import { type EmailInputData, emailInputSchema } from "@/entities/auth";
 import { Button } from "@/shared/ui/button";
 import { Form } from "@/shared/ui/form";
 import { ValidatedField } from "@/shared/ui/ValidatedField";
+import { useRequestEmailVerification } from "../lib/useEmailVerification";
 import { useSignupStore } from "../lib/useSignupStore";
 
 /**
@@ -23,9 +22,10 @@ interface EmailInputFormProps {
  * 회원가입 2단계에서 사용됩니다
  */
 export function EmailInputForm({ onNext }: EmailInputFormProps = {}) {
-  const router = useRouter();
   const setEmailInput = useSignupStore((state) => state.setEmailInput);
   const emailInput = useSignupStore((state) => state.emailInput);
+  const { requestVerification, isLoading, isError } =
+    useRequestEmailVerification();
 
   const form = useForm<EmailInputData>({
     resolver: zodResolver(emailInputSchema),
@@ -37,17 +37,22 @@ export function EmailInputForm({ onNext }: EmailInputFormProps = {}) {
 
   /**
    * 폼 제출 핸들러
-   * Zustand 스토어에 데이터 저장하고 다음 단계로 이동합니다
+   * 이메일 인증 요청을 보내고 성공 시 다음 단계로 이동합니다
    */
-  const onSubmit = (data: EmailInputData) => {
+  const onSubmit = async (data: EmailInputData) => {
+    // 먼저 Zustand 스토어에 이메일 저장
     setEmailInput(data);
-    
-    // onNext 콜백이 있으면 호출 (같은 페이지 내 단계 전환)
-    if (onNext) {
-      onNext();
-    } else {
-      // 콜백이 없으면 다음 페이지로 이동
-      router.push(PAGES.AUTH.SIGNUP.EMAIL.EMAIL_VERIFICATION.path);
+
+    // 이메일 인증 요청
+    try {
+      await requestVerification(data.email);
+      if (isError) return;
+
+      // onNext 콜백이 있으면 호출 (같은 페이지 내 단계 전환)
+      onNext?.();
+    } catch (error) {
+      // 에러는 useRequestEmailVerification hook에서 처리됨
+      console.error("이메일 인증 요청 실패:", error);
     }
   };
 
@@ -69,7 +74,7 @@ export function EmailInputForm({ onNext }: EmailInputFormProps = {}) {
           type="submit"
           className="w-full rounded-2xl"
           size="lg"
-          disabled={!form.formState.isValid}
+          disabled={!form.formState.isValid || isLoading}
         >
           인증번호 요청하기
         </Button>

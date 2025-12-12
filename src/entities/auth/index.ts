@@ -17,6 +17,7 @@ export type {
   TokenResponseData,
   UserResponseData,
 } from "./model/auth.schema";
+
 // Zod 스키마들
 export {
   emailInputSchema,
@@ -31,3 +32,9 @@ export {
   tokenResponseSchema,
   userResponseSchema,
 } from "./model/auth.schema";
+
+// API 함수들
+export {
+  requestEmailVerificationApi,
+  confirmEmailVerificationApi,
+} from "./api/emailVerification.api";
