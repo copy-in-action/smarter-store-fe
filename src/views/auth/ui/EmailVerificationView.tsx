@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { EmailInputForm, EmailVerificationForm, SignupStep, useSignupStore } from "@/features/auth";
+import {
+  EmailInputForm,
+  EmailVerificationForm,
+  SignupStep,
+} from "@/features/auth";
 import { useSignupProgressGuard } from "@/features/auth/lib/useSignupProgressGuard";
 import { AuthTitle } from "./AuthTitle";
 
@@ -10,17 +14,17 @@ import { AuthTitle } from "./AuthTitle";
  * 2단계(이메일 입력)와 3단계(이메일 인증)를 하나의 페이지에서 처리합니다
  */
 export function EmailVerificationView() {
-  const [currentStep, setCurrentStep] = useState<'input' | 'verification'>('input');
-  const emailInput = useSignupStore((state) => state.emailInput);
-  
+  const [currentStep, setCurrentStep] = useState<"input" | "verification">(
+    "input",
+  );
   // 진행상황 체크 - 1단계 데이터가 없으면 첫 페이지로 리다이렉트
-  const { canProceed } = useSignupProgressGuard(SignupStep.EMAIL_INPUT);
+  useSignupProgressGuard(SignupStep.EMAIL_INPUT);
 
   /**
    * 이메일 입력 완료 후 인증 단계로 전환
    */
   const handleEmailSubmit = () => {
-    setCurrentStep('verification');
+    setCurrentStep("verification");
   };
 
   /**
@@ -53,7 +57,7 @@ export function EmailVerificationView() {
 
   return (
     <div className="auth-wrapper sm:mb-[120px]">
-      {currentStep === 'input' ? renderEmailInput() : renderEmailVerification()}
+      {currentStep === "input" ? renderEmailInput() : renderEmailVerification()}
     </div>
   );
 }

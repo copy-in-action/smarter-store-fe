@@ -13,6 +13,10 @@ import { Button } from "@/shared/ui/button";
 import { Form } from "@/shared/ui/form";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/ui/tooltip";
 import { ValidatedField } from "@/shared/ui/ValidatedField";
+import {
+  useConfirmEmailVerification,
+  useRequestEmailVerification,
+} from "../lib/useEmailVerification";
 import { useSignupStore } from "../lib/useSignupStore";
 
 /**
@@ -28,6 +32,17 @@ export function EmailVerificationForm() {
   const emailInput = useSignupStore((state) => state.emailInput);
   const [timeLeft, setTimeLeft] = useState(600); // 10분 = 600초
   const [isResendEnabled, setIsResendEnabled] = useState(false);
+
+  const {
+    confirmVerification,
+    isLoading: isConfirming,
+    isError: isConfirmError,
+  } = useConfirmEmailVerification();
+  const {
+    requestVerification,
+    isLoading: isRequesting,
+    isError: isRequestError,
+  } = useRequestEmailVerification();
 
   const form = useForm<EmailVerificationData>({
     resolver: zodResolver(emailVerificationSchema),
@@ -68,22 +83,44 @@ export function EmailVerificationForm() {
 
   /**
    * 폼 제출 핸들러
-   * Zustand 스토어에 데이터 저장하고 다음 단계로 이동합니다
+   * 이메일 인증 코드를 확인하고 성공 시 다음 단계로 이동합니다
    */
-  const onSubmit = (data: EmailVerificationData) => {
-    setEmailVerification(data);
-    router.push(PAGES.AUTH.SIGNUP.EMAIL.PASSWORD_CONFIRM.path);
+  const onSubmit = async (data: EmailVerificationData) => {
+    try {
+      await confirmVerification(data.verificationCode);
+      if (isConfirmError) return;
+      // 인증 성공 시 스토어에 저장하고 다음 단계로 이동
+      setEmailVerification(data);
+      router.push(PAGES.AUTH.SIGNUP.EMAIL.PASSWORD_CONFIRM.path);
+    } catch (error) {
+      // 에러는 useConfirmEmailVerification hook에서 처리됨
+      console.error("이메일 인증 확인 실패:", error);
+    }
   };
 
   /**
    * 인증번호 재전송 핸들러
    */
-  const handleResend = () => {
-    setTimeLeft(600);
-    setIsResendEnabled(false);
-    // 에러 메시지 클리어
-    form.clearErrors("verificationCode");
-    // TODO: 인증번호 재전송 API 호출
+  const handleResend = async () => {
+    if (!emailInput?.email) {
+      console.error("재전송할 이메일 정보가 없습니다.");
+      return;
+    }
+
+    try {
+      await requestVerification(emailInput.email);
+
+      if (isRequestError) return;
+      // 타이머 리셋
+      setTimeLeft(600);
+      setIsResendEnabled(false);
+
+      // 에러 메시지 클리어
+      form.clearErrors("verificationCode");
+    } catch (error) {
+      // 에러는 useRequestEmailVerification hook에서 처리됨
+      console.error("인증번호 재전송 실패:", error);
+    }
   };
 
   return (
@@ -100,9 +137,10 @@ export function EmailVerificationForm() {
             <button
               type="button"
               onClick={handleResend}
-              className="p-1 underline hover:bg-gray-200"
+              disabled={isRequesting || !isResendEnabled}
+              className="p-1 underline hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              재요청
+              {isRequesting ? "전송 중..." : "재요청"}
             </button>
           }
         />
@@ -131,7 +169,7 @@ export function EmailVerificationForm() {
           type="submit"
           className="w-full rounded-2xl"
           size="lg"
-          disabled={!form.formState.isValid}
+          disabled={!form.formState.isValid || isConfirming}
         >
           확인
         </Button>
