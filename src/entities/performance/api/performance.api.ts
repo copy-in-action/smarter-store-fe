@@ -58,7 +58,7 @@ export const usePerformance = (id: number, options?: { enabled?: boolean }) => {
     queryKey: PERFORMANCE_QUERY_KEYS.detail(id),
     queryFn: async () => {
       const response = await getPerformance(id);
-      return response.data;
+      return response.data as PerformanceResponse;
     },
     ...options,
   });
