@@ -3,11 +3,6 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type {
-  CreatePerformanceRequest,
-  UpdatePerformanceRequest,
-  PerformanceResponse,
-} from "@/shared/api/orval/types";
 import {
   createPerformance,
   deletePerformance,
@@ -15,6 +10,11 @@ import {
   getPerformance,
   updatePerformance,
 } from "@/shared/api/orval/performances/performances";
+import type {
+  CreatePerformanceRequest,
+  PerformanceResponse,
+  UpdatePerformanceRequest,
+} from "@/shared/api/orval/types";
 
 /**
  * 공연 쿼리 키 상수
@@ -30,29 +30,37 @@ export const PERFORMANCE_QUERY_KEYS = {
 
 /**
  * 모든 공연 목록을 조회하는 훅
+ * @param options - useQuery 추가 옵션
  */
-export const usePerformances = () => {
+export const usePerformances = (options?: {
+  initialData?: PerformanceResponse[];
+  staleTime?: number;
+}) => {
   return useQuery({
     queryKey: PERFORMANCE_QUERY_KEYS.lists(),
     queryFn: async () => {
       const response = await getAllPerformances();
-      return response.data;
+      return response.data || [];
     },
+    staleTime: 0,
+    gcTime: 0,
+    ...options,
   });
 };
 
 /**
  * 특정 공연 정보를 조회하는 훅
  * @param id - 공연 ID
+ * @param options - useQuery 추가 옵션
  */
-export const usePerformance = (id: number) => {
+export const usePerformance = (id: number, options?: { enabled?: boolean }) => {
   return useQuery({
     queryKey: PERFORMANCE_QUERY_KEYS.detail(id),
     queryFn: async () => {
       const response = await getPerformance(id);
-      return response.data as PerformanceResponse;
+      return response.data;
     },
-    enabled: !!id,
+    ...options,
   });
 };
 
@@ -69,7 +77,9 @@ export const useCreatePerformance = () => {
     },
     onSuccess: () => {
       // 공연 목록 쿼리 무효화하여 새로고침
-      queryClient.invalidateQueries({ queryKey: PERFORMANCE_QUERY_KEYS.lists() });
+      queryClient.invalidateQueries({
+        queryKey: PERFORMANCE_QUERY_KEYS.lists(),
+      });
     },
   });
 };
@@ -93,9 +103,13 @@ export const useUpdatePerformance = () => {
     },
     onSuccess: (_, { id }) => {
       // 공연 목록 쿼리 무효화하여 새로고침
-      queryClient.invalidateQueries({ queryKey: PERFORMANCE_QUERY_KEYS.lists() });
+      queryClient.invalidateQueries({
+        queryKey: PERFORMANCE_QUERY_KEYS.lists(),
+      });
       // 수정된 공연의 상세 쿼리도 무효화
-      queryClient.invalidateQueries({ queryKey: PERFORMANCE_QUERY_KEYS.detail(id) });
+      queryClient.invalidateQueries({
+        queryKey: PERFORMANCE_QUERY_KEYS.detail(id),
+      });
     },
   });
 };
@@ -113,9 +127,13 @@ export const useDeletePerformance = () => {
     },
     onSuccess: (_, performanceId) => {
       // 공연 목록 쿼리 무효화하여 새로고침
-      queryClient.invalidateQueries({ queryKey: PERFORMANCE_QUERY_KEYS.lists() });
+      queryClient.invalidateQueries({
+        queryKey: PERFORMANCE_QUERY_KEYS.lists(),
+      });
       // 삭제된 공연의 상세 쿼리도 무효화
-      queryClient.removeQueries({ queryKey: PERFORMANCE_QUERY_KEYS.detail(performanceId) });
+      queryClient.removeQueries({
+        queryKey: PERFORMANCE_QUERY_KEYS.detail(performanceId),
+      });
     },
   });
 };
