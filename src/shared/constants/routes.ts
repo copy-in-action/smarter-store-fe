@@ -163,6 +163,32 @@ export const PAGES = {
     },
   },
 
+  /** 공연 관련 */
+  PERFORMANCE: {
+    /** 공연 목록 */
+    LIST: {
+      path: "/performances",
+      metadata: createMetadata(
+        "공연 목록",
+        "뮤지컬, 콘서트, 연극, 클래식 등 다양한 공연을 만나보세요.",
+      ),
+    },
+    /** 공연 상세 (동적) */
+    DETAIL: {
+      path: (id: string | number) => `/performances/${id}`,
+      metadata: (performanceTitle: string, description?: string) =>
+        createMetadata(
+          performanceTitle,
+          description || `${performanceTitle} 공연 정보를 확인하세요.`,
+          {
+            openGraph: {
+              type: "article",
+            },
+          },
+        ),
+    },
+  },
+
   /** 마이페이지 */
   MY: {
     /** 마이페이지 메인 */
