@@ -175,7 +175,7 @@ const PreviewPage = () => {
       </div>
 
       {/* 좌석 차트 */}
-      <div className="bg-white border border-gray-200 rounded-lg p-2 sm:p-4">
+      <div className="bg-white border border-gray-200 rounded-lg p-2 sm:p-4 overflow-auto">
         <SeatChart config={config} onSeatClick={handleSeatClick} />
       </div>
 

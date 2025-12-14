@@ -23,6 +23,12 @@ interface SeatChartProps {
  */
 export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
   const [zoomLevel, setZoomLevel] = useState(1);
+  const [hoveredSeat, setHoveredSeat] = useState<{
+    row: number;
+    col: number;
+    x: number;
+    y: number;
+  } | null>(null);
 
   /**
    * 줌 레벨 변경 핸들러
@@ -150,6 +156,22 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
         onSeatClick(rowIndex, colIndex);
       };
 
+      const handleMouseEnter = (e: React.MouseEvent) => {
+        if (window.innerWidth >= 768) { // md 이상에서만
+          const rect = e.currentTarget.getBoundingClientRect();
+          setHoveredSeat({
+            row: rowIndex,
+            col: colIndex,
+            x: rect.left + rect.width / 2,
+            y: rect.top,
+          });
+        }
+      };
+
+      const handleMouseLeave = () => {
+        setHoveredSeat(null);
+      };
+
       const seatType = getSeatType(rowIndex, colIndex, config);
       const seatTypeInfo = config.seatTypes[seatType];
 
@@ -182,7 +204,7 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
           className={`relative w-8 h-8 flex items-center justify-center rounded-md border text-xs font-medium touch-manipulation select-none focus:outline-none focus:ring-2 focus:ring-blue-300 ${
             isDisabled || isReserved || isPending
               ? "cursor-not-allowed opacity-60"
-              : "transition-transform duration-100 active:scale-90 md:hover:scale-105 md:group"
+              : "transition-transform duration-100 active:scale-90 md:hover:scale-105"
           }`}
           style={{
             ...getSeatStyle(rowIndex, colIndex),
@@ -193,22 +215,18 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
           onClick={handleClick}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
           disabled={isDisabled || isReserved || isPending}
         >
           {isDisabled ? "" : colIndex + 1}
-
-          {/* 툴팁 - 데스크톱에서만 표시 */}
-          <div className="hidden md:block absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded whitespace-pre-line opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 min-w-max">
-            {tooltipContent}
-            <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
-          </div>
         </button>,
       );
     }
 
     return (
       <div key={rowIndex} className="flex items-center mb-2">
-        <div className="w-10 min-w-10 text-center font-bold text-gray-600 text-sm">
+        <div className="w-10 text-sm font-bold text-center text-gray-600 min-w-10">
           {rowIndex + 1}
         </div>
         <div className="flex gap-1">{seats}</div>
@@ -227,11 +245,11 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
   }
 
   return (
-    <div className="mx-auto p-5 border border-gray-300 rounded-lg bg-gray-50">
+    <div className="p-5 mx-auto border border-gray-300 rounded-lg bg-gray-50">
       <div className="mb-4">
         <div className="mb-3">
-          <h4 className="text-sm font-semibold mb-2">좌석 상태</h4>
-          <div className="flex gap-6 text-sm flex-wrap">
+          <h4 className="mb-2 text-sm font-semibold">좌석 상태</h4>
+          <div className="flex flex-wrap gap-6 text-sm">
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 bg-blue-800 rounded"></div>
               <span>선택됨</span>
@@ -252,15 +270,15 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
         </div>
 
         <div>
-          <h4 className="text-sm font-semibold mb-2">좌석 등급</h4>
-          <div className="flex gap-6 text-sm flex-wrap">
+          <h4 className="mb-2 text-sm font-semibold">좌석 등급</h4>
+          <div className="flex flex-wrap gap-6 text-sm">
             {Object.entries(config.seatTypes).map(([key, seatType], index) => {
               const seatColor =
                 PRESET_COLORS[index]?.value || PRESET_COLORS[0].value;
               return (
                 <div key={key} className="flex items-center gap-2">
                   <div
-                    className="w-4 h-4 rounded border"
+                    className="w-4 h-4 border rounded"
                     style={{
                       backgroundColor: "transparent",
                       borderColor: seatColor,
@@ -274,20 +292,20 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
         </div>
       </div>
 
-      <div
-        className="mb-6 overflow-auto relative"
-        style={{
-          transform: `scale(${zoomLevel})`,
-          transformOrigin: "top left",
-          width: `${100 / zoomLevel}%`,
-          height: `${100 / zoomLevel}%`,
-        }}
-      >
-        {rows}
+      <div className="relative pt-1 overflow-auto">
+        <div
+          style={{
+            transform: `scale(${zoomLevel})`,
+            transformOrigin: "top left",
+            width: "max-content",
+          }}
+        >
+          {rows}
+        </div>
       </div>
 
       {/* 줌 컨트롤 버튼들 - 모바일에서만 표시 */}
-      <div className="fixed bottom-4 right-4 flex flex-col gap-2 md:hidden">
+      <div className="fixed flex flex-col gap-2 bottom-4 right-4 md:hidden">
         <button
           type="button"
           onClick={(e) => {
@@ -295,7 +313,7 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
             e.stopPropagation();
             handleZoom(0.1);
           }}
-          className="w-12 h-12 bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-600 transition-colors flex items-center justify-center text-xl font-bold touch-manipulation"
+          className="flex items-center justify-center w-12 h-12 text-xl font-bold text-white transition-colors bg-blue-500 rounded-full shadow-lg hover:bg-blue-600 touch-manipulation"
           aria-label="확대"
         >
           +
@@ -307,7 +325,7 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
             e.stopPropagation();
             handleZoom(-0.1);
           }}
-          className="w-12 h-12 bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-600 transition-colors flex items-center justify-center text-xl font-bold touch-manipulation"
+          className="flex items-center justify-center w-12 h-12 text-xl font-bold text-white transition-colors bg-blue-500 rounded-full shadow-lg hover:bg-blue-600 touch-manipulation"
           aria-label="축소"
         >
           −
@@ -319,15 +337,48 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
             e.stopPropagation();
             resetZoom();
           }}
-          className="w-12 h-12 bg-gray-500 text-white rounded-full shadow-lg hover:bg-gray-600 transition-colors flex items-center justify-center text-xs font-medium touch-manipulation"
+          className="flex items-center justify-center w-12 h-12 text-xs font-medium text-white transition-colors bg-gray-500 rounded-full shadow-lg hover:bg-gray-600 touch-manipulation"
           aria-label="리셋"
         >
           1x
         </button>
-        <div className="text-xs text-center text-gray-600 bg-white rounded px-2 py-1 shadow">
+        <div className="px-2 py-1 text-xs text-center text-gray-600 bg-white rounded shadow">
           {Math.round(zoomLevel * 100)}%
         </div>
       </div>
+
+      {/* Fixed 위치 툴팁 */}
+      {hoveredSeat && (
+        <div
+          className="fixed z-50 px-2 py-1 text-xs text-white bg-gray-800 rounded whitespace-pre-line pointer-events-none min-w-max"
+          style={{
+            left: hoveredSeat.x,
+            top: hoveredSeat.y - 8,
+            transform: 'translate(-50%, -100%)'
+          }}
+        >
+          {[
+            `좌석: ${hoveredSeat.row + 1}행 ${hoveredSeat.col + 1}열`,
+            `타입: ${config.seatTypes[getSeatType(hoveredSeat.row, hoveredSeat.col, config)]?.label || "기본"}`,
+            `가격: ${(config.seatTypes[getSeatType(hoveredSeat.row, hoveredSeat.col, config)]?.price || 0).toLocaleString()}원`,
+            `상태: ${(() => {
+              if (isSeatInState(hoveredSeat.row, hoveredSeat.col, config.disabledSeats)) return "비활성화";
+              if (isSeatInState(hoveredSeat.row, hoveredSeat.col, config.reservedSeats)) return "예약됨";
+              if (isSeatInState(hoveredSeat.row, hoveredSeat.col, config.pendingSeats)) return "구매 진행 중";
+              if (isSeatInState(hoveredSeat.row, hoveredSeat.col, config.selectedSeats)) return "선택됨";
+              return "선택 가능";
+            })()}`,
+          ].join("\n")}
+          <div
+            className="absolute border-4 border-transparent border-t-gray-800"
+            style={{
+              left: '50%',
+              top: '100%',
+              transform: 'translateX(-50%)'
+            }}
+          ></div>
+        </div>
+      )}
     </div>
   );
 }
