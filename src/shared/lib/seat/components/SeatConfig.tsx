@@ -2,38 +2,26 @@
 "use client";
 
 import { useState } from "react";
+import { PRESET_COLORS } from "../constants/seatChart.constants";
 import type {
+  SeatChartConfig,
   SeatChartMode,
-  SeatConfigFormData,
   SeatGradeConfig,
   SeatType,
-} from "../_types/seatChart.types";
-
-/**
- * 미리 정의된 좌석 등급 색상
- * 눈이 편하고 또렷한 색상들로 구성
- */
-const PRESET_COLORS = [
-  { name: "블루", value: "#3B82F6", light: "#DBEAFE", dark: "#1E40AF" },
-  { name: "그린", value: "#10B981", light: "#D1FAE5", dark: "#047857" },
-  { name: "퍼플", value: "#8B5CF6", light: "#EDE9FE", dark: "#5B21B6" },
-  { name: "오렌지", value: "#F59E0B", light: "#FEF3C7", dark: "#D97706" },
-  { name: "로즈", value: "#F43F5E", light: "#FFE4E6", dark: "#BE123C" },
-  { name: "인디고", value: "#6366F1", light: "#E0E7FF", dark: "#3730A3" },
-  { name: "시안", value: "#06B6D4", light: "#CFFAFE", dark: "#0E7490" },
-  { name: "라임", value: "#84CC16", light: "#ECFCCB", dark: "#365314" },
-  { name: "틸", value: "#14B8A6", light: "#CCFBF1", dark: "#0F766E" },
-  { name: "핑크", value: "#EC4899", light: "#FCE7F3", dark: "#BE185D" },
-] as const;
+} from "../types/seatLayout.types";
+import {
+  seatPositionToString,
+  validateSeatPosition,
+} from "../utils/seatChart.utils";
 
 /**
  * 좌석 설정 컴포넌트 Props
  */
 interface SeatConfigProps {
   /** 초기 설정 데이터 */
-  initialConfig: SeatConfigFormData;
+  initialConfig: SeatChartConfig;
   /** 설정 변경 시 호출되는 함수 */
-  onConfigChange: (config: SeatConfigFormData) => void;
+  onConfigChange: (config: SeatChartConfig) => void;
 }
 
 /**
@@ -43,12 +31,12 @@ export default function SeatConfig({
   initialConfig,
   onConfigChange,
 }: SeatConfigProps) {
-  const [config, setConfig] = useState<SeatConfigFormData>(initialConfig);
+  const [config, setConfig] = useState<SeatChartConfig>(initialConfig);
 
   /**
    * 설정 업데이트 및 부모 컴포넌트에 전달
    */
-  const updateConfig = (newConfig: SeatConfigFormData) => {
+  const updateConfig = (newConfig: SeatChartConfig) => {
     setConfig(newConfig);
     onConfigChange(newConfig);
   };
@@ -56,10 +44,7 @@ export default function SeatConfig({
   /**
    * 기본 입력 필드 변경 핸들러
    */
-  const handleInputChange = (
-    field: keyof SeatConfigFormData,
-    value: number,
-  ) => {
+  const handleInputChange = (field: keyof SeatChartConfig, value: number) => {
     updateConfig({ ...config, [field]: value });
   };
 
@@ -67,25 +52,18 @@ export default function SeatConfig({
    * 좌석 타입 추가 핸들러
    */
   const addSeatType = () => {
-    // 최대 10개 제한
-    if (Object.keys(config.seatTypes).length >= 10) {
-      alert("좌석 타입은 최대 10개까지만 추가할 수 있습니다.");
+    // 최대 9개 제한
+    if (Object.keys(config.seatTypes).length >= 9) {
+      alert("좌석 타입은 최대 9개까지만 추가할 수 있습니다.");
       return;
     }
 
     const newKey = `custom_${Date.now()}`;
-    const usedColors = Object.values(config.seatTypes).map(
-      (type) => type.color,
-    );
-    const availableColor =
-      PRESET_COLORS.find((color) => !usedColors.includes(color.value))?.value ||
-      PRESET_COLORS[0].value;
 
     const newSeatType: SeatType = {
       label: "새 타입",
       cssClass: "new-type",
       price: 0,
-      color: availableColor,
     };
     updateConfig({
       ...config,
@@ -122,11 +100,11 @@ export default function SeatConfig({
    * 좌석 위치 배열에 아이템 추가
    */
   const addSeatPosition = (
-    field: "disabledSeats" | "reservedSeats" | "selectedSeats",
+    field: "disabledSeats" | "reservedSeats" | "pendingSeats" | "selectedSeats",
   ) => {
     updateConfig({
       ...config,
-      [field]: [...config[field], "0,0"],
+      [field]: [...config[field], { row: 0, col: 0 }],
     });
   };
 
@@ -134,7 +112,7 @@ export default function SeatConfig({
    * 좌석 위치 배열에서 아이템 제거
    */
   const removeSeatPosition = (
-    field: "disabledSeats" | "reservedSeats" | "selectedSeats",
+    field: "disabledSeats" | "reservedSeats" | "pendingSeats" | "selectedSeats",
     index: number,
   ) => {
     const newArray = config[field].filter((_, i) => i !== index);
@@ -145,12 +123,13 @@ export default function SeatConfig({
    * 좌석 위치 업데이트
    */
   const updateSeatPosition = (
-    field: "disabledSeats" | "reservedSeats" | "selectedSeats",
+    field: "disabledSeats" | "reservedSeats" | "pendingSeats" | "selectedSeats",
     index: number,
     value: string,
   ) => {
+    const [row, col] = value.split(",").map(Number);
     const newArray = [...config[field]];
-    newArray[index] = value;
+    newArray[index] = { row, col };
     updateConfig({ ...config, [field]: newArray });
   };
 
@@ -230,21 +209,6 @@ export default function SeatConfig({
   const toggleMode = () => {
     const newMode: SeatChartMode = config.mode === "edit" ? "view" : "edit";
     updateConfig({ ...config, mode: newMode });
-  };
-
-  /**
-   * 좌석 위치 문자열 유효성 검사
-   */
-  const validateSeatPosition = (position: string): boolean => {
-    const [row, col] = position.split(",").map(Number);
-    return (
-      !isNaN(row) &&
-      !isNaN(col) &&
-      row >= 0 &&
-      col >= 0 &&
-      row < config.rows &&
-      col < config.columns
-    );
   };
 
   return (
@@ -330,10 +294,7 @@ export default function SeatConfig({
         </div>
         <div className="space-y-3">
           {Object.entries(config.seatTypes).map(([key, seatType]) => (
-            <div
-              key={key}
-              className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg"
-            >
+            <div key={key} className="flex items-center gap-2">
               <input
                 type="text"
                 placeholder="라벨"
@@ -360,22 +321,19 @@ export default function SeatConfig({
                 className="w-20 min-w-0 px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <div className="flex items-center gap-1">
-                <select
-                  value={seatType.color}
-                  onChange={(e) => updateSeatType(key, "color", e.target.value)}
-                  className="w-24 min-w-0 px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                >
-                  {PRESET_COLORS.map((color) => (
-                    <option key={color.value} value={color.value}>
-                      {color.name}
-                    </option>
-                  ))}
-                </select>
                 <div
-                  className="w-4 h-4 rounded border border-gray-300"
-                  style={{ backgroundColor: seatType.color }}
-                  title={`색상: ${seatType.color}`}
+                  className="w-6 h-6 rounded border border-gray-300"
+                  style={{
+                    backgroundColor:
+                      PRESET_COLORS[Object.keys(config.seatTypes).indexOf(key)]
+                        ?.value || PRESET_COLORS[0].value,
+                  }}
+                  title={`색상: ${PRESET_COLORS[Object.keys(config.seatTypes).indexOf(key)]?.value || PRESET_COLORS[0].value}`}
                 />
+                <span className="text-xs text-gray-600">
+                  {PRESET_COLORS[Object.keys(config.seatTypes).indexOf(key)]
+                    ?.value || PRESET_COLORS[0].value}
+                </span>
               </div>
               {key !== "default" && (
                 <button
@@ -415,7 +373,7 @@ export default function SeatConfig({
         <div className="space-y-2">
           {config.seatGrades.map((grade, index) => (
             <div
-              key={grade.seatTypeKey}
+              key={grade.seatTypeKey + grade.position}
               className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg"
             >
               <select
@@ -438,7 +396,7 @@ export default function SeatConfig({
                 onChange={(e) =>
                   updateSeatGrade(index, "position", e.target.value)
                 }
-                className="flex-1 px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-0"
               />
               <button
                 type="button"
@@ -478,30 +436,33 @@ export default function SeatConfig({
           </button>
         </div>
         <div className="flex flex-col gap-2">
-          {config.disabledSeats.map((seat, index) => (
-            <div key={seat} className="flex items-center gap-2">
-              <input
-                type="text"
-                value={seat}
-                onChange={(e) =>
-                  updateSeatPosition("disabledSeats", index, e.target.value)
-                }
-                className={`flex-1 px-2 py-1 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  !validateSeatPosition(seat)
-                    ? "border-red-300 bg-red-50"
-                    : "border-gray-300"
-                }`}
-                placeholder="0,0"
-              />
-              <button
-                type="button"
-                onClick={() => removeSeatPosition("disabledSeats", index)}
-                className="px-2 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
-              >
-                -
-              </button>
-            </div>
-          ))}
+          {config.disabledSeats.map((seat, index) => {
+            const seatString = seatPositionToString(seat);
+            return (
+              <div key={seatString} className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={seatString}
+                  onChange={(e) =>
+                    updateSeatPosition("disabledSeats", index, e.target.value)
+                  }
+                  className={`flex-1 px-2 py-1 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    !validateSeatPosition(seatString, config)
+                      ? "border-red-300 bg-red-50"
+                      : "border-gray-300"
+                  }`}
+                  placeholder="0,0"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeSeatPosition("disabledSeats", index)}
+                  className="px-2 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  -
+                </button>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -525,30 +486,83 @@ export default function SeatConfig({
           </button>
         </div>
         <div className="flex flex-col gap-2">
-          {config.reservedSeats.map((seat, index) => (
-            <div key={seat} className="flex items-center gap-2">
-              <input
-                type="text"
-                value={seat}
-                onChange={(e) =>
-                  updateSeatPosition("reservedSeats", index, e.target.value)
-                }
-                className={`flex-1 px-2 py-1 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  !validateSeatPosition(seat)
-                    ? "border-red-300 bg-red-50"
-                    : "border-gray-300"
-                }`}
-                placeholder="0,0"
-              />
-              <button
-                type="button"
-                onClick={() => removeSeatPosition("reservedSeats", index)}
-                className="px-2 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
-              >
-                -
-              </button>
-            </div>
-          ))}
+          {config.reservedSeats.map((seat, index) => {
+            const seatString = seatPositionToString(seat);
+            return (
+              <div key={seatString} className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={seatString}
+                  onChange={(e) =>
+                    updateSeatPosition("reservedSeats", index, e.target.value)
+                  }
+                  className={`flex-1 px-2 py-1 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    !validateSeatPosition(seatString, config)
+                      ? "border-red-300 bg-red-50"
+                      : "border-gray-300"
+                  }`}
+                  placeholder="0,0"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeSeatPosition("reservedSeats", index)}
+                  className="px-2 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  -
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 구매 진행 중 좌석 */}
+      <div className="space-y-3">
+        <div className="flex justify-between items-center">
+          <div>
+            <h3 className="text-base font-semibold text-gray-800">
+              구매 진행 중 좌석 (pendingSeats)
+            </h3>
+            <p className="text-xs text-gray-600 mt-1">
+              "행,열" 형식으로 입력 (예: 0,4)
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => addSeatPosition("pendingSeats")}
+            className="px-3 py-1 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            추가
+          </button>
+        </div>
+        <div className="flex flex-col gap-2">
+          {config.pendingSeats.map((seat, index) => {
+            const seatString = seatPositionToString(seat);
+            return (
+              <div key={seatString} className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={seatString}
+                  onChange={(e) =>
+                    updateSeatPosition("pendingSeats", index, e.target.value)
+                  }
+                  className={`flex-1 px-2 py-1 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    !validateSeatPosition(seatString, config)
+                      ? "border-red-300 bg-red-50"
+                      : "border-gray-300"
+                  }`}
+                  placeholder="0,0"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeSeatPosition("pendingSeats", index)}
+                  className="px-2 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  -
+                </button>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -572,30 +586,33 @@ export default function SeatConfig({
           </button>
         </div>
         <div className="flex flex-col gap-2">
-          {config.selectedSeats.map((seat, index) => (
-            <div key={seat} className="flex items-center gap-2">
-              <input
-                type="text"
-                value={seat}
-                onChange={(e) =>
-                  updateSeatPosition("selectedSeats", index, e.target.value)
-                }
-                className={`flex-1 px-2 py-1 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  !validateSeatPosition(seat)
-                    ? "border-red-300 bg-red-50"
-                    : "border-gray-300"
-                }`}
-                placeholder="0,0"
-              />
-              <button
-                type="button"
-                onClick={() => removeSeatPosition("selectedSeats", index)}
-                className="px-2 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
-              >
-                -
-              </button>
-            </div>
-          ))}
+          {config.selectedSeats.map((seat, index) => {
+            const seatString = seatPositionToString(seat);
+            return (
+              <div key={seatString} className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={seatString}
+                  onChange={(e) =>
+                    updateSeatPosition("selectedSeats", index, e.target.value)
+                  }
+                  className={`flex-1 px-2 py-1 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    !validateSeatPosition(seatString, config)
+                      ? "border-red-300 bg-red-50"
+                      : "border-gray-300"
+                  }`}
+                  placeholder="0,0"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeSeatPosition("selectedSeats", index)}
+                  className="px-2 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  -
+                </button>
+              </div>
+            );
+          })}
         </div>
       </div>
 

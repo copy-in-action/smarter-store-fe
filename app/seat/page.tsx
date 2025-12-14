@@ -2,18 +2,18 @@
 
 import { useState } from "react";
 import {
+  PRESET_COLORS,
+  SeatChart,
+  type SeatChartConfig,
+  SeatConfig,
+  type SeatPosition,
+} from "@/shared/lib/seat";
+import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/shared/ui/accordion";
-import SeatChart from "./_components/SeatChart";
-import SeatConfig from "./_components/SeatConfig";
-import type {
-  SeatChartConfig,
-  SeatConfigFormData,
-  SeatPosition,
-} from "./_types/seatChart.types";
 
 /**
  * 좌석 배치도 메인 페이지
@@ -22,84 +22,119 @@ const page = () => {
   /**
    * 기본 설정 데이터 (주석에 있던 샘플 코드 기반)
    */
-  const defaultConfig: SeatConfigFormData = {
+  const defaultConfig: SeatChartConfig = {
     rows: 10,
-    columns: 10,
+    columns: 20,
     mode: "edit",
     seatTypes: {
-      default: {
-        label: "Economy",
+      R: {
+        label: "R석",
         cssClass: "economy",
-        price: 15,
-        color: "#10B981",
+        price: 190000,
+      },
+      S: {
+        label: "S석",
+        cssClass: "economy",
+        price: 160000,
+      },
+      A: {
+        label: "A석",
+        cssClass: "economy",
+        price: 130000,
+      },
+      B: {
+        label: "B석",
+        cssClass: "economy",
+        price: 90000,
       },
     },
-    seatGrades: [],
-    disabledSeats: ["0,0", "1,0", "2,0", "0,9", "1,9", "2,9"],
-    reservedSeats: [],
-    pendingSeats: ["3,3", "4,4"],
+    seatGrades: [
+      {
+        seatTypeKey: "R",
+        position: "0:",
+      },
+      {
+        seatTypeKey: "R",
+        position: "1:",
+      },
+      {
+        seatTypeKey: "S",
+        position: "2:",
+      },
+      {
+        seatTypeKey: "S",
+        position: "3:",
+      },
+      {
+        seatTypeKey: "S",
+        position: "4:",
+      },
+      {
+        seatTypeKey: "A",
+        position: "5:",
+      },
+      {
+        seatTypeKey: "A",
+        position: "6:",
+      },
+    ],
+    disabledSeats: [
+      { row: 0, col: 0 },
+      { row: 0, col: 1 },
+      { row: 0, col: 2 },
+      { row: 0, col: 17 },
+      { row: 0, col: 18 },
+      { row: 0, col: 19 },
+      //2행
+      { row: 1, col: 0 },
+      { row: 1, col: 1 },
+      { row: 1, col: 18 },
+      { row: 1, col: 19 },
+      //3행
+      { row: 2, col: 0 },
+      { row: 2, col: 19 },
+      //카메라
+      { row: 5, col: 9 },
+      { row: 5, col: 10 },
+      { row: 6, col: 9 },
+      { row: 6, col: 10 },
+    ],
+    reservedSeats: [
+      { row: 0, col: 5 },
+      { row: 0, col: 6 },
+      { row: 0, col: 7 },
+      { row: 1, col: 7 },
+      { row: 1, col: 8 },
+      { row: 2, col: 10 },
+      { row: 2, col: 11 },
+    ],
+    pendingSeats: [
+      { row: 3, col: 3 },
+      { row: 3, col: 4 },
+      { row: 4, col: 4 },
+      { row: 0, col: 10 },
+      { row: 0, col: 11 },
+      { row: 2, col: 15 },
+      { row: 3, col: 15 },
+      { row: 4, col: 15 },
+    ],
     selectedSeats: [],
-    rowSpacers: [],
-    columnSpacers: [],
+    rowSpacers: [2, 8],
+    columnSpacers: [5, 15],
   };
 
-  const [formConfig, setFormConfig] =
-    useState<SeatConfigFormData>(defaultConfig);
+  const [formConfig, setFormConfig] = useState<SeatChartConfig>(defaultConfig);
+
+  // 이제 formConfig가 이미 SeatChartConfig 타입이므로 변환 불필요
 
   /**
-   * 폼 데이터를 SeatChart용 설정으로 변환
+   * 설정 변경 핸들러 - 선택된 좌석 보존
    */
-  const convertToSeatChartConfig = (
-    config: SeatConfigFormData,
-  ): SeatChartConfig => {
-    /**
-     * 문자열 형태의 좌석 위치를 객체로 변환
-     * @param seatStrings - "0,9" 형태의 문자열 배열
-     * @returns SeatPosition 객체 배열
-     */
-    const convertSeatStrings = (seatStrings: string[]): SeatPosition[] => {
-      return seatStrings
-        .filter((seat) => {
-          const [row, col] = seat.split(",").map(Number);
-          return (
-            !isNaN(row) &&
-            !isNaN(col) &&
-            row >= 0 &&
-            col >= 0 &&
-            row < config.rows &&
-            col < config.columns
-          );
-        })
-        .map((seat) => {
-          const [row, col] = seat.split(",").map(Number);
-          return { row, col };
-        });
-    };
-
-    return {
-      rows: config.rows,
-      columns: config.columns,
-      mode: config.mode,
-      seatTypes: config.seatTypes,
-      seatGrades: config.seatGrades,
-      disabledSeats: convertSeatStrings(config.disabledSeats),
-      reservedSeats: convertSeatStrings(config.reservedSeats),
-      pendingSeats: convertSeatStrings(config.pendingSeats),
-      selectedSeats: convertSeatStrings(config.selectedSeats),
-      rowSpacers: config.rowSpacers.filter(
-        (spacer) => spacer >= 0 && spacer < config.rows,
-      ),
-      columnSpacers: config.columnSpacers.filter(
-        (spacer) => spacer >= 0 && spacer < config.columns,
-      ),
-    };
-  };
-
-  /**
-   * 설정 변경 핸들러
-   */
-  const handleConfigChange = (newConfig: SeatConfigFormData) => {
-    setFormConfig(newConfig);
+  const handleConfigChange = (newConfig: SeatChartConfig) => {
+    setFormConfig((prevConfig) => ({
+      ...newConfig,
+      selectedSeats: prevConfig.selectedSeats, // 선택된 좌석 보존
+    }));
   };
 
   /**
@@ -108,7 +143,18 @@ const page = () => {
    * @param col - 열 번호
    */
   const handleSeatClick = (row: number, col: number) => {
-    const seatString = `${row},${col}`;
+    /**
+     * 좌석 위치가 배열에 있는지 확인하는 헬퍼 함수
+     */
+    const isSeatInArray = (
+      seats: SeatPosition[],
+      targetRow: number,
+      targetCol: number,
+    ) => {
+      return seats.some(
+        (seat) => seat.row === targetRow && seat.col === targetCol,
+      );
+    };
 
     /**
      * 클릭 불가능한 좌석들 체크
@@ -117,9 +163,9 @@ const page = () => {
      * - 구매 진행 중인 좌석
      */
     if (
-      formConfig.disabledSeats.includes(seatString) ||
-      formConfig.reservedSeats.includes(seatString) ||
-      formConfig.pendingSeats.includes(seatString)
+      isSeatInArray(formConfig.disabledSeats, row, col) ||
+      isSeatInArray(formConfig.reservedSeats, row, col) ||
+      isSeatInArray(formConfig.pendingSeats, row, col)
     ) {
       return;
     }
@@ -127,10 +173,12 @@ const page = () => {
     /**
      * 선택된 좌석이면 해제, 아니면 선택
      */
-    const isSelected = formConfig.selectedSeats.includes(seatString);
+    const isSelected = isSeatInArray(formConfig.selectedSeats, row, col);
     const newSelectedSeats = isSelected
-      ? formConfig.selectedSeats.filter((seat) => seat !== seatString)
-      : [...formConfig.selectedSeats, seatString];
+      ? formConfig.selectedSeats.filter(
+          (seat) => !(seat.row === row && seat.col === col),
+        )
+      : [...formConfig.selectedSeats, { row, col }];
 
     setFormConfig({
       ...formConfig,
@@ -170,13 +218,6 @@ const page = () => {
       }
     }
 
-    // 기존 seatRows 방식도 지원 (하위 호환성)
-    for (const [key, seatType] of Object.entries(formConfig.seatTypes)) {
-      if (seatType.seatRows && seatType.seatRows.includes(row)) {
-        return key;
-      }
-    }
-
     return "default";
   };
 
@@ -189,18 +230,17 @@ const page = () => {
       Array<{ row: number; col: number; position: string }>
     > = {};
 
-    formConfig.selectedSeats.forEach((seatString) => {
-      const [row, col] = seatString.split(",").map(Number);
-      const seatType = getSeatType(row, col);
+    formConfig.selectedSeats.forEach((seat) => {
+      const seatType = getSeatType(seat.row, seat.col);
 
       if (!seatsByType[seatType]) {
         seatsByType[seatType] = [];
       }
 
       seatsByType[seatType].push({
-        row,
-        col,
-        position: `${row + 1}행 ${col + 1}열`,
+        row: seat.row,
+        col: seat.col,
+        position: `${seat.row + 1}행 ${seat.col + 1}열`,
       });
     });
 
@@ -215,7 +255,8 @@ const page = () => {
     return seatsByType;
   };
 
-  const seatChartConfig = convertToSeatChartConfig(formConfig);
+  // formConfig가 이미 SeatChartConfig 타입
+  const seatChartConfig = formConfig;
   const selectedSeatsByType = getSelectedSeatsByType();
 
   return (
@@ -334,11 +375,17 @@ const page = () => {
                       {seatChartConfig.selectedSeats.length > 0 ? (
                         <div className="space-y-3">
                           {Object.entries(selectedSeatsByType).map(
-                            ([seatTypeKey, seats]) => {
+                            ([seatTypeKey, seats], index) => {
                               const seatType =
                                 formConfig.seatTypes[seatTypeKey];
                               const totalPrice =
                                 seats.length * (seatType?.price || 0);
+                              const seatTypeIndex = Object.keys(
+                                formConfig.seatTypes,
+                              ).indexOf(seatTypeKey);
+                              const baseColor =
+                                PRESET_COLORS[seatTypeIndex]?.value ||
+                                PRESET_COLORS[0].value;
 
                               return (
                                 <div
@@ -350,11 +397,8 @@ const page = () => {
                                       <div
                                         className="w-3 h-3 rounded border"
                                         style={{
-                                          backgroundColor: seatType?.color
-                                            ? `${seatType.color}33`
-                                            : "#22c55e33",
-                                          borderColor:
-                                            seatType?.color || "#22c55e",
+                                          backgroundColor: `${baseColor}33`,
+                                          borderColor: baseColor,
                                         }}
                                       ></div>
                                       <span className="font-medium text-sm">
