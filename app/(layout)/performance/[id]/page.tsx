@@ -37,7 +37,7 @@ export async function generateMetadata({
 
   if (Number.isNaN(performanceId) || performanceId <= 0) {
     return {
-      title: "페이지를 찾을 수 없습니다 | NOL",
+      title: "페이지를 찾을 수 없습니다 | CIA",
       description: "요청하신 페이지를 찾을 수 없습니다.",
     };
   }
@@ -48,7 +48,7 @@ export async function generateMetadata({
     // routes.ts의 메타데이터 생성 함수 사용
     const baseMetadata = PAGES.PERFORMANCE.DETAIL.metadata(
       performance.title,
-      performance.description,
+      performance.description?.substring(0, 160),
     );
 
     // 추가 정보 (이미지 등) 오버라이드
@@ -76,7 +76,7 @@ export async function generateMetadata({
     console.error("메타데이터 생성 실패:", error);
 
     return {
-      title: "공연 정보 | NOL",
+      title: "공연 정보 | CIA",
       description: "공연 상세 정보를 확인하세요.",
     };
   }

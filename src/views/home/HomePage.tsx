@@ -39,7 +39,7 @@ export const metadata: Metadata = PAGES.HOME.metadata;
 export default async function HomePage() {
   return (
     <div className="">
-      <h1 className="my-10 text-2xl font-bold text-center">NOL 티켓</h1>
+      <h1 className="my-10 text-2xl font-bold text-center">CIA 티켓</h1>
 
       <section className="my-4 sm:my-10">
         <PerformanceCategory />

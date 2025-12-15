@@ -1,6 +1,9 @@
 export const dynamic = "force-dynamic";
 
+import { PAGES } from "@/shared/constants";
 import { HomePage } from "@/views/home";
+
+export const metadata = PAGES.HOME.metadata;
 
 export default function Home() {
   return <HomePage />;
