@@ -1,7 +1,6 @@
 "use client";
 
 import { Edit, Trash2 } from "lucide-react";
-import Image from "next/image";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
 import { cn } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
@@ -84,14 +83,14 @@ export function PerformanceDetail({
     <div className="w-full max-w-4xl mx-auto">
       {/* 액션 버튼들 */}
       {isAdminMode && (
-        <div className="flex gap-3 justify-end mb-3">
+        <div className="flex justify-end gap-3 mb-3">
           {onEdit && (
             <Button
               variant="outline"
               size="sm"
               onClick={() => onEdit(performance)}
             >
-              <Edit className="mr-2 h-4 w-4" />
+              <Edit className="w-4 h-4 mr-2" />
               수정
             </Button>
           )}
@@ -101,7 +100,7 @@ export function PerformanceDetail({
               size="sm"
               onClick={() => onDelete(performance)}
             >
-              <Trash2 className="mr-2 h-4 w-4" />
+              <Trash2 className="w-4 h-4 mr-2" />
               삭제
             </Button>
           )}
@@ -112,7 +111,7 @@ export function PerformanceDetail({
         <CardHeader>
           <div className="flex items-start justify-between">
             <div>
-              <CardTitle className="text-2xl font-bold mb-2">
+              <CardTitle className="mb-2 text-2xl font-bold">
                 {performance.title}
               </CardTitle>
               <div className="flex items-center gap-3">
@@ -127,15 +126,16 @@ export function PerformanceDetail({
 
         <CardContent>
           <div className="space-y-6">
-            {/* 대표 이미지 */}
+            {/* 상세 이미지 */}
             {performance.mainImageUrl && (
               <div className="space-y-2">
-                <h3 className="font-medium">대표 이미지</h3>
-                <div className="relative overflow-hidden rounded-lg border">
-                  <Image
+                <h3 className="font-medium">상세 이미지</h3>
+                <div className="relative aspect[3/4]">
+                  {/** biome-ignore lint/performance/noImgElement: <explanation> */}
+                  <img
                     src={performance.mainImageUrl}
                     alt={performance.title}
-                    className="w-full h-64 object-cover"
+                    className="object-contain max-h-[60dvh]"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       target.src = "/images/placeholder-image.jpg";
@@ -147,22 +147,22 @@ export function PerformanceDetail({
             )}
 
             {/* 기본 정보 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-medium mb-2">공연장</h3>
+                  <h3 className="mb-2 font-medium">공연장</h3>
                   <div className="text-sm">
                     {performance.venue ? performance.venue.name : "미지정"}
                   </div>
                   {performance.venue?.address && (
-                    <div className="text-sm text-gray-600 mt-1">
+                    <div className="mt-1 text-sm text-gray-600">
                       {performance.venue.address}
                     </div>
                   )}
                 </div>
 
                 <div>
-                  <h3 className="font-medium mb-2">공연 기간</h3>
+                  <h3 className="mb-2 font-medium">공연 기간</h3>
                   <div className="space-y-1 text-sm">
                     {formatDate(performance.startDate)} ~{" "}
                     {formatDate(performance.endDate)}
@@ -173,14 +173,14 @@ export function PerformanceDetail({
               <div className="space-y-4">
                 {performance.runningTime && (
                   <div>
-                    <h3 className="font-medium mb-2">공연 시간</h3>
+                    <h3 className="mb-2 font-medium">공연 시간</h3>
                     <div className="text-sm">{performance.runningTime}분</div>
                   </div>
                 )}
 
                 {performance.ageRating && (
                   <div>
-                    <h3 className="font-medium mb-2">관람 연령</h3>
+                    <h3 className="mb-2 font-medium">관람 연령</h3>
                     <div className="text-sm">{performance.ageRating}</div>
                   </div>
                 )}
@@ -193,7 +193,7 @@ export function PerformanceDetail({
                 <Separator />
                 <div className="space-y-3">
                   <h3 className="font-medium">공연 소개</h3>
-                  <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                  <div className="leading-relaxed text-gray-700 whitespace-pre-wrap">
                     {performance.description}
                   </div>
                 </div>
