@@ -11,7 +11,6 @@ export {
 // Types exports
 export type {
   HashTagItem,
-  PerformanceHashTagsProps,
   PerformanceInfoProps,
   ServicePerformanceDetailProps,
 } from "./model/types";
