@@ -7,15 +7,11 @@
  */
 
 /**
- * 회원가입 요청 DTO
+ * OTP 인증 확인 요청 DTO
  */
-export interface SignupRequest {
+export interface OtpConfirmationRequest {
   /** 사용자 이메일 */
   email: string;
-  /** 사용자 이름 */
-  username: string;
-  /** 사용자 비밀번호 */
-  password: string;
-  /** 핸드폰 번호 */
-  phoneNumber: string;
+  /** 6자리 OTP */
+  otp: string;
 }

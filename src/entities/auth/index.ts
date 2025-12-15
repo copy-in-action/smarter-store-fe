@@ -3,6 +3,11 @@
  * FSD 구조에 따른 인증 엔티티 export
  */
 
+// API 함수들
+export {
+  confirmEmailVerificationApi,
+  requestEmailVerificationApi,
+} from "./api/emailVerification.api";
 // 타입들
 export type {
   EmailInputData,
@@ -17,7 +22,6 @@ export type {
   TokenResponseData,
   UserResponseData,
 } from "./model/auth.schema";
-
 // Zod 스키마들
 export {
   emailInputSchema,
@@ -32,9 +36,3 @@ export {
   tokenResponseSchema,
   userResponseSchema,
 } from "./model/auth.schema";
-
-// API 함수들
-export {
-  requestEmailVerificationApi,
-  confirmEmailVerificationApi,
-} from "./api/emailVerification.api";

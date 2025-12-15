@@ -4,6 +4,7 @@ import {
   confirmEmailVerificationApi,
   requestEmailVerificationApi,
 } from "@/entities/auth";
+import type { OtpConfirmationRequest } from "@/shared/api/orval/types";
 
 /**
  * 이메일 인증 요청 훅
@@ -33,8 +34,8 @@ export const useRequestEmailVerification = () => {
    * 이메일 인증 요청 실행 함수
    * @param email - 인증을 요청할 이메일 주소
    */
-  const requestVerification = (email: string) => {
-    requestMutation.mutate(email);
+  const requestVerification = async (email: string) => {
+    await requestMutation.mutateAsync(email);
   };
 
   return {
@@ -71,10 +72,12 @@ export const useConfirmEmailVerification = () => {
 
   /**
    * 이메일 인증 확인 실행 함수
-   * @param token - 이메일로 받은 인증 토큰
+   * @param confirmEmailVerification - 이메일로 받은 인증 토큰 + 이메일
    */
-  const confirmVerification = (token: string) => {
-    confirmMutation.mutate(token);
+  const confirmVerification = async (
+    confirmEmailVerification: OtpConfirmationRequest,
+  ) => {
+    await confirmMutation.mutateAsync(confirmEmailVerification);
   };
 
   return {

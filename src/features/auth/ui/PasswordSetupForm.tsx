@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { type PasswordSetupData, passwordSetupSchema } from "@/entities/auth";
+import { PAGES } from "@/shared/constants";
 import { Button } from "@/shared/ui/button";
 import { Form } from "@/shared/ui/form";
 import { ValidatedField } from "@/shared/ui/ValidatedField";
+import { useSignupEmail } from "../lib/useEmailSignup";
 import { useSignupStore } from "../lib/useSignupStore";
 
 /**
@@ -16,6 +18,7 @@ import { useSignupStore } from "../lib/useSignupStore";
  */
 export function PasswordSetupForm() {
   const router = useRouter();
+  const { emailSignup } = useSignupEmail();
   const [isLoading, setIsLoading] = useState(false);
   const { setPasswordSetup, getSignupData, completeSignup, reset } =
     useSignupStore();
@@ -46,22 +49,17 @@ export function PasswordSetupForm() {
         throw new Error("회원가입 데이터가 완전하지 않습니다");
       }
 
-      // TODO: 회원가입 API 호출
-      console.log("회원가입 데이터:", signupData);
-
+      await emailSignup(signupData);
       // 성공 시 완료 처리
       completeSignup();
+      router.push(PAGES.AUTH.LOGIN.EMAIL.path);
 
       // 저장된 데이터 삭제 (보안)
       setTimeout(() => {
         reset();
       }, 1000);
-
-      // 로그인 페이지로 이동 또는 성공 페이지로 이동
-      // router.push("/auth/login");
     } catch (error) {
       console.error("회원가입 실패:", error);
-      // TODO: 에러 처리 (toast 메시지 등)
     } finally {
       setIsLoading(false);
     }

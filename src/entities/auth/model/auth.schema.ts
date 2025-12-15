@@ -118,10 +118,7 @@ export const phoneVerificationSchema = z.object({
     .min(1, "이름을 입력해주세요")
     .min(2, "이름은 2자 이상이어야 합니다")
     .max(20, "이름은 20자 이하여야 합니다")
-    .regex(
-      /^[가-힣a-zA-Z\s]+$/,
-      "이름은 한글 또는 영문만 입력 가능합니다",
-    ),
+    .regex(/^[가-힣a-zA-Z\s]+$/, "이름은 한글 또는 영문만 입력 가능합니다"),
   /** 휴대폰 번호 */
   phoneNumber: z
     .string()
@@ -145,13 +142,13 @@ export const emailInputSchema = z.object({
 /**
  * 이메일 인증 코드 입력 스키마 (3단계)
  */
-export const emailVerificationSchema = z.object({
+export const emailVerificationSchema = emailInputSchema.extend({
   /** 인증 코드 (6자리 숫자) */
-  verificationCode: z
+  otp: z
     .string()
     .min(1, "인증번호를 입력해주세요")
     .length(6, "인증번호는 6자리입니다")
-    .regex(/^[0-9]+$/, "인증번호는 숫자만 입력 가능합니다"),
+    .regex(/^[a-zA-Z0-9]+$/, "인증번호는 영문,숫자만 입력 가능합니다"),
 });
 
 /**

@@ -4,14 +4,14 @@
  */
 
 import {
+  confirmOtp,
+  type confirmOtpResponse,
   requestEmailVerification,
-  confirmEmailVerification,
   type requestEmailVerificationResponse,
-  type confirmEmailVerificationResponse,
 } from "@/shared/api/orval/auth/auth";
 import type {
   EmailVerificationRequest,
-  EmailVerificationConfirm,
+  OtpConfirmationRequest,
 } from "@/shared/api/orval/types";
 
 /**
@@ -20,7 +20,7 @@ import type {
  * @returns 인증 요청 응답
  */
 export async function requestEmailVerificationApi(
-  email: string
+  email: string,
 ): Promise<requestEmailVerificationResponse> {
   const request: EmailVerificationRequest = { email };
   return requestEmailVerification(request);
@@ -28,12 +28,12 @@ export async function requestEmailVerificationApi(
 
 /**
  * 이메일 인증 코드를 확인합니다
- * @param token - 이메일로 받은 인증 토큰
+ * @param {opt, email} - 이메일 + 인증코드
  * @returns 인증 확인 응답
  */
 export async function confirmEmailVerificationApi(
-  token: string
-): Promise<confirmEmailVerificationResponse> {
-  const request: EmailVerificationConfirm = { token };
-  return confirmEmailVerification(request);
+  confirmEmailVerification: OtpConfirmationRequest,
+): Promise<confirmOtpResponse> {
+  const request: OtpConfirmationRequest = confirmEmailVerification;
+  return confirmOtp(request);
 }
