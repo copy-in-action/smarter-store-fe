@@ -36,7 +36,7 @@ function createMetadata(
     description,
     keywords: BASE_METADATA.keywords,
     openGraph: {
-      images: ["/images/meta/open-graph.png"],
+      images: ["https://ticket.devhong.cc/images/meta/open-graph.png"],
       title: fullTitle,
       description,
       type: BASE_METADATA.type,
