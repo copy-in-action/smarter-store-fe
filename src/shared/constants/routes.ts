@@ -4,7 +4,7 @@ import type { Metadata } from "next";
  * 공통 메타데이터 설정
  */
 const BASE_METADATA = {
-  siteName: "NOL 티켓",
+  siteName: "CIA 티켓",
   locale: "ko_KR",
   type: "website" as const,
   keywords: [
@@ -27,7 +27,7 @@ function createMetadata(
   description: string,
   additionalOptions?: Partial<Metadata>,
 ): Metadata {
-  const fullTitle = title.includes("NOL")
+  const fullTitle = title.includes("CIA")
     ? title
     : `${title} | ${BASE_METADATA.siteName}`;
 
@@ -36,6 +36,7 @@ function createMetadata(
     description,
     keywords: BASE_METADATA.keywords,
     openGraph: {
+      images: ["/images/meta/open-graph.png"],
       title: fullTitle,
       description,
       type: BASE_METADATA.type,
@@ -54,14 +55,14 @@ function createMetadata(
 }
 
 /**
- * 애플리케이션 라우트와 메타데이터 통합 관리
+ * 서비스 경로 및 메타데이터
  */
-export const PAGES = {
+export const SERVICE_PAGES = {
   /** 홈페이지 */
   HOME: {
     path: "/",
     metadata: createMetadata(
-      "NOL 티켓 - 공연 예매의 모든 것",
+      "CIA 티켓 - 공연 예매의 모든 것",
       "뮤지컬, 콘서트, 연극, 클래식 등 다양한 공연 정보와 할인 티켓을 만나보세요. 최신 공연 소식과 특가 이벤트를 놓치지 마세요!",
       {
         alternates: {
@@ -73,6 +74,10 @@ export const PAGES = {
         },
       },
     ),
+    siteMap: {
+      priority: 1.0,
+      changeFrequency: "daily" as const,
+    },
   },
 
   /** 인증 관련 */
@@ -81,15 +86,14 @@ export const PAGES = {
     LOGIN: {
       path: "/auth/login",
       metadata: {
-        title: "로그인 | NOL",
-        description: "NOL에 로그인하고 스마트한 쇼핑을 시작하세요",
+        description: "CIA에 로그인하고 스마트한 쇼핑을 시작하세요",
       } as Metadata,
 
       EMAIL: {
         path: "/auth/login/email",
         metadata: {
-          title: "이메일 로그인 | NOL",
-          description: "NOL에 로그인하고 스마트한 쇼핑을 시작하세요",
+          title: "이메일 로그인",
+          description: "이메일로 CIA에 로그인하고 스마트한 쇼핑을 시작하세요",
         } as Metadata,
       },
     },
@@ -100,7 +104,7 @@ export const PAGES = {
         OCCUPANCY_VERIFICATION: {
           path: "/auth/signup/email/occupancy-verification",
           metadata: {
-            title: "회원가입 - 정보 입력 | NOL",
+            title: "회원가입 - 정보 입력",
             description: "이름과 휴대폰 번호를 입력해주세요",
           } as Metadata,
         },
@@ -109,7 +113,7 @@ export const PAGES = {
         EMAIL_VERIFICATION: {
           path: "/auth/signup/email/email-verification",
           metadata: {
-            title: "회원가입 - 이메일 인증 | NOL",
+            title: "회원가입 - 이메일 인증",
             description: "이메일로 전송된 인증번호를 입력해주세요",
           } as Metadata,
         },
@@ -118,7 +122,7 @@ export const PAGES = {
         PASSWORD_CONFIRM: {
           path: "/auth/signup/email/password-confirm",
           metadata: {
-            title: "회원가입 - 비밀번호 설정 | NOL",
+            title: "회원가입 - 비밀번호 설정",
             description: "로그인에 사용할 비밀번호를 설정해주세요",
           } as Metadata,
         },
@@ -128,7 +132,7 @@ export const PAGES = {
     FORGOT_ID: {
       path: "/auth/forgot-id",
       metadata: {
-        title: "아이디 찾기 | NOL",
+        title: "아이디 찾기",
         description: "잊어버린 아이디를 찾아드립니다",
       } as Metadata,
     },
@@ -136,30 +140,9 @@ export const PAGES = {
     FORGOT_PASSWORD: {
       path: "/auth/forgot-password",
       metadata: {
-        title: "비밀번호 찾기 | NOL",
+        title: "비밀번호 찾기",
         description: "잊어버린 비밀번호를 찾아드립니다",
       } as Metadata,
-    },
-  },
-
-  /** 상품 관련 */
-  PRODUCT: {
-    /** 상품 목록 */
-    LIST: {
-      path: "/products",
-      metadata: {
-        title: "상품 목록 | NOL",
-        description: "다양한 상품을 만나보세요",
-      } as Metadata,
-    },
-    /** 상품 상세 (동적) */
-    DETAIL: {
-      path: (id: string) => `/products/${id}`,
-      metadata: (productName: string, description?: string) =>
-        ({
-          title: `${productName} | NOL`,
-          description: description || `${productName} 상세 정보를 확인하세요`,
-        }) as Metadata,
     },
   },
 
@@ -186,6 +169,10 @@ export const PAGES = {
             },
           },
         ),
+      siteMap: {
+        priority: 8.0,
+        changeFrequency: "daily" as const,
+      },
     },
   },
 
@@ -195,7 +182,7 @@ export const PAGES = {
     INDEX: {
       path: "/my",
       metadata: {
-        title: "마이페이지 | NOL",
+        title: "마이페이지",
         description: "주문 내역, 찜 목록 등을 확인하세요",
       } as Metadata,
     },
@@ -203,7 +190,7 @@ export const PAGES = {
     ORDERS: {
       path: "/my/orders",
       metadata: {
-        title: "주문 내역 | NOL",
+        title: "주문 내역",
         description: "지금까지의 주문 내역을 확인하세요",
       } as Metadata,
     },
@@ -211,7 +198,7 @@ export const PAGES = {
     LIKES: {
       path: "/my/likes",
       metadata: {
-        title: "찜 목록 | NOL",
+        title: "찜 목록",
         description: "관심 있는 상품들을 모아보세요",
       } as Metadata,
     },
@@ -221,23 +208,28 @@ export const PAGES = {
   CART: {
     path: "/cart",
     metadata: {
-      title: "장바구니 | NOL",
+      title: "장바구니",
       description: "선택한 상품들을 확인하고 주문하세요",
     } as Metadata,
   },
+};
 
+/**
+ * 관리자 경로 및 메타데이터
+ */
+const ADMIN_PAGES = {
   /** 관리자 */
   ADMIN: {
     path: "/admin",
     metadata: {
-      title: "관리자 | NOL",
-      description: "NOL 관리자 페이지",
+      title: "관리자 | CIA",
+      description: "CIA 관리자 페이지",
     } as Metadata,
     AUTH: {
       LOGIN: {
         path: "/admin/auth/login",
         metadata: {
-          title: "관리자 로그인 | NOL",
+          title: "관리자 로그인 | CIA",
           description: "관리자 계정으로 로그인하여 시스템을 관리하세요",
         } as Metadata,
       },
@@ -320,3 +312,5 @@ export const PAGES = {
     },
   },
 } as const;
+
+export const PAGES = { ...SERVICE_PAGES, ...ADMIN_PAGES };
