@@ -15,7 +15,7 @@ export default function RootLayout({
   return (
     <>
       <Header />
-      <main>{children}</main>
+      <main className="mb-20 sm:mb-0">{children}</main>
       <BottomNavigation />
     </>
   );
