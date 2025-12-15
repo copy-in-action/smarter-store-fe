@@ -40,10 +40,7 @@ export function collectSitemapPaths(
 
 //FIXME: 환경변수로 도메인 변경하게 수정
 export default function sitemap(): MetadataRoute.Sitemap {
-  const SERVICE_DOMAIN =
-    process.env.NODE_ENV === "development"
-      ? "https://next.devhong.cc"
-      : "https://ticket.devhong.cc";
+  const SERVICE_DOMAIN = "https://ticket.devhong.cc";
 
   return [...collectSitemapPaths(SERVICE_PAGES, SERVICE_DOMAIN)];
 }
