@@ -30,24 +30,19 @@ export function EmailVerificationForm() {
   );
   const emailVerification = useSignupStore((state) => state.emailVerification);
   const emailInput = useSignupStore((state) => state.emailInput);
-  const [timeLeft, setTimeLeft] = useState(600); // 10분 = 600초
+  const [timeLeft, setTimeLeft] = useState(300); // 5분
   const [isResendEnabled, setIsResendEnabled] = useState(false);
 
-  const {
-    confirmVerification,
-    isLoading: isConfirming,
-    isError: isConfirmError,
-  } = useConfirmEmailVerification();
-  const {
-    requestVerification,
-    isLoading: isRequesting,
-    isError: isRequestError,
-  } = useRequestEmailVerification();
+  const { confirmVerification, isLoading: isConfirming } =
+    useConfirmEmailVerification();
+  const { requestVerification, isLoading: isRequesting } =
+    useRequestEmailVerification();
 
   const form = useForm<EmailVerificationData>({
     resolver: zodResolver(emailVerificationSchema),
     defaultValues: {
-      verificationCode: emailVerification?.verificationCode ?? "",
+      otp: "",
+      email: emailInput?.email ?? "",
     },
     mode: "onChange",
   });
@@ -65,7 +60,7 @@ export function EmailVerificationForm() {
     } else {
       setIsResendEnabled(true);
       // 타이머 종료 시 에러 메시지 표시
-      form.setError("verificationCode", {
+      form.setError("otp", {
         type: "manual",
         message: "입력할 수 있는 시간이 종료되었어요.",
       });
@@ -87,8 +82,8 @@ export function EmailVerificationForm() {
    */
   const onSubmit = async (data: EmailVerificationData) => {
     try {
-      await confirmVerification(data.verificationCode);
-      if (isConfirmError) return;
+      await confirmVerification(data);
+
       // 인증 성공 시 스토어에 저장하고 다음 단계로 이동
       setEmailVerification(data);
       router.push(PAGES.AUTH.SIGNUP.EMAIL.PASSWORD_CONFIRM.path);
@@ -110,13 +105,12 @@ export function EmailVerificationForm() {
     try {
       await requestVerification(emailInput.email);
 
-      if (isRequestError) return;
       // 타이머 리셋
-      setTimeLeft(600);
+      setTimeLeft(300);
       setIsResendEnabled(false);
 
       // 에러 메시지 클리어
-      form.clearErrors("verificationCode");
+      form.clearErrors("otp");
     } catch (error) {
       // 에러는 useRequestEmailVerification hook에서 처리됨
       console.error("인증번호 재전송 실패:", error);
@@ -128,7 +122,7 @@ export function EmailVerificationForm() {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <ValidatedField
           control={form.control}
-          name="verificationCode"
+          name="otp"
           label="인증번호"
           placeholder="6자리 입력"
           type="text"

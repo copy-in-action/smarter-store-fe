@@ -45,9 +45,8 @@ export function EmailInputForm({ onNext }: EmailInputFormProps = {}) {
 
     // 이메일 인증 요청
     try {
-      await requestVerification(data.email);
-      if (isError) return;
-
+      const res = await requestVerification(data.email);
+      console.log("🚀 ~ onSubmit ~ res:", res);
       // onNext 콜백이 있으면 호출 (같은 페이지 내 단계 전환)
       onNext?.();
     } catch (error) {

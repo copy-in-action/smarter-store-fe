@@ -6,10 +6,10 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
-  EmailVerificationConfirm,
   EmailVerificationRequest,
   ErrorResponse,
   LoginRequest,
+  OtpConfirmationRequest,
   RefreshTokenRequest,
   SignupRequest,
   UserResponse
@@ -18,7 +18,7 @@ import type {
 import { orvalFetch } from '../../fetch-wrapper';
 
 /**
- * 새로운 사용자를 생성합니다.
+ * 이메일 인증(OTP 확인)이 완료된 후 새로운 사용자를 생성합니다.
  * @summary 회원가입
  */
 export type signupResponse201 = {
@@ -191,17 +191,12 @@ export const login = async (loginRequest: LoginRequest, options?: RequestInit): 
 
 
 /**
- * 지정된 이메일 주소로 인증 이메일을 보냅니다.
- * @summary 이메일 인증 요청
+ * 회원가입을 위한 이메일 인증번호(OTP)를 요청합니다. 지정된 이메일 주소로 OTP가 발송됩니다.
+ * @summary 이메일 인증 요청 (OTP 발송)
  */
 export type requestEmailVerificationResponse200 = {
   data: void
   status: 200
-}
-
-export type requestEmailVerificationResponse404 = {
-  data: ErrorResponse
-  status: 404
 }
 
 export type requestEmailVerificationResponse409 = {
@@ -212,7 +207,7 @@ export type requestEmailVerificationResponse409 = {
 export type requestEmailVerificationResponseSuccess = (requestEmailVerificationResponse200) & {
   headers: Headers;
 };
-export type requestEmailVerificationResponseError = (requestEmailVerificationResponse404 | requestEmailVerificationResponse409) & {
+export type requestEmailVerificationResponseError = (requestEmailVerificationResponse409) & {
   headers: Headers;
 };
 
@@ -240,50 +235,45 @@ export const requestEmailVerification = async (emailVerificationRequest: EmailVe
 
 
 /**
- * 받은 토큰으로 이메일 인증을 완료합니다.
- * @summary 이메일 인증 확인
+ * 이메일로 발송된 6자리 OTP를 확인합니다.
+ * @summary OTP 확인
  */
-export type confirmEmailVerificationResponse200 = {
+export type confirmOtpResponse200 = {
   data: void
   status: 200
 }
 
-export type confirmEmailVerificationResponse400 = {
+export type confirmOtpResponse400 = {
   data: ErrorResponse
   status: 400
 }
-
-export type confirmEmailVerificationResponse409 = {
-  data: ErrorResponse
-  status: 409
-}
     
-export type confirmEmailVerificationResponseSuccess = (confirmEmailVerificationResponse200) & {
+export type confirmOtpResponseSuccess = (confirmOtpResponse200) & {
   headers: Headers;
 };
-export type confirmEmailVerificationResponseError = (confirmEmailVerificationResponse400 | confirmEmailVerificationResponse409) & {
+export type confirmOtpResponseError = (confirmOtpResponse400) & {
   headers: Headers;
 };
 
-export type confirmEmailVerificationResponse = (confirmEmailVerificationResponseSuccess | confirmEmailVerificationResponseError)
+export type confirmOtpResponse = (confirmOtpResponseSuccess | confirmOtpResponseError)
 
-export const getConfirmEmailVerificationUrl = () => {
+export const getConfirmOtpUrl = () => {
 
 
   
 
-  return `https://api.ticket.devhong.cc/api/auth/email-verification/confirm`
+  return `https://api.ticket.devhong.cc/api/auth/confirm-otp`
 }
 
-export const confirmEmailVerification = async (emailVerificationConfirm: EmailVerificationConfirm, options?: RequestInit): Promise<confirmEmailVerificationResponse> => {
+export const confirmOtp = async (otpConfirmationRequest: OtpConfirmationRequest, options?: RequestInit): Promise<confirmOtpResponse> => {
   
-  return orvalFetch<confirmEmailVerificationResponse>(getConfirmEmailVerificationUrl(),
+  return orvalFetch<confirmOtpResponse>(getConfirmOtpUrl(),
   {      
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
-      emailVerificationConfirm,)
+      otpConfirmationRequest,)
   }
 );}
 
