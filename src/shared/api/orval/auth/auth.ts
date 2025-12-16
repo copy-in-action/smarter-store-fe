@@ -151,7 +151,7 @@ export const logout = async ( options?: RequestInit): Promise<logoutResponse> =>
  * @summary 로그인
  */
 export type loginResponse200 = {
-  data: void
+  data: UserResponse
   status: 200
 }
 
@@ -274,6 +274,54 @@ export const confirmOtp = async (otpConfirmationRequest: OtpConfirmationRequest,
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       otpConfirmationRequest,)
+  }
+);}
+
+
+/**
+ * 현재 로그인된 사용자 정보를 조회합니다.
+ * @summary 내 정보 조회
+ */
+export type meResponse200 = {
+  data: UserResponse
+  status: 200
+}
+
+export type meResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type meResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type meResponseSuccess = (meResponse200) & {
+  headers: Headers;
+};
+export type meResponseError = (meResponse401 | meResponse404) & {
+  headers: Headers;
+};
+
+export type meResponse = (meResponseSuccess | meResponseError)
+
+export const getMeUrl = () => {
+
+
+  
+
+  return `https://api.ticket.devhong.cc/api/auth/me`
+}
+
+export const me = async ( options?: RequestInit): Promise<meResponse> => {
+  
+  return orvalFetch<meResponse>(getMeUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
   }
 );}
 

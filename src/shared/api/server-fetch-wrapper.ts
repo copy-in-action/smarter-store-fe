@@ -52,28 +52,30 @@ export async function serverFetch<T = any>(
    * - requireAuth: 일반 사용자 인증
    * - requireAdmin: 관리자 인증
    */
-  if (requireAuth || requireAdmin) {
-    const cookieStore = await cookies();
-    const hasAuth = cookieStore.get("accessToken"); // httpOnly 쿠키 확인
-
-    // 쿠키가 없으면 로그인 페이지로 리다이렉트
-    if (!hasAuth) {
-      const loginPath = requireAdmin
-        ? PAGES.ADMIN.AUTH.LOGIN.path
-        : PAGES.AUTH.LOGIN.path;
-      redirect(loginPath);
-    }
-  }
-
   // 기본 헤더 설정
   const defaultHeaders: HeadersInit = {
     "Content-Type": "application/json",
   };
 
+  if (requireAuth || requireAdmin) {
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get("accessToken")?.value; // httpOnly 쿠키 확인
+    const refreshToken = cookieStore.get("refreshToken")?.value; // httpOnly 쿠키 확인
+
+    // 쿠키가 없으면 로그인 페이지로 리다이렉트
+    if (!accessToken) {
+      const loginPath = requireAdmin
+        ? PAGES.ADMIN.AUTH.LOGIN.path
+        : PAGES.AUTH.LOGIN.path;
+      redirect(loginPath);
+    }
+    const cookieHeaderValue = `accessToken=${accessToken}; refreshToken=${refreshToken}`;
+    defaultHeaders.Cookie = cookieHeaderValue;
+  }
+
   // 최종 fetch 옵션 구성
   const config: RequestInit = {
     ...fetchOptions,
-    credentials: "include", // httpOnly 쿠키 전송을 위해 필수
     headers: {
       ...defaultHeaders,
       ...fetchOptions.headers,
