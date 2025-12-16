@@ -1,4 +1,5 @@
 import { adminAuthMiddleware } from "@/shared/lib/middleware/adminAuth";
+import { authHeaderMiddleware } from "@/shared/lib/middleware/authHeader";
 import { chainMiddleware } from "@/shared/lib/middleware/chainMiddleware";
 
 /**
@@ -6,7 +7,10 @@ import { chainMiddleware } from "@/shared/lib/middleware/chainMiddleware";
  * 여러 미들웨어를 체인으로 연결하여 실행합니다
  */
 export const proxy = chainMiddleware(
-  // 관리자 인증 미들웨어
+  // 인증 헤더 설정 미들웨어 (모든 경로)
+  authHeaderMiddleware,
+
+  // 관리자 인증 미들웨어 (/admin 경로만)
   adminAuthMiddleware,
 
   // 추가 미들웨어들이 여기에 체인으로 연결됩니다
@@ -19,6 +23,9 @@ export const proxy = chainMiddleware(
  */
 export const config = {
   matcher: [
+    // 인증 헤더 설정을 위해 모든 경로에 적용 (정적 파일 제외)
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+
     // 관리자 페이지 보호
     "/admin/:path*",
 

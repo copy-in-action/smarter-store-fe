@@ -159,17 +159,22 @@ export const apiClient = async <T = any>(
       // 관리자 API인 경우
       if (fullUrl.includes("/api/admin/")) {
         console.log("❌ 관리자 인증 실패 - 관리자 로그인 페이지로 이동");
-        
+
         // 클라이언트 사이드에서만 리다이렉트
         if (typeof window !== "undefined") {
           window.location.href = PAGES.ADMIN.AUTH.LOGIN.path;
         }
-        
+
         throw new ApiErrorClass("관리자 인증이 필요합니다", 401);
       }
-      
+
       // 일반 사용자 API인 경우 - 토큰 갱신 시도
-      if (!fullUrl.includes("/api/auth/login")) {
+      // /me의 경우 로그인 여부를 응답에 따라 호출 측에서 처리
+      // (ex. 로그인 여부에 따라 다르게 렌더링하는데 해당 로직이 동작하면 로그인페이로 이동됨)
+      if (
+        !fullUrl.includes("/api/auth/login") &&
+        !fullUrl.includes("/api/auth/me")
+      ) {
         console.log("🔄 401 응답 - 토큰 갱신 시도 (일반 사용자)");
 
         const newToken = await refreshAccessToken();
@@ -181,11 +186,11 @@ export const apiClient = async <T = any>(
         } else {
           // 토큰 갱신 실패 - 일반 로그인 페이지로 이동
           console.log("❌ 토큰 갱신 실패 - 로그인 페이지로 이동");
-          
+
           if (typeof window !== "undefined") {
             window.location.href = PAGES.AUTH.LOGIN.path;
           }
-          
+
           throw new ApiErrorClass("인증이 필요합니다", 401);
         }
       }
