@@ -1,5 +1,9 @@
 import { toast } from "sonner";
 import { PAGES } from "../constants";
+import {
+  dispatchAdminUnauthorizedEvent,
+  dispatchUnauthorizedEvent,
+} from "../events/auth-events";
 
 /**
  * 토큰 갱신 상태 관리
@@ -160,10 +164,8 @@ export const apiClient = async <T = any>(
       if (fullUrl.includes("/api/admin/")) {
         console.log("❌ 관리자 인증 실패 - 관리자 로그인 페이지로 이동");
 
-        // 클라이언트 사이드에서만 리다이렉트
-        if (typeof window !== "undefined") {
-          window.location.href = PAGES.ADMIN.AUTH.LOGIN.path;
-        }
+        // 이벤트 발생으로 관리자 로그인 페이지로 이동
+        dispatchAdminUnauthorizedEvent("관리자 인증이 필요합니다");
 
         throw new ApiErrorClass("관리자 인증이 필요합니다", 401);
       }
@@ -187,9 +189,9 @@ export const apiClient = async <T = any>(
           // 토큰 갱신 실패 - 일반 로그인 페이지로 이동
           console.log("❌ 토큰 갱신 실패 - 로그인 페이지로 이동");
 
-          if (typeof window !== "undefined") {
-            window.location.href = PAGES.AUTH.LOGIN.path;
-          }
+          // 현재 페이지 URL을 리다이렉트 URL로 사용
+          const redirectUrl = typeof window !== "undefined" ? window.location.pathname + window.location.search : "/";
+          dispatchUnauthorizedEvent(redirectUrl, "인증이 필요합니다");
 
           throw new ApiErrorClass("인증이 필요합니다", 401);
         }

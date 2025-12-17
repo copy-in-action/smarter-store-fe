@@ -12,10 +12,18 @@ import { Button } from "@/shared/ui/button";
 import { Logo } from "@/shared/ui/Logo";
 
 /**
+ * 로그인 방식 선택 페이지 뷰 속성
+ */
+interface LoginViewProps {
+  /** 로그인 후 리다이렉트할 URL */
+  redirectUrl?: string;
+}
+
+/**
  * 로그인 방식 선택 페이지 뷰
  * 이메일, 소셜 로그인 등의 방식을 선택할 수 있습니다
  */
-export function LoginView() {
+export function LoginView({ redirectUrl }: LoginViewProps) {
   const oAuths = [
     {
       icon: KakaoIcon,
@@ -73,7 +81,7 @@ export function LoginView() {
 
         <div className="py-3 mx-auto">
           <Link
-            href={PAGES.AUTH.LOGIN.EMAIL.path}
+            href={`${PAGES.AUTH.LOGIN.EMAIL.path}${redirectUrl ? `?redirect=${encodeURIComponent(redirectUrl)}` : ''}`}
             className="flex flex-wrap items-center p-2 text-sm font-semibold hover:bg-gray-100"
           >
             이메일로 시작하기 <ChevronRight size={18} />

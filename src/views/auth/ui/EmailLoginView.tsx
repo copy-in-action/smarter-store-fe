@@ -4,10 +4,18 @@ import { PAGES } from "@/shared/constants";
 import { AuthTitle } from "./AuthTitle";
 
 /**
+ * 이메일 로그인 페이지 뷰 속성
+ */
+interface EmailLoginViewProps {
+  /** 로그인 후 리다이렉트할 URL */
+  redirectUrl?: string;
+}
+
+/**
  * 이메일 로그인 페이지 뷰
  * 레이아웃과 네비게이션 링크를 제공합니다
  */
-export function EmailLoginView() {
+export function EmailLoginView({ redirectUrl }: EmailLoginViewProps) {
   return (
     <div className="auth-wrapper sm:mb-[120px]">
       <AuthTitle>
@@ -16,7 +24,7 @@ export function EmailLoginView() {
         로그인 해주세요
       </AuthTitle>
 
-      <EmailLoginForm />
+      <EmailLoginForm redirectUrl={redirectUrl} />
 
       <div className="mt-5 space-y-2 text-sm text-center">
         <Link href={PAGES.AUTH.FORGOT_ID.path} className="underline">
