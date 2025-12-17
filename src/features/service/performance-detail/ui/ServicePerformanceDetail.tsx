@@ -4,6 +4,7 @@
 
 import { ScrollSpyClient } from "../lib/useScrollSpy";
 import type { ServicePerformanceDetailProps } from "../model/types";
+import PerformanceBookButton from "./PerformanceBookButton";
 import { PerformanceDescription } from "./PerformanceDescription";
 import { PerformanceHashTags } from "./PerformanceHashTags";
 import { PerformanceInfo } from "./PerformanceInfo";
@@ -17,7 +18,7 @@ export function ServicePerformanceDetail({
   performance,
 }: ServicePerformanceDetailProps) {
   return (
-    <div className="mx-auto" id="performance-detail">
+    <div className="mx-auto pb-11" id="performance-detail">
       {/* 제목 섹션 */}
       <PerformanceTitle title={performance.title} />
       {/* 해시태그 네비게이션 */}
@@ -41,6 +42,9 @@ export function ServicePerformanceDetail({
         description={performance.description}
         title={performance.title}
       />
+
+      {/* 예매하기 버튼 */}
+      <PerformanceBookButton />
 
       <ScrollSpyClient />
     </div>

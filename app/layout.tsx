@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import "./globals.css";
 import { AuthProvider, QueryProvider } from "@/app/providers";
 import { getUserInfoServer } from "@/entities/user/api/user.server.api";
+import { AuthEventHandler } from "@/shared/components/AuthEventHandler";
 import { Toaster } from "@/shared/ui/sonner";
 
 const inter = Inter({
@@ -44,6 +45,7 @@ export default async function RootLayout({
             hasInitialAuth={hasInitialAuth}
             initialUserData={initialUserData}
           >
+            <AuthEventHandler />
             {children}
           </AuthProvider>
         </QueryProvider>

@@ -230,9 +230,20 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
 
 ## 🛡️ 차별화된 인증 에러 처리
 
-### 관리자 vs 일반 사용자 401 처리 분기
+### 이벤트 기반 인증 에러 처리 시스템 (2025년 업데이트)
 
-#### 1️⃣ 일반 사용자 (Refresh Token 사용)
+#### 1️⃣ 이벤트 기반 시스템 구조
+```
+shared/
+├── events/
+│   └── auth-events.ts           # 인증 관련 이벤트 정의
+├── components/
+│   └── AuthEventHandler.tsx    # 전역 이벤트 리스너
+└── api/
+    └── fetch-wrapper.ts         # 이벤트 발생 로직
+```
+
+#### 2️⃣ 일반 사용자 (Refresh Token 사용)
 ```
 API 요청 → 401 응답
   ↓
@@ -240,27 +251,40 @@ fetch-wrapper: URL 체크 (!fullUrl.includes("/admin/"))
   ↓
 Refresh Token 자동 갱신 시도
   ├── 성공: 새 토큰으로 원래 요청 재시도
-  └── 실패: ApiErrorClass(401) throw
+  └── 실패: dispatchUnauthorizedEvent(currentUrl, "인증이 필요합니다")
       ↓
-QueryClient 전역 에러 핸들러
+AuthEventHandler: 이벤트 수신
   ↓
-500ms 지연 후 /auth/login?redirect={currentPath}
+router.push(`/auth/login?redirect=${encodeURIComponent(currentUrl)}`)
 ```
 
-#### 2️⃣ 관리자 (Refresh Token 미사용 - 보안 강화)
+#### 3️⃣ 관리자 (Refresh Token 미사용 - 보안 강화)
 ```
 Admin API 요청 → 401 응답
   ↓
 fetch-wrapper: URL 체크 (fullUrl.includes("/admin/"))
   ↓
-Refresh Token 갱신 시도 없이 즉시 ApiErrorClass(401) throw
+dispatchAdminUnauthorizedEvent("관리자 인증이 필요합니다")
   ↓
-QueryClient 전역 에러 핸들러
+AuthEventHandler: 관리자 이벤트 수신
   ↓
-즉시 /admin/auth/login?redirect={currentPath}
+router.push("/admin/auth/login")
 ```
 
-#### 3️⃣ Middleware 차단 (페이지 접근 시)
+#### 4️⃣ 리다이렉트 URL 처리 플로우
+```
+인증 실패 페이지 (예: /products/123)
+  ↓
+이벤트 발생: { redirectUrl: "/products/123" }
+  ↓
+로그인 페이지로 이동: /auth/login?redirect=%2Fproducts%2F123
+  ↓
+로그인 성공 시: useEmailLogin(redirectUrl)
+  ↓
+원래 페이지 복귀: /products/123
+```
+
+#### 5️⃣ Middleware 차단 (페이지 접근 시)
 ```
 /admin/* 페이지 접근 시도
   ↓
@@ -270,6 +294,51 @@ adminAuth Middleware: JWT 디코딩
       ↓
 로그인 성공 후 원래 페이지 복원
 ```
+
+#### 6️⃣ 핵심 컴포넌트 구현
+
+**AuthEventHandler.tsx (전역 이벤트 리스너)**
+```typescript
+export function AuthEventHandler() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const handleUnauthorized = (event: CustomEvent<UnauthorizedEventData>) => {
+      const { redirectUrl, message } = event.detail;
+      if (message) toast.error(message);
+      
+      const loginUrl = `${PAGES.AUTH.LOGIN.path}?redirect=${encodeURIComponent(redirectUrl)}`;
+      router.push(loginUrl);
+    };
+
+    window.addEventListener(AUTH_EVENTS.UNAUTHORIZED, handleUnauthorized);
+    return () => window.removeEventListener(AUTH_EVENTS.UNAUTHORIZED, handleUnauthorized);
+  }, [router]);
+
+  return null;
+}
+```
+
+**useEmailLogin.ts (리다이렉트 처리)**
+```typescript
+const useEmailLogin = (redirectUrl?: string) => {
+  const loginMutation = useMutation({
+    onSuccess: (data) => {
+      setUser(data);
+      const targetUrl = redirectUrl || PAGES.HOME.path;
+      router.push(targetUrl); // 로그인 후 원래 페이지로 복귀
+    },
+  });
+};
+```
+
+#### 7️⃣ 장점
+- ✅ NextJS 라우터를 통한 부드러운 페이지 전환
+- ✅ 클라이언트 사이드 네비게이션 활용
+- ✅ 정확한 브라우저 히스토리 관리
+- ✅ SSR/SSG와의 호환성 향상
+- ✅ 컴포넌트 간 느슨한 결합 (이벤트 기반)
+- ✅ 테스트 용이성 증대
 
 ### 동시 요청 Race Condition 방지
 ```
@@ -331,7 +400,7 @@ import type { LoginRequest } from "@/shared/api/orval/types";
 ```
 1. 로그인 성공
    ↓
-2. httpOnly 쿠키로 Access + Refresh Token 저장 (도메인: .ticket.dev.cc)
+2. httpOnly 쿠키로 Access + Refresh Token 저장 (도메인: .ticket.devhong.cc)
    ↓
 3. API 요청 시 쿠키 자동 전송 (credentials: 'include')
    ↓
@@ -357,7 +426,7 @@ import type { LoginRequest } from "@/shared/api/orval/types";
 - **httpOnly 쿠키**: Access Token (XSS 방지)
 - **httpOnly 쿠키**: Refresh Token (일반 사용자만)
 - **메모리**: 갱신 중 상태 관리 (`isRefreshing`, `refreshPromise`)
-- **도메인**: `.ticket.dev.cc` (서브도메인 간 쿠키 공유)
+- **도메인**: `.ticket.devhong.cc` (서브도메인 간 쿠키 공유)
 
 ### 보안 비교표
 | 구분 | 일반 사용자 | 관리자 |
@@ -534,6 +603,9 @@ sequenceDiagram
 - **서버 컴포넌트에서 `serverFetch` 사용** (인증, 에러 처리 자동화)
 - **에러 타입별로 적절한 UI 표시** (ClientError: errorCode+message, ServerError: HTTP 코드)
 - **API 로직은 `api/` 슬라이스에 위치** (FSD 규칙 준수)
+- **이벤트 기반 인증 에러 처리 사용** (NextJS 라우터 활용)
+- **리다이렉트 URL을 쿼리 파라미터로 전달** (로그인 후 원래 페이지 복귀)
+- **AuthEventHandler를 앱 최상위에 배치** (전역 이벤트 처리)
 
 ### DON'T ❌
 - Orval 생성 API 함수 직접 호출
@@ -546,13 +618,9 @@ sequenceDiagram
 - **서버 컴포넌트에서 클라이언트용 `fetch-wrapper.ts` 사용**
 - **에러 발생 시 빈 배열 등으로 숨기기** (에러는 throw하여 error.tsx가 처리)
 - **API 로직을 `lib/` 슬라이스에 위치** (`api/`가 올바른 위치)
+- **`window.location.href`로 직접 페이지 이동** (이벤트 기반 시스템 사용)
+- **401 에러 처리를 각 컴포넌트에서 개별 구현** (전역 이벤트 핸들러 사용)
+- **리다이렉트 URL 없이 로그인 페이지 이동** (사용자 경험 저하)
 
-## 🔄 마이그레이션 가이드
 
-### 기존 fetch 코드에서 마이그레이션
-1. Orval로 API 코드 생성
-2. API 래퍼 레이어 작성
-3. TanStack Query Hook으로 변환
-4. 컴포넌트에서 Hook 사용
-
-이 아키텍처는 **유지보수성**, **확장성**, **타입 안전성**을 모두 확보하면서도 **개발자 경험**을 최우선으로 설계되었습니다.
+이 아키텍처는 **유지보수성**, **확장성**, **타입 안전성**, **사용자 경험**을 모두 확보하면서도 **개발자 경험**을 최우선으로 설계되었습니다.

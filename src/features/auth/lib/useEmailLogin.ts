@@ -9,8 +9,9 @@ import { loginApi } from "../api/auth.api";
 /**
  * 이메일 로그인 훅
  * 로그인 요청을 처리하고 성공/실패에 따른 액션을 수행합니다
+ * @param redirectUrl - 로그인 후 리다이렉트할 URL
  */
-const useEmailLogin = () => {
+const useEmailLogin = (redirectUrl?: string) => {
   const router = useRouter();
   const { setUser } = useAuth();
 
@@ -18,8 +19,10 @@ const useEmailLogin = () => {
     mutationFn: loginApi,
     onSuccess: (data) => {
       setUser(data);
-      // 메인 페이지로 리다이렉트
-      router.push(PAGES.HOME.path);
+      
+      // 리다이렉트 URL이 있으면 해당 URL로, 없으면 메인 페이지로 이동
+      const targetUrl = redirectUrl || PAGES.HOME.path;
+      router.push(targetUrl);
     },
     onError: (error) => {
       console.error("로그인 실패:", error);
