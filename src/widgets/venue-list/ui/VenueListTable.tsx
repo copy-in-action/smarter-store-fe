@@ -148,7 +148,7 @@ export function VenueListTable({
             <TableHead className="w-[50px]">ID</TableHead>
             <TableHead>공연장명</TableHead>
             <TableHead>주소</TableHead>
-            <TableHead>좌석 배치도</TableHead>
+
             <TableHead>생성일</TableHead>
             <TableHead className="w-[100px]">관리</TableHead>
           </TableRow>
@@ -171,17 +171,7 @@ export function VenueListTable({
                   {venue.address || "-"}
                 </span>
               </TableCell>
-              <TableCell>
-                {venue.seatingChartUrl ? (
-                  <Badge variant="default" className="text-xs">
-                    있음
-                  </Badge>
-                ) : (
-                  <Badge variant="secondary" className="text-xs">
-                    없음
-                  </Badge>
-                )}
-              </TableCell>
+
               <TableCell className="text-sm text-gray-600 tracking-tighter">
                 {formatDate(venue.createdAt)}
               </TableCell>

@@ -31,7 +31,7 @@ export function VenueEditForm({ venue }: VenueEditFormProps) {
     const submitData = {
       name: data.name,
       address: data.address || undefined,
-      seatingChartUrl: data.seatingChartUrl || undefined,
+      phoneNumber: data.phoneNumber || undefined,
     };
 
     await updateVenueMutation.mutateAsync({
