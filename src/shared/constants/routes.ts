@@ -336,6 +336,20 @@ const ADMIN_PAGES = {
           description: "기획사/판매자를 등록페이지",
         } as Metadata,
       },
+      DETAIL: {
+        path: (id: number) => `/admin/companies/${id}`,
+        metadata: {
+          title: "기획사/판매자 상세 | 관리자",
+          description: "기획사/판매자를 상세페이지",
+        } as Metadata,
+      },
+      EDIT: {
+        path: (id: number) => `/admin/companies/edit/${id}`,
+        metadata: {
+          title: "기획사/판매자 수정 | 관리자",
+          description: "기획사/판매자를 수정페이지",
+        } as Metadata,
+      },
     },
   },
 } as const;

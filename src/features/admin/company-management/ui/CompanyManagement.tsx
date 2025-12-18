@@ -1,8 +1,14 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { useState } from "react";
-import { type Company, useGetAllCompanies } from "@/entities/company";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import {
+  type Company,
+  useDeleteCompany,
+  useGetAllCompanies,
+} from "@/entities/company";
+import { PAGES } from "@/shared/constants/routes";
 
 import { Button } from "@/shared/ui/button";
 import {
@@ -19,21 +25,21 @@ import { CompanyDataTable } from "./CompanyDataTable";
  * 기획사/판매자 관리 컴포넌트
  */
 export function CompanyManagement() {
+  const router = useRouter();
   const {
     data: companies = [],
     isLoading,
     error,
     isError,
   } = useGetAllCompanies();
+  const deleteCompanyMutation = useDeleteCompany();
 
   /**
    * 기획사 상세보기 핸들러
    * @param company - 선택된 기획사
    */
   const handleViewCompany = (company: Company) => {
-    // setSelectedCompany(company);
-    // TODO: 상세보기 모달 또는 페이지로 이동
-    console.log("상세보기:", company);
+    router.push(PAGES.ADMIN.COMPANY.DETAIL.path(company.id));
   };
 
   /**
@@ -41,34 +47,42 @@ export function CompanyManagement() {
    * @param company - 수정할 기획사
    */
   const handleEditCompany = (company: Company) => {
-    // TODO: 수정 모달 또는 페이지로 이동
-    console.log("수정:", company);
+    router.push(PAGES.ADMIN.COMPANY.EDIT.path(company.id));
   };
 
   /**
    * 기획사 삭제 핸들러
    * @param company - 삭제할 기획사
    */
-  const handleDeleteCompany = (company: Company) => {
-    // TODO: 삭제 확인 모달 표시
-    console.log("삭제:", company);
+  const handleDeleteCompany = async (company: Company) => {
+    if (confirm(`'${company.name}'을(를) 정말 삭제하시겠습니까?`)) {
+      try {
+        await deleteCompanyMutation.mutateAsync(company.id);
+        toast.success("기획사가 성공적으로 삭제되었습니다.");
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : "기획사 삭제에 실패했습니다.";
+        toast.error(message);
+      }
+    }
   };
 
   /**
    * 새 기획사 추가 핸들러
    */
   const handleAddCompany = () => {
-    // TODO: 추가 모달 또는 페이지로 이동
-    console.log("새 기획사 추가");
+    router.push(PAGES.ADMIN.COMPANY.CREATE.path);
   };
 
   // 통계 계산
-  const stats = {
+  /*   const stats = {
     total: companies.length,
     withEmail: companies.filter((c) => c.email).length,
     withContact: companies.filter((c) => c.contact).length,
     withAddress: companies.filter((c) => c.address).length,
-  };
+  }; */
 
   // 컬럼 생성
   const columns = createCompanyColumns({
@@ -167,7 +181,7 @@ export function CompanyManagement() {
             columns={columns}
             data={companies}
             searchKey="name"
-            searchPlaceholder="상호, 대표자명으로 검색..."
+            searchPlaceholder="상호, 대표자명, 사업자번호로 검색..."
             isLoading={isLoading}
           />
         </CardContent>

@@ -27,19 +27,48 @@ export const companyResponseSchema = z.object({
  */
 export const companyRequestSchema = z.object({
   /** 상호 */
-  name: z.string().min(1, "상호는 필수입니다"),
+  name: z
+    .string()
+    .min(1, "상호는 필수입니다")
+    .max(100, "상호는 100자를 초과할 수 없습니다"),
   /** 대표자명 */
-  ceoName: z.string().optional(),
+  ceoName: z
+    .string()
+    .max(50, "대표자명은 50자를 초과할 수 없습니다")
+    .optional()
+    .or(z.literal("")),
   /** 사업자등록번호 */
-  businessNumber: z.string().min(1, "사업자등록번호는 필수입니다"),
+  businessNumber: z
+    .string()
+    .min(1, "사업자등록번호는 필수입니다")
+    .regex(
+      /^\d{3}-\d{2}-\d{5}$|^\d{10}$/,
+      "사업자등록번호 형식이 올바르지 않습니다",
+    ),
   /** 이메일 */
-  email: z.email("유효한 이메일을 입력하세요").optional().or(z.literal("")),
+  email: z
+    .email("유효한 이메일을 입력하세요")
+    .max(100, "이메일은 100자를 초과할 수 없습니다")
+    .optional()
+    .or(z.literal("")),
   /** 연락처 */
-  contact: z.string().optional(),
+  contact: z
+    .string()
+    .max(20, "연락처는 20자를 초과할 수 없습니다")
+    .optional()
+    .or(z.literal("")),
   /** 주소 */
-  address: z.string().optional(),
+  address: z
+    .string()
+    .max(200, "주소는 200자를 초과할 수 없습니다")
+    .optional()
+    .or(z.literal("")),
   /** 공연 문의 연락처/이메일 */
-  performanceInquiry: z.string().optional(),
+  performanceInquiry: z
+    .string()
+    .max(100, "공연 문의는 100자를 초과할 수 없습니다")
+    .optional()
+    .or(z.literal("")),
 });
 
 /**

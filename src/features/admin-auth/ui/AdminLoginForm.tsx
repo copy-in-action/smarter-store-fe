@@ -22,11 +22,12 @@ import { type AdminLoginFormData, adminLoginFormSchema } from "../model/schema";
 export function AdminLoginForm() {
   const loginMutation = useAdminLoginMutation();
 
+  // FIXME: 로그인 데이터 고정
   const form = useForm<AdminLoginFormData>({
     resolver: zodResolver(adminLoginFormSchema),
     defaultValues: {
-      loginId: "",
-      password: "",
+      loginId: "admin",
+      password: "password123",
     },
   });
 
