@@ -32,8 +32,6 @@ export interface SeatGradeConfig {
  * 정적 좌석 배치도 설정 (JSON 파일로 저장)
  */
 export interface StaticSeatVenue {
-  /** 공연장 ID */
-  venueId: number;
   /** 총 행 수 */
   rows: number;
   /** 총 열 수 */
@@ -100,16 +98,4 @@ export type SeatStatus =
 export interface SeatTypeObject {
   /** 좌석 타입들 (가격 포함) */
   seatTypes: Record<string, SeatType>;
-}
-
-/**
- * BE 저장용 좌석 등급 정보
- */
-export interface SeatGradeForBE {
-  /** 등급 ID (좌석 타입 키) */
-  gradeId: string;
-  /** 등급명 */
-  gradeName: string;
-  /** 해당 등급의 좌석 수 */
-  seatCount: number;
 }

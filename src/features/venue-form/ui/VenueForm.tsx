@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import type { VenueResponse } from "@/shared/api/orval/types";
 import { PAGES } from "@/shared/constants";
 import { Button } from "@/shared/ui/button";
@@ -111,13 +110,26 @@ export function VenueForm({
     }
   };
 
+  const handleCreateSeatingChart = () => {
+    const params = new URLSearchParams({
+      venueId: initialData?.id.toString() || "0",
+      name: initialData?.name || "",
+    });
+    router.push(
+      `${PAGES.ADMIN.VENUES.SEATING_CHART.CREATE.path}?${params.toString()}`,
+    );
+  };
+
   return (
     <form
       onSubmit={handleSubmit(handleFormSubmit)}
       className="w-full max-w-2xl mx-auto"
     >
       {/* 버튼 그룹 */}
-      <div className="flex gap-3 justify-end mb-3">
+      <div className="flex justify-end gap-3 mb-3">
+        {isViewMode && (
+          <Button onClick={handleCreateSeatingChart}>배치도 등록/수정</Button>
+        )}
         <Button
           type="button"
           variant="outline"
@@ -126,7 +138,6 @@ export function VenueForm({
         >
           {isViewMode ? "목록으로" : "취소"}
         </Button>
-
         {!isViewMode && (
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting
@@ -193,7 +204,7 @@ export function VenueForm({
 
             {/* 메타데이터 (상세보기/수정 모드에서만 표시) */}
             {initialData && (mode === "edit" || mode === "view") && (
-              <div className="space-y-4 pt-4 border-t">
+              <div className="pt-4 space-y-4 border-t">
                 <h3 className="font-medium text-gray-900">메타데이터</h3>
 
                 <div className="grid grid-cols-2 gap-4">

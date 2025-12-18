@@ -1,7 +1,5 @@
-import type {
-  SeatGradeForBE,
-  StaticSeatVenue,
-} from "../types/seatLayout.types";
+import type { VenueSeatCapacityRequest } from "@/shared/api/orval/types";
+import type { StaticSeatVenue } from "../types/seatLayout.types";
 
 /**
  * 좌석 배치도 컨버터 유틸리티
@@ -9,28 +7,27 @@ import type {
 
 /**
  * StaticSeatVenue에서 각 등급별 좌석 수를 계산합니다
- * @param step1Data - 1단계 좌석 배치도 데이터
+ * @param staticSeatVenue - 1단계 좌석 배치도 데이터
  * @returns 등급별 좌석 수 정보
  */
 export function extractSeatGradeInfo(
-  step1Data: StaticSeatVenue,
-): SeatGradeForBE[] {
-  const gradeInfo: Record<string, { gradeName: string; seatCount: number }> =
-    {};
+  staticSeatVenue: StaticSeatVenue,
+): VenueSeatCapacityRequest[] {
+  const gradeInfo: Record<string, { gradeName: string; capacity: number }> = {};
 
   // 모든 좌석 타입을 우선 초기화 (좌석 수 0으로)
-  Object.entries(step1Data.seatTypes).forEach(([gradeId, seatType]) => {
-    gradeInfo[gradeId] = {
+  Object.entries(staticSeatVenue.seatTypes).forEach(([seatGrade, seatType]) => {
+    gradeInfo[seatGrade] = {
       gradeName: seatType.label,
-      seatCount: 0,
+      capacity: 0,
     };
   });
 
   // 각 좌석 위치를 검사하여 등급별 좌석 수 계산
-  for (let row = 0; row < step1Data.rows; row++) {
-    for (let col = 0; col < step1Data.columns; col++) {
+  for (let row = 0; row < staticSeatVenue.rows; row++) {
+    for (let col = 0; col < staticSeatVenue.columns; col++) {
       // 비활성화된 좌석은 제외
-      const isDisabled = step1Data.disabledSeats.some(
+      const isDisabled = staticSeatVenue.disabledSeats.some(
         (seat) => seat.row === row && seat.col === col,
       );
       if (isDisabled) {
@@ -38,20 +35,19 @@ export function extractSeatGradeInfo(
       }
 
       // 해당 좌석의 등급 찾기
-      const gradeKey = getSeatGradeKey(row, col, step1Data);
+      const gradeKey = getSeatGradeKey(row, col, staticSeatVenue);
 
       if (gradeInfo[gradeKey]) {
-        gradeInfo[gradeKey].seatCount++;
+        gradeInfo[gradeKey].capacity++;
       }
     }
   }
 
   // 결과 배열로 변환 (좌석 타입 정의 순서 유지)
-  return Object.keys(step1Data.seatTypes).map((gradeId) => ({
-    gradeId,
-    gradeName: gradeInfo[gradeId].gradeName,
-    seatCount: gradeInfo[gradeId].seatCount,
-  }));
+  return Object.keys(staticSeatVenue.seatTypes).map((seatGrade) => ({
+    seatGrade: gradeInfo[seatGrade].gradeName,
+    capacity: gradeInfo[seatGrade].capacity,
+  })) as VenueSeatCapacityRequest[];
 }
 
 /**
@@ -116,7 +112,7 @@ function getSeatGradeKey(
  */
 export function restoreStaticSeatVenue(
   jsonData: StaticSeatVenue,
-  gradeInfo?: SeatGradeForBE[],
+  gradeInfo?: VenueSeatCapacityRequest[],
 ): Omit<StaticSeatVenue, "venueId"> {
   // JSON 데이터 유효성 검증
   if (
@@ -140,11 +136,11 @@ export function restoreStaticSeatVenue(
     // 각 등급의 좌석 수 확인
     for (const beGrade of gradeInfo) {
       const calculatedGrade = calculatedGradeInfo.find(
-        (g) => g.gradeId === beGrade.gradeId,
+        (g) => g.seatGrade === beGrade.seatGrade,
       );
-      if (calculatedGrade && calculatedGrade.seatCount !== beGrade.seatCount) {
+      if (calculatedGrade && calculatedGrade.capacity !== beGrade.capacity) {
         console.warn(
-          `Seat count mismatch for grade ${beGrade.gradeId}: JSON=${calculatedGrade.seatCount}, BE=${beGrade.seatCount}`,
+          `Seat count mismatch for grade ${beGrade.seatGrade}: JSON=${calculatedGrade.capacity}, BE=${beGrade.capacity}`,
         );
       }
     }
@@ -163,25 +159,26 @@ export function restoreStaticSeatVenue(
 
 /**
  * StaticSeatVenue를 BE 저장용 형태로 변환합니다
- * @param step1Data - 1단계 데이터
+ * @param staticSeatVenue - 1단계 데이터
  * @returns BE 저장용 객체
  */
-export function convertForBEStorage(step1Data: StaticSeatVenue) {
-  const gradeInfo = extractSeatGradeInfo(step1Data);
+export function convertForBEStorage(staticSeatVenue: StaticSeatVenue) {
+  const gradeInfo = extractSeatGradeInfo(staticSeatVenue);
 
   return {
     // JSON으로 저장할 전체 배치도 데이터
-    layoutJson: step1Data,
+    layoutJson: staticSeatVenue,
 
     // 등급별 정보 (별도 테이블에 저장)
     seatGrades: gradeInfo,
 
     // 기본 통계 정보
     summary: {
-      totalSeats: step1Data.rows * step1Data.columns,
+      totalSeats: staticSeatVenue.rows * staticSeatVenue.columns,
       availableSeats:
-        step1Data.rows * step1Data.columns - step1Data.disabledSeats.length,
-      disabledSeats: step1Data.disabledSeats.length,
+        staticSeatVenue.rows * staticSeatVenue.columns -
+        staticSeatVenue.disabledSeats.length,
+      disabledSeats: staticSeatVenue.disabledSeats.length,
       gradeCount: gradeInfo.length,
     },
   };
@@ -204,31 +201,33 @@ export function checkGradeInfoUpdates(
   const gradeCountChanged = oldGradeInfo.length !== newGradeInfo.length;
 
   // 등급별 좌석 수 변경 확인
-  const seatCountChanges: Array<{
-    gradeId: string;
+  const capacityChanges: Array<{
+    seatGrade: string;
     gradeName: string;
     oldCount: number;
     newCount: number;
   }> = [];
 
   for (const newGrade of newGradeInfo) {
-    const oldGrade = oldGradeInfo.find((g) => g.gradeId === newGrade.gradeId);
+    const oldGrade = oldGradeInfo.find(
+      (g) => g.seatGrade === newGrade.seatGrade,
+    );
 
     if (!oldGrade) {
       // 새로 추가된 등급
-      seatCountChanges.push({
-        gradeId: newGrade.gradeId,
-        gradeName: newGrade.gradeName,
+      capacityChanges.push({
+        seatGrade: newGrade.seatGrade,
+        gradeName: newGrade.seatGrade,
         oldCount: 0,
-        newCount: newGrade.seatCount,
+        newCount: newGrade.capacity,
       });
-    } else if (oldGrade.seatCount !== newGrade.seatCount) {
+    } else if (oldGrade.capacity !== newGrade.capacity) {
       // 좌석 수가 변경된 등급
-      seatCountChanges.push({
-        gradeId: newGrade.gradeId,
-        gradeName: newGrade.gradeName,
-        oldCount: oldGrade.seatCount,
-        newCount: newGrade.seatCount,
+      capacityChanges.push({
+        seatGrade: newGrade.seatGrade,
+        gradeName: newGrade.seatGrade,
+        oldCount: oldGrade.capacity,
+        newCount: newGrade.capacity,
       });
     }
   }
@@ -236,22 +235,22 @@ export function checkGradeInfoUpdates(
   // 삭제된 등급 확인
   for (const oldGrade of oldGradeInfo) {
     const stillExists = newGradeInfo.find(
-      (g) => g.gradeId === oldGrade.gradeId,
+      (g) => g.seatGrade === oldGrade.seatGrade,
     );
     if (!stillExists) {
-      seatCountChanges.push({
-        gradeId: oldGrade.gradeId,
-        gradeName: oldGrade.gradeName,
-        oldCount: oldGrade.seatCount,
+      capacityChanges.push({
+        seatGrade: oldGrade.seatGrade,
+        gradeName: oldGrade.seatGrade,
+        oldCount: oldGrade.capacity,
         newCount: 0,
       });
     }
   }
 
   return {
-    hasChanges: gradeCountChanged || seatCountChanges.length > 0,
+    hasChanges: gradeCountChanged || capacityChanges.length > 0,
     gradeCountChanged,
-    seatCountChanges,
+    capacityChanges,
     newGradeInfo,
   };
 }

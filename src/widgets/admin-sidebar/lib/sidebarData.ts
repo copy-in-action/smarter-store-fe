@@ -45,10 +45,6 @@ export const adminSidebarData: SidebarData = {
           title: "공연장 리스트",
           url: PAGES.ADMIN.VENUES.LIST.path,
         },
-        {
-          title: "좌석 배치도",
-          url: PAGES.ADMIN.VENUES.SEAT.CREATE.path,
-        },
       ],
     },
     {
