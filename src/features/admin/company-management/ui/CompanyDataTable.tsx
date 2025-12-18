@@ -53,7 +53,6 @@ interface DataTableProps<TData, TValue> {
 export function CompanyDataTable<TData, TValue>({
   columns,
   data,
-  searchKey = "name",
   searchPlaceholder = "검색...",
   isLoading = false,
 }: DataTableProps<TData, TValue>) {
@@ -64,23 +63,43 @@ export function CompanyDataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [globalFilter, setGlobalFilter] = React.useState("");
+
+  // 글로벌 필터링 함수 정의
+  const globalFilterFn = (row: any, columnId: string, filterValue: string) => {
+    const search = filterValue.toLowerCase();
+    const name = row.getValue("name")?.toString().toLowerCase() || "";
+    const ceoName = row.getValue("ceoName")?.toString().toLowerCase() || "";
+    const businessNumber =
+      row.getValue("businessNumber")?.toString().toLowerCase() || "";
+
+    // 상호, 대표자명, 사업자번호에서 검색
+    return (
+      name.includes(search) ||
+      ceoName.includes(search) ||
+      businessNumber.includes(search)
+    );
+  };
 
   const table = useReactTable({
     data,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    globalFilterFn: globalFilterFn,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
+      globalFilter,
     },
   });
 
@@ -92,13 +111,9 @@ export function CompanyDataTable<TData, TValue>({
           <Search className="w-4 h-4 text-muted-foreground" />
           <Input
             placeholder={searchPlaceholder}
-            value={
-              (table.getColumn(searchKey)?.getFilterValue() as string) ?? ""
-            }
-            onChange={(event) =>
-              table.getColumn(searchKey)?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
+            value={globalFilter ?? ""}
+            onChange={(event) => setGlobalFilter(event.target.value)}
+            className="min-w-lg"
             disabled={isLoading}
           />
         </div>
