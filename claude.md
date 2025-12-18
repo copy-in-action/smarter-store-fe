@@ -1,70 +1,151 @@
 # Claude 개발 가이드 (AI 참조용)
 
-## 🚀 QUICK REFERENCE
-
-### 필수 준수 사항
-- ✅ **모든 함수**: JSDoc 주석 필수 (목적, @param, @returns)
-- ✅ **모든 인터페이스/타입**: 각 프로퍼티에 `/** 설명 */` 주석 필수
+## 🚀 필수 준수 사항
+- ✅ **함수 JSDoc 주석**: 목적, @param, @returns 필수
+- ✅ **인터페이스 프로퍼티 주석**: `/** 설명 */` 필수
 - ✅ **5줄 이상 분기문**: 분기 로직 설명 주석 필수
 - ✅ **Server Component 우선**: 상호작용 필요시만 `'use client'`
-- ✅ **SSR/SEO 우선**: generateMetadata, fetch 캐싱 활용
 - ✅ **FSD Public API**: index.ts를 통한 export만 허용
 - ✅ **pnpm 사용**: npm, yarn 사용 금지
 - ✅ **Shadcn UI**: shared/ui에 설치, `@/shared/ui`로 import
 
-### FSD 레이어 의존성 규칙
+## FSD 레이어 의존성
 ```
 app → views → widgets → features → entities → shared
      (하위 레이어만 import 가능)
 ```
 
-### 파일 네이밍
+## 라우팅 & 메타데이터
+```typescript
+// PAGES 상수 사용 필수 (src/shared/constants/routes.ts)
+import { PAGES } from '@/shared/constants/routes';
+
+// ✅ 링크 생성
+<Link href={PAGES.AUTH.LOGIN.path}>로그인</Link>
+<Link href={PAGES.PRODUCT.DETAIL.path(productId)}>상품 상세</Link>
+
+// ✅ 메타데이터 설정
+export const metadata = PAGES.AUTH.LOGIN.metadata;
+
+// ✅ 동적 메타데이터
+export async function generateMetadata({ params }) {
+  const product = await getProduct(params.id);
+  return PAGES.PRODUCT.DETAIL.metadata(product.name, product.description);
+}
+
+// ✅ Server Component (기본)
+export default async function ProductPage({ params }: Props) {
+  const {id} = await params
+  const product = await fetchProduct(id);
+  return <ProductDetail product={product} />;
+}
+```
+## FSD 스키마 설정 (Zod)
+
+### entities: 기본 스키마
+
+```typescript
+// src/entities/performance/model/performance.schema.ts
+// orval 타입 기반 요청 스키마만 생성 (응답 스키마 X)
+export const createPerformanceSchema = z.object({
+  title: z.string().min(1, "공연명을 입력해주세요").max(255),
+  category: z.string().min(1, "카테고리를 선택해주세요"),
+  visible: z.boolean().default(true),
+  venueId: z.number().positive().optional(),
+  startDate: z.string().min(1, "시작일을 입력해주세요"),
+  endDate: z.string().min(1, "종료일을 입력해주세요"),
+  // orval의 모든 필드 포함
+});
+
+export const updatePerformanceSchema = z.object({
+  // 수정용 스키마 - 모든 필드 정의
+});
+
+export type CreatePerformanceForm = z.infer<typeof createPerformanceSchema>;
+export type UpdatePerformanceForm = z.infer<typeof updatePerformanceSchema>;
+```
+
+### features: entities 상속 + 폼 로직
+```typescript
+// src/features/performance-form/model/performance-form.schema.ts
+import { createPerformanceSchema } from "@/entities/performance/model/performance.schema";
+
+// 폼 특화: 문자열→숫자 변환, 날짜 검증 등
+export const createPerformanceFormSchema = createPerformanceSchema.extend({
+  runningTime: z.string().optional().transform(val => parseInt(val, 10)),
+  venueId: z.string().transform(val => parseInt(val, 10)).optional(),
+  companyId: z.string().optional().transform(val => parseInt(val, 10)),
+}).refine(
+  (data) => {
+    if (data.startDate && data.endDate) {
+      return new Date(data.startDate) <= new Date(data.endDate);
+    }
+    return true;
+  },
+  { message: "종료일은 시작일보다 늦어야 합니다", path: ["endDate"] }
+);
+
+// 타입 분리: input(폼) vs output(서버)
+export type CreatePerformanceFormInput = z.input<typeof createPerformanceFormSchema>;
+export type CreatePerformanceFormData = z.output<typeof createPerformanceFormSchema>;
+
+// 호환성 유지
+export const performanceFormSchema = createPerformanceFormSchema;
+export type PerformanceFormInput = CreatePerformanceFormInput;
+export type PerformanceFormData = CreatePerformanceFormData;
+```
+
+### 스키마 설계 원칙
+- ❌ **응답 스키마 생성 금지**: orval 자동 생성 타입 사용
+- ✅ **요청 스키마만**: 생성/수정용만 
+- ✅ **FSD 의존성**: features가 entities 상속
+- ✅ **폼 로직 분리**: entities(순수) vs features(폼 특화)
+- ✅ **변환 로직**: `.transform()` 사용 (문자열 → 숫자)
+- ✅ **검증 로직**: `.refine()` 사용 (복합 검증)
+
+## Shadcn UI 사용법
+```typescript
+// 설치
+pnpm dlx shadcn@latest add button card input
+
+// 사용
+import { Button } from '@/shared/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
+import { Input } from '@/shared/ui/input';
+```
+
+## 폴더 구조 & Import 규칙
+```typescript
+// 슬라이스 내부 구조
+feature-name/
+├── ui/              # UI 컴포넌트
+├── api/             # API 메서드
+├── model/           # 타입, 스키마
+├── lib/             # 유틸리티
+└── index.ts         # Public API
+
+// Public API만 export
+// src/entities/product/index.ts
+export { ProductCard } from './ui/ProductCard';
+export { getProducts } from './api/product.api';
+export type { Product } from './model/types';
+
+// ✅ 올바른 import
+import { ProductCard, getProducts } from '@/entities/product';
+
+// ❌ 직접 접근 금지
+import { ProductCard } from '@/entities/product/ui/ProductCard';
+```
+
+## 파일 네이밍
 - 컴포넌트: `PascalCase.tsx`
 - API: `camelCase.api.ts`
+- 스키마: `camelCase.schema.ts`
 - 타입: `camelCase.types.ts`
-- 유틸리티: `camelCase.ts`
 
----
+## 주석 규칙
 
-## FSD 레이어 규칙
-
-### 1. shared (공유 레이어)
-- 프로젝트 전체에서 사용되는 공통 코드
-- 다른 레이어에 의존하지 않음
-- UI 컴포넌트 (Shadcn UI 포함), 유틸, API 클라이언트 등
-
-### 2. entities (엔티티 레이어)
-- 비즈니스 엔티티 (Product, User, Order 등)
-- shared에만 의존
-- UI 컴포넌트, 모델, API 메서드 포함
-
-### 3. features (기능 레이어)
-- 사용자 시나리오와 기능 (로그인, 장바구니 추가 등)
-- shared, entities에 의존
-- 사용자 상호작용 처리
-
-### 4. widgets (위젯 레이어)
-- 독립적인 UI 블록 (Header, Footer, ProductCard 등)
-- shared, entities, features에 의존
-- 여러 features를 조합 가능
-
-### 5. views (페이지 레이어)
-- 페이지 단위 컴포넌트
-- 모든 하위 레이어 사용 가능
-- **주의**: Next.js의 `app/` 폴더와 분리됨
-
-### 6. app (앱 레이어)
-- Next.js App Router (라우팅)
-- Providers, 전역 설정
-- views를 import하여 사용
-
----
-
-## 개발 규칙
-
-### TypeScript
-
-#### 인터페이스 주석 (필수)
+### 인터페이스 주석 (필수)
 ```typescript
 /**
  * 상품 정보 인터페이스
@@ -76,15 +157,10 @@ interface Product {
   name: string;
   /** 가격 (원) */
   price: number;
-  /** 재고 수량 */
-  stock: number;
-  /** 상품 설명 */
-  description?: string;
 }
 ```
 
 ### 함수 주석 (필수)
-
 ```typescript
 /**
  * 상품 목록을 조회합니다
@@ -98,7 +174,6 @@ async function fetchProducts(page: number, limit: number) {
 ```
 
 ### 분기문 주석 (5줄 이상 필수)
-
 ```typescript
 /**
  * 사용자 권한에 따라 접근 가능한 메뉴를 필터링합니다
@@ -115,411 +190,10 @@ if (user.role === 'admin') {
 }
 ```
 
-### 복잡한 로직 주석 예시
-
-```typescript
-/**
- * 사용자의 주문 가능 여부를 확인합니다
- *
- * 다음 조건을 모두 만족해야 주문 가능:
- * - 로그인 상태
- * - 이메일 인증 완료
- * - 배송지 정보 등록
- * - 결제 수단 등록
- *
- * @param userId - 사용자 ID
- * @returns 주문 가능 여부와 불가 사유
- */
-async function checkOrderAvailability(userId: string): Promise<{
-  /** 주문 가능 여부 */
-  available: boolean;
-  /** 불가 시 사유 */
-  reason?: string;
-}> {
-  const user = await getUser(userId);
-
-  // 로그인 체크
-  if (!user) {
-    return { available: false, reason: '로그인이 필요합니다' };
-  }
-
-  /**
-   * 사용자 인증 상태 확인
-   * - 이메일 미인증: 주문 불가
-   * - 전화번호 미인증: 경고만 표시
-   */
-  if (!user.emailVerified) {
-    return { available: false, reason: '이메일 인증이 필요합니다' };
-  }
-
-  // 배송지 정보 확인
-  if (!user.hasAddress) {
-    return { available: false, reason: '배송지를 등록해주세요' };
-  }
-
-  // 결제 수단 확인
-  if (!user.hasPaymentMethod) {
-    return { available: false, reason: '결제 수단을 등록해주세요' };
-  }
-
-  return { available: true };
-}
-```
-
-### Next.js SSR/SEO 우선 원칙
-
-#### 1. Server Components 우선
-```typescript
-// ✅ 좋은 예: Server Component (기본)
-export default async function ProductPage({ params }: Props) {
-  const product = await fetchProduct(params.id);
-  return <ProductDetail product={product} />;
-}
-
-// ❌ 나쁜 예: 불필요한 Client Component
-'use client'
-export default function ProductPage() {
-  const [product, setProduct] = useState(null);
-  // ...
-}
-```
-
-#### 2. Metadata 설정 (SEO)
-```typescript
-/**
- * 동적 메타데이터 생성
- */
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const product = await fetchProduct(params.id);
-
-  return {
-    title: product.name,
-    description: product.description,
-    openGraph: {
-      images: [product.image],
-    },
-  };
-}
-```
-
-#### 3. 데이터 Fetching
-```typescript
-/**
- * 서버에서 상품 데이터를 가져옵니다 (캐싱 적용)
- */
-async function fetchProduct(id: string) {
-  const res = await fetch(`${API_URL}/products/${id}`, {
-    next: { revalidate: 3600 } // 1시간 캐싱
-  });
-  return res.json();
-}
-```
-
-#### 4. Client Component는 필요시에만
-상호작용이 필요한 경우에만 `'use client'` 사용:
-- useState, useEffect 등 React hooks
-- 이벤트 핸들러
-- 브라우저 API 사용
-
-### 페이지 라우트와 메타데이터 관리
-
-#### 통합 상수 사용
-```typescript
-// src/shared/constants/routes.ts 사용
-import { PAGES } from '@/shared/constants/routes';
-
-// ✅ 링크 생성
-<Link href={PAGES.AUTH.LOGIN.path}>로그인</Link>
-
-// ✅ 메타데이터 설정
-export const metadata = PAGES.AUTH.LOGIN.metadata;
-
-// ✅ 동적 라우트
-<Link href={PAGES.PRODUCT.DETAIL.path(productId)}>상품 상세</Link>
-
-// ✅ 동적 메타데이터
-export async function generateMetadata({ params }) {
-  const product = await getProduct(params.id);
-  return PAGES.PRODUCT.DETAIL.metadata(product.name, product.description);
-}
-```
-
-#### 새 페이지 추가 시
-1. `PAGES` 객체에 `path`와 `metadata`를 함께 추가
-2. 한 곳에서 URL과 메타데이터를 동시 관리
-3. 수정 시 한 곳만 변경하면 전체 반영
-
-### API 통신
-
-#### API 클라이언트 구조
-```typescript
-// src/shared/api/client.ts
-
-/**
- * API 기본 URL
- */
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-
-/**
- * API 요청을 위한 fetch 래퍼
- * @param endpoint - API 엔드포인트
- * @param options - fetch 옵션
- * @returns 응답 데이터
- */
-export async function apiClient<T>(
-  endpoint: string,
-  options?: RequestInit
-): Promise<T> {
-  const res = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  });
-
-  if (!res.ok) {
-    throw new Error(`API Error: ${res.status}`);
-  }
-
-  return res.json();
-}
-```
-
-#### 엔티티별 API
-```typescript
-// src/entities/product/api/product.api.ts
-
-/**
- * 상품 목록 응답 타입
- */
-interface ProductListResponse {
-  /** 상품 배열 */
-  products: Product[];
-  /** 전체 상품 수 */
-  total: number;
-}
-
-/**
- * 상품 목록을 조회합니다
- * @param page - 페이지 번호 (1부터 시작)
- * @param limit - 페이지당 항목 수
- * @returns 상품 목록과 총 개수
- */
-export async function getProducts(
-  page: number = 1,
-  limit: number = 20
-): Promise<ProductListResponse> {
-  return apiClient(`/products?page=${page}&limit=${limit}`);
-}
-```
-
-### Shadcn UI 사용법
-
-#### 컴포넌트 설치
-```bash
-# 버튼 컴포넌트 설치
-pnpm dlx shadcn@latest add button
-
-# 카드 컴포넌트 설치
-pnpm dlx shadcn@latest add card
-
-# 입력 컴포넌트 설치
-pnpm dlx shadcn@latest add input
-```
-
-#### Import 및 사용
-```typescript
-import { Button } from '@/shared/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
-import { Input } from '@/shared/ui/input';
-
-/**
- * Shadcn UI 컴포넌트 사용 예시
- */
-export function ExampleComponent() {
-  return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>로그인</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Input placeholder="이메일을 입력하세요" />
-        <Button className="w-full mt-4">로그인</Button>
-      </CardContent>
-    </Card>
-  );
-}
-```
-
-### 컴포넌트 작성
-
-#### Server Component
-```typescript
-// src/views/product/ProductListView.tsx
-
-/**
- * 상품 목록 페이지 뷰
- * @param searchParams - URL 쿼리 파라미터
- */
-export default async function ProductListView({
-  searchParams,
-}: {
-  searchParams: { page?: string };
-}) {
-  const page = Number(searchParams.page) || 1;
-  const { products, total } = await getProducts(page);
-
-  return (
-    <div>
-      <ProductList products={products} />
-      <Pagination total={total} currentPage={page} />
-    </div>
-  );
-}
-```
-
-#### Client Component
-```typescript
-// src/features/cart/ui/AddToCartButton.tsx
-'use client';
-
-import { Button } from '@/shared/ui/button';
-
-/**
- * 장바구니 추가 버튼 속성
- */
-interface AddToCartButtonProps {
-  /** 상품 ID */
-  productId: string;
-  /** 상품명 */
-  productName: string;
-}
-
-/**
- * 장바구니에 상품을 추가하는 버튼 컴포넌트
- */
-export function AddToCartButton({ productId, productName }: AddToCartButtonProps) {
-  /**
-   * 장바구니 추가 핸들러
-   */
-  const handleAddToCart = () => {
-    // 구현
-  };
-
-  return (
-    <Button onClick={handleAddToCart} variant="default">
-      장바구니 담기
-    </Button>
-  );
-}
-```
-
----
-
-## 폴더 구조
-
-### 슬라이스 내부 구조
-```
-feature-name/
-├── ui/              # UI 컴포넌트
-├── api/             # API 메서드
-├── model/           # 타입, 상태, 비즈니스 로직
-├── lib/             # 유틸리티
-└── index.ts         # Public API
-```
-
-### Import 규칙
-
-#### Public API만 export
-```typescript
-// src/entities/product/index.ts
-export { ProductCard } from './ui/ProductCard';
-export { getProducts, getProduct } from './api/product.api';
-export type { Product } from './model/types';
-```
-
-#### 다른 레이어에서 사용
-```typescript
-// ✅ 좋은 예: Public API 사용
-import { ProductCard, getProducts } from '@/entities/product';
-
-// ❌ 나쁜 예: 내부 구조 직접 접근
-import { ProductCard } from '@/entities/product/ui/ProductCard';
-```
-
----
-
-## 코딩 컨벤션
-
-### Import 순서 (Biome가 자동 정리)
-1. React 관련
-2. Next.js 관련
-3. 외부 라이브러리
-4. FSD 레이어 순서 (shared → entities → features → widgets → views)
-5. 상대 경로 import
-6. CSS/스타일
-
-### 함수 컴포넌트
-```typescript
-/**
- * 컴포넌트 설명
- */
-export default function ComponentName() {
-  return <div>...</div>;
-}
-```
-
----
-
-## 개발 워크플로우
-
-### 1단계: FSD 레이어 결정
-```
-비즈니스 엔티티 (Product, User)      → entities/
-사용자 기능 (로그인, 장바구니)         → features/
-독립적 UI 블록 (Header, Footer)      → widgets/
-전체 페이지 (상품 목록, 상세)         → views/
-```
-
-### 2단계: 폴더 생성
-```bash
-src/features/my-feature/
-├── ui/              # UI 컴포넌트
-├── api/             # API 메서드
-├── model/           # 타입, 상태, 비즈니스 로직
-└── index.ts         # Public API export
-```
-
-### 3단계: 개발
-1. **타입 정의**: 인터페이스 주석 필수
-2. **API 구현**: 함수 주석 필수
-3. **컴포넌트 작성**: Server Component 우선
-4. **Public API export**: index.ts
-
-### 4단계: 체크리스트
-- [ ] 함수/인터페이스 주석 작성
-- [ ] Server Component 우선 적용
-- [ ] Public API export
+## 개발 체크리스트
+- [ ] 함수/인터페이스 JSDoc 주석 작성
+- [ ] Server Component 우선 적용 ('use client' 최소화)
+- [ ] FSD Public API export (index.ts)
+- [ ] PAGES 상수 사용 (routes.ts)
+- [ ] Shadcn UI 컴포넌트 활용
 - [ ] `pnpm lint` 통과
-
----
-
-## 코드 품질 체크리스트
-
-### 작성 전
-- [ ] FSD 레이어 결정
-- [ ] Server/Client Component 결정
-- [ ] SSR/SEO 전략 수립
-
-### 작성 중
-- [ ] 함수 JSDoc 주석 (목적, @param, @returns)
-- [ ] 인터페이스 프로퍼티 주석 (`/** 설명 */`)
-- [ ] 5줄 이상 분기문 설명 주석
-- [ ] TypeScript 타입 명시
-
-### 작성 후
-- [ ] `pnpm lint` 통과
-- [ ] Public API export 확인 (index.ts)
-- [ ] `pnpm build` 성공
-- [ ] SSR 동작 확인 (generateMetadata, fetch 캐싱)

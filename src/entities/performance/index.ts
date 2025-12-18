@@ -4,23 +4,19 @@
 
 export {
   PERFORMANCE_QUERY_KEYS,
-  usePerformances,
-  usePerformance,
   useCreatePerformance,
-  useUpdatePerformance,
   useDeletePerformance,
+  usePerformance,
+  usePerformances,
+  useUpdatePerformance,
 } from "./api/performance.api";
-
-export {
-  performanceSchema,
-  createPerformanceSchema,
-  updatePerformanceSchema,
-  performanceFilterSchema,
-} from "./model/performance.schema";
-
 export type {
-  Performance,
   CreatePerformanceForm,
-  UpdatePerformanceForm,
   PerformanceFilter,
+  UpdatePerformanceForm,
+} from "./model/performance.schema";
+export {
+  createPerformanceSchema,
+  performanceFilterSchema,
+  updatePerformanceSchema,
 } from "./model/performance.schema";
