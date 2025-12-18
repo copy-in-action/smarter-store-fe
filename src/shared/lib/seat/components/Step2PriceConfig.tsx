@@ -138,7 +138,7 @@ export function Step2PriceConfig({
    */
   const getTotalSeats = () => {
     const gradeInfo = extractSeatGradeInfo(step1Data);
-    return gradeInfo.reduce((total, grade) => total + grade.seatCount, 0);
+    return gradeInfo.reduce((total, grade) => total + grade.capacity, 0);
   };
 
   /**
@@ -146,8 +146,10 @@ export function Step2PriceConfig({
    */
   const getSeatsPerType = (seatTypeKey: string) => {
     const gradeInfo = extractSeatGradeInfo(step1Data);
-    const gradeData = gradeInfo.find((grade) => grade.gradeId === seatTypeKey);
-    return gradeData ? gradeData.seatCount : 0;
+    const gradeData = gradeInfo.find(
+      (grade) => grade.seatGrade === seatTypeKey,
+    );
+    return gradeData ? gradeData.capacity : 0;
   };
 
   /**
@@ -194,9 +196,9 @@ export function Step2PriceConfig({
   };
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-6 gap-8">
+    <div className="grid grid-cols-1 gap-8 xl:grid-cols-6">
       {/* 설정 패널 */}
-      <div className="space-y-6 col-span-2">
+      <div className="col-span-2 space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>좌석 배치도 요약</CardTitle>
@@ -278,7 +280,7 @@ export function Step2PriceConfig({
                   return (
                     <div
                       key={seatTypeKey}
-                      className="flex justify-between items-center"
+                      className="flex items-center justify-between"
                     >
                       <span className="text-gray-700">{seatType.label}</span>
                       <span className="font-medium">
@@ -287,8 +289,8 @@ export function Step2PriceConfig({
                     </div>
                   );
                 })}
-              <div className="border-t pt-2 mt-3">
-                <div className="flex justify-between items-center font-semibold text-lg">
+              <div className="pt-2 mt-3 border-t">
+                <div className="flex items-center justify-between text-lg font-semibold">
                   <span>예상 총 수익</span>
                   <span className="text-blue-600">
                     {Object.entries(priceData.seatTypes)
@@ -307,7 +309,7 @@ export function Step2PriceConfig({
           </CardContent>
         </Card>
 
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <Button onClick={onPrevious} variant="outline">
             이전 단계
           </Button>
@@ -330,7 +332,7 @@ export function Step2PriceConfig({
       </div>
 
       {/* 미리보기 패널 */}
-      <div className="sticky top-8 col-span-4">
+      <div className="sticky col-span-4 top-8">
         <Card>
           <CardHeader>
             <CardTitle>미리보기</CardTitle>

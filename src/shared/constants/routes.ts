@@ -273,9 +273,9 @@ const ADMIN_PAGES = {
       },
 
       /** 좌석배치도 */
-      SEAT: {
+      SEATING_CHART: {
         CREATE: {
-          path: "/admin/venues/seat/create",
+          path: "/admin/venues/seating-chart/create",
           metadata: {
             title: "좌석 배치도 등록 | 관리자",
             description: "공연장의 좌석 배치도를 등록하세요.",

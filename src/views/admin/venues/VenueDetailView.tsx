@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useVenue } from '@/entities/venue';
-import { VenueDetailForm } from '@/features/venue-form';
-import { Card, CardContent } from '@/shared/ui/card';
+import { useVenue } from "@/entities/venue";
+import { VenueDetailForm } from "@/features/venue-form";
+import { Card, CardContent } from "@/shared/ui/card";
 
 /**
  * 공연장 상세 페이지 뷰 컴포넌트 속성
@@ -23,26 +23,26 @@ export default function VenueDetailView({ venueId }: VenueDetailViewProps) {
    */
   if (isLoading) {
     return (
-      <div className="container mx-auto py-6">
+      <div className="container py-6 mx-auto">
         <Card className="w-full max-w-2xl mx-auto">
           <CardContent className="p-8">
             <div className="space-y-4">
-              <div className="h-6 w-32 bg-gray-200 rounded animate-pulse" />
+              <div className="w-32 h-6 bg-gray-200 rounded animate-pulse" />
               <div className="space-y-3">
                 {Array.from({ length: 3 }).map((_, index) => (
-                  <div key={index} className="space-y-2">
-                    <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
-                    <div className="h-10 w-full bg-gray-200 rounded animate-pulse" />
+                  <div key={index.toString()} className="space-y-2">
+                    <div className="w-24 h-4 bg-gray-200 rounded animate-pulse" />
+                    <div className="w-full h-10 bg-gray-200 rounded animate-pulse" />
                   </div>
                 ))}
               </div>
               <div className="pt-4 border-t">
-                <div className="h-4 w-20 bg-gray-200 rounded animate-pulse mb-3" />
+                <div className="w-20 h-4 mb-3 bg-gray-200 rounded animate-pulse" />
                 <div className="grid grid-cols-2 gap-4">
                   {Array.from({ length: 2 }).map((_, index) => (
-                    <div key={index} className="space-y-1">
-                      <div className="h-3 w-16 bg-gray-200 rounded animate-pulse" />
-                      <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
+                    <div key={index.toString()} className="space-y-1">
+                      <div className="w-16 h-3 bg-gray-200 rounded animate-pulse" />
+                      <div className="w-24 h-4 bg-gray-200 rounded animate-pulse" />
                     </div>
                   ))}
                 </div>
@@ -59,17 +59,17 @@ export default function VenueDetailView({ venueId }: VenueDetailViewProps) {
    */
   if (error) {
     return (
-      <div className="container mx-auto py-6">
+      <div className="container py-6 mx-auto">
         <Card className="w-full max-w-2xl mx-auto">
           <CardContent className="p-8">
             <div className="text-center">
-              <h2 className="text-xl font-semibold text-red-600 mb-2">
+              <h2 className="mb-2 text-xl font-semibold text-red-600">
                 데이터 로딩 실패
               </h2>
               <p className="text-gray-600">
                 공연장 정보를 불러오는 중 오류가 발생했습니다.
               </p>
-              <p className="text-sm text-red-500 mt-2">{error.message}</p>
+              <p className="mt-2 text-sm text-red-500">{error.message}</p>
             </div>
           </CardContent>
         </Card>
@@ -82,11 +82,11 @@ export default function VenueDetailView({ venueId }: VenueDetailViewProps) {
    */
   if (!venue) {
     return (
-      <div className="container mx-auto py-6">
+      <div className="container py-6 mx-auto">
         <Card className="w-full max-w-2xl mx-auto">
           <CardContent className="p-8">
             <div className="text-center">
-              <h2 className="text-xl font-semibold text-gray-600 mb-2">
+              <h2 className="mb-2 text-xl font-semibold text-gray-600">
                 공연장을 찾을 수 없습니다
               </h2>
               <p className="text-gray-600">
@@ -100,7 +100,7 @@ export default function VenueDetailView({ venueId }: VenueDetailViewProps) {
   }
 
   return (
-    <div className="container mx-auto py-6">
+    <div className="container py-6 mx-auto">
       <VenueDetailForm venue={venue} />
     </div>
   );

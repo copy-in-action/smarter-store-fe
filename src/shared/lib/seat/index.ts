@@ -6,7 +6,7 @@
 export { default as BookingSeatChart } from "./components/BookingSeatChart";
 // Components
 export { default as SeatChart } from "./components/SeatChart";
-export { Step1StaticVenueConfig } from "./components/Step1StaticVenueConfig";
+export { StaticSeatChart } from "./components/StaticSeatChart";
 export { Step2PriceConfig } from "./components/Step2PriceConfig";
 export { Step3FinalView } from "./components/Step3FinalView";
 // Constants
@@ -19,7 +19,6 @@ export type {
   SeatChartConfig,
   SeatChartMode,
   SeatGradeConfig,
-  SeatGradeForBE,
   SeatPosition,
   SeatStatus,
   SeatType,

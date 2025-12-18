@@ -16,7 +16,7 @@ export const isSeatInState = (
   col: number,
   seats: SeatPosition[],
 ): boolean => {
-  return seats.some((seat) => seat.row === row && seat.col === col);
+  return seats.some((seat) => seat.row === row && seat.col === col) || false;
 };
 
 /**

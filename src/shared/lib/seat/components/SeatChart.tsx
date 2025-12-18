@@ -328,7 +328,7 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
       {/* Fixed 위치 툴팁 */}
       {hoveredSeat && (
         <div
-          className="fixed z-50 px-2 py-1 text-xs text-white bg-gray-800 rounded whitespace-pre-line pointer-events-none min-w-max"
+          className="fixed z-50 px-2 py-1 text-xs text-white whitespace-pre-line bg-gray-800 rounded pointer-events-none min-w-max"
           style={{
             left: hoveredSeat.x,
             top: hoveredSeat.y - 8,

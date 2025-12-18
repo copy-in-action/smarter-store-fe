@@ -2,6 +2,7 @@
 
 import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import type { VenueSeatCapacityRequest } from "@/shared/api/orval/types";
 import {
   Accordion,
   AccordionContent,
@@ -16,40 +17,32 @@ import { Textarea } from "@/shared/ui/textarea";
 import type {
   SeatChartConfig,
   SeatGradeConfig,
-  SeatGradeForBE,
   StaticSeatVenue,
 } from "../types/seatLayout.types";
 import { extractSeatGradeInfo } from "../utils/seatConverters";
 import SeatChart from "./SeatChart";
 
-/**
- * 1단계 정적 좌석 배치도 설정 컴포넌트 속성
- */
-interface Step1StaticVenueConfigProps {
+interface StaticSeatChartProps {
   /** 초기 데이터 */
   initialData?: Partial<StaticSeatVenue>;
   /** 설정 변경 핸들러 */
   onDataChange: (data: StaticSeatVenue) => void;
-  /** 다음 단계로 진행 핸들러 */
-  onNext: () => void;
   /** BE 저장 핸들러 (선택적) */
   onSave?: (
     data: StaticSeatVenue,
-    gradeInfo: SeatGradeForBE[],
+    gradeInfo: VenueSeatCapacityRequest[],
   ) => Promise<void>;
 }
 
 /**
- * 1단계: 정적 좌석 배치도 설정을 입력받는 컴포넌트
+ * 관리자 페이지에서 공연장 배치도 기본(좌석, 등급)을 설정 할 때 사용하는 컴포넌트
  */
-export function Step1StaticVenueConfig({
+export function StaticSeatChart({
   initialData,
   onDataChange,
-  onNext,
   onSave,
-}: Step1StaticVenueConfigProps) {
+}: StaticSeatChartProps) {
   const [formData, setFormData] = useState<StaticSeatVenue>({
-    venueId: initialData?.venueId || 0,
     rows: initialData?.rows || 10,
     columns: initialData?.columns || 20,
     seatTypes: initialData?.seatTypes || {},
@@ -298,7 +291,7 @@ export function Step1StaticVenueConfig({
   };
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-6 gap-8">
+    <div className="grid grid-cols-1 gap-8 xl:grid-cols-6">
       {/* 설정 패널 */}
       <div className="col-span-2">
         <Accordion
@@ -386,7 +379,7 @@ export function Step1StaticVenueConfig({
                   </div>
                 ))}
                 {Object.keys(formData.seatTypes).length === 0 && (
-                  <p className="text-gray-500 text-center py-4">
+                  <p className="py-4 text-center text-gray-500">
                     좌석 타입을 추가해주세요
                   </p>
                 )}
@@ -462,7 +455,7 @@ export function Step1StaticVenueConfig({
                   </div>
                 ))}
                 {formData.seatGrades.length === 0 && (
-                  <p className="text-gray-500 text-center py-4">
+                  <p className="py-4 text-center text-gray-500">
                     좌석 등급을 설정해주세요
                   </p>
                 )}
@@ -540,7 +533,7 @@ export function Step1StaticVenueConfig({
                   </div>
                 ))}
                 {formData.disabledSeats.length === 0 && (
-                  <p className="text-gray-500 text-center py-4">
+                  <p className="py-4 text-center text-gray-500">
                     비활성화할 좌석이 없습니다
                   </p>
                 )}
@@ -595,7 +588,7 @@ export function Step1StaticVenueConfig({
                   </div>
                 ))}
                 {formData.rowSpacers.length === 0 && (
-                  <p className="text-gray-500 text-center py-4">
+                  <p className="py-4 text-center text-gray-500">
                     행 간격이 설정되지 않았습니다
                   </p>
                 )}
@@ -650,7 +643,7 @@ export function Step1StaticVenueConfig({
                   </div>
                 ))}
                 {formData.columnSpacers.length === 0 && (
-                  <p className="text-gray-500 text-center py-4">
+                  <p className="py-4 text-center text-gray-500">
                     열 간격이 설정되지 않았습니다
                   </p>
                 )}
@@ -659,7 +652,7 @@ export function Step1StaticVenueConfig({
           </AccordionItem>
         </Accordion>
 
-        <div className="flex justify-between items-center mt-6">
+        <div className="flex items-center justify-between mt-6">
           <div className="flex items-center gap-4">
             {onSave && (
               <Button
@@ -672,14 +665,11 @@ export function Step1StaticVenueConfig({
               </Button>
             )}
           </div>
-          <Button onClick={onNext} disabled={!isValid()} className="px-8">
-            다음 단계
-          </Button>
         </div>
       </div>
 
       {/* 미리보기 패널 */}
-      <div className="sticky top-8  col-span-4">
+      <div className="sticky col-span-4 top-8">
         <Card>
           <CardHeader>
             <CardTitle>미리보기</CardTitle>
@@ -692,7 +682,7 @@ export function Step1StaticVenueConfig({
             formData.seatGrades.length > 0 ? (
               <SeatChart config={createPreviewConfig()} />
             ) : (
-              <div className="text-center py-8 text-gray-500">
+              <div className="py-8 text-center text-gray-500">
                 <p>좌석 타입과 등급을 설정하면</p>
                 <p>미리보기가 표시됩니다</p>
               </div>
@@ -711,21 +701,21 @@ export function Step1StaticVenueConfig({
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                {getSeatGradePreview().map((grade, index) => (
+                {getSeatGradePreview().map((grade) => (
                   <div
-                    key={grade.gradeId}
-                    className="flex justify-between items-center"
+                    key={grade.seatGrade}
+                    className="flex items-center justify-between"
                   >
-                    <span className="font-medium">{grade.gradeName}</span>
-                    <span className="text-gray-600">{grade.seatCount}석</span>
+                    <span className="font-medium">{grade.seatGrade}</span>
+                    <span className="text-gray-600">{grade.capacity}석</span>
                   </div>
                 ))}
-                <div className="border-t pt-2 mt-3">
-                  <div className="flex justify-between items-center font-semibold">
+                <div className="pt-2 mt-3 border-t">
+                  <div className="flex items-center justify-between font-semibold">
                     <span>총 좌석 수</span>
                     <span>
                       {getSeatGradePreview().reduce(
-                        (total, grade) => total + grade.seatCount,
+                        (total, grade) => total + grade.capacity,
                         0,
                       )}
                       석

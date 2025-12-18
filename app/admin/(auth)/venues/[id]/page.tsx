@@ -1,4 +1,6 @@
+import { fetchSeatingChartOnServer } from "@/features/admin/seating-chart";
 import { PAGES } from "@/shared/constants/routes";
+import { SeatChart, type SeatChartConfig } from "@/shared/lib/seat";
 import VenueDetailView from "@/views/admin/venues/VenueDetailView";
 
 /**
@@ -23,6 +25,24 @@ export default async function VenueDetailPage({
 }: VenueDetailPageProps) {
   const { id } = await params;
   const venueId = Number(id);
+  // 서버사이드에서 기존 좌석 배치도 데이터 조회
+  const initialSeatingChart = await fetchSeatingChartOnServer(
+    Number.parseInt(id, 10),
+  );
 
-  return <VenueDetailView venueId={venueId || 0} />;
+  return (
+    <>
+      <VenueDetailView venueId={venueId || 0} />
+      {initialSeatingChart?.seatingChart && (
+        <div>
+          좌석 배치도
+          <SeatChart
+            config={
+              initialSeatingChart.seatingChart as unknown as SeatChartConfig
+            }
+          />
+        </div>
+      )}
+    </>
+  );
 }
