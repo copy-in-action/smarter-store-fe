@@ -45,6 +45,10 @@ export const adminSidebarData: SidebarData = {
           title: "공연장 리스트",
           url: PAGES.ADMIN.VENUES.LIST.path,
         },
+        {
+          title: "좌석 배치도",
+          url: PAGES.ADMIN.VENUES.SEAT.CREATE.path,
+        },
       ],
     },
     {
@@ -100,9 +104,10 @@ export function getActiveSidebarData(pathname: string): SidebarData {
     }
 
     // 단일 메뉴인 경우 - 대시보드는 정확히 일치할 때만 활성화
-    const isActive = item.url === "/admin/dashboard"
-      ? pathname === "/admin/dashboard" || pathname === "/admin"
-      : pathname === item.url;
+    const isActive =
+      item.url === "/admin/dashboard"
+        ? pathname === "/admin/dashboard" || pathname === "/admin"
+        : pathname === item.url;
 
     return {
       ...item,

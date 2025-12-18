@@ -21,8 +21,8 @@ export const isSeatInState = (
 
 /**
  * 좌석의 타입을 결정하는 함수
- * @param row - 행 번호
- * @param col - 열 번호
+ * @param row - 행 번호 (0부터 시작)
+ * @param col - 열 번호 (0부터 시작)
  * @param config - 좌석 차트 설정
  * @returns 좌석 타입 키
  */
@@ -35,22 +35,22 @@ export const getSeatType = (
   for (const grade of config.seatGrades || []) {
     const [rowPart, colPart] = grade.position.split(":");
 
-    // "3:" 형태 - 3행 전체
-    if (rowPart && !colPart && Number(rowPart) === row) {
+    // "3:" 형태 - 3행 전체 (사용자 입력은 1부터 시작하므로 -1)
+    if (rowPart && !colPart && Number(rowPart) - 1 === row) {
       return grade.seatTypeKey;
     }
 
-    // ":5" 형태 - 5열 전체
-    if (!rowPart && colPart && Number(colPart) === col) {
+    // ":5" 형태 - 5열 전체 (사용자 입력은 1부터 시작하므로 -1)
+    if (!rowPart && colPart && Number(colPart) - 1 === col) {
       return grade.seatTypeKey;
     }
 
-    // "3:5" 형태 - 3행 5열
+    // "3:5" 형태 - 3행 5열 (사용자 입력은 1부터 시작하므로 -1)
     if (
       rowPart &&
       colPart &&
-      Number(rowPart) === row &&
-      Number(colPart) === col
+      Number(rowPart) - 1 === row &&
+      Number(colPart) - 1 === col
     ) {
       return grade.seatTypeKey;
     }

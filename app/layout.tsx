@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Noto_Sans_KR } from "next/font/google";
-import { headers } from "next/headers";
-import "./globals.css";
-import { AuthProvider, QueryProvider } from "@/app/providers";
-import { getUserInfoServer } from "@/entities/user/api/user.server.api";
-import { AuthEventHandler } from "@/shared/components/AuthEventHandler";
+import { QueryProvider } from "@/app/providers";
 import { Toaster } from "@/shared/ui/sonner";
+import "./globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -28,27 +25,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // 미들웨어에서 설정한 인증 상태 헤더 읽기
-  const headersList = await headers();
-  const hasInitialAuth = headersList.get("x-has-auth") === "true";
-
-  // 인증된 경우 서버에서 사용자 정보 미리 조회
-  const initialUserData = hasInitialAuth ? await getUserInfoServer() : null;
-
   return (
     <html lang="ko">
       <body
         className={`${inter.variable} ${notoSansKR.variable} font-sans antialiased h-auto`}
       >
-        <QueryProvider>
-          <AuthProvider
-            hasInitialAuth={hasInitialAuth}
-            initialUserData={initialUserData}
-          >
-            <AuthEventHandler />
-            {children}
-          </AuthProvider>
-        </QueryProvider>
+        <QueryProvider>{children}</QueryProvider>
         <Toaster position="top-center" richColors theme="light" />
       </body>
     </html>

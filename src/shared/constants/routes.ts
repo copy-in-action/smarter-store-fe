@@ -271,6 +271,17 @@ const ADMIN_PAGES = {
           description: "공연장 정보를 수정하는 관리자 페이지",
         } as Metadata,
       },
+
+      /** 좌석배치도 */
+      SEAT: {
+        CREATE: {
+          path: "/admin/venues/seat/create",
+          metadata: {
+            title: "좌석 배치도 등록 | 관리자",
+            description: "공연장의 좌석 배치도를 등록하세요.",
+          } as Metadata,
+        },
+      },
     },
     PERFORMANCES: {
       /** 공연 목록 */
