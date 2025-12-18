@@ -14,7 +14,7 @@ import {
   getAllVenues,
   getVenue,
   updateVenue,
-} from "@/shared/api/orval/venues/venues";
+} from "@/shared/api/orval/venue/venue";
 
 /**
  * 공연장 쿼리 키 상수

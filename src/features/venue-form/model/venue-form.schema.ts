@@ -28,8 +28,8 @@ export const venueFormSchema = z.object({
   /**
    * 좌석 배치도 URL (선택, URL 형식)
    */
-  seatingChartUrl: z
-    .url("올바른 URL 형식을 입력해주세요.")
+  phoneNumber: z
+    .string("올바른 전화번호 형식을 입력해주세요.")
     .optional()
     .or(z.literal("")),
 });

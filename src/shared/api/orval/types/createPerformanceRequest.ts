@@ -34,4 +34,42 @@ export interface CreatePerformanceRequest {
   startDate: string;
   /** 생성할 공연 종료일 */
   endDate: string;
+  /** 출연진 */
+  actors?: string;
+  /**
+   * 기획사
+   * @minLength 0
+   * @maxLength 255
+   */
+  agency?: string;
+  /**
+   * 제작사
+   * @minLength 0
+   * @maxLength 255
+   */
+  producer?: string;
+  /**
+   * 주최
+   * @minLength 0
+   * @maxLength 255
+   */
+  host?: string;
+  /** 할인정보 */
+  discountInfo?: string;
+  /** 이용안내 */
+  usageGuide?: string;
+  /** 취소/환불규정 */
+  refundPolicy?: string;
+  /**
+   * 상품상세 이미지 URL
+   * @minLength 0
+   * @maxLength 500
+   */
+  detailImageUrl?: string;
+  /** 판매자/기획사 ID */
+  companyId?: number;
+  /** 예매 수수료 */
+  bookingFee?: number;
+  /** 배송 안내 */
+  shippingGuide?: string;
 }

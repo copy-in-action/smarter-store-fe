@@ -80,7 +80,7 @@ export function VenueForm({
     defaultValues: {
       name: initialData?.name || "",
       address: initialData?.address || "",
-      seatingChartUrl: initialData?.seatingChartUrl || "",
+      phoneNumber: initialData?.phoneNumber || "",
     },
   });
 
@@ -176,17 +176,17 @@ export function VenueForm({
 
             {/* 좌석 배치도 URL */}
             <div className="space-y-2">
-              <Label htmlFor="seatingChartUrl">좌석 배치도 URL</Label>
+              <Label htmlFor="phoneNumber">좌석 배치도 URL</Label>
               <Input
-                id="seatingChartUrl"
-                {...register("seatingChartUrl")}
+                id="phoneNumber"
+                {...register("phoneNumber")}
                 placeholder="좌석 배치도 이미지 URL을 입력하세요 (선택사항)"
-                className={errors.seatingChartUrl ? "border-red-500" : ""}
+                className={errors.phoneNumber ? "border-red-500" : ""}
                 disabled={isViewMode}
               />
-              {errors.seatingChartUrl && (
+              {errors.phoneNumber && (
                 <p className="text-sm text-red-500">
-                  {errors.seatingChartUrl.message}
+                  {errors.phoneNumber.message}
                 </p>
               )}
             </div>
