@@ -19,6 +19,8 @@ import { orvalFetch } from '../../fetch-wrapper';
 
 /**
  * 이메일 인증(OTP 확인)이 완료된 후 새로운 사용자를 생성합니다.
+
+**권한: 누구나**
  * @summary 회원가입
  */
 export type signupResponse201 = {
@@ -68,6 +70,8 @@ export const signup = async (signupRequest: SignupRequest, options?: RequestInit
 
 /**
  * 리프레시 토큰으로 새로운 액세스 토큰을 발급받습니다.
+
+**권한: 누구나**
  * @summary 토큰 갱신
  */
 export type refreshResponse200 = {
@@ -112,6 +116,8 @@ export const refresh = async (refreshTokenRequest: RefreshTokenRequest, options?
 
 /**
  * 사용자 세션을 종료하고 인증 쿠키를 삭제합니다.
+
+**권한: 누구나**
  * @summary 로그아웃
  */
 export type logoutResponse200 = {
@@ -148,6 +154,8 @@ export const logout = async ( options?: RequestInit): Promise<logoutResponse> =>
 
 /**
  * 이메일과 비밀번호로 로그인하고 JWT 토큰을 발급받습니다.
+
+**권한: 누구나**
  * @summary 로그인
  */
 export type loginResponse200 = {
@@ -192,6 +200,8 @@ export const login = async (loginRequest: LoginRequest, options?: RequestInit): 
 
 /**
  * 회원가입을 위한 이메일 인증번호(OTP)를 요청합니다. 지정된 이메일 주소로 OTP가 발송됩니다.
+
+**권한: 누구나**
  * @summary 이메일 인증 요청 (OTP 발송)
  */
 export type requestEmailVerificationResponse200 = {
@@ -236,6 +246,8 @@ export const requestEmailVerification = async (emailVerificationRequest: EmailVe
 
 /**
  * 이메일로 발송된 6자리 OTP를 확인합니다.
+
+**권한: 누구나**
  * @summary OTP 확인
  */
 export type confirmOtpResponse200 = {
@@ -280,6 +292,8 @@ export const confirmOtp = async (otpConfirmationRequest: OtpConfirmationRequest,
 
 /**
  * 현재 로그인된 사용자 정보를 조회합니다.
+
+**권한: USER, ADMIN**
  * @summary 내 정보 조회
  */
 export type meResponse200 = {

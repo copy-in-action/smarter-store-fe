@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { VenueResponse } from './venueResponse';
+import type { CompanyResponse } from './companyResponse';
 
 /**
  * 공연 정보 응답 DTO
@@ -32,6 +33,27 @@ export interface PerformanceResponse {
   startDate: string;
   /** 공연 종료일 */
   endDate: string;
+  /** 출연진 */
+  actors?: string;
+  /** 기획사 */
+  agency?: string;
+  /** 제작사 */
+  producer?: string;
+  /** 주최 */
+  host?: string;
+  /** 할인정보 */
+  discountInfo?: string;
+  /** 이용안내 */
+  usageGuide?: string;
+  /** 취소/환불규정 */
+  refundPolicy?: string;
+  /** 상품상세 이미지 URL */
+  detailImageUrl?: string;
+  company?: CompanyResponse;
+  /** 예매 수수료 */
+  bookingFee?: number;
+  /** 배송 안내 */
+  shippingGuide?: string;
   /** 공연 정보 생성일시 */
   createdAt?: string;
   /** 공연 정보 수정일시 */

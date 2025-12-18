@@ -22,6 +22,10 @@ export interface CreateVenueRequest {
    * @maxLength 255
    */
   address?: string;
-  /** 생성할 공연장 좌석 배치도 이미지 URL */
-  seatingChartUrl?: string;
+  /**
+   * 공연장 대표번호
+   * @minLength 0
+   * @maxLength 50
+   */
+  phoneNumber?: string;
 }

@@ -16,8 +16,10 @@ export interface VenueResponse {
   name: string;
   /** 공연장 주소 */
   address?: string;
-  /** 공연장 좌석 배치도 이미지 URL */
-  seatingChartUrl?: string;
+  /** 공연장 대표번호 */
+  phoneNumber?: string;
+  /** 좌석 배치도 존재 여부 */
+  hasSeatingChart: boolean;
   /** 공연장 정보 생성일시 */
   createdAt?: string;
   /** 공연장 정보 수정일시 */

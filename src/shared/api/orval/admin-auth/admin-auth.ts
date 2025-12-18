@@ -16,6 +16,8 @@ import { orvalFetch } from '../../fetch-wrapper';
 
 /**
  * 새로운 관리자를 생성합니다.
+
+**권한: 누구나**
  * @summary 관리자 회원가입
  */
 export type signup1Response201 = {
@@ -65,6 +67,8 @@ export const signup1 = async (adminSignupRequest: AdminSignupRequest, options?: 
 
 /**
  * 관리자 세션을 종료하고 인증 쿠키를 삭제합니다.
+
+**권한: 누구나**
  * @summary 관리자 로그아웃
  */
 export type logout1Response200 = {
@@ -101,6 +105,8 @@ export const logout1 = async ( options?: RequestInit): Promise<logout1Response> 
 
 /**
  * 로그인 ID와 비밀번호로 로그인하고 JWT 토큰을 발급받습니다.
+
+**권한: 누구나**
  * @summary 관리자 로그인
  */
 export type login1Response200 = {

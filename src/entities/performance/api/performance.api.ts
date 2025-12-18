@@ -9,7 +9,7 @@ import {
   getAllPerformances,
   getPerformance,
   updatePerformance,
-} from "@/shared/api/orval/performances/performances";
+} from "@/shared/api/orval/performance/performance";
 import type {
   CreatePerformanceRequest,
   PerformanceResponse,

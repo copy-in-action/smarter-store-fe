@@ -36,13 +36,14 @@ export function NavMain({ items }: NavMainProps) {
     <SidebarGroup>
       <SidebarGroupLabel>Menu</SidebarGroupLabel>
       <SidebarMenu>
-        {items.map((item) =>
+        {items.map((item, index) =>
           item.items && item.items.length > 0 ? (
             <Collapsible
               key={item.title}
               asChild
               defaultOpen={item.isActive}
               className="group/collapsible"
+              suppressHydrationWarning
             >
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
