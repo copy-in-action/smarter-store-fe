@@ -157,7 +157,8 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
       };
 
       const handleMouseEnter = (e: React.MouseEvent) => {
-        if (window.innerWidth >= 768) { // md 이상에서만
+        if (window.innerWidth >= 768) {
+          // md 이상에서만
           const rect = e.currentTarget.getBoundingClientRect();
           setHoveredSeat({
             row: rowIndex,
@@ -171,31 +172,6 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
       const handleMouseLeave = () => {
         setHoveredSeat(null);
       };
-
-      const seatType = getSeatType(rowIndex, colIndex, config);
-      const seatTypeInfo = config.seatTypes[seatType];
-
-      /**
-       * 좌석 상태 텍스트 반환
-       */
-      const getStatusText = () => {
-        if (isDisabled) return "비활성화";
-        if (isReserved) return "예약됨";
-        if (isPending) return "구매 진행 중";
-        if (isSeatInState(rowIndex, colIndex, config.selectedSeats))
-          return "선택됨";
-        return "선택 가능";
-      };
-
-      /**
-       * 툴팁 내용 생성
-       */
-      const tooltipContent = [
-        `좌석: ${rowIndex + 1}행 ${colIndex + 1}열`,
-        `타입: ${seatTypeInfo?.label || "기본"}`,
-        `가격: ${(seatTypeInfo?.price || 0).toLocaleString()}원`,
-        `상태: ${getStatusText()}`,
-      ].join("\n");
 
       seats.push(
         <button
@@ -262,10 +238,12 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
               <div className="w-4 h-4 bg-yellow-100 border border-yellow-500 rounded"></div>
               <span>구매 진행 중</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-gray-400 border border-gray-500 rounded"></div>
-              <span>비활성화</span>
-            </div>
+            {config.mode === "edit" && (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 bg-gray-400 border border-gray-500 rounded"></div>
+                <span>비활성화</span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -354,7 +332,7 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
           style={{
             left: hoveredSeat.x,
             top: hoveredSeat.y - 8,
-            transform: 'translate(-50%, -100%)'
+            transform: "translate(-50%, -100%)",
           }}
         >
           {[
@@ -362,19 +340,47 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
             `타입: ${config.seatTypes[getSeatType(hoveredSeat.row, hoveredSeat.col, config)]?.label || "기본"}`,
             `가격: ${(config.seatTypes[getSeatType(hoveredSeat.row, hoveredSeat.col, config)]?.price || 0).toLocaleString()}원`,
             `상태: ${(() => {
-              if (isSeatInState(hoveredSeat.row, hoveredSeat.col, config.disabledSeats)) return "비활성화";
-              if (isSeatInState(hoveredSeat.row, hoveredSeat.col, config.reservedSeats)) return "예약됨";
-              if (isSeatInState(hoveredSeat.row, hoveredSeat.col, config.pendingSeats)) return "구매 진행 중";
-              if (isSeatInState(hoveredSeat.row, hoveredSeat.col, config.selectedSeats)) return "선택됨";
+              if (
+                isSeatInState(
+                  hoveredSeat.row,
+                  hoveredSeat.col,
+                  config.disabledSeats,
+                )
+              )
+                return "비활성화";
+              if (
+                isSeatInState(
+                  hoveredSeat.row,
+                  hoveredSeat.col,
+                  config.reservedSeats,
+                )
+              )
+                return "예약됨";
+              if (
+                isSeatInState(
+                  hoveredSeat.row,
+                  hoveredSeat.col,
+                  config.pendingSeats,
+                )
+              )
+                return "구매 진행 중";
+              if (
+                isSeatInState(
+                  hoveredSeat.row,
+                  hoveredSeat.col,
+                  config.selectedSeats,
+                )
+              )
+                return "선택됨";
               return "선택 가능";
             })()}`,
           ].join("\n")}
           <div
             className="absolute border-4 border-transparent border-t-gray-800"
             style={{
-              left: '50%',
-              top: '100%',
-              transform: 'translateX(-50%)'
+              left: "50%",
+              top: "100%",
+              transform: "translateX(-50%)",
             }}
           ></div>
         </div>

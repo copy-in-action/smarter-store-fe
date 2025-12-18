@@ -8,6 +8,7 @@ import type {
   StaticSeatVenue,
   UserSeatSelection,
 } from "../types/seatLayout.types";
+import { isSeatInState } from "../utils/seatChart.utils";
 
 /**
  * 좌석 차트 데이터를 관리하는 Hook
@@ -53,9 +54,7 @@ export function useSeatChart(venueId: string) {
   const toggleSeatSelection = (row: number, col: number) => {
     setUserSelection((prev) => {
       const { selectedSeats } = prev;
-      const isSelected = selectedSeats.some(
-        (seat) => seat.row === row && seat.col === col,
-      );
+      const isSelected = isSeatInState(row, col, selectedSeats);
 
       if (isSelected) {
         // 선택 해제
@@ -152,17 +151,6 @@ export function useSeatChart(venueId: string) {
  */
 export function useSeatStatus(seatChartConfig: SeatChartConfig | null) {
   /**
-   * 좌석이 특정 상태인지 확인
-   */
-  const isSeatInState = (
-    row: number,
-    col: number,
-    seats: Array<{ row: number; col: number }>,
-  ) => {
-    return seats.some((seat) => seat.row === row && seat.col === col);
-  };
-
-  /**
    * 좌석의 현재 상태 반환
    */
   const getSeatStatus = (
@@ -191,7 +179,6 @@ export function useSeatStatus(seatChartConfig: SeatChartConfig | null) {
   };
 
   return {
-    isSeatInState,
     getSeatStatus,
     isSeatClickable,
   };
