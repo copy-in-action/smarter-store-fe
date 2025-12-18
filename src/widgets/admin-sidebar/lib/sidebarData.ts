@@ -48,9 +48,19 @@ export const adminSidebarData: SidebarData = {
       ],
     },
     {
-      title: "사용자 관리",
-      url: "/admin/users",
+      title: "기획사/판매자",
+      url: "#",
       icon: Users,
+      items: [
+        {
+          title: "기획사/판매자 추가",
+          url: PAGES.ADMIN.COMPANY.CREATE.path,
+        },
+        {
+          title: "기획사/판매자 리스트",
+          url: PAGES.ADMIN.COMPANY.LIST.path,
+        },
+      ],
     },
     {
       title: "설정",
