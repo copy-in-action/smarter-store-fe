@@ -117,7 +117,7 @@ function getSeatGradeKey(
 export function restoreStaticSeatVenue(
   jsonData: StaticSeatVenue,
   gradeInfo?: SeatGradeForBE[],
-): StaticSeatVenue {
+): Omit<StaticSeatVenue, "venueId"> {
   // JSON 데이터 유효성 검증
   if (
     !jsonData.rows ||
