@@ -4,55 +4,13 @@
 
 import { z } from "zod";
 
-/**
- * 공연 응답 스키마
- */
-export const performanceSchema = z.object({
-  /** 공연 ID */
-  id: z.number(),
-  /** 공연명 */
-  title: z.string(),
-  /** 공연 상세 설명 */
-  description: z.string().optional(),
-  /** 공연 카테고리 */
-  category: z.string(),
-  /** 공연 시간 (분) */
-  runningTime: z.number().optional(),
-  /** 공연 관람 연령 */
-  ageRating: z.string().optional(),
-  /** 공연 대표 이미지 URL */
-  mainImageUrl: z.string().optional(),
-  /** 공연 노출 여부 */
-  visible: z.boolean(),
-  /** 공연장 정보 */
-  venue: z.object({
-    /** 공연장 ID */
-    id: z.number(),
-    /** 공연장명 */
-    name: z.string(),
-    /** 공연장 주소 */
-    address: z.string().optional(),
-    /** 공연장 전화번호 */
-    phoneNumber: z.string().optional(),
-    /** 공연장 웹사이트 */
-    website: z.string().optional(),
-  }).optional(),
-  /** 공연 시작일 */
-  startDate: z.string(),
-  /** 공연 종료일 */
-  endDate: z.string(),
-  /** 공연 정보 생성일시 */
-  createdAt: z.string().optional(),
-  /** 공연 정보 수정일시 */
-  updatedAt: z.string().optional(),
-});
 
 /**
  * 공연 생성 요청 스키마
  */
 export const createPerformanceSchema = z.object({
   /** 공연명 */
-  title: z.string().min(1, "공연명을 입력해주세요"),
+  title: z.string().min(1, "공연명을 입력해주세요").max(255, "공연명은 255자를 초과할 수 없습니다"),
   /** 공연 상세 설명 */
   description: z.string().optional(),
   /** 공연 카테고리 */
@@ -66,17 +24,82 @@ export const createPerformanceSchema = z.object({
   /** 공연 노출 여부 */
   visible: z.boolean().default(true),
   /** 공연장 ID */
-  venueId: z.number().positive("공연장을 선택해주세요"),
+  venueId: z.number().positive("공연장을 선택해주세요").optional(),
   /** 공연 시작일 */
   startDate: z.string().min(1, "시작일을 입력해주세요"),
   /** 공연 종료일 */
   endDate: z.string().min(1, "종료일을 입력해주세요"),
+  /** 출연진 */
+  actors: z.string().optional(),
+  /** 기획사 */
+  agency: z.string().max(255, "기획사명은 255자를 초과할 수 없습니다").optional(),
+  /** 제작사 */
+  producer: z.string().max(255, "제작사명은 255자를 초과할 수 없습니다").optional(),
+  /** 주최 */
+  host: z.string().max(255, "주최명은 255자를 초과할 수 없습니다").optional(),
+  /** 할인정보 */
+  discountInfo: z.string().optional(),
+  /** 이용안내 */
+  usageGuide: z.string().optional(),
+  /** 취소/환불규정 */
+  refundPolicy: z.string().optional(),
+  /** 상품상세 이미지 URL */
+  detailImageUrl: z.string().max(500, "상품상세 이미지 URL은 500자를 초과할 수 없습니다").optional(),
+  /** 판매자/기획사 ID */
+  companyId: z.number().positive("기획사/판매자를 선택해주세요").optional(),
+  /** 예매 수수료 */
+  bookingFee: z.number().min(0, "예매 수수료는 0 이상이어야 합니다").optional(),
+  /** 배송 안내 */
+  shippingGuide: z.string().optional(),
 });
 
 /**
  * 공연 수정 요청 스키마
  */
-export const updatePerformanceSchema = createPerformanceSchema.partial();
+export const updatePerformanceSchema = z.object({
+  /** 공연명 */
+  title: z.string().min(1, "공연명을 입력해주세요").max(255, "공연명은 255자를 초과할 수 없습니다"),
+  /** 공연 상세 설명 */
+  description: z.string().optional(),
+  /** 공연 카테고리 */
+  category: z.string().min(1, "카테고리를 선택해주세요"),
+  /** 공연 시간 (분) */
+  runningTime: z.number().positive("공연 시간은 양수여야 합니다").optional(),
+  /** 공연 관람 연령 */
+  ageRating: z.string().optional(),
+  /** 공연 대표 이미지 URL */
+  mainImageUrl: z.string().url("올바른 URL을 입력해주세요").optional(),
+  /** 공연 노출 여부 */
+  visible: z.boolean(),
+  /** 공연장 ID */
+  venueId: z.number().positive("공연장을 선택해주세요").optional(),
+  /** 공연 시작일 */
+  startDate: z.string().min(1, "시작일을 입력해주세요"),
+  /** 공연 종료일 */
+  endDate: z.string().min(1, "종료일을 입력해주세요"),
+  /** 출연진 */
+  actors: z.string().optional(),
+  /** 기획사 */
+  agency: z.string().max(255, "기획사명은 255자를 초과할 수 없습니다").optional(),
+  /** 제작사 */
+  producer: z.string().max(255, "제작사명은 255자를 초과할 수 없습니다").optional(),
+  /** 주최 */
+  host: z.string().max(255, "주최명은 255자를 초과할 수 없습니다").optional(),
+  /** 할인정보 */
+  discountInfo: z.string().optional(),
+  /** 이용안내 */
+  usageGuide: z.string().optional(),
+  /** 취소/환불규정 */
+  refundPolicy: z.string().optional(),
+  /** 상품상세 이미지 URL */
+  detailImageUrl: z.string().max(500, "상품상세 이미지 URL은 500자를 초과할 수 없습니다").optional(),
+  /** 판매자/기획사 ID */
+  companyId: z.number().positive("기획사/판매자를 선택해주세요").optional(),
+  /** 예매 수수료 */
+  bookingFee: z.number().min(0, "예매 수수료는 0 이상이어야 합니다").optional(),
+  /** 배송 안내 */
+  shippingGuide: z.string().optional(),
+});
 
 /**
  * 공연 필터 스키마
@@ -90,12 +113,13 @@ export const performanceFilterSchema = z.object({
   venueId: z.number().optional(),
   /** 노출 여부 필터 */
   visible: z.boolean().optional(),
+  /** 기획사/판매자 ID 필터 */
+  companyId: z.number().optional(),
 });
 
 /**
  * 공연 타입 정의
  */
-export type Performance = z.infer<typeof performanceSchema>;
 export type CreatePerformanceForm = z.infer<typeof createPerformanceSchema>;
 export type UpdatePerformanceForm = z.infer<typeof updatePerformanceSchema>;
 export type PerformanceFilter = z.infer<typeof performanceFilterSchema>;

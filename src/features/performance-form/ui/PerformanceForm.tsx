@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { useGetAllCompanies } from "@/entities/company";
 import { useVenues } from "@/entities/venue";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
 import { PAGES } from "@/shared/constants";
@@ -26,6 +27,7 @@ import {
   type PerformanceFormData,
   performanceFormSchema,
 } from "../model/performance-form.schema";
+import { CompanyCombobox } from "./CompanyCombobox";
 import { VenueCombobox } from "./VenueCombobox";
 
 /**
@@ -86,6 +88,10 @@ export function PerformanceForm({
   // 공연장 목록 조회
   const { data: venues = [], isLoading: isVenuesLoading } = useVenues();
 
+  // 기획사 목록 조회
+  const { data: companies = [], isLoading: isCompaniesLoading } =
+    useGetAllCompanies();
+
   // 폼 설정
   const {
     register,
@@ -107,12 +113,23 @@ export function PerformanceForm({
         : "",
       ageRating: initialData?.ageRating || "",
       mainImageUrl: initialData?.mainImageUrl || "",
-      visible: initialData?.visible ?? true,
-      venueId: initialData?.venue?.id || 0,
+      visible: initialData?.visible ?? false,
+      venueId: initialData?.venue?.id.toString() || "",
+      companyId: initialData?.company?.id.toString() || "",
       startDate: initialData?.startDate
         ? initialData.startDate.split("T")[0]
         : "",
       endDate: initialData?.endDate ? initialData.endDate.split("T")[0] : "",
+      actors: initialData?.actors || "",
+      agency: initialData?.agency || "",
+      producer: initialData?.producer || "",
+      host: initialData?.host || "",
+      discountInfo: initialData?.discountInfo || "",
+      usageGuide: initialData?.usageGuide || "",
+      refundPolicy: initialData?.refundPolicy || "",
+      detailImageUrl: initialData?.detailImageUrl || "",
+      bookingFee: initialData?.bookingFee ? String(initialData.bookingFee) : "",
+      shippingGuide: initialData?.shippingGuide || "",
     },
   });
 
@@ -136,6 +153,8 @@ export function PerformanceForm({
         // 특정 필드 에러인 경우 해당 필드에 표시
         if (error.message.includes("공연장")) {
           setError("venueId", { message: "공연장을 선택해주세요" });
+        } else if (error.message.includes("기획사")) {
+          setError("companyId", { message: "기획사를 선택해주세요" });
         } else if (error.message.includes("공연 시간")) {
           setError("runningTime", {
             message: "올바른 공연 시간을 입력해주세요",
@@ -167,7 +186,14 @@ export function PerformanceForm({
    * 공연장 선택 변경 핸들러
    */
   const handleVenueChange = (value: number | undefined) => {
-    setValue("venueId", value || 0, { shouldValidate: true });
+    setValue("venueId", value ? String(value) : "", { shouldValidate: true });
+  };
+
+  /**
+   * 기획사 선택 변경 핸들러
+   */
+  const handleCompanyChange = (value: number | undefined) => {
+    setValue("companyId", value ? String(value) : "", { shouldValidate: true });
   };
 
   /**
@@ -277,7 +303,7 @@ export function PerformanceForm({
                 <Label className="required">공연장</Label>
                 <VenueCombobox
                   venues={venues}
-                  value={watch("venueId")}
+                  value={Number(watch("venueId"))}
                   onValueChange={handleVenueChange}
                   disabled={isViewMode}
                   loading={isVenuesLoading}
@@ -287,6 +313,25 @@ export function PerformanceForm({
                 {errors.venueId && (
                   <p className="text-sm text-red-500">
                     {errors.venueId.message}
+                  </p>
+                )}
+              </div>
+
+              {/* 기획사 */}
+              <div className="space-y-2">
+                <Label className="required">기획사</Label>
+                <CompanyCombobox
+                  companies={companies}
+                  value={Number(watch("companyId"))}
+                  onValueChange={handleCompanyChange}
+                  disabled={isViewMode}
+                  loading={isCompaniesLoading}
+                  error={!!errors.companyId}
+                  placeholder="기획사를 검색하여 선택하세요"
+                />
+                {errors.companyId && (
+                  <p className="text-sm text-red-500">
+                    {errors.companyId.message}
                   </p>
                 )}
               </div>
@@ -406,6 +451,23 @@ export function PerformanceForm({
                 )}
               </div>
 
+              {/* 상품상세 이미지 URL */}
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="detailImageUrl">상품상세 이미지 URL</Label>
+                <Input
+                  id="detailImageUrl"
+                  {...register("detailImageUrl")}
+                  placeholder="https://example.com/detail-image.jpg (선택사항)"
+                  className={errors.detailImageUrl ? "border-red-500" : ""}
+                  disabled={isViewMode}
+                />
+                {errors.detailImageUrl && (
+                  <p className="text-sm text-red-500">
+                    {errors.detailImageUrl.message}
+                  </p>
+                )}
+              </div>
+
               {/* 노출 여부 */}
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -418,6 +480,176 @@ export function PerformanceForm({
                 <p className="text-sm text-gray-500">
                   체크 시 사용자에게 공연이 노출됩니다
                 </p>
+              </div>
+            </div>
+
+            {/* 추가 정보 */}
+            <div className="space-y-6">
+              <h3 className="text-lg font-medium text-gray-900 border-b pb-2">
+                추가 정보
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* 출연진 */}
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="actors">출연진</Label>
+                  <Textarea
+                    id="actors"
+                    {...register("actors")}
+                    placeholder="출연진 정보를 입력하세요 (선택사항)"
+                    className={errors.actors ? "border-red-500" : ""}
+                    disabled={isViewMode}
+                    rows={3}
+                  />
+                  {errors.actors && (
+                    <p className="text-sm text-red-500">
+                      {errors.actors.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* 기획사 (텍스트) */}
+                <div className="space-y-2">
+                  <Label htmlFor="agency">기획사</Label>
+                  <Input
+                    id="agency"
+                    {...register("agency")}
+                    placeholder="기획사명을 입력하세요 (선택사항)"
+                    className={errors.agency ? "border-red-500" : ""}
+                    disabled={isViewMode}
+                  />
+                  {errors.agency && (
+                    <p className="text-sm text-red-500">
+                      {errors.agency.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* 제작사 */}
+                <div className="space-y-2">
+                  <Label htmlFor="producer">제작사</Label>
+                  <Input
+                    id="producer"
+                    {...register("producer")}
+                    placeholder="제작사명을 입력하세요 (선택사항)"
+                    className={errors.producer ? "border-red-500" : ""}
+                    disabled={isViewMode}
+                  />
+                  {errors.producer && (
+                    <p className="text-sm text-red-500">
+                      {errors.producer.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* 주최 */}
+                <div className="space-y-2">
+                  <Label htmlFor="host">주최</Label>
+                  <Input
+                    id="host"
+                    {...register("host")}
+                    placeholder="주최자를 입력하세요 (선택사항)"
+                    className={errors.host ? "border-red-500" : ""}
+                    disabled={isViewMode}
+                  />
+                  {errors.host && (
+                    <p className="text-sm text-red-500">
+                      {errors.host.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* 예매 수수료 */}
+                <div className="space-y-2">
+                  <Label htmlFor="bookingFee">예매 수수료 (원)</Label>
+                  <Input
+                    id="bookingFee"
+                    type="number"
+                    {...register("bookingFee")}
+                    placeholder="예: 1000"
+                    className={errors.bookingFee ? "border-red-500" : ""}
+                    disabled={isViewMode}
+                    min={0}
+                    step={100}
+                  />
+                  {errors.bookingFee && (
+                    <p className="text-sm text-red-500">
+                      {errors.bookingFee.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* 할인정보 */}
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="discountInfo">할인정보</Label>
+                  <Textarea
+                    id="discountInfo"
+                    {...register("discountInfo")}
+                    placeholder="할인 혜택이나 프로모션 정보를 입력하세요 (선택사항)"
+                    className={errors.discountInfo ? "border-red-500" : ""}
+                    disabled={isViewMode}
+                    rows={3}
+                  />
+                  {errors.discountInfo && (
+                    <p className="text-sm text-red-500">
+                      {errors.discountInfo.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* 이용안내 */}
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="usageGuide">이용안내</Label>
+                  <Textarea
+                    id="usageGuide"
+                    {...register("usageGuide")}
+                    placeholder="공연 관람 시 주의사항이나 안내사항을 입력하세요 (선택사항)"
+                    className={errors.usageGuide ? "border-red-500" : ""}
+                    disabled={isViewMode}
+                    rows={4}
+                  />
+                  {errors.usageGuide && (
+                    <p className="text-sm text-red-500">
+                      {errors.usageGuide.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* 취소/환불규정 */}
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="refundPolicy">취소/환불규정</Label>
+                  <Textarea
+                    id="refundPolicy"
+                    {...register("refundPolicy")}
+                    placeholder="취소 및 환불 정책을 입력하세요 (선택사항)"
+                    className={errors.refundPolicy ? "border-red-500" : ""}
+                    disabled={isViewMode}
+                    rows={4}
+                  />
+                  {errors.refundPolicy && (
+                    <p className="text-sm text-red-500">
+                      {errors.refundPolicy.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* 배송 안내 */}
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="shippingGuide">배송 안내</Label>
+                  <Textarea
+                    id="shippingGuide"
+                    {...register("shippingGuide")}
+                    placeholder="티켓 배송 관련 안내사항을 입력하세요 (선택사항)"
+                    className={errors.shippingGuide ? "border-red-500" : ""}
+                    disabled={isViewMode}
+                    rows={3}
+                  />
+                  {errors.shippingGuide && (
+                    <p className="text-sm text-red-500">
+                      {errors.shippingGuide.message}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
 

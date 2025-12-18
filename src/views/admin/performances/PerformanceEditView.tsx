@@ -26,11 +26,7 @@ export function PerformanceEditView({
   const router = useRouter();
 
   // 공연 데이터 조회
-  const {
-    data: performance,
-    isLoading,
-    error,
-  } = usePerformance(performanceId);
+  const { data: performance, isLoading, error } = usePerformance(performanceId);
 
   // 공연 수정 뮤테이션
   const updatePerformanceMutation = useUpdatePerformance();
@@ -42,18 +38,7 @@ export function PerformanceEditView({
     try {
       await updatePerformanceMutation.mutateAsync({
         id: performanceId,
-        data: {
-          title: data.title,
-          description: data.description || undefined,
-          category: data.category,
-          runningTime: data.runningTime ? Number(data.runningTime) : undefined,
-          ageRating: data.ageRating || undefined,
-          mainImageUrl: data.mainImageUrl || undefined,
-          visible: data.visible,
-          venueId: data.venueId,
-          startDate: data.startDate,
-          endDate: data.endDate,
-        },
+        data,
       });
 
       toast.success("공연 정보가 성공적으로 수정되었습니다.");

@@ -3,28 +3,17 @@
  */
 
 import { z } from "zod";
+import {
+  createPerformanceSchema,
+  updatePerformanceSchema,
+} from "@/entities/performance/model/performance.schema";
 
 /**
- * 공연 폼 데이터 스키마
+ * 공연 생성 폼 데이터 스키마 (entities 기반)
  */
-export const performanceFormSchema = z
-  .object({
-    /** 공연명 */
-    title: z
-      .string()
-      .min(1, "공연명을 입력해주세요")
-      .max(100, "공연명은 100자 이하로 입력해주세요"),
-
-    /** 공연 상세 설명 */
-    description: z
-      .string()
-      .optional()
-      .transform((val) => val?.trim() || undefined),
-
-    /** 공연 카테고리 */
-    category: z.string().min(1, "카테고리를 선택해주세요"),
-
-    /** 공연 시간 (분) - 문자열로 입력받아 숫자로 변환 */
+export const createPerformanceFormSchema = createPerformanceSchema
+  .extend({
+    /** 공연 시간 - 폼에서는 문자열로 입력받아 숫자로 변환 */
     runningTime: z
       .string()
       .optional()
@@ -34,55 +23,36 @@ export const performanceFormSchema = z
         return Number.isNaN(num) ? undefined : num;
       }),
 
-    /** 공연 관람 연령 */
-    ageRating: z
+    /** 공연장 ID - 폼에서는 문자열로 받아서 숫자로 변환 */
+    venueId: z
       .string()
-      .optional()
-      .transform((val) => val?.trim() || undefined),
-
-    /** 공연 대표 이미지 URL */
-    mainImageUrl: z
-      .string()
-      .optional()
-      .transform((val) => val?.trim() || undefined)
+      .min(1, "공연장을 선택해주세요")
+      .transform((val) => parseInt(val, 10))
       .refine(
-        (val) => {
-          if (!val) return true;
-          try {
-            new URL(val);
-            return true;
-          } catch {
-            return false;
-          }
-        },
-        {
-          message: "올바른 URL 형식을 입력해주세요",
-        },
-      ),
+        (val) => !Number.isNaN(val) && val > 0,
+        "유효한 공연장을 선택해주세요",
+      )
+      .optional(),
 
-    /** 공연 노출 여부 */
-    visible: z.boolean(),
-
-    /** 공연장 ID */
-    venueId: z.number().min(1, "공연장을 선택해주세요"),
-
-    /** 공연 시작일 */
-    startDate: z
+    /** 기획사/판매자 ID - 폼에서는 문자열로 받아서 숫자로 변환 */
+    companyId: z
       .string()
-      .min(1, "시작일을 입력해주세요")
-      .regex(
-        /^\d{4}-\d{2}-\d{2}$/,
-        "올바른 날짜 형식(YYYY-MM-DD)을 입력해주세요",
-      ),
+      .optional()
+      .transform((val) => {
+        if (!val) return undefined;
+        const num = parseInt(val, 10);
+        return Number.isNaN(num) ? undefined : num;
+      }),
 
-    /** 공연 종료일 */
-    endDate: z
+    /** 예매 수수료 - 폼에서는 문자열로 받아서 숫자로 변환 */
+    bookingFee: z
       .string()
-      .min(1, "종료일을 입력해주세요")
-      .regex(
-        /^\d{4}-\d{2}-\d{2}$/,
-        "올바른 날짜 형식(YYYY-MM-DD)을 입력해주세요",
-      ),
+      .optional()
+      .transform((val) => {
+        if (!val) return undefined;
+        const num = parseFloat(val);
+        return Number.isNaN(num) ? undefined : num;
+      }),
   })
   .refine(
     (data) => {
@@ -99,14 +69,94 @@ export const performanceFormSchema = z
   );
 
 /**
+ * 공연 수정 폼 데이터 스키마 (entities 기반)
+ */
+export const updatePerformanceFormSchema = updatePerformanceSchema
+  .extend({
+    /** 공연 시간 - 폼에서는 문자열로 입력받아 숫자로 변환 */
+    runningTime: z
+      .string()
+      .optional()
+      .transform((val) => {
+        if (!val) return undefined;
+        const num = parseInt(val, 10);
+        return Number.isNaN(num) ? undefined : num;
+      }),
+
+    /** 공연장 ID - 폼에서는 문자열로 받아서 숫자로 변환 */
+    venueId: z
+      .string()
+      .optional()
+      .transform((val) => {
+        if (!val) return undefined;
+        const num = parseInt(val, 10);
+        return Number.isNaN(num) ? undefined : num;
+      }),
+
+    /** 기획사/판매자 ID - 폼에서는 문자열로 받아서 숫자로 변환 */
+    companyId: z
+      .string()
+      .optional()
+      .transform((val) => {
+        if (!val) return undefined;
+        const num = parseInt(val, 10);
+        return Number.isNaN(num) ? undefined : num;
+      }),
+
+    /** 예매 수수료 - 폼에서는 문자열로 받아서 숫자로 변환 */
+    bookingFee: z
+      .string()
+      .optional()
+      .transform((val) => {
+        if (!val) return undefined;
+        const num = parseFloat(val);
+        return Number.isNaN(num) ? undefined : num;
+      }),
+  })
+  .refine(
+    (data) => {
+      // 시작일과 종료일 비교
+      if (data.startDate && data.endDate) {
+        return new Date(data.startDate) <= new Date(data.endDate);
+      }
+      return true;
+    },
+    {
+      message: "종료일은 시작일보다 늦어야 합니다",
+      path: ["endDate"],
+    },
+  );
+
+/**
+ * 기존 호환성을 위한 별칭
+ */
+export const performanceFormSchema = createPerformanceFormSchema;
+
+/**
  * 폼 입력 데이터 타입 (유저가 입력하는 원본 데이터)
  */
-export type PerformanceFormInput = z.input<typeof performanceFormSchema>;
+export type CreatePerformanceFormInput = z.input<
+  typeof createPerformanceFormSchema
+>;
+export type UpdatePerformanceFormInput = z.input<
+  typeof updatePerformanceFormSchema
+>;
 
 /**
  * 최종 변환된 데이터 타입 (서버 전송용)
  */
-export type PerformanceFormData = z.output<typeof performanceFormSchema>;
+export type CreatePerformanceFormData = z.output<
+  typeof createPerformanceFormSchema
+>;
+export type UpdatePerformanceFormData = z.output<
+  typeof updatePerformanceFormSchema
+>;
+
+/**
+ * 기존 호환성을 위한 별칭
+ */
+export type PerformanceFormInput = CreatePerformanceFormInput;
+export type PerformanceFormData = CreatePerformanceFormData;
 
 /**
  * 공연 카테고리 옵션
@@ -135,7 +185,7 @@ export const AGE_RATING_OPTIONS = [
  * 기본값 생성 함수 (빈 폼용)
  * @returns 폼 기본값
  */
-export function createFormDefaultValues(): PerformanceFormInput {
+export function createFormDefaultValues(): CreatePerformanceFormInput {
   return {
     title: "",
     description: "",
@@ -143,9 +193,20 @@ export function createFormDefaultValues(): PerformanceFormInput {
     runningTime: "",
     ageRating: "",
     mainImageUrl: "",
-    visible: true,
-    venueId: 0,
+    visible: false,
+    venueId: "",
     startDate: "",
     endDate: "",
+    actors: "",
+    agency: "",
+    producer: "",
+    host: "",
+    discountInfo: "",
+    usageGuide: "",
+    refundPolicy: "",
+    detailImageUrl: "",
+    companyId: "",
+    bookingFee: "",
+    shippingGuide: "",
   };
 }
