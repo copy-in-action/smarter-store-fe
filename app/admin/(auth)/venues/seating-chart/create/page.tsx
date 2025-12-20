@@ -1,4 +1,4 @@
-import SeatingChartCreateView from "@/views/admin/seating-chart/SeatingChartCreateView";
+import SeatingChartView from "@/views/admin/seating-chart/SeatingChartView";
 
 /**
  * 좌석 배치도 설정 페이지
@@ -23,5 +23,5 @@ export default async function SeatPage({
     );
   }
 
-  return <SeatingChartCreateView venueId={venueId} name={name} />;
+  return <SeatingChartView venueId={venueId} name={name} />;
 }
