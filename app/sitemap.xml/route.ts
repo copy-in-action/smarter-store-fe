@@ -1,4 +1,4 @@
-import { getPerformancesForServer } from "@/features/service/home/api/home-server.api";
+import { getPerformancesForServer } from "@/entities/performance/api/performance.server.api";
 
 export const revalidate = 3600; // cache for 1 hour
 
