@@ -88,7 +88,7 @@ export function PerformanceForm({
   // 공연장 목록 조회
   const { data: venues = [], isLoading: isVenuesLoading } = useVenues();
 
-  // 기획사 목록 조회
+  // 판매자 목록 조회
   const { data: companies = [], isLoading: isCompaniesLoading } =
     useGetAllCompanies();
 
@@ -153,8 +153,8 @@ export function PerformanceForm({
         // 특정 필드 에러인 경우 해당 필드에 표시
         if (error.message.includes("공연장")) {
           setError("venueId", { message: "공연장을 선택해주세요" });
-        } else if (error.message.includes("기획사")) {
-          setError("companyId", { message: "기획사를 선택해주세요" });
+        } else if (error.message.includes("판매자")) {
+          setError("companyId", { message: "판매자를 선택해주세요" });
         } else if (error.message.includes("공연 시간")) {
           setError("runningTime", {
             message: "올바른 공연 시간을 입력해주세요",
@@ -190,7 +190,7 @@ export function PerformanceForm({
   };
 
   /**
-   * 기획사 선택 변경 핸들러
+   * 판매자 선택 변경 핸들러
    */
   const handleCompanyChange = (value: number | undefined) => {
     setValue("companyId", value ? String(value) : "", { shouldValidate: true });
@@ -317,9 +317,9 @@ export function PerformanceForm({
                 )}
               </div>
 
-              {/* 기획사 */}
+              {/* 판매자 */}
               <div className="space-y-2">
-                <Label className="required">기획사</Label>
+                <Label className="required">판매자</Label>
                 <CompanyCombobox
                   companies={companies}
                   value={Number(watch("companyId"))}
@@ -327,7 +327,7 @@ export function PerformanceForm({
                   disabled={isViewMode}
                   loading={isCompaniesLoading}
                   error={!!errors.companyId}
-                  placeholder="기획사를 검색하여 선택하세요"
+                  placeholder="판매자를 검색하여 선택하세요"
                 />
                 {errors.companyId && (
                   <p className="text-sm text-red-500">

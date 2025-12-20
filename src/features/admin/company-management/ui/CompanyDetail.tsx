@@ -33,15 +33,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Separator } from "@/shared/ui/separator";
 
 /**
- * 기획사 상세 컴포넌트 속성
+ * 판매자 상세 컴포넌트 속성
  */
 interface CompanyDetailProps {
-  /** 기획사 ID */
+  /** 판매자 ID */
   companyId: number;
 }
 
 /**
- * 기획사/판매자 상세 및 수정 컴포넌트
+ * 판매자 상세 및 수정 컴포넌트
  */
 export function CompanyDetail({ companyId }: CompanyDetailProps) {
   const router = useRouter();
@@ -58,16 +58,16 @@ export function CompanyDetail({ companyId }: CompanyDetailProps) {
   };
 
   /**
-   * 기획사 삭제 핸들러
+   * 판매자 삭제 핸들러
    */
   const handleDelete = async () => {
     try {
       await deleteCompanyMutation.mutateAsync(companyId);
-      toast.success("기획사가 성공적으로 삭제되었습니다.");
+      toast.success("판매자가 성공적으로 삭제되었습니다.");
       router.push(PAGES.ADMIN.COMPANY.LIST.path);
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "기획사 삭제에 실패했습니다.";
+        error instanceof Error ? error.message : "판매자 삭제에 실패했습니다.";
       toast.error(message);
     }
   };
@@ -85,7 +85,7 @@ export function CompanyDetail({ companyId }: CompanyDetailProps) {
       <div className="container py-8 mx-auto">
         <div className="flex items-center justify-center h-64">
           <Loader2 className="w-8 h-8 animate-spin" />
-          <span className="ml-2">기획사 정보를 불러오는 중...</span>
+          <span className="ml-2">판매자 정보를 불러오는 중...</span>
         </div>
       </div>
     );
@@ -99,7 +99,7 @@ export function CompanyDetail({ companyId }: CompanyDetailProps) {
           <CardContent className="pt-6">
             <div className="text-center">
               <p className="mb-4 text-destructive">
-                {error?.message || "기획사 정보를 찾을 수 없습니다."}
+                {error?.message || "판매자 정보를 찾을 수 없습니다."}
               </p>
               <Button onClick={handleBack} variant="outline">
                 <ArrowLeft className="w-4 h-4 mr-2" />
@@ -122,7 +122,7 @@ export function CompanyDetail({ companyId }: CompanyDetailProps) {
             <h1 className="text-3xl font-bold tracking-tight">
               {company.name}
             </h1>
-            <p className="text-muted-foreground">기획사/판매자 상세 정보</p>
+            <p className="text-muted-foreground">판매자 상세 정보</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -234,7 +234,7 @@ export function CompanyDetail({ companyId }: CompanyDetailProps) {
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>기획사 삭제</AlertDialogTitle>
+            <AlertDialogTitle>판매자 삭제</AlertDialogTitle>
             <AlertDialogDescription>
               <strong>{company.name}</strong>을(를) 정말 삭제하시겠습니까?
               <br />이 작업은 되돌릴 수 없습니다.

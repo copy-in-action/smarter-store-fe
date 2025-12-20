@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /**
- * 기획사/판매자 응답 스키마
+ * 판매자 응답 스키마
  */
 export const companyResponseSchema = z.object({
   /** 회사 ID */
@@ -23,7 +23,7 @@ export const companyResponseSchema = z.object({
 });
 
 /**
- * 기획사/판매자 생성/수정 요청 스키마
+ * 판매자 생성/수정 요청 스키마
  */
 export const companyRequestSchema = z.object({
   /** 상호 */
@@ -72,7 +72,7 @@ export const companyRequestSchema = z.object({
 });
 
 /**
- * 기획사/판매자 검색 필터 스키마
+ * 판매자 검색 필터 스키마
  */
 export const companyFilterSchema = z.object({
   /** 검색어 (상호, 대표자명, 사업자번호) */

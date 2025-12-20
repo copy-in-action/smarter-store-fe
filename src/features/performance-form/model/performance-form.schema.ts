@@ -34,7 +34,7 @@ export const createPerformanceFormSchema = createPerformanceSchema
       )
       .optional(),
 
-    /** 기획사/판매자 ID - 폼에서는 문자열로 받아서 숫자로 변환 */
+    /** 판매자 ID - 폼에서는 문자열로 받아서 숫자로 변환 */
     companyId: z
       .string()
       .optional()
@@ -93,7 +93,7 @@ export const updatePerformanceFormSchema = updatePerformanceSchema
         return Number.isNaN(num) ? undefined : num;
       }),
 
-    /** 기획사/판매자 ID - 폼에서는 문자열로 받아서 숫자로 변환 */
+    /** 판매자 ID - 폼에서는 문자열로 받아서 숫자로 변환 */
     companyId: z
       .string()
       .optional()

@@ -4,13 +4,15 @@
 
 import { z } from "zod";
 
-
 /**
  * 공연 생성 요청 스키마
  */
 export const createPerformanceSchema = z.object({
   /** 공연명 */
-  title: z.string().min(1, "공연명을 입력해주세요").max(255, "공연명은 255자를 초과할 수 없습니다"),
+  title: z
+    .string()
+    .min(1, "공연명을 입력해주세요")
+    .max(255, "공연명은 255자를 초과할 수 없습니다"),
   /** 공연 상세 설명 */
   description: z.string().optional(),
   /** 공연 카테고리 */
@@ -31,10 +33,16 @@ export const createPerformanceSchema = z.object({
   endDate: z.string().min(1, "종료일을 입력해주세요"),
   /** 출연진 */
   actors: z.string().optional(),
-  /** 기획사 */
-  agency: z.string().max(255, "기획사명은 255자를 초과할 수 없습니다").optional(),
+  /** 판매자 */
+  agency: z
+    .string()
+    .max(255, "판매자명은 255자를 초과할 수 없습니다")
+    .optional(),
   /** 제작사 */
-  producer: z.string().max(255, "제작사명은 255자를 초과할 수 없습니다").optional(),
+  producer: z
+    .string()
+    .max(255, "제작사명은 255자를 초과할 수 없습니다")
+    .optional(),
   /** 주최 */
   host: z.string().max(255, "주최명은 255자를 초과할 수 없습니다").optional(),
   /** 할인정보 */
@@ -44,9 +52,12 @@ export const createPerformanceSchema = z.object({
   /** 취소/환불규정 */
   refundPolicy: z.string().optional(),
   /** 상품상세 이미지 URL */
-  detailImageUrl: z.string().max(500, "상품상세 이미지 URL은 500자를 초과할 수 없습니다").optional(),
-  /** 판매자/기획사 ID */
-  companyId: z.number().positive("기획사/판매자를 선택해주세요").optional(),
+  detailImageUrl: z
+    .string()
+    .max(500, "상품상세 이미지 URL은 500자를 초과할 수 없습니다")
+    .optional(),
+  /** 판매자/판매자 ID */
+  companyId: z.number().positive("판매자를 선택해주세요").optional(),
   /** 예매 수수료 */
   bookingFee: z.number().min(0, "예매 수수료는 0 이상이어야 합니다").optional(),
   /** 배송 안내 */
@@ -58,7 +69,10 @@ export const createPerformanceSchema = z.object({
  */
 export const updatePerformanceSchema = z.object({
   /** 공연명 */
-  title: z.string().min(1, "공연명을 입력해주세요").max(255, "공연명은 255자를 초과할 수 없습니다"),
+  title: z
+    .string()
+    .min(1, "공연명을 입력해주세요")
+    .max(255, "공연명은 255자를 초과할 수 없습니다"),
   /** 공연 상세 설명 */
   description: z.string().optional(),
   /** 공연 카테고리 */
@@ -79,10 +93,16 @@ export const updatePerformanceSchema = z.object({
   endDate: z.string().min(1, "종료일을 입력해주세요"),
   /** 출연진 */
   actors: z.string().optional(),
-  /** 기획사 */
-  agency: z.string().max(255, "기획사명은 255자를 초과할 수 없습니다").optional(),
+  /** 판매자 */
+  agency: z
+    .string()
+    .max(255, "판매자명은 255자를 초과할 수 없습니다")
+    .optional(),
   /** 제작사 */
-  producer: z.string().max(255, "제작사명은 255자를 초과할 수 없습니다").optional(),
+  producer: z
+    .string()
+    .max(255, "제작사명은 255자를 초과할 수 없습니다")
+    .optional(),
   /** 주최 */
   host: z.string().max(255, "주최명은 255자를 초과할 수 없습니다").optional(),
   /** 할인정보 */
@@ -92,9 +112,12 @@ export const updatePerformanceSchema = z.object({
   /** 취소/환불규정 */
   refundPolicy: z.string().optional(),
   /** 상품상세 이미지 URL */
-  detailImageUrl: z.string().max(500, "상품상세 이미지 URL은 500자를 초과할 수 없습니다").optional(),
-  /** 판매자/기획사 ID */
-  companyId: z.number().positive("기획사/판매자를 선택해주세요").optional(),
+  detailImageUrl: z
+    .string()
+    .max(500, "상품상세 이미지 URL은 500자를 초과할 수 없습니다")
+    .optional(),
+  /** 판매자/판매자 ID */
+  companyId: z.number().positive("판매자를 선택해주세요").optional(),
   /** 예매 수수료 */
   bookingFee: z.number().min(0, "예매 수수료는 0 이상이어야 합니다").optional(),
   /** 배송 안내 */
@@ -113,7 +136,7 @@ export const performanceFilterSchema = z.object({
   venueId: z.number().optional(),
   /** 노출 여부 필터 */
   visible: z.boolean().optional(),
-  /** 기획사/판매자 ID 필터 */
+  /** 판매자 ID 필터 */
   companyId: z.number().optional(),
 });
 

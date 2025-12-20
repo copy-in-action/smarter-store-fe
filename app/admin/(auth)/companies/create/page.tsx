@@ -5,7 +5,7 @@ import CompanyCreateView from "@/views/admin/company/CompanyCreateView";
 export const metadata: Metadata = PAGES.ADMIN.COMPANY.CREATE.metadata;
 
 /**
- * 관리자 기획사/판매자 등록 페이지
+ * 관리자 판매자 등록 페이지
  */
 export default function AdminCompanyCreatePage() {
   return <CompanyCreateView />;

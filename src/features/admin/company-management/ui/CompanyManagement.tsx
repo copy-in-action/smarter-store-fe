@@ -22,7 +22,7 @@ import { createCompanyColumns } from "./CompanyColumns";
 import { CompanyDataTable } from "./CompanyDataTable";
 
 /**
- * 기획사/판매자 관리 컴포넌트
+ * 판매자 관리 컴포넌트
  */
 export function CompanyManagement() {
   const router = useRouter();
@@ -35,42 +35,42 @@ export function CompanyManagement() {
   const deleteCompanyMutation = useDeleteCompany();
 
   /**
-   * 기획사 상세보기 핸들러
-   * @param company - 선택된 기획사
+   * 판매자 상세보기 핸들러
+   * @param company - 선택된 판매자
    */
   const handleViewCompany = (company: Company) => {
     router.push(PAGES.ADMIN.COMPANY.DETAIL.path(company.id));
   };
 
   /**
-   * 기획사 수정 핸들러
-   * @param company - 수정할 기획사
+   * 판매자 수정 핸들러
+   * @param company - 수정할 판매자
    */
   const handleEditCompany = (company: Company) => {
     router.push(PAGES.ADMIN.COMPANY.EDIT.path(company.id));
   };
 
   /**
-   * 기획사 삭제 핸들러
-   * @param company - 삭제할 기획사
+   * 판매자 삭제 핸들러
+   * @param company - 삭제할 판매자
    */
   const handleDeleteCompany = async (company: Company) => {
     if (confirm(`'${company.name}'을(를) 정말 삭제하시겠습니까?`)) {
       try {
         await deleteCompanyMutation.mutateAsync(company.id);
-        toast.success("기획사가 성공적으로 삭제되었습니다.");
+        toast.success("판매자가 성공적으로 삭제되었습니다.");
       } catch (error) {
         const message =
           error instanceof Error
             ? error.message
-            : "기획사 삭제에 실패했습니다.";
+            : "판매자 삭제에 실패했습니다.";
         toast.error(message);
       }
     }
   };
 
   /**
-   * 새 기획사 추가 핸들러
+   * 새 판매자 추가 핸들러
    */
   const handleAddCompany = () => {
     router.push(PAGES.ADMIN.COMPANY.CREATE.path);
@@ -96,15 +96,13 @@ export function CompanyManagement() {
       {/* 헤더 */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            기획사/판매자 관리
-          </h1>
+          <h1 className="text-3xl font-bold tracking-tight">판매자 관리</h1>
           <p className="text-muted-foreground">
-            등록된 기획사와 판매자 정보를 관리합니다.
+            등록된 판매자와 판매자 정보를 관리합니다.
           </p>
         </div>
         <Button onClick={handleAddCompany} className="gap-2">
-          <Plus className="w-4 h-4" />새 기획사 추가
+          <Plus className="w-4 h-4" />새 판매자 추가
         </Button>
       </div>
 
@@ -119,12 +117,12 @@ export function CompanyManagement() {
       {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">전체 기획사</CardTitle>
+            <CardTitle className="text-sm font-medium">전체 판매자</CardTitle>
             <Building2 className="w-4 h-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.total}</div>
-            <p className="text-xs text-muted-foreground">등록된 기획사 수</p>
+            <p className="text-xs text-muted-foreground">등록된 판매자 수</p>
           </CardContent>
         </Card>
 
@@ -136,7 +134,7 @@ export function CompanyManagement() {
           <CardContent>
             <div className="text-2xl font-bold">{stats.withEmail}</div>
             <p className="text-xs text-muted-foreground">
-              이메일 정보가 있는 기획사
+              이메일 정보가 있는 판매자
             </p>
           </CardContent>
         </Card>
@@ -149,7 +147,7 @@ export function CompanyManagement() {
           <CardContent>
             <div className="text-2xl font-bold">{stats.withContact}</div>
             <p className="text-xs text-muted-foreground">
-              연락처 정보가 있는 기획사
+              연락처 정보가 있는 판매자
             </p>
           </CardContent>
         </Card>
@@ -162,7 +160,7 @@ export function CompanyManagement() {
           <CardContent>
             <div className="text-2xl font-bold">{stats.withAddress}</div>
             <p className="text-xs text-muted-foreground">
-              주소 정보가 있는 기획사
+              주소 정보가 있는 판매자
             </p>
           </CardContent>
         </Card>
@@ -171,9 +169,9 @@ export function CompanyManagement() {
       {/* 데이터 테이블 */}
       <Card>
         <CardHeader>
-          <CardTitle>기획사 목록</CardTitle>
+          <CardTitle>판매자 목록</CardTitle>
           <CardDescription>
-            등록된 모든 기획사와 판매자의 상세 정보를 확인할 수 있습니다.
+            등록된 모든 판매자와 판매자의 상세 정보를 확인할 수 있습니다.
           </CardDescription>
         </CardHeader>
         <CardContent>

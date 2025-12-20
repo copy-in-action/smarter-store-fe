@@ -48,16 +48,16 @@ export const adminSidebarData: SidebarData = {
       ],
     },
     {
-      title: "기획사/판매자",
+      title: "판매자",
       url: "#",
       icon: Users,
       items: [
         {
-          title: "기획사/판매자 추가",
+          title: "판매자 추가",
           url: PAGES.ADMIN.COMPANY.CREATE.path,
         },
         {
-          title: "기획사/판매자 리스트",
+          title: "판매자 리스트",
           url: PAGES.ADMIN.COMPANY.LIST.path,
         },
       ],

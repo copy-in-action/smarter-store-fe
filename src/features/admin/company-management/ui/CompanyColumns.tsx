@@ -15,10 +15,10 @@ import {
 } from "@/shared/ui/dropdown-menu";
 
 /**
- * 기획사 테이블 액션 속성
+ * 판매자 테이블 액션 속성
  */
 interface CompanyActionsProps {
-  /** 기획사 데이터 */
+  /** 판매자 데이터 */
   company: Company;
   /** 상세보기 핸들러 */
   onView?: (company: Company) => void;
@@ -29,7 +29,7 @@ interface CompanyActionsProps {
 }
 
 /**
- * 기획사 테이블 액션 컴포넌트
+ * 판매자 테이블 액션 컴포넌트
  */
 function CompanyActions({
   company,
@@ -75,9 +75,9 @@ function CompanyActions({
 }
 
 /**
- * 기획사 테이블 컬럼 생성 함수
+ * 판매자 테이블 컬럼 생성 함수
  * @param actions - 액션 핸들러들
- * @returns 기획사 테이블 컬럼 정의
+ * @returns 판매자 테이블 컬럼 정의
  */
 export function createCompanyColumns(actions?: {
   onView?: (company: Company) => void;
