@@ -46,24 +46,33 @@ const handleAuthError = (error: unknown) => {
       const isAdmin = isAdminPage();
 
       if (isAdmin) {
-        console.log("🔄 관리자 401 에러: 토큰 만료 - 관리자 로그인으로 리다이렉트");
-        
+        if (currentPath.startsWith(PAGES.ADMIN.AUTH.LOGIN.path)) return;
+        console.log(
+          "🔄 관리자 401 에러: 토큰 만료 - 관리자 로그인으로 리다이렉트",
+        );
+
         // 관리자는 현재 페이지를 redirect 파라미터로 저장
         const redirectUrl = `${PAGES.ADMIN.AUTH.LOGIN.path}?redirect=${encodeURIComponent(currentPath)}`;
-        
+
         // 즉시 리다이렉트 (관리자는 보안상 지연 없음)
         window.location.href = redirectUrl;
       } else {
-        console.log("🔄 일반 사용자 401 에러: 리프레시 토큰 갱신 실패 - 로그인으로 리다이렉트");
-        
+        if (currentPath.startsWith(PAGES.AUTH.LOGIN.path)) return;
+
+        console.log(
+          "🔄 일반 사용자 401 에러: 리프레시 토큰 갱신 실패 - 로그인으로 리다이렉트",
+        );
+
         // 일반 사용자도 현재 페이지를 redirect 파라미터로 저장
         const redirectUrl = `${PAGES.AUTH.LOGIN.path}?redirect=${encodeURIComponent(currentPath)}`;
-        
+
         // 짧은 지연 후 리다이렉트 (사용자 경험 고려)
         setTimeout(() => {
           // 이미 로그인 페이지에 있으면 리다이렉트하지 않음
-          if (!window.location.pathname.includes("/auth/login") && 
-              !window.location.pathname.includes("/admin/auth/login")) {
+          if (
+            !window.location.pathname.includes("/auth/login") &&
+            !window.location.pathname.includes("/admin/auth/login")
+          ) {
             window.location.href = redirectUrl;
           }
         }, 500);

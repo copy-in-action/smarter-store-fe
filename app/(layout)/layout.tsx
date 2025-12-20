@@ -1,8 +1,4 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
-import { AuthProvider } from "@/app/providers";
-import { getUserInfoServer } from "@/entities/user/api/user.server.api";
-import { AuthEventHandler } from "@/shared/components/AuthEventHandler";
 import { BottomNavigation } from "@/widgets/bottom-navigation";
 import { Header } from "@/widgets/header";
 
@@ -16,22 +12,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // 미들웨어에서 설정한 인증 상태 헤더 읽기
-  const headersList = await headers();
-  const hasInitialAuth = headersList.get("x-has-auth") === "true";
-
-  // 인증된 경우 서버에서 사용자 정보 미리 조회
-  const initialUserData = hasInitialAuth ? await getUserInfoServer() : null;
-
   return (
-    <AuthProvider
-      hasInitialAuth={hasInitialAuth}
-      initialUserData={initialUserData}
-    >
-      <AuthEventHandler />
+    <>
       <Header />
       <main className="mb-20 sm:mb-0">{children}</main>
       <BottomNavigation />
-    </AuthProvider>
+    </>
   );
 }
