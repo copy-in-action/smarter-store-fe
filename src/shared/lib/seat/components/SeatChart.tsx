@@ -22,6 +22,7 @@ interface SeatChartProps {
  * 좌석 차트를 렌더링하는 컴포넌트 (편집/보기 모드 지원)
  */
 export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
+  const isViewMode = config.mode;
   const [zoomLevel, setZoomLevel] = useState(1);
   const [hoveredSeat, setHoveredSeat] = useState<{
     row: number;
@@ -56,9 +57,12 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
       PRESET_COLORS[seatTypeIndex]?.value || PRESET_COLORS[0].value;
 
     const isDisabled = isSeatInState(row, col, config.disabledSeats);
-    const isReserved = isSeatInState(row, col, config.reservedSeats);
-    const isPending = isSeatInState(row, col, config.pendingSeats);
-    const isSelected = isSeatInState(row, col, config.selectedSeats);
+    const isReserved =
+      isViewMode && isSeatInState(row, col, config.reservedSeats);
+    const isPending =
+      isViewMode && isSeatInState(row, col, config.pendingSeats);
+    const isSelected =
+      isViewMode && isSeatInState(row, col, config.selectedSeats);
 
     // 좌석 상태에 따른 스타일
     if (isDisabled) {
@@ -112,15 +116,13 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
         colIndex,
         config.disabledSeats,
       );
-      const isReserved = isSeatInState(
-        rowIndex,
-        colIndex,
-        config.reservedSeats,
-      );
-      const isPending = isSeatInState(rowIndex, colIndex, config.pendingSeats);
+      const isReserved =
+        isViewMode && isSeatInState(rowIndex, colIndex, config.reservedSeats);
+      const isPending =
+        isViewMode && isSeatInState(rowIndex, colIndex, config.pendingSeats);
 
       // 보기 모드에서 비활성화된 좌석은 렌더링하지 않음
-      if (config.mode === "view" && isDisabled) {
+      if (isViewMode && isDisabled) {
         seats.push(<div key={`${rowIndex}-${colIndex}`} className="w-8 h-8" />);
         continue;
       }
@@ -352,7 +354,7 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
                 isSeatInState(
                   hoveredSeat.row,
                   hoveredSeat.col,
-                  config.reservedSeats,
+                  config.reservedSeats || [],
                 )
               )
                 return "예약됨";
@@ -360,7 +362,7 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
                 isSeatInState(
                   hoveredSeat.row,
                   hoveredSeat.col,
-                  config.pendingSeats,
+                  config.pendingSeats || [],
                 )
               )
                 return "구매 진행 중";
@@ -368,7 +370,7 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
                 isSeatInState(
                   hoveredSeat.row,
                   hoveredSeat.col,
-                  config.selectedSeats,
+                  config.selectedSeats || [],
                 )
               )
                 return "선택됨";

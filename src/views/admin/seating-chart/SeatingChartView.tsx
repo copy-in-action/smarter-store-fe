@@ -8,7 +8,7 @@ import {
  * 좌석 배치도 생성 뷰 컴포넌트
  * @param props - 좌석 배치도 페이지 속성
  */
-export default async function SeatingChartCreateView({
+export default async function SeatingChartView({
   venueId,
   name,
 }: SeatingChartPageProps) {
