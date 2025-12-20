@@ -27,11 +27,12 @@ export function EmailLoginForm({ redirectUrl }: EmailLoginFormProps) {
   const router = useRouter();
   const { login, isLoading } = useEmailLogin(redirectUrl);
 
+  // FIXME: 테스트를 위해 하드코딩
   const form = useForm<LoginRequest>({
     resolver: zodResolver(loginRequestSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: "user@example.com",
+      password: "password123",
     },
     mode: "onChange",
   });

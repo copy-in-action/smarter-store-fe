@@ -16,12 +16,12 @@ export const authHeaderMiddleware: MiddlewareFunction = (
 
   // 인증 토큰 쿠키 존재 여부 확인
   const hasAuth = request.cookies.has("accessToken");
+  const hasUser = request.cookies.has("refreshToken");
 
   // 응답 생성 및 인증 상태 헤더 설정
   const response = NextResponse.next();
   response.headers.set("x-has-auth", hasAuth ? "true" : "false");
-
-  console.log(`[Auth Header] ${request.nextUrl.pathname}: hasAuth=${hasAuth}`);
-
+  // 리프래시 토킨이 함께 있는 경우 유저 로그인으로 설정
+  response.headers.set("x-auth-role", hasUser ? "ROLE_USER" : "");
   return response;
 };

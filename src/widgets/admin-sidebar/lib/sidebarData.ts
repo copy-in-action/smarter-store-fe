@@ -9,7 +9,7 @@ export const adminSidebarData: SidebarData = {
   user: {
     name: "Admin User",
     email: "admin@example.com",
-    avatar: "/avatars/admin.jpg",
+    avatar: "/images/avatars/admin.jpg",
   },
   navMain: [
     {
