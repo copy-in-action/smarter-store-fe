@@ -320,6 +320,34 @@ const ADMIN_PAGES = {
           description: "공연 정보를 수정하는 관리자 페이지",
         } as Metadata,
       },
+
+      /** 공연 회차 등록 */
+      CREATE_SCHEDULE: {
+        path: (id: number) => `/admin/performances/${id}/schedules/create`,
+        metadata: {
+          title: "공연 회차 등록 | 관리자",
+          description: "공연회차 및 좌석등급을 입력하는 관리자 페이지",
+        } as Metadata,
+      },
+
+      /** 공연 회차 목록 */
+      SCHEDULE_LIST: {
+        path: (id: number) => `/admin/performances/${id}/schedules`,
+        metadata: {
+          title: "공연 회차 관리 | 관리자",
+          description: "공연 회차 목록을 관리하는 관리자 페이지",
+        } as Metadata,
+      },
+
+      /** 공연 회차 상세 */
+      SCHEDULE_DETAIL: {
+        path: (performanceId: number, scheduleId: number) => 
+          `/admin/performances/${performanceId}/schedules/${scheduleId}`,
+        metadata: {
+          title: "공연 회차 상세 | 관리자",
+          description: "공연 회차 상세 정보를 확인하는 관리자 페이지",
+        } as Metadata,
+      },
     },
     COMPANY: {
       LIST: {

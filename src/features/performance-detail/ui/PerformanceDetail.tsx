@@ -1,7 +1,9 @@
 "use client";
 
-import { Edit, Trash2 } from "lucide-react";
+import { Calendar, Edit, Trash2 } from "lucide-react";
+import Link from "next/link";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
+import { PAGES } from "@/shared/constants";
 import { cn } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
@@ -83,6 +85,14 @@ export function PerformanceDetail({
       {/* 액션 버튼들 */}
       {isAdminMode && (
         <div className="flex justify-end gap-3 mb-3">
+          <Button variant="outline" size="sm" asChild>
+            <Link
+              href={PAGES.ADMIN.PERFORMANCES.SCHEDULE_LIST.path(performance.id)}
+            >
+              <Calendar className="w-4 h-4 mr-2" />
+              회차 관리
+            </Link>
+          </Button>
           {onEdit && (
             <Button
               variant="outline"

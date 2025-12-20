@@ -10,12 +10,6 @@ import { PAGES } from "@/shared/constants/routes";
 import { createApiError, UnauthorizedError } from "../lib/errors";
 
 /**
- * API 기본 URL
- */
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_SERVER || "https://api.ticket.devhong.cc";
-
-/**
  * 서버 fetch 옵션
  */
 interface ServerFetchOptions extends RequestInit {
@@ -29,7 +23,7 @@ interface ServerFetchOptions extends RequestInit {
  * 서버 컴포넌트용 API 클라이언트
  * 인증 토큰 자동 추가, 에러 처리 담당
  *
- * @param url - 요청 URL (절대 경로 또는 상대 경로)
+ * @param url - 요청 URL (절대 경로)
  * @param options - fetch 옵션 및 인증 설정
  * @returns Promise<T> - 응답 데이터
  */
@@ -43,9 +37,6 @@ export async function serverFetch<T = any>(
     requireAdmin = false,
     ...fetchOptions
   } = options;
-
-  // URL이 상대 경로면 기본 URL 추가
-  const fullUrl = url.startsWith("http") ? url : `${API_BASE_URL}${url}`;
 
   /**
    * 인증이 필요한 경우 쿠키에서 토큰 확인
@@ -83,9 +74,9 @@ export async function serverFetch<T = any>(
   };
 
   try {
-    console.log(`🚀 Server API Request: ${config.method || "GET"} ${fullUrl}`);
+    console.log(`🚀 Server API Request: ${config.method || "GET"} ${url}`);
 
-    const response = await fetch(fullUrl, config);
+    const response = await fetch(url, config);
 
     /**
      * 에러 응답 처리
