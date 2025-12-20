@@ -508,13 +508,13 @@ export function PerformanceForm({
                   )}
                 </div>
 
-                {/* 판매자 (텍스트) */}
+                {/* 기획사 (텍스트) */}
                 <div className="space-y-2">
-                  <Label htmlFor="agency">판매자</Label>
+                  <Label htmlFor="agency">기획사</Label>
                   <Input
                     id="agency"
                     {...register("agency")}
-                    placeholder="판매자명을 입력하세요 (선택사항)"
+                    placeholder="기획사명을 입력하세요 (선택사항)"
                     className={errors.agency ? "border-red-500" : ""}
                     disabled={isViewMode}
                   />
