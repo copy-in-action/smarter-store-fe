@@ -10,7 +10,7 @@ import type { CompanyRequest } from "@/shared/api/orval/types/companyRequest";
 import type { CompanyResponse } from "@/shared/api/orval/types/companyResponse";
 
 /**
- * 기획사/판매자 쿼리 키
+ * 판매자 쿼리 키
  */
 export const companyQueryKeys = {
   all: ["companies"] as const,
@@ -22,8 +22,8 @@ export const companyQueryKeys = {
 };
 
 /**
- * 모든 기획사/판매자 목록을 조회합니다
- * @returns 기획사/판매자 목록 쿼리
+ * 모든 판매자 목록을 조회합니다
+ * @returns 판매자 목록 쿼리
  */
 export function useGetAllCompanies() {
   return useQuery({
@@ -33,15 +33,15 @@ export function useGetAllCompanies() {
       if (response.status === 200) {
         return response.data;
       }
-      throw new Error("기획사 목록 조회에 실패했습니다");
+      throw new Error("판매자 목록 조회에 실패했습니다");
     },
   });
 }
 
 /**
- * 특정 기획사/판매자 정보를 조회합니다
- * @param id - 기획사 ID
- * @returns 기획사 상세 정보 쿼리
+ * 특정 판매자 정보를 조회합니다
+ * @param id - 판매자 ID
+ * @returns 판매자 상세 정보 쿼리
  */
 export function useGetCompany(id: number) {
   return useQuery({
@@ -51,15 +51,15 @@ export function useGetCompany(id: number) {
       if (response.status === 200) {
         return response.data;
       }
-      throw new Error("기획사 정보 조회에 실패했습니다");
+      throw new Error("판매자 정보 조회에 실패했습니다");
     },
     enabled: !!id,
   });
 }
 
 /**
- * 새로운 기획사/판매자를 생성하는 뮤테이션
- * @returns 기획사 생성 뮤테이션
+ * 새로운 판매자를 생성하는 뮤테이션
+ * @returns 판매자 생성 뮤테이션
  */
 export function useCreateCompany() {
   const queryClient = useQueryClient();
@@ -70,18 +70,18 @@ export function useCreateCompany() {
       if (response.status === 201) {
         return response.data;
       }
-      throw new Error("기획사 생성에 실패했습니다");
+      throw new Error("판매자 생성에 실패했습니다");
     },
     onSuccess: () => {
-      // 기획사 목록 쿼리 무효화하여 새로고침
+      // 판매자 목록 쿼리 무효화하여 새로고침
       queryClient.invalidateQueries({ queryKey: companyQueryKeys.lists() });
     },
   });
 }
 
 /**
- * 기획사/판매자 정보를 수정하는 뮤테이션
- * @returns 기획사 수정 뮤테이션
+ * 판매자 정보를 수정하는 뮤테이션
+ * @returns 판매자 수정 뮤테이션
  */
 export function useUpdateCompany() {
   const queryClient = useQueryClient();
@@ -98,10 +98,10 @@ export function useUpdateCompany() {
       if (response.status === 200) {
         return response.data;
       }
-      throw new Error("기획사 정보 수정에 실패했습니다");
+      throw new Error("판매자 정보 수정에 실패했습니다");
     },
     onSuccess: (_, { id }) => {
-      // 기획사 목록 및 상세 정보 쿼리 무효화
+      // 판매자 목록 및 상세 정보 쿼리 무효화
       queryClient.invalidateQueries({ queryKey: companyQueryKeys.lists() });
       queryClient.invalidateQueries({ queryKey: companyQueryKeys.detail(id) });
     },
@@ -109,8 +109,8 @@ export function useUpdateCompany() {
 }
 
 /**
- * 기획사/판매자를 삭제하는 뮤테이션
- * @returns 기획사 삭제 뮤테이션
+ * 판매자를 삭제하는 뮤테이션
+ * @returns 판매자 삭제 뮤테이션
  */
 export function useDeleteCompany() {
   const queryClient = useQueryClient();
@@ -121,10 +121,10 @@ export function useDeleteCompany() {
       if (response.status === 204) {
         return;
       }
-      throw new Error("기획사 삭제에 실패했습니다");
+      throw new Error("판매자 삭제에 실패했습니다");
     },
     onSuccess: () => {
-      // 기획사 목록 쿼리 무효화하여 새로고침
+      // 판매자 목록 쿼리 무효화하여 새로고침
       queryClient.invalidateQueries({ queryKey: companyQueryKeys.lists() });
     },
   });

@@ -29,12 +29,12 @@ import { Input } from "@/shared/ui/input";
 import { Textarea } from "@/shared/ui/textarea";
 
 /**
- * 기획사 폼 모드
+ * 판매자 폼 모드
  */
 export type CompanyFormMode = "create" | "edit";
 
 /**
- * 기획사 폼 속성
+ * 판매자 폼 속성
  */
 interface CompanyFormProps {
   /** 폼 모드 */
@@ -50,7 +50,7 @@ interface CompanyFormProps {
 }
 
 /**
- * 재사용 가능한 기획사/판매자 폼 컴포넌트
+ * 재사용 가능한 판매자 폼 컴포넌트
  */
 export function CompanyForm({
   mode,
@@ -126,12 +126,10 @@ export function CompanyForm({
   };
 
   const isCreateMode = mode === "create";
-  const title = isCreateMode
-    ? "새 기획사/판매자 등록"
-    : "기획사/판매자 정보 수정";
+  const title = isCreateMode ? "새 판매자 등록" : "판매자 정보 수정";
   const description = isCreateMode
-    ? "새로운 기획사 또는 판매자 정보를 등록합니다."
-    : "기획사 또는 판매자 정보를 수정합니다.";
+    ? "새로운 판매자 또는 판매자 정보를 등록합니다."
+    : "판매자 또는 판매자 정보를 수정합니다.";
 
   return (
     <Card className="w-full max-w-2xl mx-auto">

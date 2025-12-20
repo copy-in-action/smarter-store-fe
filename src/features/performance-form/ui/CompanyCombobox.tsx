@@ -16,12 +16,12 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 
 /**
- * 기획사 Combobox 컴포넌트 속성
+ * 판매자 Combobox 컴포넌트 속성
  */
 interface CompanyComboboxProps {
-  /** 기획사 목록 */
+  /** 판매자 목록 */
   companies: Company[];
-  /** 선택된 기획사 ID */
+  /** 선택된 판매자 ID */
   value?: number;
   /** 값 변경 핸들러 */
   onValueChange: (value: number | undefined) => void;
@@ -36,7 +36,7 @@ interface CompanyComboboxProps {
 }
 
 /**
- * 검색 가능한 기획사 선택 Combobox 컴포넌트
+ * 검색 가능한 판매자 선택 Combobox 컴포넌트
  */
 export function CompanyCombobox({
   companies,
@@ -45,12 +45,12 @@ export function CompanyCombobox({
   disabled = false,
   loading = false,
   error = false,
-  placeholder = "기획사를 검색하여 선택하세요",
+  placeholder = "판매자를 검색하여 선택하세요",
 }: CompanyComboboxProps) {
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
-  // 선택된 기획사 찾기
+  // 선택된 판매자 찾기
   const selectedCompany = companies.find((company) => company.id === value);
 
   // 검색 필터링
@@ -61,8 +61,8 @@ export function CompanyCombobox({
   );
 
   /**
-   * 기획사 선택 핸들러
-   * @param companyId - 선택된 기획사 ID
+   * 판매자 선택 핸들러
+   * @param companyId - 선택된 판매자 ID
    */
   const handleSelect = (companyId: number) => {
     if (value === companyId) {
@@ -90,7 +90,7 @@ export function CompanyCombobox({
           disabled={disabled || loading}
         >
           {loading ? (
-            "기획사 목록 로딩 중..."
+            "판매자 목록 로딩 중..."
           ) : selectedCompany ? (
             <span className="truncate">
               {selectedCompany.name}
@@ -109,14 +109,14 @@ export function CompanyCombobox({
       <PopoverContent className="w-full p-0" align="start">
         <Command>
           <CommandInput
-            placeholder="기획사명이나 사업자번호로 검색..."
+            placeholder="판매자명이나 사업자번호로 검색..."
             value={searchValue}
             onValueChange={setSearchValue}
           />
           <CommandList>
             <CommandEmpty>
               {companies.length === 0
-                ? "등록된 기획사가 없습니다."
+                ? "등록된 판매자가 없습니다."
                 : "검색 결과가 없습니다."}
             </CommandEmpty>
             <CommandGroup>

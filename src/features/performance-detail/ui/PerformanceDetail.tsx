@@ -154,9 +154,9 @@ export function PerformanceDetail({
                   )}
                 </div>
 
-                {/* 기획사 */}
+                {/* 판매자 */}
                 <div>
-                  <h4 className="font-medium text-gray-600 mb-1">기획사</h4>
+                  <h4 className="font-medium text-gray-600 mb-1">판매자</h4>
                   <div className="text-sm">
                     {performance.company?.name || "미지정"}
                   </div>
@@ -271,9 +271,9 @@ export function PerformanceDetail({
                   </div>
                 </div>
 
-                {/* 기획사 (텍스트) */}
+                {/* 판매자 (텍스트) */}
                 <div>
-                  <h4 className="font-medium text-gray-600 mb-1">기획사</h4>
+                  <h4 className="font-medium text-gray-600 mb-1">판매자</h4>
                   <div className="text-sm">
                     {performance.agency || "미지정"}
                   </div>

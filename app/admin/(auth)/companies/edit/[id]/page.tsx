@@ -5,18 +5,18 @@ import CompanyEditView from "@/views/admin/company/CompanyEditView";
 export const metadata: Metadata = PAGES.ADMIN.COMPANY.EDIT.metadata;
 
 /**
- * 관리자 기획사/판매자 수정 페이지 속성
+ * 관리자 판매자 수정 페이지 속성
  */
 interface AdminCompanyEditPageProps {
   /** URL 파라미터 */
   params: {
-    /** 기획사 ID */
+    /** 판매자 ID */
     id: string;
   };
 }
 
 /**
- * 관리자 기획사/판매자 수정 페이지
+ * 관리자 판매자 수정 페이지
  */
 export default async function AdminCompanyEditPage({
   params,
@@ -34,7 +34,7 @@ export default async function AdminCompanyEditPage({
             잘못된 접근
           </h1>
           <p className="text-muted-foreground">
-            올바르지 않은 기획사 ID입니다.
+            올바르지 않은 판매자 ID입니다.
           </p>
         </div>
       </div>
