@@ -126,7 +126,7 @@
     @apply px-5 mx-auto max-w-7xl sm:px-2;
   }
   .auth-wrapper {
-    @apply px-5 mx-auto max-w-7xl sm:px-2;
+    @apply max-w-lg px-5 mx-auto sm:px-2;
   }
   .p-detail-wrapper {
     @apply max-w-4xl px-5 mx-auto sm:px-2;
