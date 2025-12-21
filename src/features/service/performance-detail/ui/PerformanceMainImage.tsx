@@ -1,17 +1,16 @@
+// TODO: 추후 캐러샐로 변경 필요. 현재는 이미지가 하나이므로 추후 구현
+
 "use client";
-import { cn } from "@/shared/lib/utils";
-import { Button } from "@/shared/ui/button";
 /**
  * 공연 메인 이미지 섹션 컴포넌트
  */
 
 import Image from "next/image";
-import { useState } from "react";
 
 /**
  * 공연 메인 이미지 컴포넌트 속성
  */
-interface PerformanceMainImageProps {
+interface PerformanceMainProps {
   /** 이미지 URL */
   imageUrl?: string;
   /** 공연 제목 (alt 텍스트용) */
@@ -24,49 +23,37 @@ interface PerformanceMainImageProps {
 export function PerformanceMainImage({
   imageUrl,
   title,
-}: PerformanceMainImageProps) {
-  const [expanded, setExpanded] = useState(false);
-
+}: PerformanceMainProps) {
   return (
-    <section id="image" className="performance-section scroll-mt-36 wrapper">
-      <h3 className="text-lg font-semibold mb-2 py-3.5">상품상세</h3>
-      <div
-        className={cn(
-          "overflow-hidden transition-all relative",
-          expanded ? "max-h-none" : "max-h-[400px]",
-        )}
-      >
-        <div className={"relative aspect-[3/4]"}>
-          {imageUrl && (
-            <Image
+    <section className="p-detail-wrapper">
+      <div className="relative flex items-center justify-center overflow-hidden rounded-3xl sm:h-[285px]">
+        {imageUrl && (
+          <>
+            {/** biome-ignore lint/performance/noImgElement: <explanation> */}
+            <img
               src={imageUrl}
               alt={`${title} 포스터`}
-              fill
-              className="object-contain"
-              sizes="(max-width: 768px) 100vw, 50vw"
-              priority={false}
-              loading="eager"
-              unoptimized
+              className="inset-0 object-fill h-full aspect-[343/286] sm:aspect-[558/285]"
+              aria-hidden
+              width={"100%"}
+              loading="lazy"
             />
-          )}
-        </div>
-        {!expanded && (
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-white/0 to-white"></div>
+            <div className="absolute inset-0 backdrop-blur-[50px]" />
+
+            <div className="absolute h-[78%]">
+              <div className="relative z-10 aspect-[158/223] h-full">
+                <Image
+                  src={imageUrl}
+                  alt={`${title} 포스터`}
+                  className="rounded-2xl"
+                  fill
+                  loading="eager"
+                />
+              </div>
+            </div>
+          </>
         )}
       </div>
-      {/* 상품 상세 더보기 */}
-      {!expanded && (
-        <div className="mt-5 text-center">
-          <Button
-            className="w-4/6 h-11"
-            variant={"outline"}
-            onClick={() => setExpanded(true)}
-          >
-            상품 상세 더보기
-          </Button>
-        </div>
-      )}
-      <div></div>
     </section>
   );
 }

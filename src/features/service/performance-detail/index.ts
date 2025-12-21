@@ -12,6 +12,7 @@ export type {
 // UI 컴포넌트 exports
 export { PerformanceDescription } from "./ui/PerformanceDescription";
 export { PerformanceHashTags } from "./ui/PerformanceHashTags";
+export { PerformanceImageCarousel } from "./ui/PerformanceImageCarousel";
 export { PerformanceInfo } from "./ui/PerformanceInfo";
 export { PerformanceMainImage } from "./ui/PerformanceMainImage";
 export { PerformanceTitle } from "./ui/PerformanceTitle";

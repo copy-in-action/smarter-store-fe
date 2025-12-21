@@ -14,5 +14,7 @@ interface PerformanceTitleProps {
  * 공연 제목과 카테고리를 표시하는 컴포넌트
  */
 export function PerformanceTitle({ title }: PerformanceTitleProps) {
-  return <h1 className="my-5 text-[20px] font-bold wrapper">{title}</h1>;
+  return (
+    <h1 className="my-5 text-[20px] font-bold p-detail-wrapper">{title}</h1>
+  );
 }

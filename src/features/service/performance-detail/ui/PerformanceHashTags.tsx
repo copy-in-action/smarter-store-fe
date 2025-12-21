@@ -41,7 +41,7 @@ export function PerformanceHashTags() {
 
   return (
     <>
-      <div className="flex flex-wrap gap-1.5 my-5 wrapper">
+      <div className="flex flex-wrap gap-1.5 my-5 p-detail-wrapper">
         {hashTags.map((tag) => (
           <Button
             key={tag.id}
@@ -61,7 +61,7 @@ export function PerformanceHashTags() {
       <div
         id="performance-detail-hashtags"
         className={cn(
-          "sticky sm:top-[101px] z-50 top-[91px] flex gap-4 bg-background border-b wrapper",
+          "sticky sm:top-[101px] z-50 top-[91px] flex gap-4 bg-background border-b p-detail-wrapper",
           inView && "hidden",
         )}
       >
