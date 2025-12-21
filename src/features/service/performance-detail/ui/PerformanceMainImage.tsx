@@ -46,6 +46,7 @@ export function PerformanceMainImage({
               sizes="(max-width: 768px) 100vw, 50vw"
               priority={false}
               loading="eager"
+              unoptimized
             />
           )}
         </div>

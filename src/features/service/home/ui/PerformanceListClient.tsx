@@ -6,36 +6,14 @@ import { usePerformances } from "@/entities/performance/api/performance.api";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
 import { Carousel, CarouselContent, CarouselItem } from "@/shared/ui/carousel";
 
+import { PerformanceListSkeleton } from "./PerformanceListSkeleton";
+
 /**
  * 클라이언트 컴포넌트 props
  */
 interface PerformanceListClientProps {
   /** 서버에서 전달받은 초기 데이터 */
   initialData: PerformanceResponse[];
-}
-
-/**
- * 공연 리스트 로딩 스켈레톤
- */
-function PerformanceListSkeleton() {
-  return (
-    <div className="px-4 wrapper sm:px-10">
-      <div className="flex gap-4">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <div
-            key={i.toString()}
-            className="space-y-3 basis-2/5 sm:basis-3/10 lg:basis-3/13"
-          >
-            <div className="aspect-[3/4] bg-gray-200 rounded-lg animate-pulse" />
-            <div className="space-y-1">
-              <div className="h-4 bg-gray-200 rounded animate-pulse" />
-              <div className="w-3/4 h-3 bg-gray-200 rounded animate-pulse" />
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
 }
 
 /**
@@ -112,13 +90,17 @@ function PerformanceListView({
                       fill
                       className="object-cover"
                       loading="lazy"
+                      unoptimized
                     />
                   </div>
-                  <div className="space-y-1">
-                    <h3 className="text-sm font-medium transition-colors line-clamp-2 group-hover:text-gray-600">
+                  <div className="space-y-1 px-1 w-full">
+                    <h3
+                      className="text-lg font-medium transition-colors group-hover:text-gray-600 mb-0.5 line-clamp-1"
+                      title={performance.title}
+                    >
                       {performance.title}
                     </h3>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-gray-500">
                       {performance.venue?.name || "장소 미정"}
                     </p>
                   </div>

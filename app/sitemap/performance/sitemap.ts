@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getPerformancesForServer } from "@/features/home/api/home-server.api";
+import { getPerformancesForServer } from "@/features/service/home/api/home-server.api";
 
 const MAX_URLS_PER_SITEMAP = 50000;
 
