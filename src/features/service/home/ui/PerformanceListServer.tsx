@@ -1,4 +1,4 @@
-import { getPerformancesForServer } from "../api/home-server.api";
+import { getPerformancesForServer } from "@/entities/performance/api/performance.server.api";
 import { PerformanceListClient } from "./PerformanceListClient";
 
 /**

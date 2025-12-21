@@ -15,7 +15,6 @@ export async function fetchSeatingChartOnServer(
       status: number;
       data: SeatingChartResponse;
     }>(getGetSeatingChartUrl(venueId), {
-      method: "GET",
       requireAuth: true,
       requireAdmin: true,
     });

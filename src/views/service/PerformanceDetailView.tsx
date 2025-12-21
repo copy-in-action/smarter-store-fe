@@ -3,8 +3,8 @@
  */
 
 import { notFound } from "next/navigation";
+import { getPerformanceDetailForServer } from "@/entities/performance/api/performance.server.api";
 import { ServicePerformanceDetail } from "@/features/service/performance-detail";
-import { getPerformanceDetailForServer } from "@/features/service/performance-detail/api/performanceDetail.api";
 
 /**
  * 공연 상세 페이지 속성

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getPerformanceDetailForServer } from "@/features/service/performance-detail";
+import { getPerformanceDetailForServer } from "@/entities/performance/api/performance.server.api";
 import { PAGES } from "@/shared/constants/routes";
 import PerformanceDetailView from "@/views/service/PerformanceDetailView";
 

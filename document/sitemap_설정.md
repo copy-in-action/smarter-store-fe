@@ -139,7 +139,7 @@ export async function getPerformancesForServer(
   };
 
   const response = await serverFetch<{ data: PerformanceResponse[] }>(
-    "/api/performances",
+    getGetAllPerformancesUrl(),  //orval에서 생성한 getUrl함수를 사용
     mergedOptions,
   );
 
