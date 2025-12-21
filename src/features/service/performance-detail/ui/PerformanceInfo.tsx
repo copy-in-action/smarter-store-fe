@@ -9,7 +9,7 @@ import type { PerformanceInfoProps } from "../model/types";
  */
 export function PerformanceInfo({ performance }: PerformanceInfoProps) {
   return (
-    <section className="text-sm flex flex-col gap-1.5 wrapper">
+    <section className="text-sm flex flex-col gap-1.5 p-detail-wrapper">
       {/* 장소 */}
       <div className="flex items-center gap-3">
         <div className="text-gray-500">장소</div>

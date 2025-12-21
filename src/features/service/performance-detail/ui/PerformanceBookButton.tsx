@@ -71,8 +71,12 @@ const PerformanceBookButton = () => {
 
   return (
     <>
-      <div className="fixed z-50 sm:bottom-0 shadow-[0_0_5px_rgba(0,0,0,0.06)] w-full px-4 py-3 bg-background border-t-[0.5px] bottom-14">
-        <Button className="w-full" size={"lg"} onClick={handleBookPerformance}>
+      <div className="fixed z-50 sm:bottom-0 shadow-[0_0_5px_rgba(0,0,0,0.1)] w-full px-4 py-3 bg-background bottom-14 text-center">
+        <Button
+          className="w-full max-w-4xl"
+          size={"lg"}
+          onClick={handleBookPerformance}
+        >
           예매하기
         </Button>
       </div>

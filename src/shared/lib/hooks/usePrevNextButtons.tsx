@@ -6,6 +6,7 @@ import {
   useCallback,
 } from "react";
 import type { CarouselApi } from "@/shared/ui/carousel";
+import { cn } from "../utils";
 
 /**
  * 이전/다음 버튼 훅 반환 타입
@@ -62,11 +63,15 @@ type ButtonProps = PropsWithChildren<
  * 이전 버튼 컴포넌트
  */
 export const PrevButton = ({ children, ...restProps }: ButtonProps) => {
+  const { className } = restProps;
   return (
     <button
       type="button"
       {...restProps}
-      className="absolute z-10 flex items-center justify-center text-gray-700 transition-all -translate-y-1/2 bg-white border rounded-lg shadow-lg size-12 -left-6 hover:bg-gray-50 hover:text-gray-950"
+      className={cn(
+        "absolute z-10 items-center justify-center hidden text-gray-700 transition-all -translate-y-1/2 bg-white border rounded-lg shadow-lg sm:flex top-1/2 size-12 -left-6 hover:bg-gray-50 hover:text-gray-950",
+        className,
+      )}
     >
       <ChevronLeft className="w-6 h-6" />
       {children}
@@ -78,11 +83,15 @@ export const PrevButton = ({ children, ...restProps }: ButtonProps) => {
  * 다음 버튼 컴포넌트
  */
 export const NextButton = ({ children, ...restProps }: ButtonProps) => {
+  const { className } = restProps;
   return (
     <button
       type="button"
       {...restProps}
-      className="absolute z-10 flex items-center justify-center text-gray-700 transition-all -translate-y-1/2 bg-white border rounded-lg shadow-lg size-12 -right-6 hover:bg-gray-50 hover:text-gray-950"
+      className={cn(
+        "absolute z-10 items-center justify-center hidden text-gray-700 transition-all -translate-y-1/2 bg-white border rounded-lg shadow-lg sm:flex top-1/2 size-12 -right-6 hover:bg-gray-50 hover:text-gray-950",
+        className,
+      )}
     >
       <ChevronRight className="w-6 h-6" />
       {children}

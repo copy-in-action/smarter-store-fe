@@ -23,7 +23,7 @@ export function PerformanceDescription({
   return (
     <section
       id="description"
-      className="scroll-mt-36 performance-section wrapper"
+      className="scroll-mt-36 performance-section p-detail-wrapper"
     >
       <h3 className="text-lg font-semibold mb-2 py-3.5">공연소개</h3>
 

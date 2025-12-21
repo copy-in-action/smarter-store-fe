@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePerformances } from "@/entities/performance/api/performance.api";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
-import { Carousel, CarouselContent, CarouselItem } from "@/shared/ui/carousel";
+import { CarouselItem } from "@/shared/ui/carousel";
+import { ReusableCarousel } from "@/shared/ui/reusable-carousel";
 
 import { PerformanceListSkeleton } from "./PerformanceListSkeleton";
 
@@ -60,56 +61,59 @@ function PerformanceListView({
 
   return (
     <div className="px-4 wrapper sm:px-10">
-      <Carousel
-        opts={{
+      <ReusableCarousel
+        options={{
+          autoplay: false,
+          showNavigation: true,
+          showPageControls: false,
+          loop: false,
+          slidesToScroll: 4,
           align: "start",
-          slidesToScroll: 1,
           breakpoints: {
-            "(min-width: 640px)": { slidesToScroll: 2 },
+            "(min-width: 640px)": { slidesToScroll: 1 },
           },
         }}
-        className="w-full"
+        navigationButtonClassName="-translate-y-[60px]"
+        contentClassName="grid grid-cols-2 gap-2 sm:flex sm:-ml-2 sm:gap-0"
       >
-        <CarouselContent className="-ml-2 sm:-ml-4">
-          {performances.map((performance) => (
-            <CarouselItem
-              key={performance.id}
-              className="pl-2 sm:pl-4 basis-2/5 sm:basis-3/10 lg:basis-3/13"
+        {performances.map((performance, index) => (
+          <CarouselItem
+            key={performance.id}
+            className={`${
+              index < 4 ? "block" : "hidden"
+            } sm:block sm:pl-2 lg:pl-4 basis-auto sm:basis-4/12 lg:basis-3/13`}
+          >
+            <Link
+              href={`/performance/${performance.id}`}
+              className="block cursor-pointer group"
             >
-              <Link
-                href={`/performance/${performance.id}`}
-                className="block cursor-pointer group"
-              >
-                <div className="space-y-3">
-                  <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-gray-200 group-hover:opacity-90 transition-opacity">
-                    <Image
-                      src={
-                        performance.mainImageUrl || "/images/placeholder.jpg"
-                      }
-                      alt={performance.title}
-                      fill
-                      className="object-cover"
-                      loading="lazy"
-                      unoptimized
-                    />
-                  </div>
-                  <div className="space-y-1 px-1 w-full">
-                    <h3
-                      className="text-lg font-medium transition-colors group-hover:text-gray-600 mb-0.5 line-clamp-1"
-                      title={performance.title}
-                    >
-                      {performance.title}
-                    </h3>
-                    <p className="text-gray-500">
-                      {performance.venue?.name || "장소 미정"}
-                    </p>
-                  </div>
+              <div className="space-y-3">
+                <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-gray-200 group-hover:opacity-90 transition-opacity">
+                  <Image
+                    src={performance.mainImageUrl || "/images/placeholder.jpg"}
+                    alt={performance.title}
+                    fill
+                    className="object-cover"
+                    loading="lazy"
+                    unoptimized
+                  />
                 </div>
-              </Link>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-      </Carousel>
+                <div className="w-full px-1 space-y-1">
+                  <div
+                    className="text-lg transition-colors group-hover:text-gray-600 mb-0.5 line-clamp-1"
+                    title={performance.title}
+                  >
+                    {performance.title}
+                  </div>
+                  <p className="text-gray-500">
+                    {performance.venue?.name || "장소 미정"}
+                  </p>
+                </div>
+              </div>
+            </Link>
+          </CarouselItem>
+        ))}
+      </ReusableCarousel>
     </div>
   );
 }
