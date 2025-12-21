@@ -6,7 +6,10 @@ const nextConfig: NextConfig = {
   output: process.platform === "win32" ? undefined : "standalone",
   allowedDevOrigins: ["*.devhong.cc"],
   images: {
-    remotePatterns: [new URL("https://marketplace.canva.com/**")],
+    remotePatterns: [
+      new URL("https://marketplace.canva.com/**"),
+      new URL("https://ticketimage.interpark.com/Play/image/**"),
+    ],
   },
 };
 
