@@ -46,17 +46,17 @@ export async function GET() {
   // XML 사이트맵 인덱스 생성
   const sitemapEntries = allSitemaps
     .map(
-      (url) => `    <sitemap>
-      <loc>${url}</loc>
-      <lastmod>${new Date().toISOString()}</lastmod>
-    </sitemap>`,
+      (url) => `  <sitemap>
+    <loc>${url}</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+  </sitemap>`,
     )
     .join("\n");
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
-        <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-            ${sitemapEntries}
-        </sitemapindex>`;
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${sitemapEntries}
+</sitemapindex>`.trim();
 
   return new Response(xml, {
     headers: {
