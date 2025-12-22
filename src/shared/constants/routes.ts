@@ -88,6 +88,10 @@ export const SERVICE_PAGES = {
       metadata: {
         description: "CIA에 로그인하고 스마트한 쇼핑을 시작하세요",
       } as Metadata,
+      siteMap: {
+        priority: 0.5,
+        changeFrequency: "daily" as const,
+      },
 
       EMAIL: {
         path: "/auth/login/email",
@@ -95,6 +99,10 @@ export const SERVICE_PAGES = {
           title: "이메일 로그인",
           description: "이메일로 CIA에 로그인하고 스마트한 쇼핑을 시작하세요",
         } as Metadata,
+        siteMap: {
+          priority: 0.5,
+          changeFrequency: "daily" as const,
+        },
       },
     },
     /** 회원가입 */
@@ -107,6 +115,10 @@ export const SERVICE_PAGES = {
             title: "회원가입 - 정보 입력",
             description: "이름과 휴대폰 번호를 입력해주세요",
           } as Metadata,
+          siteMap: {
+            priority: 0.5,
+            changeFrequency: "daily" as const,
+          },
         },
 
         /** 이메일 인증 (3단계) */
@@ -341,7 +353,7 @@ const ADMIN_PAGES = {
 
       /** 공연 회차 상세 */
       SCHEDULE_DETAIL: {
-        path: (performanceId: number, scheduleId: number) => 
+        path: (performanceId: number, scheduleId: number) =>
           `/admin/performances/${performanceId}/schedules/${scheduleId}`,
         metadata: {
           title: "공연 회차 상세 | 관리자",
