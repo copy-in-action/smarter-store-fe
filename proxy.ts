@@ -24,7 +24,7 @@ export const proxy = chainMiddleware(
 export const config = {
   matcher: [
     // 인증 헤더 설정을 위해 모든 경로에 적용 (정적 파일 제외)
-    "/((?!api|_next/static|_next/images|favicon.ico|images).*)",
+    "/((?!api|_next/static|_next/images|favicon.ico|images|sitemap.xml|sitemap/.*).*)",
 
     // 관리자 페이지 보호
     "/admin/:path*",

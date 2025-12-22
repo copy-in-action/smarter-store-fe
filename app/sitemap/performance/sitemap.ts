@@ -48,6 +48,6 @@ export default async function sitemap(props: {
       ? new Date(performance.updatedAt)
       : new Date(),
     changeFrequency: "daily",
-    priority: 0.8,
+    priority: 0.6,
   }));
 }
