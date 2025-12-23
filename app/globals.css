@@ -121,7 +121,7 @@
   }
 }
 
-@layer components {
+@layer utilities {
   .wrapper {
     @apply px-5 mx-auto max-w-7xl sm:px-2;
   }
@@ -130,5 +130,11 @@
   }
   .p-detail-wrapper {
     @apply max-w-4xl px-5 mx-auto sm:px-2;
+  }
+  .scrollbar-hide {
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    scrollbar-width: none;
   }
 }

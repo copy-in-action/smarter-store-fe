@@ -15,14 +15,18 @@ import type { HashTagItem } from "../model/types";
 export function PerformanceHashTags() {
   const { ref, inView } = useInView({
     threshold: 1,
-    rootMargin: "-100px 0px 0px 0px",
+    rootMargin: "-50px 0px 0px 0px",
   });
+
   /**
    * 해시태그 항목들
    */
   const hashTags: HashTagItem[] = [
     { id: "image", label: "상품 상세" },
-    { id: "description", label: "공연소개" },
+    { id: "discountInfo", label: "할인정보" },
+    { id: "usageGuide", label: "이용안내" },
+    { id: "venue", label: "장소" },
+    { id: "refundPolicy", label: "취소 및 환불규정" },
   ];
 
   /**
@@ -61,7 +65,7 @@ export function PerformanceHashTags() {
       <div
         id="performance-detail-hashtags"
         className={cn(
-          "sticky sm:top-[101px] z-50 top-[91px] flex gap-4 bg-background border-b p-detail-wrapper",
+          "sticky sm:top-[101px] z-50 top-[91px] flex gap-4 bg-background border-b p-detail-wrapper overflow-auto scrollbar-hide",
           inView && "hidden",
         )}
       >
@@ -69,7 +73,7 @@ export function PerformanceHashTags() {
           <a
             key={tag.id}
             href={`#${tag.id}`}
-            className={cn("text-sm p-3 text-gray-600")}
+            className={"text-sm p-3 text-gray-600 whitespace-nowrap"}
           >
             {tag.label}
           </a>
