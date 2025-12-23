@@ -1,5 +1,4 @@
 import { toast } from "sonner";
-import { PAGES } from "../constants";
 import {
   dispatchAdminUnauthorizedEvent,
   dispatchUnauthorizedEvent,
@@ -16,7 +15,7 @@ let refreshPromise: Promise<string | null> | null = null;
  * API 기본 URL
  */
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_SERVER || "https://api.ticket.devhong.cc";
+  process.env.NEXT_PUBLIC_API_SERVER || "https://ticket-api.devhong.cc";
 
 /**
  * API 에러 응답 타입
@@ -190,7 +189,10 @@ export const apiClient = async <T = any>(
           console.log("❌ 토큰 갱신 실패 - 로그인 페이지로 이동");
 
           // 현재 페이지 URL을 리다이렉트 URL로 사용
-          const redirectUrl = typeof window !== "undefined" ? window.location.pathname + window.location.search : "/";
+          const redirectUrl =
+            typeof window !== "undefined"
+              ? window.location.pathname + window.location.search
+              : "/";
           dispatchUnauthorizedEvent(redirectUrl, "인증이 필요합니다");
 
           throw new ApiErrorClass("인증이 필요합니다", 401);

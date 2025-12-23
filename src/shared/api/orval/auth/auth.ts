@@ -52,7 +52,7 @@ export const getSignupUrl = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/auth/signup`
+  return `https://ticket-api.devhong.cc/api/auth/signup`
 }
 
 export const signup = async (signupRequest: SignupRequest, options?: RequestInit): Promise<signupResponse> => {
@@ -98,7 +98,7 @@ export const getRefreshUrl = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/auth/refresh`
+  return `https://ticket-api.devhong.cc/api/auth/refresh`
 }
 
 export const refresh = async (refreshTokenRequest: RefreshTokenRequest, options?: RequestInit): Promise<refreshResponse> => {
@@ -137,7 +137,7 @@ export const getLogoutUrl = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/auth/logout`
+  return `https://ticket-api.devhong.cc/api/auth/logout`
 }
 
 export const logout = async ( options?: RequestInit): Promise<logoutResponse> => {
@@ -182,7 +182,7 @@ export const getLoginUrl = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/auth/login`
+  return `https://ticket-api.devhong.cc/api/auth/login`
 }
 
 export const login = async (loginRequest: LoginRequest, options?: RequestInit): Promise<loginResponse> => {
@@ -228,7 +228,7 @@ export const getRequestEmailVerificationUrl = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/auth/email-verification/request`
+  return `https://ticket-api.devhong.cc/api/auth/email-verification/request`
 }
 
 export const requestEmailVerification = async (emailVerificationRequest: EmailVerificationRequest, options?: RequestInit): Promise<requestEmailVerificationResponse> => {
@@ -274,7 +274,7 @@ export const getConfirmOtpUrl = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/auth/confirm-otp`
+  return `https://ticket-api.devhong.cc/api/auth/confirm-otp`
 }
 
 export const confirmOtp = async (otpConfirmationRequest: OtpConfirmationRequest, options?: RequestInit): Promise<confirmOtpResponse> => {
@@ -325,7 +325,7 @@ export const getMeUrl = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/auth/me`
+  return `https://ticket-api.devhong.cc/api/auth/me`
 }
 
 export const me = async ( options?: RequestInit): Promise<meResponse> => {

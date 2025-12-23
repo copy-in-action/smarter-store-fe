@@ -37,7 +37,7 @@ export const getGetScheduleUrl = (scheduleId: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/admin/performances/schedules/${scheduleId}`
+  return `https://ticket-api.devhong.cc/api/admin/performances/schedules/${scheduleId}`
 }
 
 export const getSchedule = async (scheduleId: number, options?: RequestInit): Promise<getScheduleResponse> => {
@@ -75,7 +75,7 @@ export const getUpdateScheduleUrl = (scheduleId: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/admin/performances/schedules/${scheduleId}`
+  return `https://ticket-api.devhong.cc/api/admin/performances/schedules/${scheduleId}`
 }
 
 export const updateSchedule = async (scheduleId: number,
@@ -115,7 +115,7 @@ export const getDeleteScheduleUrl = (scheduleId: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/admin/performances/schedules/${scheduleId}`
+  return `https://ticket-api.devhong.cc/api/admin/performances/schedules/${scheduleId}`
 }
 
 export const deleteSchedule = async (scheduleId: number, options?: RequestInit): Promise<deleteScheduleResponse> => {
@@ -153,7 +153,7 @@ export const getGetAllSchedulesUrl = (performanceId: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/admin/performances/${performanceId}/schedules`
+  return `https://ticket-api.devhong.cc/api/admin/performances/${performanceId}/schedules`
 }
 
 export const getAllSchedules = async (performanceId: number, options?: RequestInit): Promise<getAllSchedulesResponse> => {
@@ -191,7 +191,7 @@ export const getCreateScheduleUrl = (performanceId: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/admin/performances/${performanceId}/schedules`
+  return `https://ticket-api.devhong.cc/api/admin/performances/${performanceId}/schedules`
 }
 
 export const createSchedule = async (performanceId: number,
