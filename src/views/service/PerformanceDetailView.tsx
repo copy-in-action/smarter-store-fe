@@ -24,6 +24,7 @@ export default async function PerformanceDetailView({
   try {
     // 서버에서 공연 데이터 조회
     const performance = await getPerformanceDetailForServer(performanceId);
+    // TODO: 회차 정보 조회 후 오늘이랑 가장 가까운 회차 선택.
 
     // visible이 false인 경우 404 처리
     if (!performance.visible) {
