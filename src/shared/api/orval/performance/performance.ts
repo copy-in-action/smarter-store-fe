@@ -45,7 +45,7 @@ export const getGetPerformanceUrl = (id: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/performances/${id}`
+  return `https://ticket-api.devhong.cc/api/performances/${id}`
 }
 
 export const getPerformance = async (id: number, options?: RequestInit): Promise<getPerformanceResponse> => {
@@ -100,7 +100,7 @@ export const getUpdatePerformanceUrl = (id: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/performances/${id}`
+  return `https://ticket-api.devhong.cc/api/performances/${id}`
 }
 
 export const updatePerformance = async (id: number,
@@ -152,7 +152,7 @@ export const getDeletePerformanceUrl = (id: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/performances/${id}`
+  return `https://ticket-api.devhong.cc/api/performances/${id}`
 }
 
 export const deletePerformance = async (id: number, options?: RequestInit): Promise<deletePerformanceResponse> => {
@@ -190,7 +190,7 @@ export const getGetAllPerformancesUrl = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/performances`
+  return `https://ticket-api.devhong.cc/api/performances`
 }
 
 export const getAllPerformances = async ( options?: RequestInit): Promise<getAllPerformancesResponse> => {
@@ -240,7 +240,7 @@ export const getCreatePerformanceUrl = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/performances`
+  return `https://ticket-api.devhong.cc/api/performances`
 }
 
 export const createPerformance = async (createPerformanceRequest: CreatePerformanceRequest, options?: RequestInit): Promise<createPerformanceResponse> => {

@@ -8,160 +8,50 @@
 import type {
   ErrorResponse,
   ScheduleSeatStatusResponse,
-  SeatHoldRequest,
-  SeatHoldResponse,
-  SeatStatusResponse,
-  Unit
+  SseEmitter
 } from '.././types';
 
 import { orvalFetch } from '../../fetch-wrapper';
 
 /**
- * 점유 중인 좌석을 예약 확정합니다. (결제 완료 후 호출)
+ * 
+            SSE(Server-Sent Events)를 통해 좌석 상태 변경을 실시간으로 수신합니다.
 
-**권한: USER, ADMIN**
- * @summary 좌석 예약 확정
+            **이벤트 타입:**
+            - `connect`: 연결 성공
+            - `seat-update`: 좌석 상태 변경 (OCCUPIED/RELEASED/CONFIRMED)
+            - `heartbeat`: 연결 유지 (45초마다)
+
+            **권한: 인증 불필요**
+        
+ * @summary 좌석 상태 실시간 구독 (SSE)
  */
-export type reserveSeatsResponse200 = {
-  data: SeatStatusResponse[]
+export type subscribeSeatEventsResponse200 = {
+  data: SseEmitter
   status: 200
 }
-
-export type reserveSeatsResponse400 = {
-  data: ErrorResponse
-  status: 400
-}
-
-export type reserveSeatsResponse404 = {
-  data: ErrorResponse
-  status: 404
-}
     
-export type reserveSeatsResponseSuccess = (reserveSeatsResponse200) & {
+export type subscribeSeatEventsResponseSuccess = (subscribeSeatEventsResponse200) & {
   headers: Headers;
 };
-export type reserveSeatsResponseError = (reserveSeatsResponse400 | reserveSeatsResponse404) & {
-  headers: Headers;
-};
+;
 
-export type reserveSeatsResponse = (reserveSeatsResponseSuccess | reserveSeatsResponseError)
+export type subscribeSeatEventsResponse = (subscribeSeatEventsResponseSuccess)
 
-export const getReserveSeatsUrl = (scheduleId: number,) => {
+export const getSubscribeSeatEventsUrl = (scheduleId: number,) => {
 
 
   
 
-  return `https://api.ticket.devhong.cc/api/schedules/${scheduleId}/seats/reserve`
+  return `https://ticket-api.devhong.cc/api/schedules/${scheduleId}/seats/stream`
 }
 
-export const reserveSeats = async (scheduleId: number, options?: RequestInit): Promise<reserveSeatsResponse> => {
+export const subscribeSeatEvents = async (scheduleId: number, options?: RequestInit): Promise<subscribeSeatEventsResponse> => {
   
-  return orvalFetch<reserveSeatsResponse>(getReserveSeatsUrl(scheduleId),
+  return orvalFetch<subscribeSeatEventsResponse>(getSubscribeSeatEventsUrl(scheduleId),
   {      
     ...options,
-    method: 'POST'
-    
-    
-  }
-);}
-
-
-/**
- * 좌석을 점유합니다. 점유 시간은 10분이며, 최대 4석까지 선택 가능합니다.
-
-**권한: USER, ADMIN**
- * @summary 좌석 점유
- */
-export type holdSeatsResponse200 = {
-  data: SeatHoldResponse
-  status: 200
-}
-
-export type holdSeatsResponse400 = {
-  data: ErrorResponse
-  status: 400
-}
-
-export type holdSeatsResponse404 = {
-  data: ErrorResponse
-  status: 404
-}
-
-export type holdSeatsResponse409 = {
-  data: ErrorResponse
-  status: 409
-}
-    
-export type holdSeatsResponseSuccess = (holdSeatsResponse200) & {
-  headers: Headers;
-};
-export type holdSeatsResponseError = (holdSeatsResponse400 | holdSeatsResponse404 | holdSeatsResponse409) & {
-  headers: Headers;
-};
-
-export type holdSeatsResponse = (holdSeatsResponseSuccess | holdSeatsResponseError)
-
-export const getHoldSeatsUrl = (scheduleId: number,) => {
-
-
-  
-
-  return `https://api.ticket.devhong.cc/api/schedules/${scheduleId}/seats/hold`
-}
-
-export const holdSeats = async (scheduleId: number,
-    seatHoldRequest: SeatHoldRequest, options?: RequestInit): Promise<holdSeatsResponse> => {
-  
-  return orvalFetch<holdSeatsResponse>(getHoldSeatsUrl(scheduleId),
-  {      
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      seatHoldRequest,)
-  }
-);}
-
-
-/**
- * 점유 중인 좌석을 해제합니다.
-
-**권한: USER, ADMIN**
- * @summary 좌석 점유 해제
- */
-export type releaseSeatsResponse204 = {
-  data: Unit
-  status: 204
-}
-
-export type releaseSeatsResponse404 = {
-  data: ErrorResponse
-  status: 404
-}
-    
-export type releaseSeatsResponseSuccess = (releaseSeatsResponse204) & {
-  headers: Headers;
-};
-export type releaseSeatsResponseError = (releaseSeatsResponse404) & {
-  headers: Headers;
-};
-
-export type releaseSeatsResponse = (releaseSeatsResponseSuccess | releaseSeatsResponseError)
-
-export const getReleaseSeatsUrl = (scheduleId: number,) => {
-
-
-  
-
-  return `https://api.ticket.devhong.cc/api/schedules/${scheduleId}/seats/hold`
-}
-
-export const releaseSeats = async (scheduleId: number, options?: RequestInit): Promise<releaseSeatsResponse> => {
-  
-  return orvalFetch<releaseSeatsResponse>(getReleaseSeatsUrl(scheduleId),
-  {      
-    ...options,
-    method: 'DELETE'
+    method: 'GET'
     
     
   }
@@ -198,7 +88,7 @@ export const getGetSeatStatusUrl = (scheduleId: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/schedules/${scheduleId}/seat-status`
+  return `https://ticket-api.devhong.cc/api/schedules/${scheduleId}/seat-status`
 }
 
 export const getSeatStatus = async (scheduleId: number, options?: RequestInit): Promise<getSeatStatusResponse> => {

@@ -8,9 +8,15 @@
 import type { SeatPositionRequest } from './seatPositionRequest';
 
 /**
- * 좌석 점유 요청 DTO
+ * 예매 시작 요청 - 좌석 일괄 점유
  */
-export interface SeatHoldRequest {
-  /** 점유할 좌석 목록 (최대 4석) */
+export interface StartBookingRequest {
+  /** 공연 회차 ID */
+  scheduleId: number;
+  /**
+   * 선택한 좌석 목록 (최대 4석)
+   * @minItems 0
+   * @maxItems 4
+   */
   seats: SeatPositionRequest[];
 }

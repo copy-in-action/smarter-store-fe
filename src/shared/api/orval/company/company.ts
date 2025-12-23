@@ -15,10 +15,10 @@ import type {
 import { orvalFetch } from '../../fetch-wrapper';
 
 /**
- * ID로 특정 기획사/판매자 정보를 조회합니다.
+ * ID로 특정 판매자 정보를 조회합니다.
 
 **권한: ADMIN**
- * @summary 단일 기획사 조회
+ * @summary 단일 판매자 조회
  */
 export type getCompanyResponse200 = {
   data: CompanyResponse
@@ -44,7 +44,7 @@ export const getGetCompanyUrl = (id: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/admin/companies/${id}`
+  return `https://ticket-api.devhong.cc/api/admin/companies/${id}`
 }
 
 export const getCompany = async (id: number, options?: RequestInit): Promise<getCompanyResponse> => {
@@ -60,10 +60,10 @@ export const getCompany = async (id: number, options?: RequestInit): Promise<get
 
 
 /**
- * 특정 기획사/판매자 정보를 수정합니다.
+ * 특정 판매자 정보를 수정합니다.
 
 **권한: ADMIN**
- * @summary 기획사 정보 수정
+ * @summary 판매자 정보 수정
  */
 export type updateCompanyResponse200 = {
   data: CompanyResponse
@@ -99,7 +99,7 @@ export const getUpdateCompanyUrl = (id: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/admin/companies/${id}`
+  return `https://ticket-api.devhong.cc/api/admin/companies/${id}`
 }
 
 export const updateCompany = async (id: number,
@@ -117,10 +117,10 @@ export const updateCompany = async (id: number,
 
 
 /**
- * 특정 기획사/판매자를 삭제합니다.
+ * 특정 판매자를 삭제합니다.
 
 **권한: ADMIN**
- * @summary 기획사 삭제
+ * @summary 판매자 삭제
  */
 export type deleteCompanyResponse204 = {
   data: Unit
@@ -146,7 +146,7 @@ export const getDeleteCompanyUrl = (id: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/admin/companies/${id}`
+  return `https://ticket-api.devhong.cc/api/admin/companies/${id}`
 }
 
 export const deleteCompany = async (id: number, options?: RequestInit): Promise<deleteCompanyResponse> => {
@@ -162,10 +162,10 @@ export const deleteCompany = async (id: number, options?: RequestInit): Promise<
 
 
 /**
- * 모든 기획사/판매자 목록을 조회합니다.
+ * 모든 판매자 목록을 조회합니다.
 
 **권한: ADMIN**
- * @summary 모든 기획사 조회
+ * @summary 모든 판매자 조회
  */
 export type getAllCompaniesResponse200 = {
   data: CompanyResponse[]
@@ -184,7 +184,7 @@ export const getGetAllCompaniesUrl = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/admin/companies`
+  return `https://ticket-api.devhong.cc/api/admin/companies`
 }
 
 export const getAllCompanies = async ( options?: RequestInit): Promise<getAllCompaniesResponse> => {
@@ -200,10 +200,10 @@ export const getAllCompanies = async ( options?: RequestInit): Promise<getAllCom
 
 
 /**
- * 새로운 기획사/판매자 정보를 생성합니다.
+ * 새로운 판매자 정보를 생성합니다.
 
 **권한: ADMIN**
- * @summary 기획사 생성
+ * @summary 판매자 생성
  */
 export type createCompanyResponse201 = {
   data: CompanyResponse
@@ -234,7 +234,7 @@ export const getCreateCompanyUrl = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/admin/companies`
+  return `https://ticket-api.devhong.cc/api/admin/companies`
 }
 
 export const createCompany = async (companyRequest: CompanyRequest, options?: RequestInit): Promise<createCompanyResponse> => {

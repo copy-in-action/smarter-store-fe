@@ -7,7 +7,7 @@
  */
 
 /**
- * 기획사/판매자 생성/수정 요청 DTO
+ * 판매자 생성/수정 요청 DTO
  */
 export interface CompanyRequest {
   /** 상호 */
