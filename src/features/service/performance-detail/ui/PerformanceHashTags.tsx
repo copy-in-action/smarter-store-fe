@@ -45,7 +45,10 @@ export function PerformanceHashTags() {
 
   return (
     <>
-      <div className="flex flex-wrap gap-1.5 my-5 p-detail-wrapper">
+      <div
+        className="flex flex-nowrap gap-1.5 my-5 p-detail-wrapper overflow-auto scrollbar-hide sm:scrollbar-hide"
+        ref={ref}
+      >
         {hashTags.map((tag) => (
           <Button
             key={tag.id}
@@ -53,13 +56,12 @@ export function PerformanceHashTags() {
             size="sm"
             onClick={() => handleHashTagClick(tag.id)}
             className={
-              "text-sm font-normal p-4 rounded-full transition-colors text-gray-600"
+              "text-sm font-normal p-4 rounded-full transition-colors text-gray-600 whitespace-nowrap"
             }
           >
             {tag.label}
           </Button>
         ))}
-        <div ref={ref}></div>
       </div>
 
       <div
