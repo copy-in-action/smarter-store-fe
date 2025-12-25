@@ -2,8 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useDeletePerformance, usePerformance } from "@/entities/performance";
-import { PerformanceDetail } from "@/features/admin/performance-detail";
+import {
+  PerformanceDetail,
+  useDeletePerformance,
+  usePerformance,
+} from "@/features/admin/performance-management";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
 import { PAGES } from "@/shared/constants";
 import { Button } from "@/shared/ui/button";

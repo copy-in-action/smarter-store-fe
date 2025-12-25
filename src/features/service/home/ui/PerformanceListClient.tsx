@@ -2,11 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePerformances } from "@/entities/performance/api/performance.api";
+import { usePerformances } from "@/features/admin/performance-management";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
 import { CarouselItem } from "@/shared/ui/carousel";
 import { ReusableCarousel } from "@/shared/ui/reusable-carousel";
-
 import { PerformanceListSkeleton } from "./PerformanceListSkeleton";
 
 /**

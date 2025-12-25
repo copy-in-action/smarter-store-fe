@@ -4,14 +4,13 @@ import { Plus, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useDeletePerformance, usePerformances } from "@/entities/performance";
+import {
+  useDeletePerformance,
+  usePerformances,
+} from "@/features/admin/performance-management";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
 import { PAGES } from "@/shared/constants/routes";
-import { Button } from "@/shared/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
-import { Input } from "@/shared/ui/input";
-import { PerformanceTable } from "@/widgets/performance-table";
-import { 
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -21,13 +20,19 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/shared/ui/alert-dialog";
+import { Button } from "@/shared/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Input } from "@/shared/ui/input";
+import { PerformanceTable } from "@/widgets/performance-table";
 
 /**
  * 관리자 공연 목록 페이지 뷰 컴포넌트
  */
 export default function PerformanceListView() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [deleteTarget, setDeleteTarget] = useState<PerformanceResponse | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<PerformanceResponse | null>(
+    null,
+  );
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const router = useRouter();
 
@@ -40,15 +45,17 @@ export default function PerformanceListView() {
   /**
    * 검색어에 따른 공연 필터링
    */
-  const filteredPerformances = performances.filter((performance: PerformanceResponse) => {
-    const query = searchQuery.toLowerCase();
-    return (
-      performance.title.toLowerCase().includes(query) ||
-      performance.category.toLowerCase().includes(query) ||
-      performance.venue?.name?.toLowerCase().includes(query) ||
-      performance.id.toString().includes(query)
-    );
-  });
+  const filteredPerformances = performances.filter(
+    (performance: PerformanceResponse) => {
+      const query = searchQuery.toLowerCase();
+      return (
+        performance.title.toLowerCase().includes(query) ||
+        performance.category.toLowerCase().includes(query) ||
+        performance.venue?.name?.toLowerCase().includes(query) ||
+        performance.id.toString().includes(query)
+      );
+    },
+  );
 
   /**
    * 공연 생성 페이지로 이동
@@ -196,18 +203,21 @@ export default function PerformanceListView() {
       </Card>
 
       {/* 공연 삭제 확인 다이얼로그 */}
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>공연 삭제 확인</AlertDialogTitle>
             <AlertDialogDescription>
-              정말로 <strong>{deleteTarget?.title}</strong> 공연을 삭제하시겠습니까?
-              <br />
-              이 작업은 되돌릴 수 없습니다.
+              정말로 <strong>{deleteTarget?.title}</strong> 공연을
+              삭제하시겠습니까?
+              <br />이 작업은 되돌릴 수 없습니다.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel 
+            <AlertDialogCancel
               onClick={handleCloseDeleteDialog}
               disabled={deletePerformanceMutation.isPending}
             >

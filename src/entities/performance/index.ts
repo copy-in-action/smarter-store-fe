@@ -2,13 +2,13 @@
  * Performance 엔티티 Public API
  */
 
+// API 함수들 (순수 API, React Query 훅 제외)
 export {
-  PERFORMANCE_QUERY_KEYS,
-  useCreatePerformance,
-  useDeletePerformance,
-  usePerformance,
-  usePerformances,
-  useUpdatePerformance,
+  createNewPerformance,
+  deleteExistingPerformance,
+  getPerformanceDetail,
+  getPerformanceList,
+  updateExistingPerformance,
 } from "./api/performance.api";
 export type {
   CreatePerformanceForm,

@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { PerformanceDetailView } from "@/views/admin/performances/PerformanceDetailView";
+import { PerformanceDetailView } from "@/views/admin/performance-management/PerformanceDetailView";
 
 /**
  * 공연 상세 페이지 속성

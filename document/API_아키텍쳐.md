@@ -20,16 +20,45 @@ src/
 │   └── lib/
 │       └── errors.ts            # 공통 에러 클래스 (ApiError, ClientError, ServerError)
 ├── entities/                     # 비즈니스 엔티티 레이어
-│   └── auth/
-│       ├── api/                 # API 래퍼 (Clean Architecture)
-│       ├── model/               # 도메인 모델 (Zod 스키마, 타입)
+│   ├── auth/
+│   │   ├── api/                 # API 래퍼 (Clean Architecture)
+│   │   ├── model/               # 도메인 모델 (Zod 스키마, 타입)
+│   │   └── index.ts             # Public API
+│   └── performance/
+│       ├── api/                 # 공연 관련 API 래퍼
+│       ├── model/               # 공연 도메인 모델
 │       └── index.ts             # Public API
 └── features/                     # 기능 레이어 (사용자 시나리오)
-    └── home/
-        ├── api/                 # 서버 사이드 데이터 페칭
-        │   └── home-server.api.ts
-        ├── lib/                 # React Hook
-        └── ui/                  # UI 컴포넌트
+    ├── admin/                   # 관리자 기능 그룹
+    │   ├── admin-auth/          # 관리자 인증
+    │   │   ├── api/
+    │   │   ├── model/
+    │   │   ├── ui/
+    │   │   └── index.ts
+    │   ├── performance/         # 관리자 공연 관리
+    │   │   ├── lib/             # usePerformanceQueries 등
+    │   │   ├── model/           # performance-form.schema.ts
+    │   │   ├── ui/              # PerformanceForm, CreateForm 등
+    │   │   └── index.ts
+    │   ├── company-management/  # 공연 업체 관리
+    │   ├── venue-form/          # 공연장 폼
+    │   ├── venue-delete/        # 공연장 삭제
+    │   ├── seating-chart/       # 좌석 배치도 관리
+    │   └── performance-schedule-management/  # 공연 일정 관리
+    └── service/                 # 서비스 기능 그룹
+        ├── auth/                # 서비스 사용자 인증
+        │   ├── lib/             # useEmailLogin, useEmailSignup 등
+        │   ├── ui/              # LoginForm, SignupForm 등
+        │   └── index.ts
+        ├── home/                # 홈페이지 기능
+        │   ├── model/           # 카테고리, 배너 데이터
+        │   ├── ui/              # 배너, 공연 리스트 등
+        │   └── index.ts
+        └── performance-detail/  # 공연 상세 페이지
+            ├── lib/             # useScrollSpy 등
+            ├── model/           # 타입, 상수 정의
+            ├── ui/              # 상세 정보 컴포넌트들
+            └── index.ts
 ```
 
 ## 🔄 API 호출 전체 플로우
