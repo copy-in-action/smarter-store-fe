@@ -37,7 +37,7 @@ export const getGetNoticeByIdUrl = (id: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/admin/ticketing-notices/${id}`
+  return `https://ticket-api.devhong.cc/api/admin/ticketing-notices/${id}`
 }
 
 export const getNoticeById = async (id: number, options?: RequestInit): Promise<getNoticeByIdResponse> => {
@@ -75,7 +75,7 @@ export const getUpdateNoticeUrl = (id: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/admin/ticketing-notices/${id}`
+  return `https://ticket-api.devhong.cc/api/admin/ticketing-notices/${id}`
 }
 
 export const updateNotice = async (id: number,
@@ -115,7 +115,7 @@ export const getDeleteNoticeUrl = (id: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/admin/ticketing-notices/${id}`
+  return `https://ticket-api.devhong.cc/api/admin/ticketing-notices/${id}`
 }
 
 export const deleteNotice = async (id: number, options?: RequestInit): Promise<deleteNoticeResponse> => {
@@ -153,7 +153,7 @@ export const getGetAllNoticesUrl = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/admin/ticketing-notices`
+  return `https://ticket-api.devhong.cc/api/admin/ticketing-notices`
 }
 
 export const getAllNotices = async ( options?: RequestInit): Promise<getAllNoticesResponse> => {
@@ -191,7 +191,7 @@ export const getCreateNoticeUrl = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/admin/ticketing-notices`
+  return `https://ticket-api.devhong.cc/api/admin/ticketing-notices`
 }
 
 export const createNotice = async (createTicketingNoticeRequest: CreateTicketingNoticeRequest, options?: RequestInit): Promise<createNoticeResponse> => {
@@ -230,7 +230,7 @@ export const getGetActiveNoticesUrl = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/ticketing-notices`
+  return `https://ticket-api.devhong.cc/api/ticketing-notices`
 }
 
 export const getActiveNotices = async ( options?: RequestInit): Promise<getActiveNoticesResponse> => {
@@ -268,7 +268,7 @@ export const getGetActiveNoticesGroupedUrl = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/ticketing-notices/grouped`
+  return `https://ticket-api.devhong.cc/api/ticketing-notices/grouped`
 }
 
 export const getActiveNoticesGrouped = async ( options?: RequestInit): Promise<getActiveNoticesGroupedResponse> => {
@@ -306,7 +306,7 @@ export const getGetActiveNoticesByCategoryUrl = (category: 'BOOKING_NOTICE' | 'B
 
   
 
-  return `https://api.ticket.devhong.cc/api/ticketing-notices/category/${category}`
+  return `https://ticket-api.devhong.cc/api/ticketing-notices/category/${category}`
 }
 
 export const getActiveNoticesByCategory = async (category: 'BOOKING_NOTICE' | 'BANK_TRANSFER' | 'TICKET_PICKUP' | 'MOBILE_TICKET' | 'REFUND' | 'CANCELLATION', options?: RequestInit): Promise<getActiveNoticesByCategoryResponse> => {

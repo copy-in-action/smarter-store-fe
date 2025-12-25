@@ -66,7 +66,7 @@ export function ServicePerformanceDetail({
       <hr className="h-2 my-5 bg-gray-200 sm:h-[1px] mx-auto max-w-4xl" />
 
       {/* 예매하기 버튼 */}
-      <PerformanceBookButton />
+      <PerformanceBookButton performanceId={performance.id} />
       <ScrollSpyClient />
     </div>
   );

@@ -17,3 +17,9 @@ export { PerformanceInfo } from "./ui/PerformanceInfo";
 export { PerformanceMainImage } from "./ui/PerformanceMainImage";
 export { PerformanceTitle } from "./ui/PerformanceTitle";
 export { ServicePerformanceDetail } from "./ui/ServicePerformanceDetail";
+
+// API exports
+export { getPerformanceDates, getPerformancesByDate } from "./api/performanceSchedule.api";
+
+// Hooks exports  
+export { usePerformanceDates, usePerformancesByDate } from "./lib/usePerformanceSchedules";

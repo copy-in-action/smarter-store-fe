@@ -5,14 +5,11 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
-import type { DateBefore } from "react-day-picker";
-// 공연 예매하기 버튼
+import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/app/providers";
 import { PAGES } from "@/shared/constants";
 import { useIsMobile } from "@/shared/hooks/use-mobile";
 import { Button } from "@/shared/ui/button";
-import { Calendar } from "@/shared/ui/calendar";
 import {
   Dialog,
   DialogContent,
@@ -29,33 +26,59 @@ import {
   DrawerTitle,
 } from "@/shared/ui/drawer";
 import {
-  Field,
-  FieldContent,
-  FieldDescription,
-  FieldLabel,
-  FieldTitle,
-} from "@/shared/ui/field";
-import { RadioGroup, RadioGroupItem } from "@/shared/ui/radio-group";
+  usePerformanceDates,
+  usePerformancesByDate,
+} from "../lib/usePerformanceSchedules";
+import PerformanceScheduleContent from "./PerformanceScheduleContent";
+
+interface Props {
+  performanceId: number;
+}
 
 /**
  * 공연 예매 버튼 컴포넌트
  * 브레이크포인트에 따라 모바일에서는 드로어, 데스크톱에서는 모달로 표시
  */
-const PerformanceBookButton = () => {
+const PerformanceBookButton = ({ performanceId }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
   const { isAuthenticated } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useIsMobile();
 
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [date, setDate] = useState<Date | undefined>();
   const endMonth = useMemo(() => {
     const today = new Date();
     today.setMonth(today.getMonth() + 3);
     return today;
   }, []);
 
-  //   공연 예매 버튼. 로그인이 안된 경우 로그인 페이지로 이동
+  // isOpen이 true일 때만 공연 날짜들 페칭
+  const { data: performanceDates, isLoading: isDatesLoading } =
+    usePerformanceDates(performanceId, isOpen);
+
+  // 선택된 날짜의 공연들 페칭
+  const { data: selectedDatePerformances, isLoading: isPerformancesLoading } =
+    usePerformancesByDate(performanceId, date!, isOpen);
+
+  // 공연하는 날들을 추출
+  const availableDates = useMemo(() => {
+    if (!performanceDates) return [];
+    return performanceDates.map((performanceDate) => new Date(performanceDate));
+  }, [performanceDates]);
+
+  // 로딩 상태 통합
+  const isLoading = isDatesLoading || isPerformancesLoading;
+
+  useEffect(() => {
+    if (availableDates?.length === 0) return;
+    setDate(new Date(availableDates[0]));
+  }, [availableDates]);
+
+  /**
+   * 공연 예매 버튼 클릭 핸들러
+   * 로그인이 안된 경우 로그인 페이지로 이동
+   */
   const handleBookPerformance = () => {
     if (!isAuthenticated) {
       router.push(
@@ -67,7 +90,19 @@ const PerformanceBookButton = () => {
     // TODO: 실제 예매 API연동 필요.
   };
 
-  const matcher: DateBefore = { before: new Date() };
+  // 선택 가능한 날짜 설정: 스케줄이 있는 날짜만 허용
+  const disabledMatcher = useMemo(() => {
+    return (date: Date) => {
+      // 과거 날짜 비활성화
+      if (date < new Date(new Date().setHours(0, 0, 0, 0))) {
+        return true;
+      }
+      // 스케줄이 없는 날짜 비활성화
+      return !availableDates.some(
+        (availableDate) => availableDate.toDateString() === date.toDateString(),
+      );
+    };
+  }, [availableDates]);
 
   return (
     <>
@@ -83,55 +118,22 @@ const PerformanceBookButton = () => {
 
       {isMobile ? (
         <Drawer open={isOpen} onOpenChange={() => setIsOpen((pre) => !pre)}>
-          <DrawerContent className="mt-0! max-h-[95dvh]!">
+          <DrawerContent className="mt-0! max-h-[95dvh]! overflow-hidden">
             <div className="w-full max-w-lg mx-auto">
               <DrawerHeader>
                 <DrawerTitle></DrawerTitle>
                 <DrawerDescription></DrawerDescription>
               </DrawerHeader>
               <div className="p-4 pb-0 max-h-[70dvh] overflow-auto">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={setDate}
-                  className="w-full"
-                  captionLayout="dropdown"
+                <PerformanceScheduleContent
+                  date={date}
+                  setDate={setDate}
                   endMonth={endMonth}
-                  startMonth={new Date()}
+                  disabledMatcher={disabledMatcher}
+                  isLoading={isLoading}
+                  selectedDatePerformances={selectedDatePerformances}
+                  isMobile={true}
                 />
-                <hr className="my-3" />
-                {/* TODO: 회차 선택 */}
-                <RadioGroup defaultValue="kubernetes">
-                  <FieldLabel
-                    htmlFor="kubernetes-r2h"
-                    className="has-data-[state=checked]:!bg-transparent has-data-[state=checked]:shadow-lg has-[>[data-slot=field]]:!rounded-2xl"
-                  >
-                    <Field orientation="horizontal" className="">
-                      <FieldContent>
-                        <FieldTitle>19:30</FieldTitle>
-                        <FieldDescription>R석 0 | S석 0</FieldDescription>
-                      </FieldContent>
-                      <RadioGroupItem
-                        value="kubernetes"
-                        id="kubernetes-r2h"
-                        hidden
-                      />
-                    </Field>
-                  </FieldLabel>
-
-                  <FieldLabel
-                    htmlFor="kubernetes-r2"
-                    className="has-data-[state=checked]:!bg-transparent"
-                  >
-                    <Field orientation="horizontal">
-                      <FieldContent>
-                        <FieldTitle>19:30</FieldTitle>
-                        <FieldDescription>R석 0 | S석 0</FieldDescription>
-                      </FieldContent>
-                      <RadioGroupItem value="1241" id="kubernetes-r2" hidden />
-                    </Field>
-                  </FieldLabel>
-                </RadioGroup>
               </div>
               <DrawerFooter>
                 <Button className="w-full" type="submit" size={"lg"}>
@@ -148,24 +150,25 @@ const PerformanceBookButton = () => {
             setIsOpen((pre) => !pre);
           }}
         >
-          <DialogContent className="" aria-describedby={undefined}>
+          <DialogContent
+            className="max-h-[90dvh] overflow-auto"
+            aria-describedby={undefined}
+          >
             <DialogHeader>
               <DialogTitle className="text-lg text-start">
                 날짜 및 회차 선택
               </DialogTitle>
             </DialogHeader>
-            <div className="">
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={setDate}
-                className="w-full"
-                captionLayout="dropdown"
+            <div className="max-h-[calc(100% - 150px)]!">
+              <PerformanceScheduleContent
+                date={date}
+                setDate={setDate}
                 endMonth={endMonth}
-                startMonth={new Date()}
-                disabled={matcher}
+                disabledMatcher={disabledMatcher}
+                isLoading={isLoading}
+                selectedDatePerformances={selectedDatePerformances}
+                isMobile={false}
               />
-              <hr className="my-3" />
             </div>
             <DialogFooter>
               <Button className="w-full" type="submit" size={"lg"}>

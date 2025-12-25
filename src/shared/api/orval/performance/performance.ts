@@ -6,8 +6,10 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
+  AvailableScheduleResponse,
   CreatePerformanceRequest,
   ErrorResponse,
+  GetAvailableSchedulesByDateParams,
   PerformanceResponse,
   Unit,
   UpdatePerformanceRequest
@@ -45,7 +47,7 @@ export const getGetPerformanceUrl = (id: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/performances/${id}`
+  return `https://ticket-api.devhong.cc/api/performances/${id}`
 }
 
 export const getPerformance = async (id: number, options?: RequestInit): Promise<getPerformanceResponse> => {
@@ -100,7 +102,7 @@ export const getUpdatePerformanceUrl = (id: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/performances/${id}`
+  return `https://ticket-api.devhong.cc/api/performances/${id}`
 }
 
 export const updatePerformance = async (id: number,
@@ -152,7 +154,7 @@ export const getDeletePerformanceUrl = (id: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/performances/${id}`
+  return `https://ticket-api.devhong.cc/api/performances/${id}`
 }
 
 export const deletePerformance = async (id: number, options?: RequestInit): Promise<deletePerformanceResponse> => {
@@ -190,7 +192,7 @@ export const getGetAllPerformancesUrl = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/performances`
+  return `https://ticket-api.devhong.cc/api/performances`
 }
 
 export const getAllPerformances = async ( options?: RequestInit): Promise<getAllPerformancesResponse> => {
@@ -240,7 +242,7 @@ export const getCreatePerformanceUrl = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/performances`
+  return `https://ticket-api.devhong.cc/api/performances`
 }
 
 export const createPerformance = async (createPerformanceRequest: CreatePerformanceRequest, options?: RequestInit): Promise<createPerformanceResponse> => {
@@ -252,6 +254,110 @@ export const createPerformance = async (createPerformanceRequest: CreatePerforma
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       createPerformanceRequest,)
+  }
+);}
+
+
+/**
+ * 해당 공연의 특정 날짜에 예매 가능한 회차 목록을 조회합니다.
+
+- 공연시간 내림차순 정렬
+- 각 좌석 등급의 잔여석 수 포함
+
+**권한: 누구나**
+ * @summary 특정 날짜의 예매 가능 회차 목록 조회
+ */
+export type getAvailableSchedulesByDateResponse200 = {
+  data: AvailableScheduleResponse[]
+  status: 200
+}
+
+export type getAvailableSchedulesByDateResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type getAvailableSchedulesByDateResponseSuccess = (getAvailableSchedulesByDateResponse200) & {
+  headers: Headers;
+};
+export type getAvailableSchedulesByDateResponseError = (getAvailableSchedulesByDateResponse404) & {
+  headers: Headers;
+};
+
+export type getAvailableSchedulesByDateResponse = (getAvailableSchedulesByDateResponseSuccess | getAvailableSchedulesByDateResponseError)
+
+export const getGetAvailableSchedulesByDateUrl = (id: number,
+    params: GetAvailableSchedulesByDateParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `https://ticket-api.devhong.cc/api/performances/${id}/schedules?${stringifiedParams}` : `https://ticket-api.devhong.cc/api/performances/${id}/schedules`
+}
+
+export const getAvailableSchedulesByDate = async (id: number,
+    params: GetAvailableSchedulesByDateParams, options?: RequestInit): Promise<getAvailableSchedulesByDateResponse> => {
+  
+  return orvalFetch<getAvailableSchedulesByDateResponse>(getGetAvailableSchedulesByDateUrl(id,params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+/**
+ * 해당 공연의 예매 가능한 회차 날짜 목록을 조회합니다.
+
+- 티켓 판매가 시작되고 공연이 아직 시작하지 않은 회차만 반환
+
+**권한: 누구나**
+ * @summary 예매 가능 회차 날짜 목록 조회
+ */
+export type getAvailableScheduleDatesResponse200 = {
+  data: string[]
+  status: 200
+}
+
+export type getAvailableScheduleDatesResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type getAvailableScheduleDatesResponseSuccess = (getAvailableScheduleDatesResponse200) & {
+  headers: Headers;
+};
+export type getAvailableScheduleDatesResponseError = (getAvailableScheduleDatesResponse404) & {
+  headers: Headers;
+};
+
+export type getAvailableScheduleDatesResponse = (getAvailableScheduleDatesResponseSuccess | getAvailableScheduleDatesResponseError)
+
+export const getGetAvailableScheduleDatesUrl = (id: number,) => {
+
+
+  
+
+  return `https://ticket-api.devhong.cc/api/performances/${id}/schedules/dates`
+}
+
+export const getAvailableScheduleDates = async (id: number, options?: RequestInit): Promise<getAvailableScheduleDatesResponse> => {
+  
+  return orvalFetch<getAvailableScheduleDatesResponse>(getGetAvailableScheduleDatesUrl(id),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
   }
 );}
 
