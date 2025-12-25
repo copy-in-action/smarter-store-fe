@@ -5,8 +5,8 @@ import {
   EmailInputForm,
   EmailVerificationForm,
   SignupStep,
-} from "@/features/auth";
-import { useSignupProgressGuard } from "@/features/auth/lib/useSignupProgressGuard";
+} from "@/features/service/auth";
+import { useSignupProgressGuard } from "@/features/service/auth/lib/useSignupProgressGuard";
 import { AuthTitle } from "./AuthTitle";
 
 /**

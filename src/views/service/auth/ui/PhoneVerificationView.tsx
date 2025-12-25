@@ -1,4 +1,4 @@
-import { PhoneVerificationForm } from "@/features/auth";
+import { PhoneVerificationForm } from "@/features/service/auth";
 import { AuthTitle } from "./AuthTitle";
 
 /**

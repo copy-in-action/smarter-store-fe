@@ -1,6 +1,6 @@
 "use client";
-import { PasswordSetupForm, SignupStep } from "@/features/auth";
-import { useSignupProgressGuard } from "@/features/auth/lib/useSignupProgressGuard";
+import { PasswordSetupForm, SignupStep } from "@/features/service/auth";
+import { useSignupProgressGuard } from "@/features/service/auth/lib/useSignupProgressGuard";
 import { AuthTitle } from "./AuthTitle";
 
 /**

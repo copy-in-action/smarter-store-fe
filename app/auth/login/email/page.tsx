@@ -1,4 +1,4 @@
-import { EmailLoginView } from "@/views/auth/ui/EmailLoginView";
+import { EmailLoginView } from "@/views/service/auth/ui/EmailLoginView";
 
 /**
  * 이메일 로그인 페이지

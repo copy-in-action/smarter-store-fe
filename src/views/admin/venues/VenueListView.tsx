@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useDeleteVenue, useVenues } from "@/entities/venue";
-import { VenueDeleteDialog } from "@/features/venue-delete";
+import { VenueDeleteDialog } from "@/features/admin/venue-delete";
 import type { VenueResponse } from "@/shared/api/orval/types";
 import { PAGES } from "@/shared/constants";
 import { Button } from "@/shared/ui/button";

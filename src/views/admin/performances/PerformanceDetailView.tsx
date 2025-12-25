@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useDeletePerformance, usePerformance } from "@/entities/performance";
-import { PerformanceDetail } from "@/features/performance-detail";
+import { PerformanceDetail } from "@/features/admin/performance-detail";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
 import { PAGES } from "@/shared/constants";
 import { Button } from "@/shared/ui/button";
@@ -26,11 +26,7 @@ export function PerformanceDetailView({
   const router = useRouter();
 
   // 공연 데이터 조회
-  const {
-    data: performance,
-    isLoading,
-    error,
-  } = usePerformance(performanceId);
+  const { data: performance, isLoading, error } = usePerformance(performanceId);
 
   // 공연 삭제 뮤테이션
   const deletePerformanceMutation = useDeletePerformance();

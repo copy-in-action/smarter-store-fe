@@ -1,4 +1,4 @@
-import { LoginView } from "@/views/auth";
+import { LoginView } from "@/views/service/auth";
 
 /**
  * 로그인 페이지

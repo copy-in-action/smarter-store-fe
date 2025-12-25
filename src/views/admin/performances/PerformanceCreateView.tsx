@@ -1,6 +1,6 @@
 "use client";
 
-import { PerformanceCreateForm } from "@/features/performance-form";
+import { PerformanceCreateForm } from "@/features/admin/performance-form";
 import { BackButton } from "@/shared/ui/BackButton";
 
 /**
