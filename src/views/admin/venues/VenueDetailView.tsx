@@ -1,7 +1,7 @@
 "use client";
 
 import { useVenue } from "@/entities/venue";
-import { VenueDetailForm } from "@/features/venue-form";
+import { VenueDetailForm } from "@/features/admin/venue-form";
 import { Card, CardContent } from "@/shared/ui/card";
 
 /**

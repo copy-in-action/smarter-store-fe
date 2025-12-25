@@ -2,7 +2,7 @@
  * 관리자 공연장 등록 페이지 뷰
  */
 
-import { VenueCreateForm } from "@/features/venue-form";
+import { VenueCreateForm } from "@/features/admin/venue-form";
 
 /**
  * 관리자 공연장 등록 페이지 뷰 컴포넌트

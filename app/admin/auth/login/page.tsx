@@ -1,5 +1,5 @@
 import { PAGES } from "@/shared/constants/routes";
-import { AdminLoginView } from "@/views/admin-login";
+import { AdminLoginView } from "@/views/admin/admin-login";
 
 /**
  * 관리자 로그인 페이지 메타데이터

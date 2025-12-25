@@ -1,4 +1,4 @@
-import { AdminLoginForm } from "@/features/admin-auth";
+import { AdminLoginForm } from "@/features/admin/admin-auth";
 
 /**
  * 관리자 로그인 페이지 뷰

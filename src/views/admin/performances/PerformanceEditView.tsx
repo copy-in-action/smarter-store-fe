@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { usePerformance, useUpdatePerformance } from "@/entities/performance";
-import { PerformanceForm } from "@/features/performance-form";
-import type { PerformanceFormData } from "@/features/performance-form/model/performance-form.schema";
+import { PerformanceForm } from "@/features/admin/performance-form";
+import type { PerformanceFormData } from "@/features/admin/performance-form/model/performance-form.schema";
 import { PAGES } from "@/shared/constants";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent } from "@/shared/ui/card";
