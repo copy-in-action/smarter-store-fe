@@ -5,9 +5,12 @@
 
 // API 함수들
 export {
-  confirmEmailVerificationApi,
-  requestEmailVerificationApi,
-} from "./api/emailVerification.api";
+  loginUser,
+  signupUser,
+  refreshUserToken,
+  requestUserEmailVerification,
+  confirmUserEmailVerification,
+} from "./api/auth.api";
 // 타입들
 export type {
   EmailInputData,

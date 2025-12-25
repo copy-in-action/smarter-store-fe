@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { PerformanceEditView } from "@/views/admin/performances/PerformanceEditView";
+import { PerformanceEditView } from "@/views/admin/performance-management/PerformanceEditView";
 
 /**
  * 공연 수정 페이지 속성

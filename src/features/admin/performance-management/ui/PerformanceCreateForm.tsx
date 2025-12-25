@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useCreatePerformance } from "@/entities/performance";
 import { PAGES } from "@/shared/constants";
+import { useCreatePerformance } from "../lib/usePerformanceQueries";
 import type { PerformanceFormData } from "../model/performance-form.schema";
 import { PerformanceForm } from "./PerformanceForm";
 

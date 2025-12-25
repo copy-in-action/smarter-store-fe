@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
-  confirmEmailVerificationApi,
-  requestEmailVerificationApi,
+  requestUserEmailVerification,
+  confirmUserEmailVerification,
 } from "@/entities/auth";
 import type { OtpConfirmationRequest } from "@/shared/api/orval/types";
 
@@ -12,7 +12,7 @@ import type { OtpConfirmationRequest } from "@/shared/api/orval/types";
  */
 export const useRequestEmailVerification = () => {
   const requestMutation = useMutation({
-    mutationFn: requestEmailVerificationApi,
+    mutationFn: requestUserEmailVerification,
     onSuccess: () => {
       toast.success("인증 이메일을 발송했습니다. 이메일을 확인해주세요.");
     },
@@ -52,7 +52,7 @@ export const useRequestEmailVerification = () => {
  */
 export const useConfirmEmailVerification = () => {
   const confirmMutation = useMutation({
-    mutationFn: confirmEmailVerificationApi,
+    mutationFn: confirmUserEmailVerification,
     onSuccess: () => {
       toast.success("이메일 인증이 완료되었습니다.");
     },

@@ -1,8 +1,8 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { signupUser } from "@/entities/auth";
 import type { SignupRequest } from "@/shared/api/orval/types";
-import { signupApi } from "../api/auth.api";
 
 /**
  * 이메일 인증 요청 훅
@@ -10,7 +10,7 @@ import { signupApi } from "../api/auth.api";
  */
 export const useSignupEmail = () => {
   const signupMutation = useMutation({
-    mutationFn: signupApi,
+    mutationFn: signupUser,
     onSuccess: () => {
       toast.success("회원가입이 완료 되었습니다.");
     },

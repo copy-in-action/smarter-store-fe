@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PAGES } from "@/shared/constants/routes";
-import PerformanceListView from "@/views/admin/performances/PerformanceListView";
+import PerformanceListView from "@/views/admin/performance-management/PerformanceListView";
 
 /**
  * 관리자 공연 목록 페이지 메타데이터
