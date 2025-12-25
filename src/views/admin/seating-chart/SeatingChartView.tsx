@@ -1,8 +1,6 @@
 import type { SeatingChartPageProps } from "@/features/admin/seating-chart";
-import {
-  fetchSeatingChartOnServer,
-  SeatingChartManager,
-} from "@/features/admin/seating-chart";
+import { SeatingChartManager } from "@/features/admin/seating-chart";
+import { fetchSeatingChartOnServer } from "@/features/admin/seating-chart/api/seatingChart.server.api";
 
 /**
  * 좌석 배치도 생성 뷰 컴포넌트

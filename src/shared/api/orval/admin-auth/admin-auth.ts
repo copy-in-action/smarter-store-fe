@@ -49,7 +49,7 @@ export const getSignup1Url = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/admin/auth/signup`
+  return `https://ticket-api.devhong.cc/api/admin/auth/signup`
 }
 
 export const signup1 = async (adminSignupRequest: AdminSignupRequest, options?: RequestInit): Promise<signup1Response> => {
@@ -88,7 +88,7 @@ export const getLogout1Url = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/admin/auth/logout`
+  return `https://ticket-api.devhong.cc/api/admin/auth/logout`
 }
 
 export const logout1 = async ( options?: RequestInit): Promise<logout1Response> => {
@@ -133,7 +133,7 @@ export const getLogin1Url = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/admin/auth/login`
+  return `https://ticket-api.devhong.cc/api/admin/auth/login`
 }
 
 export const login1 = async (adminLoginRequest: AdminLoginRequest, options?: RequestInit): Promise<login1Response> => {
