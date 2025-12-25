@@ -11,8 +11,6 @@ import type { TicketOptionRequest } from './ticketOptionRequest';
  * 공연 회차 수정 요청 DTO
  */
 export interface UpdatePerformanceScheduleRequest {
-  /** 공연 ID */
-  performanceId: number;
   /** 공연 날짜 및 시간 */
   showDateTime: string;
   /** 티켓 판매 시작 일시 */
