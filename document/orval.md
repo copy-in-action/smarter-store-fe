@@ -243,32 +243,6 @@ pnpm orval
 - 타입 안전성을 해치는 `any` 타입 사용
 - Zod 스키마 없이 폼 검증 우회
 
-## 🔄 마이그레이션 가이드
-
-### 기존 수동 fetch에서 Orval로
-```typescript
-// Before: 수동 fetch
-const response = await fetch('/api/auth/login', {
-  method: 'POST',
-  body: JSON.stringify({ email, password })
-});
-const data = await response.json();
-
-// After: Orval + 래퍼
-const tokenData = await loginApi({ email, password });  // 타입 안전
-```
-
-### 경로 변경 (generated → orval)
-```typescript
-// Before
-import { login } from "@/shared/api/generated/auth/auth";
-import type { LoginRequest } from "@/shared/api/generated/schemas";
-
-// After  
-import { login } from "@/shared/api/orval/auth/auth";
-import type { LoginRequest } from "@/shared/api/orval/types";
-```
-
 
 ## 📚 참고 자료
 
