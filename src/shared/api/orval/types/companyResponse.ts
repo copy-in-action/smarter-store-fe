@@ -7,7 +7,7 @@
  */
 
 /**
- * 기획사/판매자 정보 응답 DTO
+ * 판매자 정보 응답 DTO
  */
 export interface CompanyResponse {
   /** 회사 ID */

@@ -6,6 +6,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useDeleteVenue, useVenues } from "@/entities/venue";
 import { VenueDeleteDialog } from "@/features/venue-delete";
+import { ApiErrorClass } from "@/shared/api";
 import type { VenueResponse } from "@/shared/api/orval/types";
 import { PAGES } from "@/shared/constants";
 import { Button } from "@/shared/ui/button";
@@ -86,7 +87,9 @@ export default function VenueListView() {
       setIsDeleteDialogOpen(false);
       setDeleteTarget(null);
     } catch (error) {
-      toast.error("공연장 삭제 중 오류가 발생했습니다. 다시 시도해주세요.");
+      if (error instanceof ApiErrorClass) toast.error(error.message);
+      else
+        toast.error("공연장 삭제 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -101,7 +104,7 @@ export default function VenueListView() {
   };
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div className="container py-6 mx-auto space-y-6">
       {/* 페이지 헤더 */}
       <div className="flex items-center justify-between">
         <div>
@@ -111,7 +114,7 @@ export default function VenueListView() {
           </p>
         </div>
         <Button onClick={handleCreateVenue} className="gap-2">
-          <Plus className="h-4 w-4" />
+          <Plus className="w-4 h-4" />
           공연장 추가
         </Button>
       </div>
@@ -124,7 +127,7 @@ export default function VenueListView() {
         <CardContent>
           <div className="flex items-center gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Search className="absolute w-4 h-4 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
               <Input
                 placeholder="공연장명, 주소, ID로 검색..."
                 value={searchQuery}

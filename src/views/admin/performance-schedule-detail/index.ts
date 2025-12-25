@@ -1,0 +1,1 @@
+export { PerformanceScheduleDetailView } from "./ui/PerformanceScheduleDetailView";

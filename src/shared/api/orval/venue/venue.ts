@@ -47,7 +47,7 @@ export const getGetVenueUrl = (id: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/venues/${id}`
+  return `https://ticket-api.devhong.cc/api/venues/${id}`
 }
 
 export const getVenue = async (id: number, options?: RequestInit): Promise<getVenueResponse> => {
@@ -102,7 +102,7 @@ export const getUpdateVenueUrl = (id: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/venues/${id}`
+  return `https://ticket-api.devhong.cc/api/venues/${id}`
 }
 
 export const updateVenue = async (id: number,
@@ -154,7 +154,7 @@ export const getDeleteVenueUrl = (id: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/venues/${id}`
+  return `https://ticket-api.devhong.cc/api/venues/${id}`
 }
 
 export const deleteVenue = async (id: number, options?: RequestInit): Promise<deleteVenueResponse> => {
@@ -199,7 +199,7 @@ export const getGetSeatingChartUrl = (id: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/venues/${id}/seating-chart`
+  return `https://ticket-api.devhong.cc/api/venues/${id}/seating-chart`
 }
 
 export const getSeatingChart = async (id: number, options?: RequestInit): Promise<getSeatingChartResponse> => {
@@ -251,7 +251,7 @@ export const getUpdateSeatingChartUrl = (id: number,) => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/venues/${id}/seating-chart`
+  return `https://ticket-api.devhong.cc/api/venues/${id}/seating-chart`
 }
 
 export const updateSeatingChart = async (id: number,
@@ -291,7 +291,7 @@ export const getGetAllVenuesUrl = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/venues`
+  return `https://ticket-api.devhong.cc/api/venues`
 }
 
 export const getAllVenues = async ( options?: RequestInit): Promise<getAllVenuesResponse> => {
@@ -341,7 +341,7 @@ export const getCreateVenueUrl = () => {
 
   
 
-  return `https://api.ticket.devhong.cc/api/venues`
+  return `https://ticket-api.devhong.cc/api/venues`
 }
 
 export const createVenue = async (createVenueRequest: CreateVenueRequest, options?: RequestInit): Promise<createVenueResponse> => {
