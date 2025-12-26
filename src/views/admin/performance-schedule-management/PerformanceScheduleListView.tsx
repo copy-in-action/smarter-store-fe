@@ -1,6 +1,13 @@
+"use client";
+
 import { ArrowLeft, Plus } from "lucide-react";
 import Link from "next/link";
-import { PerformanceScheduleList } from "@/features/admin/performance-schedule-management";
+import { useState } from "react";
+import {
+  PerformanceScheduleForm,
+  PerformanceScheduleList,
+} from "@/features/admin/performance-schedule-management";
+import { useSeatingChart } from "@/features/admin/seating-chart";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 
@@ -12,17 +19,24 @@ interface PerformanceScheduleListViewProps {
   performanceId: number;
   /** 공연명 */
   performanceTitle: string;
+  /** 공연장 ID */
+  venueId: number;
 }
 
 /**
  * 관리자 공연 회차 목록 뷰 컴포넌트
  * @param performanceId - 공연 ID
  * @param performanceTitle - 공연명
+ * @param venueId - 공연장 ID
  */
 export default function PerformanceScheduleListView({
   performanceId,
   performanceTitle,
+  venueId,
 }: PerformanceScheduleListViewProps) {
+  const [showForm, setShowForm] = useState(false);
+  const { data: seatingChart } = useSeatingChart(venueId);
+
   return (
     <div className="container mx-auto py-6 space-y-6">
       {/* 헤더 영역 */}
@@ -42,13 +56,21 @@ export default function PerformanceScheduleListView({
           </div>
         </div>
 
-        <Button asChild>
-          <Link href={`/admin/performances/${performanceId}/schedules/create`}>
-            <Plus className="size-4 mr-2" />
-            회차 추가
-          </Link>
+        <Button onClick={() => setShowForm(true)}>
+          <Plus className="size-4 mr-2" />
+          회차 추가
         </Button>
       </div>
+
+      {/* 공연 회차 추가 폼 */}
+      {showForm && seatingChart?.seatCapacities && (
+        <PerformanceScheduleForm
+          performanceId={performanceId}
+          seatGrades={seatingChart.seatCapacities}
+          onCancel={() => setShowForm(false)}
+          onSuccess={() => setShowForm(false)}
+        />
+      )}
 
       {/* 공연 회차 목록 */}
       <Card>

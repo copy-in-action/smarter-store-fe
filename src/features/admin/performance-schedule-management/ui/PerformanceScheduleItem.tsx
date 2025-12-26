@@ -89,6 +89,8 @@ export function PerformanceScheduleItem({
               size="sm"
               onClick={(e) => {
                 e.preventDefault();
+                const isDelete = confirm("해당 공연 회차를 삭제하시겠습니까?");
+                if (!isDelete) return;
                 onDelete(schedule.id);
               }}
               disabled={isDeleting}

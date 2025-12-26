@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { BookingSeatResponseGrade } from "@/shared/api/orval/types";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Input } from "@/shared/ui/input";
@@ -45,10 +46,7 @@ export function Step2PriceConfig({
   /**
    * 초기 가격 데이터 생성
    */
-  const initializePrices = (): Record<
-    string,
-    { label: string; price?: number }
-  > => {
+  const initializePrices = (): Partial<Record<BookingSeatResponseGrade, { label: BookingSeatResponseGrade; price?: number }>> => {
     if (initialData?.seatTypes) {
       return initialData.seatTypes;
     }
@@ -58,7 +56,7 @@ export function Step2PriceConfig({
         key,
         { ...seatType, price: 0 },
       ]),
-    );
+    ) as Partial<Record<BookingSeatResponseGrade, { label: BookingSeatResponseGrade; price?: number }>>;
   };
 
   const [priceData, setPriceData] = useState<SeatTypeObject>({
@@ -81,9 +79,9 @@ export function Step2PriceConfig({
       const updated = Object.fromEntries(
         Object.entries(step1Data.seatTypes).map(([key, seatType]) => [
           key,
-          priceData.seatTypes[key] || { ...seatType, price: 0 },
+          priceData.seatTypes[key as BookingSeatResponseGrade] || { ...seatType, price: 0 },
         ]),
-      );
+      ) as Partial<Record<BookingSeatResponseGrade, { label: BookingSeatResponseGrade; price?: number }>>;
 
       const newData = { seatTypes: updated };
       setPriceData(newData);
@@ -94,11 +92,17 @@ export function Step2PriceConfig({
   /**
    * 특정 좌석 타입의 가격 업데이트
    */
-  const updatePrice = (seatTypeKey: string, price: number) => {
+  const updatePrice = (
+    seatTypeKey: BookingSeatResponseGrade,
+    price: number,
+  ) => {
+    const currentSeatType = priceData.seatTypes[seatTypeKey];
+    if (!currentSeatType) return;
+
     const updated = {
       ...priceData.seatTypes,
       [seatTypeKey]: {
-        ...priceData.seatTypes[seatTypeKey],
+        ...currentSeatType,
         price,
       },
     };
@@ -119,9 +123,12 @@ export function Step2PriceConfig({
   /**
    * 가격 입력 핸들러
    */
-  const handlePriceInput = (seatTypeKey: string, value: string) => {
+  const handlePriceInput = (
+    seatTypeKey: string,
+    value: string,
+  ) => {
     const numericValue = Number(value.replace(/[^0-9]/g, ""));
-    updatePrice(seatTypeKey, numericValue);
+    updatePrice(seatTypeKey as BookingSeatResponseGrade, numericValue);
   };
 
   /**
@@ -129,7 +136,7 @@ export function Step2PriceConfig({
    */
   const isValid = () => {
     return Object.values(priceData.seatTypes).every(
-      (seatType) => (seatType.price || 0) > 0,
+      (seatType) => seatType && (seatType.price || 0) > 0,
     );
   };
 
@@ -175,14 +182,15 @@ export function Step2PriceConfig({
   const createPreviewConfig = (): SeatChartConfig => {
     // 좌석 타입에 현재 가격 정보 추가 (이미 priceData.seatTypes에 포함됨)
     const seatTypesWithPrice = Object.fromEntries(
-      Object.entries(priceData.seatTypes).map(([key, seatType]) => [
-        key,
-        {
-          ...seatType,
-          cssClass: "economy", // 임시 CSS 클래스
-        },
-      ]),
-    );
+      Object.entries(priceData.seatTypes)
+        .filter(([, seatType]) => seatType !== undefined)
+        .map(([key, seatType]) => [
+          key,
+          {
+            ...seatType,
+          },
+        ]),
+    ) as Partial<Record<BookingSeatResponseGrade, { label: BookingSeatResponseGrade; price?: number }>>;
 
     return {
       ...step1Data,
@@ -227,8 +235,9 @@ export function Step2PriceConfig({
             </p>
           </CardHeader>
           <CardContent className="space-y-4">
-            {Object.entries(priceData.seatTypes).map(
-              ([seatTypeKey, seatType]) => {
+            {Object.entries(priceData.seatTypes)
+              .filter(([, seatType]) => seatType !== undefined)
+              .map(([seatTypeKey, seatType]) => {
                 const seatCount = getSeatsPerType(seatTypeKey);
 
                 return (
@@ -238,7 +247,7 @@ export function Step2PriceConfig({
                   >
                     <div className="flex-1">
                       <div className="font-medium text-gray-900">
-                        {seatType.label}
+                        {seatType!.label}
                       </div>
                       <div className="text-sm text-gray-500">{seatCount}석</div>
                     </div>
@@ -246,7 +255,7 @@ export function Step2PriceConfig({
                       <Label htmlFor={`price-${seatTypeKey}`}>가격 (원)</Label>
                       <Input
                         id={`price-${seatTypeKey}`}
-                        value={formatPrice((seatType.price || 0).toString())}
+                        value={formatPrice((seatType!.price || 0).toString())}
                         onChange={(e) =>
                           handlePriceInput(seatTypeKey, e.target.value)
                         }
@@ -257,12 +266,12 @@ export function Step2PriceConfig({
                     <div className="flex-1">
                       <div className="text-sm text-gray-600">예상 총 수익</div>
                       <div className="font-semibold text-blue-600">
-                        {((seatType.price || 0) * seatCount).toLocaleString()}원
+                        {((seatType!.price || 0) * seatCount).toLocaleString()}원
                       </div>
                     </div>
                   </div>
                 );
-              },
+              }
             )}
           </CardContent>
         </Card>
@@ -275,16 +284,17 @@ export function Step2PriceConfig({
           <CardContent>
             <div className="space-y-2">
               {Object.entries(priceData.seatTypes)
-                .sort(([, a], [, b]) => (b.price || 0) - (a.price || 0))
+                .filter(([, seatType]) => seatType !== undefined)
+                .sort(([, a], [, b]) => (b!.price || 0) - (a!.price || 0))
                 .map(([seatTypeKey, seatType]) => {
                   return (
                     <div
                       key={seatTypeKey}
                       className="flex items-center justify-between"
                     >
-                      <span className="text-gray-700">{seatType.label}</span>
+                      <span className="text-gray-700">{seatType!.label}</span>
                       <span className="font-medium">
-                        {(seatType.price || 0).toLocaleString()}원
+                        {(seatType!.price || 0).toLocaleString()}원
                       </span>
                     </div>
                   );
@@ -294,10 +304,11 @@ export function Step2PriceConfig({
                   <span>예상 총 수익</span>
                   <span className="text-blue-600">
                     {Object.entries(priceData.seatTypes)
+                      .filter(([, seatType]) => seatType !== undefined)
                       .reduce(
                         (total, [seatTypeKey, seatType]) =>
                           total +
-                          (seatType.price || 0) * getSeatsPerType(seatTypeKey),
+                          (seatType!.price || 0) * getSeatsPerType(seatTypeKey),
                         0,
                       )
                       .toLocaleString()}

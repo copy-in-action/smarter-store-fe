@@ -6,6 +6,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useDeleteVenue, useVenues } from "@/entities/venue";
 import { VenueDeleteDialog } from "@/features/admin/venue-delete";
+import { ApiErrorClass } from "@/shared/api";
 import type { VenueResponse } from "@/shared/api/orval/types";
 import { PAGES } from "@/shared/constants";
 import { Button } from "@/shared/ui/button";
@@ -86,7 +87,9 @@ export default function VenueListView() {
       setIsDeleteDialogOpen(false);
       setDeleteTarget(null);
     } catch (error) {
-      toast.error("공연장 삭제 중 오류가 발생했습니다. 다시 시도해주세요.");
+      if (error instanceof ApiErrorClass) toast.error(error.message);
+      else
+        toast.error("공연장 삭제 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
 
