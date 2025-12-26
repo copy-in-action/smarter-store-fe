@@ -2,12 +2,14 @@
 
 //TODO: 실제 API URL 설정 필요
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 import type {
   BookingStatus,
   SeatChartConfig,
   StaticSeatVenue,
   UserSeatSelection,
 } from "../types/seatLayout.types";
+import { MAX_SEAT_SELECTION } from "../types/seatLayout.types";
 import { isSeatInState } from "../utils/seatChart.utils";
 
 /**
@@ -49,7 +51,7 @@ export function useSeatChart(venueId: string) {
   }, []);
 
   /**
-   * 좌석 선택/해제 토글
+   * 좌석 선택/해제 토글 (최대 4개 제한)
    */
   const toggleSeatSelection = (row: number, col: number) => {
     setUserSelection((prev) => {
@@ -64,6 +66,15 @@ export function useSeatChart(venueId: string) {
           ),
         };
       } else {
+        // 최대 선택 가능 좌석 수 확인
+        if (selectedSeats.length >= MAX_SEAT_SELECTION) {
+          // Toast로 경고 메시지 표시
+          toast.error(
+            `최대 ${MAX_SEAT_SELECTION}개의 좌석만 선택할 수 있습니다.`,
+          );
+          return prev; // 선택하지 않고 현재 상태 유지
+        }
+
         // 선택 추가
         return {
           selectedSeats: [...selectedSeats, { row, col }],
