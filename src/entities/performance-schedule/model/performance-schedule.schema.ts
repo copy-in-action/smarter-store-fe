@@ -57,11 +57,9 @@ export const createPerformanceScheduleSchema = (
 };
 
 /**
- * 공연 회차 생성 폼 데이터 타입 (동적 스키마 기반)
+ * 공연 회차 생성 기본 데이터 타입 (동적 스키마 기반)
+ * features 레이어에서 폼 타입을 정의하므로 여기서는 기본 타입만 제공
  */
-export type CreatePerformanceScheduleFormInput = z.input<
-  ReturnType<typeof createPerformanceScheduleSchema>
->;
-export type CreatePerformanceScheduleFormData = z.output<
+export type CreatePerformanceScheduleData = z.output<
   ReturnType<typeof createPerformanceScheduleSchema>
 >;

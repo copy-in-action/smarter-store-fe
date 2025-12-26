@@ -30,7 +30,7 @@ const useEmailLogin = (redirectUrl?: string) => {
   });
 
   return {
-    login: loginUser,
+    login: loginMutation,
     isLoading: loginMutation.isPending,
     isError: loginMutation.isError,
     error: loginMutation.error,
