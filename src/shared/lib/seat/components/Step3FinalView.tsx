@@ -4,9 +4,7 @@ import { useState } from "react";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { PRESET_COLORS } from "../constants/seatChart.constants";
-import type {
-  SeatChartConfig,
-} from "../types/seatLayout.types";
+import type { SeatChartConfig } from "../types/seatLayout.types";
 import { getSeatType } from "../utils/seatChart.utils";
 import SeatChart from "./SeatChart";
 
@@ -30,7 +28,8 @@ export function Step3FinalView({
   onPrevious,
   onComplete,
 }: Step3FinalViewProps) {
-  const [finalConfig, setFinalConfig] = useState<SeatChartConfig>(seatChartConfig);
+  const [finalConfig, setFinalConfig] =
+    useState<SeatChartConfig>(seatChartConfig);
 
   /**
    * 좌석 클릭 핸들러 - 선택/해제 토글
@@ -166,9 +165,8 @@ export function Step3FinalView({
                 <div className="space-y-3">
                   {Object.entries(selectedSeatsByType).map(
                     ([seatTypeKey, seats]) => {
-                      const seatType = finalConfig.seatTypes[seatTypeKey];
-                      const totalPrice =
-                        seats.length * (seatType?.price || 0);
+                      const seatType = finalConfig.seatTypes[seatTypeKey as keyof typeof finalConfig.seatTypes];
+                      const totalPrice = seats.length * (seatType?.price || 0);
                       const seatTypeIndex = Object.keys(
                         finalConfig.seatTypes,
                       ).indexOf(seatTypeKey);
@@ -222,11 +220,8 @@ export function Step3FinalView({
                     <span className="text-blue-600 text-lg">
                       {Object.entries(selectedSeatsByType)
                         .reduce((total, [seatTypeKey, seats]) => {
-                          const seatType = finalConfig.seatTypes[seatTypeKey];
-                          return (
-                            total +
-                            seats.length * (seatType?.price || 0)
-                          );
+                          const seatType = finalConfig.seatTypes[seatTypeKey as keyof typeof finalConfig.seatTypes];
+                          return total + seats.length * (seatType?.price || 0);
                         }, 0)
                         .toLocaleString()}
                       원

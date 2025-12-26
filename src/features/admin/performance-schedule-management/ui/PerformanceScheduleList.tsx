@@ -75,7 +75,7 @@ export function PerformanceScheduleList({
   const sortedSchedules = sortSchedulesByShowTime(schedules);
 
   return (
-    <ItemGroup>
+    <ItemGroup className="max-w-xl">
       {sortedSchedules.map((schedule, index) => (
         <div key={schedule.id}>
           <PerformanceScheduleItem

@@ -9,13 +9,13 @@ export function getDefaultSeatingChart(): StaticSeatVenue {
     rows: 10,
     columns: 20,
     seatTypes: {
-      SEAT_CLASS_1: {
-        label: "R",
+      B: {
+        label: "B",
       },
     },
     seatGrades: [
       {
-        seatTypeKey: "SEAT_CLASS_1",
+        seatTypeKey: "B",
         position: "1:",
       },
     ],

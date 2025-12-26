@@ -1,9 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { CreatePerformanceScheduleFormData } from "@/entities/performance-schedule";
 import {
+  createSchedule,
   deleteSchedule,
   getAllSchedules,
+  getSchedule,
+  updateSchedule,
 } from "@/shared/api/orval/performance-schedule/performance-schedule";
-import type { PerformanceScheduleResponse } from "@/shared/api/orval/types";
+import type {
+  CreatePerformanceScheduleRequest,
+  PerformanceScheduleResponse,
+} from "@/shared/api/orval/types";
 
 /**
  * 특정 공연의 모든 회차 목록을 조회하는 쿼리
@@ -17,6 +24,82 @@ export const useGetPerformanceSchedules = (performanceId: number) => {
       return response.data;
     },
     enabled: !!performanceId,
+  });
+};
+
+/**
+ * 특정 공연 회차의 상세 정보를 조회하는 쿼리
+ * @param scheduleId - 회차 ID
+ */
+export const useGetPerformanceSchedule = (scheduleId: number) => {
+  return useQuery({
+    queryKey: ["performance-schedule", scheduleId],
+    queryFn: async (): Promise<PerformanceScheduleResponse> => {
+      const response = await getSchedule(scheduleId);
+      return response.data;
+    },
+    enabled: !!scheduleId,
+  });
+};
+
+/**
+ * 공연 회차 생성 뮤테이션 훅
+ */
+export const useCreatePerformanceSchedule = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      performanceId,
+      data,
+    }: {
+      performanceId: number;
+      data: CreatePerformanceScheduleRequest;
+    }) => {
+      const response = await createSchedule(performanceId, data);
+      return response.data;
+    },
+    onSuccess: (_, { performanceId }) => {
+      // 공연 회차 목록 쿼리 무효화하여 리스트 갱신
+      queryClient.invalidateQueries({
+        queryKey: ["performance-schedules", performanceId],
+      });
+    },
+  });
+};
+
+/**
+ * 공연 회차 수정을 위한 뮤테이션 매개변수
+ */
+interface UpdatePerformanceScheduleParams {
+  /** 회차 ID */
+  scheduleId: number;
+  /** 수정할 데이터 */
+  data: CreatePerformanceScheduleFormData;
+}
+
+/**
+ * 공연 회차를 수정하는 뮤테이션
+ */
+export const useUpdatePerformanceSchedule = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      scheduleId,
+      data,
+    }: UpdatePerformanceScheduleParams): Promise<void> => {
+      await updateSchedule(scheduleId, data);
+    },
+    onSuccess: (_, { scheduleId }) => {
+      // 관련된 쿼리들을 무효화하여 데이터 갱신
+      queryClient.invalidateQueries({
+        queryKey: ["performance-schedule", scheduleId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["performance-schedules"],
+      });
+    },
   });
 };
 

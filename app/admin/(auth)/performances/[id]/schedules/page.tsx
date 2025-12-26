@@ -34,10 +34,16 @@ export default async function PerformanceScheduleListPage({
     // 공연 정보 조회
     const performance = await getPerformanceDetailForServer(performanceId);
 
+    if (!performance.venue) {
+      console.log("공연의 공연장 미설정");
+      notFound();
+    }
+
     return (
       <PerformanceScheduleListView
         performanceId={performanceId}
         performanceTitle={performance.title}
+        venueId={performance.venue.id}
       />
     );
   } catch (error) {

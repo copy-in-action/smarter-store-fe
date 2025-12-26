@@ -26,6 +26,7 @@ export type {
   StaticSeatVenue,
   UserSeatSelection,
 } from "./types/seatLayout.types";
+export { MAX_SEAT_SELECTION } from "./types/seatLayout.types";
 
 // Utils
 export {

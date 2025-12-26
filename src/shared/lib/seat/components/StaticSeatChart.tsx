@@ -2,7 +2,10 @@
 
 import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
-import type { VenueSeatCapacityRequest } from "@/shared/api/orval/types";
+import type {
+  BookingSeatResponseGrade,
+  VenueSeatCapacityRequest,
+} from "@/shared/api/orval/types";
 import {
   Accordion,
   AccordionContent,
@@ -64,15 +67,35 @@ export function StaticSeatChart({
   };
 
   /**
-   * 좌석 타입 추가
+   * 좌석 타입 추가 (BookingSeatResponseGrade 기준)
    */
   const addSeatType = () => {
-    const newKey = `SEAT_CLASS_${Object.keys(formData.seatTypes).length + 1}`;
+    // 사용 가능한 등급 목록
+    const availableGrades: BookingSeatResponseGrade[] = [
+      "VIP",
+      "R",
+      "S",
+      "A",
+      "B",
+    ];
+    const usedGrades = Object.keys(
+      formData.seatTypes,
+    ) as BookingSeatResponseGrade[];
+    const unusedGrades = availableGrades.filter(
+      (grade) => !usedGrades.includes(grade),
+    );
+
+    if (unusedGrades.length === 0) {
+      console.warn("모든 좌석 등급이 이미 사용 중입니다.");
+      return;
+    }
+
+    const newGrade = unusedGrades[0];
     updateFormData({
       seatTypes: {
         ...formData.seatTypes,
-        [newKey]: {
-          label: `새 타입 ${Object.keys(formData.seatTypes).length + 1}`,
+        [newGrade]: {
+          label: newGrade,
         },
       },
     });
@@ -81,7 +104,7 @@ export function StaticSeatChart({
   /**
    * 좌석 타입 삭제
    */
-  const removeSeatType = (keyToRemove: string) => {
+  const removeSeatType = (keyToRemove: BookingSeatResponseGrade) => {
     const { [keyToRemove]: removed, ...remaining } = formData.seatTypes;
     updateFormData({
       seatTypes: remaining,
@@ -92,9 +115,12 @@ export function StaticSeatChart({
   };
 
   /**
-   * 좌석 타입 라벨 변경
+   * 좌석 타입 라벨 변경 (BookingSeatResponseGrade로 제한)
    */
-  const updateSeatTypeLabel = (key: string, label: string) => {
+  const updateSeatTypeLabel = (
+    key: BookingSeatResponseGrade,
+    label: BookingSeatResponseGrade,
+  ) => {
     updateFormData({
       seatTypes: {
         ...formData.seatTypes,
@@ -107,7 +133,9 @@ export function StaticSeatChart({
    * 좌석 등급 설정 추가
    */
   const addSeatGrade = () => {
-    const firstSeatTypeKey = Object.keys(formData.seatTypes)[0];
+    const firstSeatTypeKey = Object.keys(
+      formData.seatTypes,
+    )[0] as BookingSeatResponseGrade;
     if (!firstSeatTypeKey) return;
 
     updateFormData({
@@ -133,7 +161,7 @@ export function StaticSeatChart({
   const updateSeatGrade = (
     index: number,
     field: keyof SeatGradeConfig,
-    value: string,
+    value: string | BookingSeatResponseGrade,
   ) => {
     const updated = [...formData.seatGrades];
     updated[index] = { ...updated[index], [field]: value };
@@ -267,17 +295,19 @@ export function StaticSeatChart({
    * 미리보기용 SeatChartConfig 생성
    */
   const createPreviewConfig = (): SeatChartConfig => {
-    // 좌석 타입에 임시 가격(0)과 cssClass 추가
+    // 좌석 타입에 임시 가격(0) 추가
     const seatTypesWithDefaults = Object.fromEntries(
       Object.entries(formData.seatTypes).map(([key, seatType]) => [
         key,
         {
           ...seatType,
           price: 0, // 1단계에서는 가격 0으로 표시
-          cssClass: "economy", // 임시 CSS 클래스
         },
       ]),
-    );
+    ) as Partial<Record<
+      BookingSeatResponseGrade,
+      { label: BookingSeatResponseGrade; price: number }
+    >>;
 
     return {
       ...formData,
@@ -350,26 +380,41 @@ export function StaticSeatChart({
             <AccordionContent className="px-6 pb-6">
               <div className="space-y-3">
                 <div className="flex justify-end">
-                  <Button onClick={addSeatType} size="sm">
+                  <Button
+                    onClick={addSeatType}
+                    size="sm"
+                    disabled={Object.keys(formData.seatTypes).length >= 5}
+                  >
                     <Plus className="w-4 h-4 mr-2" />
-                    타입 추가
+                    타입 추가 ({Object.keys(formData.seatTypes).length}/5)
                   </Button>
                 </div>
                 {Object.entries(formData.seatTypes).map(([key, seatType]) => (
                   <div key={key} className="flex items-center gap-3">
                     <div className="flex-1">
-                      <Label htmlFor={`seatType-${key}`}>타입 라벨</Label>
-                      <Input
+                      <Label htmlFor={`seatType-${key}`}>좌석 등급</Label>
+                      <select
                         id={`seatType-${key}`}
                         value={seatType.label}
                         onChange={(e) =>
-                          updateSeatTypeLabel(key, e.target.value)
+                          updateSeatTypeLabel(
+                            key as BookingSeatResponseGrade,
+                            e.target.value as BookingSeatResponseGrade,
+                          )
                         }
-                        placeholder="좌석 타입 라벨"
-                      />
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                      >
+                        <option value="VIP">VIP석</option>
+                        <option value="R">R석</option>
+                        <option value="S">S석</option>
+                        <option value="A">A석</option>
+                        <option value="B">B석</option>
+                      </select>
                     </div>
                     <Button
-                      onClick={() => removeSeatType(key)}
+                      onClick={() =>
+                        removeSeatType(key as BookingSeatResponseGrade)
+                      }
                       variant="outline"
                       size="sm"
                       className="mt-6"
@@ -418,7 +463,11 @@ export function StaticSeatChart({
                         id={`seatType-${index}`}
                         value={grade.seatTypeKey}
                         onChange={(e) =>
-                          updateSeatGrade(index, "seatTypeKey", e.target.value)
+                          updateSeatGrade(
+                            index,
+                            "seatTypeKey",
+                            e.target.value as BookingSeatResponseGrade,
+                          )
                         }
                         className="w-full p-2 border border-gray-300 rounded-md"
                       >

@@ -1,4 +1,7 @@
-import type { VenueSeatCapacityRequest } from "@/shared/api/orval/types";
+import type {
+  BookingSeatResponseGrade,
+  VenueSeatCapacityRequest,
+} from "@/shared/api/orval/types";
 import type { StaticSeatVenue } from "../types/seatLayout.types";
 
 /**
@@ -13,7 +16,10 @@ import type { StaticSeatVenue } from "../types/seatLayout.types";
 export function extractSeatGradeInfo(
   staticSeatVenue: StaticSeatVenue,
 ): VenueSeatCapacityRequest[] {
-  const gradeInfo: Record<string, { gradeName: string; capacity: number }> = {};
+  const gradeInfo: Record<
+    string,
+    { gradeName: BookingSeatResponseGrade; capacity: number }
+  > = {};
 
   // 모든 좌석 타입을 우선 초기화 (좌석 수 0으로)
   Object.entries(staticSeatVenue.seatTypes).forEach(([seatGrade, seatType]) => {
