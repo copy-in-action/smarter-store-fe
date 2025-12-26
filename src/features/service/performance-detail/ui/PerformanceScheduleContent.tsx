@@ -30,6 +30,10 @@ interface PerformanceScheduleContentProps {
   }>;
   /** 모바일 여부 (시간 표시 포맷 차이를 위함) */
   isMobile?: boolean;
+  /** 공연 회차 선택 핸들러 */
+  onSelectPerformanceSchedule: (performanceScheduleId: string) => void;
+  /** 선택된 공연 회차 ID */
+  selectedPerformanceScheduleId: number;
 }
 
 /**
@@ -44,6 +48,8 @@ const PerformanceScheduleContent = ({
   isLoading,
   selectedDatePerformances,
   isMobile = false,
+  onSelectPerformanceSchedule,
+  selectedPerformanceScheduleId,
 }: PerformanceScheduleContentProps) => {
   return (
     <>
@@ -62,27 +68,28 @@ const PerformanceScheduleContent = ({
       {isLoading ? (
         <div className="py-4 text-center">로딩 중...</div>
       ) : (
-        <RadioGroup>
-          {selectedDatePerformances?.map((performance) => (
+        <RadioGroup
+          onValueChange={(value) => onSelectPerformanceSchedule(value)}
+        >
+          {selectedDatePerformances?.map((performanceSchedule) => (
             <FieldLabel
-              key={performance.id}
-              htmlFor={`performance${isMobile ? "" : "-desktop"}-${performance.id}`}
+              key={performanceSchedule.id}
+              htmlFor={`performance${isMobile ? "" : "-desktop"}-${performanceSchedule.id}`}
               className="has-data-[state=checked]:!bg-transparent has-data-[state=checked]:shadow-lg has-[>[data-slot=field]]:!rounded-2xl"
             >
               <Field orientation="horizontal" className="">
                 <FieldContent>
                   <FieldTitle>
-                    {new Date(performance.showDateTime).toLocaleTimeString(
-                      "ko-KR",
-                      {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        ...(isMobile ? {} : { hour12: false }),
-                      },
-                    )}
+                    {new Date(
+                      performanceSchedule.showDateTime,
+                    ).toLocaleTimeString("ko-KR", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      ...(isMobile ? {} : { hour12: false }),
+                    })}
                   </FieldTitle>
                   <FieldDescription>
-                    {performance.ticketOptions
+                    {performanceSchedule.ticketOptions
                       .map(
                         (option) =>
                           `${option.seatGrade}석 ${isMobile ? option.remainingSeats : option.remainingSeats.toLocaleString()}`,
@@ -91,8 +98,11 @@ const PerformanceScheduleContent = ({
                   </FieldDescription>
                 </FieldContent>
                 <RadioGroupItem
-                  value={performance.id.toString()}
-                  id={`performance${isMobile ? "" : "-desktop"}-${performance.id}`}
+                  value={performanceSchedule.id.toString()}
+                  checked={
+                    selectedPerformanceScheduleId === performanceSchedule.id
+                  }
+                  id={`performance${isMobile ? "" : "-desktop"}-${performanceSchedule.id}`}
                   hidden
                 />
               </Field>

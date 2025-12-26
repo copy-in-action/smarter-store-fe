@@ -104,6 +104,23 @@ const PerformanceBookButton = ({ performanceId }: Props) => {
     };
   }, [availableDates]);
 
+  const [selectedPerformanceScheduleId, setSelectedPerformanceScheduleId] =
+    useState(0);
+
+  // 공연회차 선택
+  const handleSelectPerformanceSchedule = (
+    _selectedPerformanceScheduleId: string,
+  ) => {
+    setSelectedPerformanceScheduleId(Number(_selectedPerformanceScheduleId));
+  };
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    // 선택된 날짜가 변경될 때마다 선택된 회차 초기화
+    if (isOpen) return;
+    setSelectedPerformanceScheduleId(0);
+  }, [date, isOpen]);
+
   return (
     <>
       <div className="fixed z-50 sm:bottom-0 shadow-[0_0_5px_rgba(0,0,0,0.1)] w-full px-4 py-3 bg-background bottom-14 text-center">
@@ -133,10 +150,17 @@ const PerformanceBookButton = ({ performanceId }: Props) => {
                   isLoading={isLoading}
                   selectedDatePerformances={selectedDatePerformances}
                   isMobile={true}
+                  onSelectPerformanceSchedule={handleSelectPerformanceSchedule}
+                  selectedPerformanceScheduleId={selectedPerformanceScheduleId}
                 />
               </div>
               <DrawerFooter>
-                <Button className="w-full" type="submit" size={"lg"}>
+                <Button
+                  className="w-full"
+                  type="submit"
+                  size={"lg"}
+                  disabled={selectedPerformanceScheduleId === 0}
+                >
                   예매하기
                 </Button>
               </DrawerFooter>
@@ -168,10 +192,17 @@ const PerformanceBookButton = ({ performanceId }: Props) => {
                 isLoading={isLoading}
                 selectedDatePerformances={selectedDatePerformances}
                 isMobile={false}
+                onSelectPerformanceSchedule={handleSelectPerformanceSchedule}
+                selectedPerformanceScheduleId={selectedPerformanceScheduleId}
               />
             </div>
             <DialogFooter>
-              <Button className="w-full" type="submit" size={"lg"}>
+              <Button
+                className="w-full"
+                type="submit"
+                size={"lg"}
+                disabled={selectedPerformanceScheduleId === 0}
+              >
                 예매하기
               </Button>
             </DialogFooter>
