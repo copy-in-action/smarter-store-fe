@@ -41,7 +41,7 @@ export function EmailLoginForm({ redirectUrl }: EmailLoginFormProps) {
    * 로그인 폼 제출 핸들러
    */
   const onSubmit = (loginData: LoginRequest) => {
-    login(loginData);
+    login.mutateAsync(loginData);
   };
   return (
     <Form {...form}>

@@ -7,12 +7,7 @@ import { CalendarIcon, X } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import {
-  type CreatePerformanceScheduleFormData,
-  createPerformanceScheduleSchema,
-} from "@/entities/performance-schedule";
 import type {
-  CreatePerformanceScheduleRequest,
   PerformanceScheduleResponse,
   VenueSeatCapacityRequest,
 } from "@/shared/api/orval/types";
@@ -35,6 +30,10 @@ import {
   useCreatePerformanceSchedule,
   useUpdatePerformanceSchedule,
 } from "../api/performanceSchedule.api";
+import {
+  createPerformanceScheduleFormSchema,
+  type PerformanceScheduleFormData,
+} from "../model/performance-schedule-form.schema";
 
 /**
  * 공연 회차 폼 컴포넌트 속성
@@ -86,7 +85,9 @@ export function PerformanceScheduleForm({
     [];
 
   const form = useForm({
-    resolver: zodResolver(createPerformanceScheduleSchema(effectiveSeatGrades)),
+    resolver: zodResolver(
+      createPerformanceScheduleFormSchema(effectiveSeatGrades),
+    ),
     defaultValues: {
       showDateTime: schedule?.showDateTime || "",
       saleStartDateTime: schedule?.saleStartDateTime || "",
@@ -101,7 +102,7 @@ export function PerformanceScheduleForm({
    * 폼 제출 핸들러
    * @param data - 폼 데이터
    */
-  const handleSubmit = async (data: CreatePerformanceScheduleFormData) => {
+  const handleSubmit = async (data: PerformanceScheduleFormData) => {
     try {
       if (mode === "edit" && schedule) {
         await updateMutation.mutateAsync({

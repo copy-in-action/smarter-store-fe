@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { CreatePerformanceScheduleFormData } from "@/entities/performance-schedule";
+
 import {
   createSchedule,
   deleteSchedule,
@@ -11,6 +11,7 @@ import type {
   CreatePerformanceScheduleRequest,
   PerformanceScheduleResponse,
 } from "@/shared/api/orval/types";
+import type { PerformanceScheduleFormData } from "../model/performance-schedule-form.schema";
 
 /**
  * 특정 공연의 모든 회차 목록을 조회하는 쿼리
@@ -75,7 +76,7 @@ interface UpdatePerformanceScheduleParams {
   /** 회차 ID */
   scheduleId: number;
   /** 수정할 데이터 */
-  data: CreatePerformanceScheduleFormData;
+  data: PerformanceScheduleFormData;
 }
 
 /**
