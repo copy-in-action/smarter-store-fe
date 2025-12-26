@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePerformances } from "@/features/admin/performance-management";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
+import { PAGES } from "@/shared/constants";
 import { CarouselItem } from "@/shared/ui/carousel";
 import { ReusableCarousel } from "@/shared/ui/reusable-carousel";
 import { PerformanceListSkeleton } from "./PerformanceListSkeleton";
@@ -83,7 +84,7 @@ function PerformanceListView({
             } sm:block sm:pl-2 lg:pl-4 basis-auto sm:basis-4/12 lg:basis-3/13`}
           >
             <Link
-              href={`/performance/${performance.id}`}
+              href={PAGES.PERFORMANCE.DETAIL.path(performance.id)}
               className="block cursor-pointer group"
             >
               <div className="space-y-3">
