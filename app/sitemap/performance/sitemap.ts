@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getPerformancesForServer } from "@/entities/performance/api/performance.server.api";
+import { PAGES } from "@/shared/constants";
 
 const MAX_URLS_PER_SITEMAP = 50000;
 
@@ -43,7 +44,7 @@ export default async function sitemap(props: {
   const endIndex = Math.min(startIndex + MAX_URLS_PER_SITEMAP, response.length);
 
   return response.slice(startIndex, endIndex).map((performance) => ({
-    url: `${SERVICE_DOMAIN}/performance/${performance.id}`,
+    url: `${SERVICE_DOMAIN}${PAGES.PERFORMANCE.DETAIL.path(performance.id)}`,
     lastModified: performance.updatedAt
       ? new Date(performance.updatedAt)
       : new Date(),
