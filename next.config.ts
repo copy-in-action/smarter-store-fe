@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       new URL("https://marketplace.canva.com/**"),
       new URL("https://ticketimage.interpark.com/Play/image/**"),
+      new URL("https://image6.yanolja.com/**"),
     ],
   },
 };
