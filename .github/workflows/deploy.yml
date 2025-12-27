@@ -55,6 +55,7 @@ jobs:
         run: pnpm build
         env:
           NODE_ENV: production
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
       # 빌드 결과물 권한 변경
       - name: Fix build output permissions

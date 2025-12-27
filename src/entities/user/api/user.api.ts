@@ -2,6 +2,7 @@
  * 사용자 관련 API 함수들 (React Query 연동)
  */
 
+import * as Sentry from "@sentry/react";
 import { type UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { me } from "@/shared/api/orval/auth/auth";
 import type { UserResponse } from "@/shared/api/orval/types";
@@ -27,7 +28,14 @@ export const useGetUserInfo = (
       const response = await me();
 
       if (response.status === 200) {
-        return response.data;
+        const user = response.data;
+        Sentry.setUser({
+          id: user.id,
+          email: user.email,
+          username: user.username,
+        });
+
+        return user;
       }
 
       throw new Error("Failed to fetch user info");
