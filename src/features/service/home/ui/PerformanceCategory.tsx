@@ -38,6 +38,8 @@ const PerformanceCategory = () => {
                   alt={category.name}
                   fill
                   className="object-cover"
+                  priority
+                  sizes="(max-width: 768px) 25vw, 15vw"
                 />
               </Link>
               <span className="text-xs tracking-tighter text-gray-700 transition-colors sm:text-sm group-hover:text-gray-900">

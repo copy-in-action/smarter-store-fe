@@ -11,7 +11,7 @@ import { banners } from "../model";
  */
 const MainBanner = () => {
   return (
-    <div className="wrapper pe-0 ps-2 sm:px-10">
+    <div className="wrapper pe-0 ps-2 sm:px-10!">
       <ReusableCarousel
         options={{
           autoplay: true,
@@ -38,6 +38,8 @@ const MainBanner = () => {
                 alt={`Banner${banner.id}`}
                 fill
                 className="object-contain"
+                sizes="(max-width: 768px) 100vw, 25vw"
+                priority
               />
             </div>
           </CarouselItem>
