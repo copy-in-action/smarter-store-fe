@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPerformanceDetailForServer } from "@/entities/performance/api/performance.server.api";
 import { PAGES } from "@/shared/constants/routes";
+import {
+  createPerformanceSchema,
+  safeJsonLdStringify,
+} from "@/shared/lib/json-ld";
 import PerformanceDetailView from "@/views/service/performances/PerformanceDetailView";
 
 /**
@@ -23,7 +27,60 @@ export default async function PerformanceDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  return <PerformanceDetailView performanceId={performanceId} />;
+  // JSON-LD 구조화 데이터를 위한 공연 정보 조회
+  let performanceSchemas: any[] = [];
+  try {
+    const performance = await getPerformanceDetailForServer(performanceId);
+
+    // 최저 가격 계산
+    const minPrice = 500;
+    // FIXME: API 구현이 필요한 부분
+    /*  performance.schedules?.reduce(
+        (min, schedule) => Math.min(min, schedule.price || 0),
+        Number.MAX_SAFE_INTEGER,
+      ) || 0; */
+
+    performanceSchemas = createPerformanceSchema({
+      name: performance.title,
+      description: performance.description || `${performance.title} 공연 정보`,
+      startDate: performance.startDate || new Date().toISOString(),
+      endDate: performance.endDate || undefined,
+      location: {
+        name: performance.venue?.name || "미정",
+        address: performance.venue?.address || undefined,
+      },
+      offers:
+        minPrice > 0
+          ? {
+              price: minPrice,
+              currency: "KRW",
+              availability: "https://schema.org/InStock",
+            }
+          : undefined,
+      performer: performance.producer || undefined,
+      image: performance.mainImageUrl || undefined,
+      url: `https://ticket.devhong.cc/performances/${performanceId}`,
+      category: performance.category || undefined, // 카테고리 정보 추가
+    });
+  } catch (error) {
+    console.error("JSON-LD 스키마 생성 실패:", error);
+  }
+
+  return (
+    <>
+      {performanceSchemas.map((schema, index) => (
+        <script
+          key={index.toString()}
+          type="application/ld+json"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+          dangerouslySetInnerHTML={{
+            __html: safeJsonLdStringify(schema),
+          }}
+        />
+      ))}
+      <PerformanceDetailView performanceId={performanceId} />
+    </>
+  );
 }
 
 /**
