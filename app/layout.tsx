@@ -67,7 +67,8 @@ export default async function RootLayout({
           }}
         />
         <script
-          type="application/ld+json" // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+          type="application/ld+json"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
           dangerouslySetInnerHTML={{
             __html: safeJsonLdStringify(organizationSchema),
           }}
