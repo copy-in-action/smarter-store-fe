@@ -13,6 +13,23 @@ const nextConfig: NextConfig = {
       new URL("https://image6.yanolja.com/**"),
     ],
   },
+  async headers() {
+    return [
+      {
+        source: "/_next/static/(.*)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+    ];
+  },
+  experimental: {
+    optimizeCss: true,
+    cssChunking: true,
+  },
 };
 
 export default withSentryConfig(nextConfig, {
