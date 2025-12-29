@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { 
-  MainBanner, 
-  PerformanceCategory, 
-  PerformanceListServer, 
-  PerformanceListSkeleton 
+import {
+  MainBanner,
+  PerformanceCategory,
+  PerformanceListServer,
 } from "@/features/service/home";
+import { PerformanceListSkeleton } from "@/features/service/home/ui/PerformanceListSkeleton";
 import { PAGES } from "@/shared/constants/routes";
 
 /**

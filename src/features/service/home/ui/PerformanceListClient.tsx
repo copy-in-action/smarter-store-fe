@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePerformances } from "@/features/admin/performance-management";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
 import { PAGES } from "@/shared/constants";
-import { useIsMobile } from "@/shared/hooks/use-mobile";
 import { CarouselItem } from "@/shared/ui/carousel";
 import { ReusableCarousel } from "@/shared/ui/reusable-carousel";
 import { PerformanceListSkeleton } from "./PerformanceListSkeleton";
@@ -30,13 +29,12 @@ function groupItemsBySize<T>(arr: T[], size: number): T[][] {
   );
 }
 
-
 /**
  * 공연 리스트 에러 상태
  */
 function PerformanceListError({ onRetry }: { onRetry: () => void }) {
   return (
-    <div className="px-4 wrapper sm:px-10">
+    <div className="px-4 wrapper sm:px-10!">
       <div className="flex items-center justify-center py-10">
         <div className="text-center">
           <div className="mb-2 text-red-500">
@@ -60,7 +58,7 @@ function PerformanceListError({ onRetry }: { onRetry: () => void }) {
  */
 function PerformanceListEmpty() {
   return (
-    <div className="px-4 wrapper sm:px-10">
+    <div className="px-4 wrapper sm:px-10!">
       <div className="flex items-center justify-center py-10">
         <div className="text-gray-500">등록된 공연이 없습니다.</div>
       </div>
@@ -71,7 +69,11 @@ function PerformanceListEmpty() {
 /**
  * 개별 공연 카드 컴포넌트
  */
-function PerformanceCard({ performance }: { performance: PerformanceResponse }) {
+function PerformanceCard({
+  performance,
+}: {
+  performance: PerformanceResponse;
+}) {
   return (
     <Link
       href={PAGES.PERFORMANCE.DETAIL.path(performance.id)}
@@ -118,8 +120,6 @@ export function PerformanceList({ initialData }: PerformanceListProps) {
     staleTime: initialData.length > 0 ? 1000 * 60 * 5 : 0,
   });
 
-  const isMobile = useIsMobile();
-
   if (isLoading) {
     return <PerformanceListSkeleton />;
   }
@@ -136,11 +136,12 @@ export function PerformanceList({ initialData }: PerformanceListProps) {
    * 모바일에서는 4개씩 그룹화하여 2x2 형태로 표시
    * 데스크톱에서는 가로 스크롤 방식 사용
    */
-  if (isMobile) {
-    const performanceGroups = groupItemsBySize(performances, 4);
 
-    return (
-      <div className="px-4 wrapper">
+  const performanceGroups = groupItemsBySize(performances, 4);
+
+  return (
+    <>
+      <div className="px-4 wrapper sm:hidden">
         <ReusableCarousel
           options={{
             autoplay: false,
@@ -157,39 +158,40 @@ export function PerformanceList({ initialData }: PerformanceListProps) {
             <CarouselItem key={group[0].id} className="pl-4 basis-full">
               <div className="grid grid-cols-2 gap-x-4 gap-y-6">
                 {group.map((performance) => (
-                  <PerformanceCard key={performance.id} performance={performance} />
+                  <PerformanceCard
+                    key={performance.id}
+                    performance={performance}
+                  />
                 ))}
               </div>
             </CarouselItem>
           ))}
         </ReusableCarousel>
       </div>
-    );
-  }
 
-  return (
-    <div className="px-4 wrapper sm:px-10">
-      <ReusableCarousel
-        options={{
-          autoplay: false,
-          showNavigation: true,
-          showPageControls: false,
-          loop: false,
-          slidesToScroll: 1,
-          align: "start",
-        }}
-        navigationButtonClassName="-translate-y-[60px]"
-        contentClassName="flex -ml-2 gap-0"
-      >
-        {performances.map((performance) => (
-          <CarouselItem
-            key={performance.id}
-            className="pl-2 lg:pl-4 basis-4/12 lg:basis-3/13"
-          >
-            <PerformanceCard performance={performance} />
-          </CarouselItem>
-        ))}
-      </ReusableCarousel>
-    </div>
+      <div className="px-4 wrapper sm:px-10! hidden sm:block">
+        <ReusableCarousel
+          options={{
+            autoplay: false,
+            showNavigation: true,
+            showPageControls: false,
+            loop: false,
+            slidesToScroll: 1,
+            align: "start",
+          }}
+          navigationButtonClassName="-translate-y-[60px]"
+          contentClassName="flex -ml-2 gap-0"
+        >
+          {performances.map((performance) => (
+            <CarouselItem
+              key={performance.id}
+              className="pl-2 lg:pl-4 basis-4/12 lg:basis-3/13"
+            >
+              <PerformanceCard performance={performance} />
+            </CarouselItem>
+          ))}
+        </ReusableCarousel>
+      </div>
+    </>
   );
 }

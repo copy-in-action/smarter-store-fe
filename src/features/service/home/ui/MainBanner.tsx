@@ -38,7 +38,7 @@ const MainBanner = () => {
                 alt={`Banner${banner.id}`}
                 fill
                 className="object-contain"
-                sizes="(max-width: 768px) 100vw, 25vw"
+                sizes="(max-width: 768px) 100vw, 50vw"
                 priority
               />
             </div>
