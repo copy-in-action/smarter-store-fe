@@ -223,7 +223,7 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
   }
 
   return (
-    <div className="p-5 mx-auto border border-gray-300 rounded-lg bg-gray-50">
+    <div className="relative p-5 mx-auto border border-gray-300 rounded-lg bg-gray-50">
       <div className="mb-4">
         <div className="mb-3">
           <h4 className="mb-2 text-sm font-semibold">좌석 상태</h4>
@@ -285,7 +285,7 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
       </div>
 
       {/* 줌 컨트롤 버튼들 - 모바일에서만 표시 */}
-      <div className="fixed flex flex-col gap-2 bottom-4 right-4 md:hidden">
+      <div className="absolute bottom-0 flex flex-col gap-2 bottom-4 right-4 md:hidden">
         <button
           type="button"
           onClick={(e) => {
@@ -293,7 +293,7 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
             e.stopPropagation();
             handleZoom(0.1);
           }}
-          className="flex items-center justify-center w-12 h-12 text-xl font-bold text-white transition-colors bg-blue-500 rounded-full shadow-lg hover:bg-blue-600 touch-manipulation"
+          className="flex items-center justify-center text-white transition-colors bg-blue-500 rounded-full shadow-lg size-6 hover:bg-blue-600 touch-manipulation"
           aria-label="확대"
         >
           +
@@ -305,7 +305,7 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
             e.stopPropagation();
             handleZoom(-0.1);
           }}
-          className="flex items-center justify-center w-12 h-12 text-xl font-bold text-white transition-colors bg-blue-500 rounded-full shadow-lg hover:bg-blue-600 touch-manipulation"
+          className="flex items-center justify-center text-white transition-colors bg-blue-500 rounded-full shadow-lg size-6 hover:bg-blue-600 touch-manipulation"
           aria-label="축소"
         >
           −
@@ -317,7 +317,7 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
             e.stopPropagation();
             resetZoom();
           }}
-          className="flex items-center justify-center w-12 h-12 text-xs font-medium text-white transition-colors bg-gray-500 rounded-full shadow-lg hover:bg-gray-600 touch-manipulation"
+          className="flex items-center justify-center text-xs text-white transition-colors bg-gray-500 rounded-full shadow-lg size-6 hover:bg-gray-600 touch-manipulation"
           aria-label="리셋"
         >
           1x

@@ -1,21 +1,28 @@
 "use client";
 
-//TODO: 실제 API URL 설정 필요
 import { useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
+import { getGetScheduleUrl } from "@/shared/api/orval/schedule/schedule";
+import type {
+  AvailableScheduleResponse,
+  BookingSeatResponseGrade,
+  SeatingChartResponse,
+} from "@/shared/api/orval/types";
+import { getGetSeatingChartUrl } from "@/shared/api/orval/venue/venue";
 import type {
   BookingStatus,
   SeatChartConfig,
   StaticSeatVenue,
   UserSeatSelection,
 } from "../types/seatLayout.types";
-import { MAX_SEAT_SELECTION } from "../types/seatLayout.types";
 import { isSeatInState } from "../utils/seatChart.utils";
 
 /**
- * 좌석 차트 데이터를 관리하는 Hook
+ * 좌석 차트 데이터를 관리하는 Hook (범용)
+ * @param venueId - 공연장 ID
+ * @param scheduleId - 회차 ID (옵셔널, 제공 시 가격 정보 로드)
+ * @returns 좌석 차트 설정 및 제어 함수
  */
-export function useSeatChart(venueId: string) {
+export function useSeatChart(venueId: number, scheduleId?: number) {
   const [staticVenue, setStaticVenue] = useState<StaticSeatVenue | null>(null);
   const [bookingStatus, setBookingStatus] = useState<BookingStatus>({
     reservedSeats: [],
@@ -32,16 +39,41 @@ export function useSeatChart(venueId: string) {
    */
   const loadStaticVenue = useCallback(async () => {
     try {
-      // TODO: 실제 API 호출로 대체
-      const response = await fetch(`/api/seat-venues/${venueId}`);
-      if (!response.ok) throw new Error("Failed to load seat venue");
+      const staticSeatVenueResponse = await fetch(
+        getGetSeatingChartUrl(venueId),
+      );
+      if (!staticSeatVenueResponse.ok)
+        throw new Error("Failed to load seat venue");
 
-      const venue: StaticSeatVenue = await response.json();
-      setStaticVenue(venue);
+      const seatChartData =
+        (await staticSeatVenueResponse.json()) as SeatingChartResponse;
+
+      const seatingChart =
+        seatChartData.seatingChart as unknown as StaticSeatVenue;
+
+      // scheduleId가 있을 때만 가격 정보 로드
+      if (scheduleId) {
+        const scheduleResponse = await fetch(getGetScheduleUrl(scheduleId));
+        const schedule =
+          (await scheduleResponse.json()) as AvailableScheduleResponse;
+
+        Object.entries(seatingChart.seatTypes).forEach(([type, info]) => {
+          const findOption = schedule.ticketOptions.find(
+            (option) => option.seatGrade === info.label,
+          );
+
+          if (seatingChart.seatTypes[type as BookingSeatResponseGrade]) {
+            seatingChart.seatTypes[type as BookingSeatResponseGrade]!.price =
+              findOption ? findOption.price : 0;
+          }
+        });
+      }
+
+      setStaticVenue(seatingChart);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load venue");
     }
-  }, [venueId]);
+  }, [venueId, scheduleId]);
 
   /**
    * 예매 상태 업데이트 (실시간)
@@ -51,7 +83,9 @@ export function useSeatChart(venueId: string) {
   }, []);
 
   /**
-   * 좌석 선택/해제 토글 (최대 4개 제한)
+   * 좌석 선택/해제 토글 (제한 없음)
+   * @param row - 행 번호
+   * @param col - 열 번호
    */
   const toggleSeatSelection = (row: number, col: number) => {
     setUserSelection((prev) => {
@@ -66,15 +100,6 @@ export function useSeatChart(venueId: string) {
           ),
         };
       } else {
-        // 최대 선택 가능 좌석 수 확인
-        if (selectedSeats.length >= MAX_SEAT_SELECTION) {
-          // Toast로 경고 메시지 표시
-          toast.error(
-            `최대 ${MAX_SEAT_SELECTION}개의 좌석만 선택할 수 있습니다.`,
-          );
-          return prev; // 선택하지 않고 현재 상태 유지
-        }
-
         // 선택 추가
         return {
           selectedSeats: [...selectedSeats, { row, col }],
@@ -116,28 +141,6 @@ export function useSeatChart(venueId: string) {
     init();
   }, [venueId, loadStaticVenue]);
 
-  // 실시간 예매 상태 구독 (SSE 또는 WebSocket)
-  useEffect(() => {
-    if (!staticVenue) return;
-
-    // TODO: 실제 SSE/WebSocket 구현
-    const eventSource = new EventSource(
-      `/api/seat-venues/${venueId}/booking-status`,
-    );
-
-    eventSource.onmessage = (event) => {
-      const status: BookingStatus = JSON.parse(event.data);
-      updateBookingStatus(status);
-    };
-
-    eventSource.onerror = () => {
-      console.error("BookingStatus SSE connection error");
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, [venueId, staticVenue, updateBookingStatus]);
 
   return {
     // 데이터

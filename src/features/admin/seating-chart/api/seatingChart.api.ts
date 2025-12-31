@@ -1,11 +1,9 @@
+import { updateSeatingChart } from "@/shared/api/orval/admin-venue/admin-venue";
 import type {
   SeatingChartRequest,
   SeatingChartResponse,
 } from "@/shared/api/orval/types";
-import {
-  getSeatingChart,
-  updateSeatingChart,
-} from "@/shared/api/orval/venue/venue";
+import { getSeatingChart } from "@/shared/api/orval/venue/venue";
 
 /**
  * 좌석 배치도를 조회합니다
