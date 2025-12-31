@@ -3,18 +3,17 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  createVenue,
+  deleteVenue,
+  updateVenue,
+} from "@/shared/api/orval/admin-venue/admin-venue";
 import type {
   CreateVenueRequest,
   UpdateVenueRequest,
   VenueResponse,
 } from "@/shared/api/orval/types";
-import {
-  createVenue,
-  deleteVenue,
-  getAllVenues,
-  getVenue,
-  updateVenue,
-} from "@/shared/api/orval/venue/venue";
+import { getAllVenues, getVenue } from "@/shared/api/orval/venue/venue";
 
 /**
  * 공연장 쿼리 키 상수
