@@ -188,6 +188,16 @@ export const SERVICE_PAGES = {
     },
   },
 
+  BOOKING: {
+    SEATING_CHART: {
+      path: "/booking/seating-chart",
+      metadata: {
+        title: "좌석 선택",
+        description: "좌석을 선택해주세요",
+      } as Metadata,
+    },
+  },
+
   /** 마이페이지 */
   MY: {
     /** 마이페이지 메인 */

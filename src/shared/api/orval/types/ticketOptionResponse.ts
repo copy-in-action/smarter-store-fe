@@ -3,6 +3,8 @@
  * Do not edit manually.
  * Smarter Store API
  * Smarter Store 백엔드 API 문서
+
+**관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
 import type { TicketOptionResponseSeatGrade } from './ticketOptionResponseSeatGrade';
@@ -13,7 +15,7 @@ import type { TicketOptionResponseSeatGrade } from './ticketOptionResponseSeatGr
 export interface TicketOptionResponse {
   /** 티켓 옵션 ID */
   id: number;
-  /** 좌석 등급 */
+  /** 좌석 등급 (VIP: VIP석, R: R석, S: S석, A: A석, B: B석) */
   seatGrade: TicketOptionResponseSeatGrade;
   /** 가격 */
   price: number;

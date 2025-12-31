@@ -128,7 +128,7 @@ export function Step3FinalView({
           </p>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+          <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
             <div>
               <span className="font-medium text-gray-700">전체 좌석:</span>{" "}
               <span className="text-gray-900">{totalSeats}석</span>
@@ -153,7 +153,7 @@ export function Step3FinalView({
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 gap-8 xl:grid-cols-4">
         {/* 선택된 좌석 정보 */}
         <div className="order-2 xl:order-1 max-w-[500px]">
           <Card>
@@ -165,7 +165,10 @@ export function Step3FinalView({
                 <div className="space-y-3">
                   {Object.entries(selectedSeatsByType).map(
                     ([seatTypeKey, seats]) => {
-                      const seatType = finalConfig.seatTypes[seatTypeKey as keyof typeof finalConfig.seatTypes];
+                      const seatType =
+                        finalConfig.seatTypes[
+                          seatTypeKey as keyof typeof finalConfig.seatTypes
+                        ];
                       const totalPrice = seats.length * (seatType?.price || 0);
                       const seatTypeIndex = Object.keys(
                         finalConfig.seatTypes,
@@ -177,18 +180,18 @@ export function Step3FinalView({
                       return (
                         <div
                           key={seatTypeKey}
-                          className="bg-gray-50 rounded-lg p-3"
+                          className="p-3 rounded-lg bg-gray-50"
                         >
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               <div
-                                className="w-3 h-3 rounded border"
+                                className="w-3 h-3 border rounded"
                                 style={{
                                   backgroundColor: `${baseColor}33`,
                                   borderColor: baseColor,
                                 }}
                               ></div>
-                              <span className="font-medium text-sm">
+                              <span className="text-sm font-medium">
                                 {seatType?.label || "기본"}
                               </span>
                               <span className="text-xs text-gray-500">
@@ -203,7 +206,7 @@ export function Step3FinalView({
                             {seats.map((seat) => (
                               <span
                                 key={`${seat.col}-${seat.row}`}
-                                className="inline-block px-2 py-1 bg-white text-xs rounded border text-gray-700"
+                                className="inline-block px-2 py-1 text-xs text-gray-700 bg-white border rounded"
                               >
                                 {seat.position}
                               </span>
@@ -215,12 +218,15 @@ export function Step3FinalView({
                   )}
 
                   {/* 총 합계 */}
-                  <div className="border-t pt-3 flex justify-between items-center font-semibold">
+                  <div className="flex items-center justify-between pt-3 font-semibold border-t">
                     <span>총 합계:</span>
-                    <span className="text-blue-600 text-lg">
+                    <span className="text-lg text-blue-600">
                       {Object.entries(selectedSeatsByType)
                         .reduce((total, [seatTypeKey, seats]) => {
-                          const seatType = finalConfig.seatTypes[seatTypeKey as keyof typeof finalConfig.seatTypes];
+                          const seatType =
+                            finalConfig.seatTypes[
+                              seatTypeKey as keyof typeof finalConfig.seatTypes
+                            ];
                           return total + seats.length * (seatType?.price || 0);
                         }, 0)
                         .toLocaleString()}
@@ -229,7 +235,7 @@ export function Step3FinalView({
                   </div>
                 </div>
               ) : (
-                <p className="text-gray-500 text-sm text-center py-4">
+                <p className="py-4 text-sm text-center text-gray-500">
                   좌석을 선택해주세요
                 </p>
               )}

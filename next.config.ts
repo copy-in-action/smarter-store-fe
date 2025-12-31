@@ -13,6 +13,25 @@ const nextConfig: NextConfig = {
       new URL("https://image6.yanolja.com/**"),
     ],
   },
+  /**
+   * 개발 환경에서만 백엔드 API 프록시 설정
+   * - 개발: /api/* → 백엔드 프록시 (CORS 문제 해결, 쿠키 자동 공유)
+   * - 프로덕션: rewrites 없음 (백엔드 CORS 설정 사용)
+   */
+  async rewrites() {
+    // 프로덕션 환경에서는 rewrites 사용 안 함
+    if (process.env.NODE_ENV === "production") {
+      return [];
+    }
+
+    // 개발 환경에서만 백엔드 프록시
+    return [
+      {
+        source: "/api/:path*", // localhost:3000/api/xxx
+        destination: `${process.env.NEXT_PUBLIC_API_DEV_SERVER}/api/:path*`, // → 백엔드로 프록시
+      },
+    ];
+  },
   async headers() {
     return [
       {

@@ -3,19 +3,56 @@
  * Do not edit manually.
  * Smarter Store API
  * Smarter Store 백엔드 API 문서
+
+**관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
 import type {
   AvailableScheduleResponse,
-  CreatePerformanceRequest,
   ErrorResponse,
   GetAvailableSchedulesByDateParams,
-  PerformanceResponse,
-  Unit,
-  UpdatePerformanceRequest
+  PerformanceResponse
 } from '.././types';
 
 import { orvalFetch } from '../../fetch-wrapper';
+
+/**
+ * 모든 공연 목록을 조회합니다.
+
+**권한: 누구나**
+ * @summary 모든 공연 조회
+ */
+export type getAllPerformancesResponse200 = {
+  data: PerformanceResponse[]
+  status: 200
+}
+    
+export type getAllPerformancesResponseSuccess = (getAllPerformancesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getAllPerformancesResponse = (getAllPerformancesResponseSuccess)
+
+export const getGetAllPerformancesUrl = () => {
+
+
+  
+
+  return `https://ticket-api.devhong.cc/api/performances`
+}
+
+export const getAllPerformances = async ( options?: RequestInit): Promise<getAllPerformancesResponse> => {
+  
+  return orvalFetch<getAllPerformancesResponse>(getGetAllPerformancesUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
 
 /**
  * ID로 특정 공연의 정보를 조회합니다.
@@ -58,202 +95,6 @@ export const getPerformance = async (id: number, options?: RequestInit): Promise
     method: 'GET'
     
     
-  }
-);}
-
-
-/**
- * 특정 공연의 정보를 수정합니다.
-
-**권한: ADMIN**
- * @summary 공연 정보 수정
- */
-export type updatePerformanceResponse200 = {
-  data: PerformanceResponse
-  status: 200
-}
-
-export type updatePerformanceResponse400 = {
-  data: ErrorResponse
-  status: 400
-}
-
-export type updatePerformanceResponse403 = {
-  data: ErrorResponse
-  status: 403
-}
-
-export type updatePerformanceResponse404 = {
-  data: ErrorResponse
-  status: 404
-}
-    
-export type updatePerformanceResponseSuccess = (updatePerformanceResponse200) & {
-  headers: Headers;
-};
-export type updatePerformanceResponseError = (updatePerformanceResponse400 | updatePerformanceResponse403 | updatePerformanceResponse404) & {
-  headers: Headers;
-};
-
-export type updatePerformanceResponse = (updatePerformanceResponseSuccess | updatePerformanceResponseError)
-
-export const getUpdatePerformanceUrl = (id: number,) => {
-
-
-  
-
-  return `https://ticket-api.devhong.cc/api/performances/${id}`
-}
-
-export const updatePerformance = async (id: number,
-    updatePerformanceRequest: UpdatePerformanceRequest, options?: RequestInit): Promise<updatePerformanceResponse> => {
-  
-  return orvalFetch<updatePerformanceResponse>(getUpdatePerformanceUrl(id),
-  {      
-    ...options,
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      updatePerformanceRequest,)
-  }
-);}
-
-
-/**
- * 특정 공연을 삭제합니다.
-
-**권한: ADMIN**
- * @summary 공연 삭제
- */
-export type deletePerformanceResponse204 = {
-  data: Unit
-  status: 204
-}
-
-export type deletePerformanceResponse403 = {
-  data: ErrorResponse
-  status: 403
-}
-
-export type deletePerformanceResponse404 = {
-  data: ErrorResponse
-  status: 404
-}
-    
-export type deletePerformanceResponseSuccess = (deletePerformanceResponse204) & {
-  headers: Headers;
-};
-export type deletePerformanceResponseError = (deletePerformanceResponse403 | deletePerformanceResponse404) & {
-  headers: Headers;
-};
-
-export type deletePerformanceResponse = (deletePerformanceResponseSuccess | deletePerformanceResponseError)
-
-export const getDeletePerformanceUrl = (id: number,) => {
-
-
-  
-
-  return `https://ticket-api.devhong.cc/api/performances/${id}`
-}
-
-export const deletePerformance = async (id: number, options?: RequestInit): Promise<deletePerformanceResponse> => {
-  
-  return orvalFetch<deletePerformanceResponse>(getDeletePerformanceUrl(id),
-  {      
-    ...options,
-    method: 'DELETE'
-    
-    
-  }
-);}
-
-
-/**
- * 모든 공연 목록을 조회합니다.
-
-**권한: 누구나**
- * @summary 모든 공연 조회
- */
-export type getAllPerformancesResponse200 = {
-  data: PerformanceResponse[]
-  status: 200
-}
-    
-export type getAllPerformancesResponseSuccess = (getAllPerformancesResponse200) & {
-  headers: Headers;
-};
-;
-
-export type getAllPerformancesResponse = (getAllPerformancesResponseSuccess)
-
-export const getGetAllPerformancesUrl = () => {
-
-
-  
-
-  return `https://ticket-api.devhong.cc/api/performances`
-}
-
-export const getAllPerformances = async ( options?: RequestInit): Promise<getAllPerformancesResponse> => {
-  
-  return orvalFetch<getAllPerformancesResponse>(getGetAllPerformancesUrl(),
-  {      
-    ...options,
-    method: 'GET'
-    
-    
-  }
-);}
-
-
-/**
- * 새로운 공연 정보를 생성합니다.
-
-**권한: ADMIN**
- * @summary 공연 생성
- */
-export type createPerformanceResponse201 = {
-  data: PerformanceResponse
-  status: 201
-}
-
-export type createPerformanceResponse400 = {
-  data: ErrorResponse
-  status: 400
-}
-
-export type createPerformanceResponse403 = {
-  data: ErrorResponse
-  status: 403
-}
-    
-export type createPerformanceResponseSuccess = (createPerformanceResponse201) & {
-  headers: Headers;
-};
-export type createPerformanceResponseError = (createPerformanceResponse400 | createPerformanceResponse403) & {
-  headers: Headers;
-};
-
-export type createPerformanceResponse = (createPerformanceResponseSuccess | createPerformanceResponseError)
-
-export const getCreatePerformanceUrl = () => {
-
-
-  
-
-  return `https://ticket-api.devhong.cc/api/performances`
-}
-
-export const createPerformance = async (createPerformanceRequest: CreatePerformanceRequest, options?: RequestInit): Promise<createPerformanceResponse> => {
-  
-  return orvalFetch<createPerformanceResponse>(getCreatePerformanceUrl(),
-  {      
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      createPerformanceRequest,)
   }
 );}
 

@@ -1,12 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
 import {
   createSchedule,
   deleteSchedule,
   getAllSchedules,
-  getSchedule,
+  getSchedule1,
   updateSchedule,
-} from "@/shared/api/orval/performance-schedule/performance-schedule";
+} from "@/shared/api/orval/admin-performance-schedule/admin-performance-schedule";
 import type {
   CreatePerformanceScheduleRequest,
   PerformanceScheduleResponse,
@@ -36,7 +35,7 @@ export const useGetPerformanceSchedule = (scheduleId: number) => {
   return useQuery({
     queryKey: ["performance-schedule", scheduleId],
     queryFn: async (): Promise<PerformanceScheduleResponse> => {
-      const response = await getSchedule(scheduleId);
+      const response = await getSchedule1(scheduleId);
       return response.data;
     },
     enabled: !!scheduleId,

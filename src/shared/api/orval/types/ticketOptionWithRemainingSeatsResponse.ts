@@ -3,15 +3,19 @@
  * Do not edit manually.
  * Smarter Store API
  * Smarter Store 백엔드 API 문서
+
+**관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
 
 /**
- * 등급별 잔여석 정보 DTO
+ * 등급별 잔여석 및 가격 정보 DTO
  */
 export interface TicketOptionWithRemainingSeatsResponse {
   /** 좌석 등급 */
   seatGrade: string;
+  /** 가격 */
+  price: number;
   /** 잔여석 수 */
   remainingSeats: number;
 }

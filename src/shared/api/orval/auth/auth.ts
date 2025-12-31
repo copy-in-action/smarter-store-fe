@@ -3,6 +3,8 @@
  * Do not edit manually.
  * Smarter Store API
  * Smarter Store 백엔드 API 문서
+
+**관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
 import type {
@@ -118,6 +120,8 @@ export const refresh = async (refreshTokenRequest: RefreshTokenRequest, options?
  * 사용자 세션을 종료하고 인증 쿠키를 삭제합니다.
 
 **권한: 누구나**
+
+**[Audit Log]** 이 작업은 감사 로그에 기록됩니다.
  * @summary 로그아웃
  */
 export type logoutResponse200 = {

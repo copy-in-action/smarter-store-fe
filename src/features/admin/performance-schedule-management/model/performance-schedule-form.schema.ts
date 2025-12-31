@@ -14,7 +14,7 @@ export const createPerformanceScheduleFormSchema = (
   const availableGrades = seatGrades.map((seat) => seat.seatGrade);
 
   // 폼 특화 스키마: 문자열 → 숫자 변환 및 추가 검증
-  return baseSchema.extend({
+  return baseSchema.safeExtend({
     /** 회차별 티켓 가격 옵션 목록 */
     ticketOptions: z
       .array(

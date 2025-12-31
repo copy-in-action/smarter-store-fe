@@ -5,7 +5,7 @@ import {
   getAllCompanies,
   getCompany,
   updateCompany,
-} from "@/shared/api/orval/company/company";
+} from "@/shared/api/orval/admin-company/admin-company";
 import type { CompanyRequest } from "@/shared/api/orval/types/companyRequest";
 import type { CompanyResponse } from "@/shared/api/orval/types/companyResponse";
 

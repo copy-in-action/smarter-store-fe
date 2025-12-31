@@ -1,6 +1,7 @@
 import { adminAuthMiddleware } from "@/shared/lib/middleware/adminAuth";
 import { authHeaderMiddleware } from "@/shared/lib/middleware/authHeader";
 import { chainMiddleware } from "@/shared/lib/middleware/chainMiddleware";
+import { deviceHeaderMiddleware } from "@/shared/lib/middleware/deviceHeader";
 
 /**
  * Next.js 16 미들웨어 프록시
@@ -9,6 +10,9 @@ import { chainMiddleware } from "@/shared/lib/middleware/chainMiddleware";
 export const proxy = chainMiddleware(
   // 인증 헤더 설정 미들웨어 (모든 경로)
   authHeaderMiddleware,
+
+  // 디바이스 헤더 설정 미들웨어 (모든 경로)
+  deviceHeaderMiddleware,
 
   // 관리자 인증 미들웨어 (/admin 경로만)
   adminAuthMiddleware,

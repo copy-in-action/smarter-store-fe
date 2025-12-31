@@ -3,218 +3,25 @@
  * Do not edit manually.
  * Smarter Store API
  * Smarter Store 백엔드 API 문서
+
+**관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
 import type {
-  CreateTicketingNoticeRequest,
-  TicketingNoticeGroupResponse,
-  TicketingNoticeResponse,
-  UpdateTicketingNoticeRequest
+  NoticeGroupResponse,
+  NoticeResponse
 } from '.././types';
 
 import { orvalFetch } from '../../fetch-wrapper';
 
 /**
- * 특정 안내사항의 상세 정보를 조회합니다.
-
-**권한: ADMIN**
- * @summary [관리자] 예매 안내사항 상세 조회
- */
-export type getNoticeByIdResponse200 = {
-  data: TicketingNoticeResponse
-  status: 200
-}
-    
-export type getNoticeByIdResponseSuccess = (getNoticeByIdResponse200) & {
-  headers: Headers;
-};
-;
-
-export type getNoticeByIdResponse = (getNoticeByIdResponseSuccess)
-
-export const getGetNoticeByIdUrl = (id: number,) => {
-
-
-  
-
-  return `https://ticket-api.devhong.cc/api/admin/ticketing-notices/${id}`
-}
-
-export const getNoticeById = async (id: number, options?: RequestInit): Promise<getNoticeByIdResponse> => {
-  
-  return orvalFetch<getNoticeByIdResponse>(getGetNoticeByIdUrl(id),
-  {      
-    ...options,
-    method: 'GET'
-    
-    
-  }
-);}
-
-
-/**
- * 기존 예매 안내사항을 수정합니다.
-
-**권한: ADMIN**
- * @summary [관리자] 예매 안내사항 수정
- */
-export type updateNoticeResponse200 = {
-  data: TicketingNoticeResponse
-  status: 200
-}
-    
-export type updateNoticeResponseSuccess = (updateNoticeResponse200) & {
-  headers: Headers;
-};
-;
-
-export type updateNoticeResponse = (updateNoticeResponseSuccess)
-
-export const getUpdateNoticeUrl = (id: number,) => {
-
-
-  
-
-  return `https://ticket-api.devhong.cc/api/admin/ticketing-notices/${id}`
-}
-
-export const updateNotice = async (id: number,
-    updateTicketingNoticeRequest: UpdateTicketingNoticeRequest, options?: RequestInit): Promise<updateNoticeResponse> => {
-  
-  return orvalFetch<updateNoticeResponse>(getUpdateNoticeUrl(id),
-  {      
-    ...options,
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      updateTicketingNoticeRequest,)
-  }
-);}
-
-
-/**
- * 예매 안내사항을 삭제합니다.
-
-**권한: ADMIN**
- * @summary [관리자] 예매 안내사항 삭제
- */
-export type deleteNoticeResponse200 = {
-  data: void
-  status: 200
-}
-    
-export type deleteNoticeResponseSuccess = (deleteNoticeResponse200) & {
-  headers: Headers;
-};
-;
-
-export type deleteNoticeResponse = (deleteNoticeResponseSuccess)
-
-export const getDeleteNoticeUrl = (id: number,) => {
-
-
-  
-
-  return `https://ticket-api.devhong.cc/api/admin/ticketing-notices/${id}`
-}
-
-export const deleteNotice = async (id: number, options?: RequestInit): Promise<deleteNoticeResponse> => {
-  
-  return orvalFetch<deleteNoticeResponse>(getDeleteNoticeUrl(id),
-  {      
-    ...options,
-    method: 'DELETE'
-    
-    
-  }
-);}
-
-
-/**
- * 비활성화된 항목을 포함한 전체 목록을 조회합니다.
-
-**권한: ADMIN**
- * @summary [관리자] 전체 예매 안내사항 목록 조회
- */
-export type getAllNoticesResponse200 = {
-  data: TicketingNoticeResponse[]
-  status: 200
-}
-    
-export type getAllNoticesResponseSuccess = (getAllNoticesResponse200) & {
-  headers: Headers;
-};
-;
-
-export type getAllNoticesResponse = (getAllNoticesResponseSuccess)
-
-export const getGetAllNoticesUrl = () => {
-
-
-  
-
-  return `https://ticket-api.devhong.cc/api/admin/ticketing-notices`
-}
-
-export const getAllNotices = async ( options?: RequestInit): Promise<getAllNoticesResponse> => {
-  
-  return orvalFetch<getAllNoticesResponse>(getGetAllNoticesUrl(),
-  {      
-    ...options,
-    method: 'GET'
-    
-    
-  }
-);}
-
-
-/**
- * 새로운 예매 안내사항을 생성합니다.
-
-**권한: ADMIN**
- * @summary [관리자] 예매 안내사항 생성
- */
-export type createNoticeResponse200 = {
-  data: TicketingNoticeResponse
-  status: 200
-}
-    
-export type createNoticeResponseSuccess = (createNoticeResponse200) & {
-  headers: Headers;
-};
-;
-
-export type createNoticeResponse = (createNoticeResponseSuccess)
-
-export const getCreateNoticeUrl = () => {
-
-
-  
-
-  return `https://ticket-api.devhong.cc/api/admin/ticketing-notices`
-}
-
-export const createNotice = async (createTicketingNoticeRequest: CreateTicketingNoticeRequest, options?: RequestInit): Promise<createNoticeResponse> => {
-  
-  return orvalFetch<createNoticeResponse>(getCreateNoticeUrl(),
-  {      
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      createTicketingNoticeRequest,)
-  }
-);}
-
-
-/**
- * 활성화된 모든 예매 안내사항을 정렬 순서대로 조회합니다.
+ * 활성화된 모든 공지사항을 정렬 순서대로 조회합니다.
 
 **권한: 누구나**
- * @summary 활성화된 예매 안내사항 목록 조회
+ * @summary 활성화된 공지사항 목록 조회
  */
 export type getActiveNoticesResponse200 = {
-  data: TicketingNoticeResponse[]
+  data: NoticeResponse[]
   status: 200
 }
     
@@ -230,7 +37,7 @@ export const getGetActiveNoticesUrl = () => {
 
   
 
-  return `https://ticket-api.devhong.cc/api/ticketing-notices`
+  return `https://ticket-api.devhong.cc/api/notices`
 }
 
 export const getActiveNotices = async ( options?: RequestInit): Promise<getActiveNoticesResponse> => {
@@ -246,13 +53,13 @@ export const getActiveNotices = async ( options?: RequestInit): Promise<getActiv
 
 
 /**
- * 활성화된 안내사항을 카테고리별로 그룹화하여 조회합니다.
+ * 활성화된 공지사항을 카테고리별로 그룹화하여 조회합니다.
 
 **권한: 누구나**
- * @summary 카테고리별 그룹화된 예매 안내사항 조회
+ * @summary 카테고리별 그룹화된 공지사항 조회
  */
 export type getActiveNoticesGroupedResponse200 = {
-  data: TicketingNoticeGroupResponse[]
+  data: NoticeGroupResponse[]
   status: 200
 }
     
@@ -268,7 +75,7 @@ export const getGetActiveNoticesGroupedUrl = () => {
 
   
 
-  return `https://ticket-api.devhong.cc/api/ticketing-notices/grouped`
+  return `https://ticket-api.devhong.cc/api/notices/grouped`
 }
 
 export const getActiveNoticesGrouped = async ( options?: RequestInit): Promise<getActiveNoticesGroupedResponse> => {
@@ -284,13 +91,13 @@ export const getActiveNoticesGrouped = async ( options?: RequestInit): Promise<g
 
 
 /**
- * 특정 카테고리의 활성화된 안내사항을 조회합니다.
+ * 특정 카테고리의 활성화된 공지사항을 조회합니다.
 
 **권한: 누구나**
- * @summary 카테고리별 예매 안내사항 조회
+ * @summary 카테고리별 공지사항 조회
  */
 export type getActiveNoticesByCategoryResponse200 = {
-  data: TicketingNoticeResponse[]
+  data: NoticeResponse[]
   status: 200
 }
     
@@ -301,15 +108,15 @@ export type getActiveNoticesByCategoryResponseSuccess = (getActiveNoticesByCateg
 
 export type getActiveNoticesByCategoryResponse = (getActiveNoticesByCategoryResponseSuccess)
 
-export const getGetActiveNoticesByCategoryUrl = (category: 'BOOKING_NOTICE' | 'BANK_TRANSFER' | 'TICKET_PICKUP' | 'MOBILE_TICKET' | 'REFUND' | 'CANCELLATION',) => {
+export const getGetActiveNoticesByCategoryUrl = (category: 'SYSTEM' | 'BOOKING_NOTICE' | 'EVENT',) => {
 
 
   
 
-  return `https://ticket-api.devhong.cc/api/ticketing-notices/category/${category}`
+  return `https://ticket-api.devhong.cc/api/notices/category/${category}`
 }
 
-export const getActiveNoticesByCategory = async (category: 'BOOKING_NOTICE' | 'BANK_TRANSFER' | 'TICKET_PICKUP' | 'MOBILE_TICKET' | 'REFUND' | 'CANCELLATION', options?: RequestInit): Promise<getActiveNoticesByCategoryResponse> => {
+export const getActiveNoticesByCategory = async (category: 'SYSTEM' | 'BOOKING_NOTICE' | 'EVENT', options?: RequestInit): Promise<getActiveNoticesByCategoryResponse> => {
   
   return orvalFetch<getActiveNoticesByCategoryResponse>(getGetActiveNoticesByCategoryUrl(category),
   {      

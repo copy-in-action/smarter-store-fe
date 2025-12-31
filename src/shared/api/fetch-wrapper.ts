@@ -3,6 +3,7 @@ import {
   dispatchAdminUnauthorizedEvent,
   dispatchUnauthorizedEvent,
 } from "../events/auth-events";
+import { getRefreshUrl } from "./orval/auth/auth";
 
 /**
  * 토큰 갱신 상태 관리
@@ -47,13 +48,19 @@ const refreshAccessToken = async (): Promise<string | null> => {
     try {
       console.log("🔄 토큰 갱신 시도...");
 
-      const response = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      // BFF API Route 호출 (상대 경로)
+      const response = await fetch(
+        process.env.NODE_ENV === "production"
+          ? getRefreshUrl()
+          : "/api/auth/refresh",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // httpOnly 쿠키 전송
         },
-        credentials: "include", // httpOnly 쿠키 전송
-      });
+      );
 
       if (!response.ok) {
         console.log("❌ 토큰 갱신 실패");
@@ -117,13 +124,51 @@ const handleResponseError = async (response: Response): Promise<never> => {
 };
 
 /**
- * Fetch Wrapper 함수
+ * 백엔드 URL을 환경에 맞게 변환 (클라이언트 전용)
+ * - 개발 환경: rewrites 사용 → 상대 경로로 변환
+ * - 프로덕션: CORS 방식 → 절대 URL 그대로 사용
+ *
+ * @param url - orval이 생성한 절대 URL
+ * @returns 환경에 맞는 URL
+ *
+ * @example
+ * // 개발 환경
+ * transformUrl('http://devhong.asuscomm.com:48080/api/auth/login')
+ * // → '/api/auth/login' (rewrites로 프록시)
+ *
+ * // 프로덕션
+ * transformUrl('https://ticket-api.devhong.cc/api/auth/login') - (CORS 직접 호출)
+ */
+const transformUrl = (url: string): string => {
+  // 이미 상대 경로면 그대로 반환
+  if (!url.startsWith("http")) {
+    return url;
+  }
+
+  // 프로덕션 환경: 절대 URL 그대로 사용 (CORS 방식)
+  if (process.env.NODE_ENV === "production") {
+    return url;
+  }
+
+  // 개발 환경: 절대 URL → 상대 경로 변환 (rewrites 프록시 사용)
+  // http://devhong.asuscomm.com:48080/api/auth/login → /api/auth/login
+  try {
+    const urlObj = new URL(url);
+    return urlObj.pathname + urlObj.search;
+  } catch {
+    // URL 파싱 실패 시 원본 반환
+    return url;
+  }
+};
+
+/**
+ * Fetch Wrapper 함수 (클라이언트 전용)
  * 인증 토큰 자동 추가, 토큰 갱신, 에러 처리, 응답 변환 등을 담당
  *
- * @param url - 요청 URL (절대 경로 또는 상대 경로)
+ * @param url - 요청 URL (orval이 생성한 절대 경로)
  * @param options - fetch 옵션
  * @param isRetry - 재시도 여부 (토큰 갱신 후 재시도 방지용)
- * @returns Promise<any> - 응답 데이터
+ * @returns Promise<T> - 응답 데이터
  */
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -132,8 +177,8 @@ export const apiClient = async <T = any>(
   options: RequestInit = {},
   isRetry = false,
 ): Promise<T> => {
-  // URL이 상대 경로면 기본 URL 추가
-  const fullUrl = url.startsWith("http") ? url : `${API_BASE_URL}${url}`;
+  // URL 변환: 절대 URL → 상대 경로 (rewrites로 프록시됨)
+  const fullUrl = transformUrl(url);
 
   // 기본 헤더 설정
   const defaultHeaders: HeadersInit = {

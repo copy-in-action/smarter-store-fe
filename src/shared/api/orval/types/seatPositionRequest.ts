@@ -3,6 +3,8 @@
  * Do not edit manually.
  * Smarter Store API
  * Smarter Store 백엔드 API 문서
+
+**관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
 
@@ -10,8 +12,14 @@
  * 좌석 위치
  */
 export interface SeatPositionRequest {
-  /** 행 번호 (0부터 시작) */
+  /**
+   * 행 번호 (1부터 시작)
+   * @minimum 1
+   */
   row: number;
-  /** 열 번호 (0부터 시작) */
+  /**
+   * 열 번호 (1부터 시작)
+   * @minimum 1
+   */
   col: number;
 }

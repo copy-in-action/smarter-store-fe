@@ -3,7 +3,6 @@
  * FSD 아키텍처에 따른 좌석 차트 라이브러리
  */
 
-export { default as BookingSeatChart } from "./components/BookingSeatChart";
 // Components
 export { default as SeatChart } from "./components/SeatChart";
 export { StaticSeatChart } from "./components/StaticSeatChart";

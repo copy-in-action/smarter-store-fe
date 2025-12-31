@@ -6,9 +6,11 @@
 import {
   createPerformance,
   deletePerformance,
+  updatePerformance,
+} from "@/shared/api/orval/admin-performance/admin-performance";
+import {
   getAllPerformances,
   getPerformance,
-  updatePerformance,
 } from "@/shared/api/orval/performance/performance";
 import type {
   CreatePerformanceRequest,
@@ -30,7 +32,9 @@ export const getPerformanceList = async (): Promise<PerformanceResponse[]> => {
  * @param id - 공연 ID
  * @returns 공연 정보
  */
-export const getPerformanceDetail = async (id: number): Promise<PerformanceResponse> => {
+export const getPerformanceDetail = async (
+  id: number,
+): Promise<PerformanceResponse> => {
   const response = await getPerformance(id);
   return response.data as PerformanceResponse;
 };
@@ -40,7 +44,9 @@ export const getPerformanceDetail = async (id: number): Promise<PerformanceRespo
  * @param performanceData - 공연 생성 요청 데이터
  * @returns 생성된 공연 정보
  */
-export const createNewPerformance = async (performanceData: CreatePerformanceRequest) => {
+export const createNewPerformance = async (
+  performanceData: CreatePerformanceRequest,
+) => {
   const response = await createPerformance(performanceData);
   return response.data;
 };
@@ -51,7 +57,10 @@ export const createNewPerformance = async (performanceData: CreatePerformanceReq
  * @param data - 공연 수정 요청 데이터
  * @returns 수정된 공연 정보
  */
-export const updateExistingPerformance = async (id: number, data: UpdatePerformanceRequest) => {
+export const updateExistingPerformance = async (
+  id: number,
+  data: UpdatePerformanceRequest,
+) => {
   const response = await updatePerformance(id, data);
   return response.data;
 };
