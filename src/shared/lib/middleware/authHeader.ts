@@ -8,6 +8,7 @@ import type { MiddlewareFunction } from "./chainMiddleware";
  */
 export const authHeaderMiddleware: MiddlewareFunction = (
   request: NextRequest,
+  response?: NextResponse,
 ) => {
   // /admin 경로는 제외 (관리자 인증은 별도 처리)
   if (request.nextUrl.pathname.startsWith("/admin")) {
@@ -18,10 +19,10 @@ export const authHeaderMiddleware: MiddlewareFunction = (
   const hasAuth = request.cookies.has("accessToken");
   const hasUser = request.cookies.has("refreshToken");
 
-  // 응답 생성 및 인증 상태 헤더 설정
-  const response = NextResponse.next();
-  response.headers.set("x-has-auth", hasAuth ? "true" : "false");
+  // 이전 응답이 있으면 사용, 없으면 새로 생성
+  const nextResponse = response || NextResponse.next();
+  nextResponse.headers.set("x-has-auth", hasAuth ? "true" : "false");
   // 리프래시 토킨이 함께 있는 경우 유저 로그인으로 설정
-  response.headers.set("x-auth-role", hasUser ? "ROLE_USER" : "");
-  return response;
+  nextResponse.headers.set("x-auth-role", hasUser ? "ROLE_USER" : "");
+  return nextResponse;
 };

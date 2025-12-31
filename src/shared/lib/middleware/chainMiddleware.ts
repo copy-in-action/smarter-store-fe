@@ -6,10 +6,12 @@ import { NextResponse } from "next/server";
  */
 export type MiddlewareFunction = (
   request: NextRequest,
+  response?: NextResponse,
 ) => Promise<NextResponse | void> | NextResponse | void;
 
 /**
  * 여러 미들웨어를 체인으로 연결합니다
+ * 이전 미들웨어의 response를 다음 미들웨어로 전달하여 누적 처리
  * @param middlewares - 연결할 미들웨어 함수들
  * @returns 체인으로 연결된 미들웨어 함수
  */
@@ -17,11 +19,11 @@ export function chainMiddleware(
   ...middlewares: MiddlewareFunction[]
 ): MiddlewareFunction {
   return async (request: NextRequest) => {
-    let response: NextResponse | undefined;
+    let currentResponse: NextResponse | undefined;
 
     for (const middleware of middlewares) {
       try {
-        const result = await middleware(request);
+        const result = await middleware(request, currentResponse);
 
         // 미들웨어가 NextResponse를 반환한 경우
         if (result instanceof NextResponse) {
@@ -33,8 +35,8 @@ export function chainMiddleware(
             return result;
           }
 
-          // 정상 응답인 경우 마지막 응답으로 저장
-          response = result;
+          // 정상 응답인 경우 다음 미들웨어로 전달할 response로 설정
+          currentResponse = result;
         }
       } catch (error) {
         console.error("[Middleware Chain] 미들웨어 실행 중 오류:", error);
@@ -46,7 +48,7 @@ export function chainMiddleware(
       }
     }
 
-    // 저장된 응답이 있으면 반환, 없으면 기본 NextResponse
-    return response || NextResponse.next();
+    // 최종 응답 반환, 없으면 기본 NextResponse
+    return currentResponse || NextResponse.next();
   };
 }
