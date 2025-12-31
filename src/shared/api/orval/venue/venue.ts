@@ -3,24 +3,60 @@
  * Do not edit manually.
  * Smarter Store API
  * Smarter Store 백엔드 API 문서
+
+**관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
 import type {
-  CreateVenueRequest,
   ErrorResponse,
-  SeatingChartRequest,
   SeatingChartResponse,
-  Unit,
-  UpdateVenueRequest,
   VenueResponse
 } from '.././types';
 
 import { orvalFetch } from '../../fetch-wrapper';
 
 /**
+ * 모든 공연장 목록을 조회합니다.
+
+**권한: 누구나**
+ * @summary 모든 공연장 조회
+ */
+export type getAllVenuesResponse200 = {
+  data: VenueResponse[]
+  status: 200
+}
+    
+export type getAllVenuesResponseSuccess = (getAllVenuesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getAllVenuesResponse = (getAllVenuesResponseSuccess)
+
+export const getGetAllVenuesUrl = () => {
+
+
+  
+
+  return `https://ticket-api.devhong.cc/api/venues`
+}
+
+export const getAllVenues = async ( options?: RequestInit): Promise<getAllVenuesResponse> => {
+  
+  return orvalFetch<getAllVenuesResponse>(getGetAllVenuesUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+/**
  * ID로 특정 공연장의 정보를 조회합니다.
 
-**권한: USER, ADMIN**
+**권한: 누구나**
  * @summary 단일 공연장 조회
  */
 export type getVenueResponse200 = {
@@ -63,116 +99,9 @@ export const getVenue = async (id: number, options?: RequestInit): Promise<getVe
 
 
 /**
- * 특정 공연장의 정보를 수정합니다.
-
-**권한: ADMIN**
- * @summary 공연장 정보 수정
- */
-export type updateVenueResponse200 = {
-  data: VenueResponse
-  status: 200
-}
-
-export type updateVenueResponse400 = {
-  data: ErrorResponse
-  status: 400
-}
-
-export type updateVenueResponse403 = {
-  data: ErrorResponse
-  status: 403
-}
-
-export type updateVenueResponse404 = {
-  data: ErrorResponse
-  status: 404
-}
-    
-export type updateVenueResponseSuccess = (updateVenueResponse200) & {
-  headers: Headers;
-};
-export type updateVenueResponseError = (updateVenueResponse400 | updateVenueResponse403 | updateVenueResponse404) & {
-  headers: Headers;
-};
-
-export type updateVenueResponse = (updateVenueResponseSuccess | updateVenueResponseError)
-
-export const getUpdateVenueUrl = (id: number,) => {
-
-
-  
-
-  return `https://ticket-api.devhong.cc/api/venues/${id}`
-}
-
-export const updateVenue = async (id: number,
-    updateVenueRequest: UpdateVenueRequest, options?: RequestInit): Promise<updateVenueResponse> => {
-  
-  return orvalFetch<updateVenueResponse>(getUpdateVenueUrl(id),
-  {      
-    ...options,
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      updateVenueRequest,)
-  }
-);}
-
-
-/**
- * 특정 공연장을 삭제합니다.
-
-**권한: ADMIN**
- * @summary 공연장 삭제
- */
-export type deleteVenueResponse204 = {
-  data: Unit
-  status: 204
-}
-
-export type deleteVenueResponse403 = {
-  data: ErrorResponse
-  status: 403
-}
-
-export type deleteVenueResponse404 = {
-  data: ErrorResponse
-  status: 404
-}
-    
-export type deleteVenueResponseSuccess = (deleteVenueResponse204) & {
-  headers: Headers;
-};
-export type deleteVenueResponseError = (deleteVenueResponse403 | deleteVenueResponse404) & {
-  headers: Headers;
-};
-
-export type deleteVenueResponse = (deleteVenueResponseSuccess | deleteVenueResponseError)
-
-export const getDeleteVenueUrl = (id: number,) => {
-
-
-  
-
-  return `https://ticket-api.devhong.cc/api/venues/${id}`
-}
-
-export const deleteVenue = async (id: number, options?: RequestInit): Promise<deleteVenueResponse> => {
-  
-  return orvalFetch<deleteVenueResponse>(getDeleteVenueUrl(id),
-  {      
-    ...options,
-    method: 'DELETE'
-    
-    
-  }
-);}
-
-
-/**
  * 공연장의 좌석 배치도 JSON을 조회합니다.
 
-**권한: 인증 불필요**
+**권한: 누구나**
  * @summary 좌석 배치도 조회
  */
 export type getSeatingChartResponse200 = {
@@ -210,149 +139,6 @@ export const getSeatingChart = async (id: number, options?: RequestInit): Promis
     method: 'GET'
     
     
-  }
-);}
-
-
-/**
- * 공연장의 좌석 배치도 JSON과 등급별 좌석 수를 함께 저장하거나 수정합니다.
-
-seatCapacities가 전달되면 기존 좌석 수를 삭제하고 새로 저장합니다.
-
-**권한: ADMIN**
- * @summary 좌석 배치도 저장/수정
- */
-export type updateSeatingChartResponse200 = {
-  data: SeatingChartResponse
-  status: 200
-}
-
-export type updateSeatingChartResponse403 = {
-  data: ErrorResponse
-  status: 403
-}
-
-export type updateSeatingChartResponse404 = {
-  data: ErrorResponse
-  status: 404
-}
-    
-export type updateSeatingChartResponseSuccess = (updateSeatingChartResponse200) & {
-  headers: Headers;
-};
-export type updateSeatingChartResponseError = (updateSeatingChartResponse403 | updateSeatingChartResponse404) & {
-  headers: Headers;
-};
-
-export type updateSeatingChartResponse = (updateSeatingChartResponseSuccess | updateSeatingChartResponseError)
-
-export const getUpdateSeatingChartUrl = (id: number,) => {
-
-
-  
-
-  return `https://ticket-api.devhong.cc/api/venues/${id}/seating-chart`
-}
-
-export const updateSeatingChart = async (id: number,
-    seatingChartRequest: SeatingChartRequest, options?: RequestInit): Promise<updateSeatingChartResponse> => {
-  
-  return orvalFetch<updateSeatingChartResponse>(getUpdateSeatingChartUrl(id),
-  {      
-    ...options,
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      seatingChartRequest,)
-  }
-);}
-
-
-/**
- * 모든 공연장 목록을 조회합니다.
-
-**권한: USER, ADMIN**
- * @summary 모든 공연장 조회
- */
-export type getAllVenuesResponse200 = {
-  data: VenueResponse[]
-  status: 200
-}
-    
-export type getAllVenuesResponseSuccess = (getAllVenuesResponse200) & {
-  headers: Headers;
-};
-;
-
-export type getAllVenuesResponse = (getAllVenuesResponseSuccess)
-
-export const getGetAllVenuesUrl = () => {
-
-
-  
-
-  return `https://ticket-api.devhong.cc/api/venues`
-}
-
-export const getAllVenues = async ( options?: RequestInit): Promise<getAllVenuesResponse> => {
-  
-  return orvalFetch<getAllVenuesResponse>(getGetAllVenuesUrl(),
-  {      
-    ...options,
-    method: 'GET'
-    
-    
-  }
-);}
-
-
-/**
- * 새로운 공연장 정보를 생성합니다.
-
-**권한: ADMIN**
- * @summary 공연장 생성
- */
-export type createVenueResponse201 = {
-  data: VenueResponse
-  status: 201
-}
-
-export type createVenueResponse400 = {
-  data: ErrorResponse
-  status: 400
-}
-
-export type createVenueResponse403 = {
-  data: ErrorResponse
-  status: 403
-}
-    
-export type createVenueResponseSuccess = (createVenueResponse201) & {
-  headers: Headers;
-};
-export type createVenueResponseError = (createVenueResponse400 | createVenueResponse403) & {
-  headers: Headers;
-};
-
-export type createVenueResponse = (createVenueResponseSuccess | createVenueResponseError)
-
-export const getCreateVenueUrl = () => {
-
-
-  
-
-  return `https://ticket-api.devhong.cc/api/venues`
-}
-
-export const createVenue = async (createVenueRequest: CreateVenueRequest, options?: RequestInit): Promise<createVenueResponse> => {
-  
-  return orvalFetch<createVenueResponse>(getCreateVenueUrl(),
-  {      
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      createVenueRequest,)
   }
 );}
 

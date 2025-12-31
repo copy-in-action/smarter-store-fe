@@ -3,6 +3,8 @@
  * Do not edit manually.
  * Smarter Store API
  * Smarter Store 백엔드 API 문서
+
+**관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
 

@@ -3,11 +3,13 @@
  * Do not edit manually.
  * Smarter Store API
  * Smarter Store 백엔드 API 문서
+
+**관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
 
 /**
- * 예매 상태
+ * 예매 상태 (PENDING: 결제 대기중, CONFIRMED: 예매 확정, CANCELLED: 예매 취소, EXPIRED: 시간 만료)
  */
 export type BookingResponseStatus = typeof BookingResponseStatus[keyof typeof BookingResponseStatus];
 

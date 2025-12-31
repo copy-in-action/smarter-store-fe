@@ -3,9 +3,10 @@
  * Do not edit manually.
  * Smarter Store API
  * Smarter Store 백엔드 API 문서
+
+**관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
-import type { SeatStatusResponse } from './seatStatusResponse';
 
 /**
  * 회차별 좌석 상태 목록 응답 DTO
@@ -13,6 +14,8 @@ import type { SeatStatusResponse } from './seatStatusResponse';
 export interface ScheduleSeatStatusResponse {
   /** 회차 ID */
   scheduleId: number;
-  /** 좌석 상태 목록 (PENDING, RESERVED만 포함) */
-  seats: SeatStatusResponse[];
+  /** 점유 중인 좌석 목록 (row,col 형식) */
+  pending: string[];
+  /** 예약 완료된 좌석 목록 (row,col 형식) */
+  reserved: string[];
 }
