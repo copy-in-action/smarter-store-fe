@@ -31,9 +31,9 @@ interface PerformanceScheduleContentProps {
   /** 모바일 여부 (시간 표시 포맷 차이를 위함) */
   isMobile?: boolean;
   /** 공연 회차 선택 핸들러 */
-  onSelectPerformanceSchedule: (performanceScheduleId: string) => void;
+  onSelectSchedule: (scheduleId: string) => void;
   /** 선택된 공연 회차 ID */
-  selectedPerformanceScheduleId: number;
+  selectedScheduleId: number;
 }
 
 /**
@@ -48,8 +48,8 @@ const PerformanceScheduleContent = ({
   isLoading,
   selectedDatePerformances,
   isMobile = false,
-  onSelectPerformanceSchedule,
-  selectedPerformanceScheduleId,
+  onSelectSchedule,
+  selectedScheduleId,
 }: PerformanceScheduleContentProps) => {
   return (
     <>
@@ -69,7 +69,8 @@ const PerformanceScheduleContent = ({
         <div className="py-4 text-center">로딩 중...</div>
       ) : (
         <RadioGroup
-          onValueChange={(value) => onSelectPerformanceSchedule(value)}
+          value={selectedScheduleId === 0 ? "" : selectedScheduleId.toString()}
+          onValueChange={(value) => onSelectSchedule(value)}
         >
           {selectedDatePerformances?.map((performanceSchedule) => (
             <FieldLabel
@@ -99,9 +100,7 @@ const PerformanceScheduleContent = ({
                 </FieldContent>
                 <RadioGroupItem
                   value={performanceSchedule.id.toString()}
-                  checked={
-                    selectedPerformanceScheduleId === performanceSchedule.id
-                  }
+                  checked={selectedScheduleId === performanceSchedule.id}
                   id={`performance${isMobile ? "" : "-desktop"}-${performanceSchedule.id}`}
                   hidden
                 />

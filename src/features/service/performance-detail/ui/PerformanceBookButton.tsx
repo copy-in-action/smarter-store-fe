@@ -8,7 +8,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/app/providers";
 import { PAGES } from "@/shared/constants";
-import { useIsMobile } from "@/shared/hooks/use-mobile";
+import { useIsMobile } from "@/shared/hooks/use-device";
 import { Button } from "@/shared/ui/button";
 import {
   Dialog,
@@ -53,6 +53,13 @@ const PerformanceBookButton = ({ performanceId }: Props) => {
     return today;
   }, []);
 
+  const [selectedScheduleId, setSelectedScheduleId] = useState(0);
+
+  // 공연회차 선택
+  const handleSelectSchedule = (_selectedScheduleId: string) => {
+    setSelectedScheduleId(Number(_selectedScheduleId));
+  };
+
   // isOpen이 true일 때만 공연 날짜들 페칭
   const { data: performanceDates, isLoading: isDatesLoading } =
     usePerformanceDates(performanceId, isOpen);
@@ -87,7 +94,6 @@ const PerformanceBookButton = ({ performanceId }: Props) => {
       return;
     }
     setIsOpen((pre) => !pre);
-    // TODO: 실제 예매 API연동 필요.
   };
 
   // 선택 가능한 날짜 설정: 스케줄이 있는 날짜만 허용
@@ -104,22 +110,18 @@ const PerformanceBookButton = ({ performanceId }: Props) => {
     };
   }, [availableDates]);
 
-  const [selectedPerformanceScheduleId, setSelectedPerformanceScheduleId] =
-    useState(0);
-
-  // 공연회차 선택
-  const handleSelectPerformanceSchedule = (
-    _selectedPerformanceScheduleId: string,
-  ) => {
-    setSelectedPerformanceScheduleId(Number(_selectedPerformanceScheduleId));
-  };
-
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     // 선택된 날짜가 변경될 때마다 선택된 회차 초기화
     if (isOpen) return;
-    setSelectedPerformanceScheduleId(0);
+    setSelectedScheduleId(0);
   }, [date, isOpen]);
+
+  const handleSubmitBooking = () => {
+    router.push(
+      `${PAGES.BOOKING.SEATING_CHART.path}?scheduleId=${selectedScheduleId}&performanceId=${performanceId}`,
+    );
+  };
 
   return (
     <>
@@ -150,8 +152,8 @@ const PerformanceBookButton = ({ performanceId }: Props) => {
                   isLoading={isLoading}
                   selectedDatePerformances={selectedDatePerformances}
                   isMobile={true}
-                  onSelectPerformanceSchedule={handleSelectPerformanceSchedule}
-                  selectedPerformanceScheduleId={selectedPerformanceScheduleId}
+                  onSelectSchedule={handleSelectSchedule}
+                  selectedScheduleId={selectedScheduleId}
                 />
               </div>
               <DrawerFooter>
@@ -159,7 +161,8 @@ const PerformanceBookButton = ({ performanceId }: Props) => {
                   className="w-full"
                   type="submit"
                   size={"lg"}
-                  disabled={selectedPerformanceScheduleId === 0}
+                  disabled={selectedScheduleId === 0}
+                  onClick={handleSubmitBooking}
                 >
                   예매하기
                 </Button>
@@ -192,8 +195,8 @@ const PerformanceBookButton = ({ performanceId }: Props) => {
                 isLoading={isLoading}
                 selectedDatePerformances={selectedDatePerformances}
                 isMobile={false}
-                onSelectPerformanceSchedule={handleSelectPerformanceSchedule}
-                selectedPerformanceScheduleId={selectedPerformanceScheduleId}
+                onSelectSchedule={handleSelectSchedule}
+                selectedScheduleId={selectedScheduleId}
               />
             </div>
             <DialogFooter>
@@ -201,7 +204,8 @@ const PerformanceBookButton = ({ performanceId }: Props) => {
                 className="w-full"
                 type="submit"
                 size={"lg"}
-                disabled={selectedPerformanceScheduleId === 0}
+                disabled={selectedScheduleId === 0}
+                onClick={handleSubmitBooking}
               >
                 예매하기
               </Button>
