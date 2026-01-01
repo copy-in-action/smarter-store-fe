@@ -14,20 +14,10 @@ export interface SeatPosition {
  * 좌석 타입 정의 (정적 데이터)
  */
 export interface SeatType {
-  /** 좌석 타입 라벨 */
-  label: BookingSeatResponseGrade;
   /** 가격 (선택적) */
   price?: number;
-}
-
-/**
- * 좌석 등급 설정 인터페이스 (정적 데이터)
- */
-export interface SeatGradeConfig {
-  /** 좌석 타입 키 (BookingSeatResponseGrade 값만 허용) */
-  seatTypeKey: BookingSeatResponseGrade;
-  /** 좌석 위치 문자열 ("3:" = 3행 전체, ":5" = 5열 전체, "3:5" = 3행 5열) */
-  position: string;
+  /** 좌석 위치 배열 ("3:" = 3행 전체, ":5" = 5열 전체, "3:5" = 3행 5열) */
+  positions: string[];
 }
 
 /**
@@ -40,8 +30,6 @@ export interface StaticSeatVenue {
   columns: number;
   /** 좌석 타입들 (BookingSeatResponseGrade 키만 허용, 선택적) */
   seatTypes: Partial<Record<BookingSeatResponseGrade, SeatType>>;
-  /** 좌석 등급 설정들 */
-  seatGrades: SeatGradeConfig[];
   /** 비활성화된 좌석들 (물리적으로 존재하지 않는 좌석) */
   disabledSeats: SeatPosition[];
   /** 행 간격 추가 위치들 */
@@ -82,7 +70,7 @@ export interface SeatChartConfig
 /**
  * 좌석 차트 모드
  */
-export type SeatChartMode = "edit" | "view";
+export type SeatChartMode = "edit" | "view" | "payment";
 
 /**
  * 좌석 상태 타입

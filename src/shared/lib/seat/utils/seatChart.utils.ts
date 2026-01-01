@@ -32,32 +32,54 @@ export const getSeatType = (
   col: number,
   config: SeatChartConfig,
 ): BookingSeatResponseGrade => {
-  // seatGrades 설정을 확인
-  for (const grade of config.seatGrades || []) {
-    const [rowPart, colPart] = grade.position.split(":");
+  // 각 좌석 타입의 positions를 확인 (구체적인 것부터 확인)
+  for (const [seatTypeKey, seatType] of Object.entries(config.seatTypes)) {
+    if (!seatType || !seatType.positions) continue;
 
-    // "3:" 형태 - 3행 전체 (사용자 입력은 1부터 시작하므로 -1)
-    if (rowPart && !colPart && Number(rowPart) - 1 === row) {
-      return grade.seatTypeKey;
-    }
+    for (const position of seatType.positions) {
+      const [rowPart, colPart] = position.split(":");
 
-    // ":5" 형태 - 5열 전체 (사용자 입력은 1부터 시작하므로 -1)
-    if (!rowPart && colPart && Number(colPart) - 1 === col) {
-      return grade.seatTypeKey;
-    }
-
-    // "3:5" 형태 - 3행 5열 (사용자 입력은 1부터 시작하므로 -1)
-    if (
-      rowPart &&
-      colPart &&
-      Number(rowPart) - 1 === row &&
-      Number(colPart) - 1 === col
-    ) {
-      return grade.seatTypeKey;
+      // "3:5" 형태 - 3행 5열 (가장 구체적이므로 우선 확인)
+      if (
+        rowPart &&
+        colPart &&
+        Number(rowPart) - 1 === row &&
+        Number(colPart) - 1 === col
+      ) {
+        return seatTypeKey as BookingSeatResponseGrade;
+      }
     }
   }
 
-  // 기본값으로 좌석타입의 마지막 인덱스 반환
+  // 행 전체 매칭 확인
+  for (const [seatTypeKey, seatType] of Object.entries(config.seatTypes)) {
+    if (!seatType || !seatType.positions) continue;
+
+    for (const position of seatType.positions) {
+      const [rowPart, colPart] = position.split(":");
+
+      // "3:" 형태 - 3행 전체
+      if (rowPart && !colPart && Number(rowPart) - 1 === row) {
+        return seatTypeKey as BookingSeatResponseGrade;
+      }
+    }
+  }
+
+  // 열 전체 매칭 확인
+  for (const [seatTypeKey, seatType] of Object.entries(config.seatTypes)) {
+    if (!seatType || !seatType.positions) continue;
+
+    for (const position of seatType.positions) {
+      const [rowPart, colPart] = position.split(":");
+
+      // ":5" 형태 - 5열 전체
+      if (!rowPart && colPart && Number(colPart) - 1 === col) {
+        return seatTypeKey as BookingSeatResponseGrade;
+      }
+    }
+  }
+
+  // 기본값: 마지막 좌석 타입 반환
   const seatTypeKeys = Object.keys(config.seatTypes);
   return (
     (seatTypeKeys[seatTypeKeys.length - 1] as BookingSeatResponseGrade) || "B"

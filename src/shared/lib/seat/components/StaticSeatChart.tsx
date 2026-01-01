@@ -19,7 +19,6 @@ import { Label } from "@/shared/ui/label";
 import { Textarea } from "@/shared/ui/textarea";
 import type {
   SeatChartConfig,
-  SeatGradeConfig,
   StaticSeatVenue,
 } from "../types/seatLayout.types";
 import { extractSeatGradeInfo } from "../utils/seatConverters";
@@ -49,7 +48,6 @@ export function StaticSeatChart({
     rows: initialData?.rows || 10,
     columns: initialData?.columns || 20,
     seatTypes: initialData?.seatTypes || {},
-    seatGrades: initialData?.seatGrades || [],
     disabledSeats: initialData?.disabledSeats || [],
     rowSpacers: initialData?.rowSpacers || [],
     columnSpacers: initialData?.columnSpacers || [],
@@ -95,7 +93,7 @@ export function StaticSeatChart({
       seatTypes: {
         ...formData.seatTypes,
         [newGrade]: {
-          label: newGrade,
+          positions: [],
         },
       },
     });
@@ -108,9 +106,6 @@ export function StaticSeatChart({
     const { [keyToRemove]: removed, ...remaining } = formData.seatTypes;
     updateFormData({
       seatTypes: remaining,
-      seatGrades: formData.seatGrades.filter(
-        (grade) => grade.seatTypeKey !== keyToRemove,
-      ),
     });
   };
 
@@ -118,65 +113,92 @@ export function StaticSeatChart({
    * 좌석 타입 라벨 변경 (BookingSeatResponseGrade로 제한)
    */
   const updateSeatTypeLabel = (
-    key: BookingSeatResponseGrade,
-    label: BookingSeatResponseGrade,
+    oldKey: BookingSeatResponseGrade,
+    newKey: BookingSeatResponseGrade,
   ) => {
+    const { [oldKey]: oldValue, ...rest } = formData.seatTypes;
     updateFormData({
       seatTypes: {
-        ...formData.seatTypes,
-        [key]: { ...formData.seatTypes[key], label },
+        ...rest,
+        [newKey]: oldValue || { positions: [] },
       },
     });
   };
 
   /**
-   * 좌석 등급 설정 추가
+   * 특정 좌석 타입에 position 추가
    */
-  const addSeatGrade = () => {
-    const firstSeatTypeKey = Object.keys(
-      formData.seatTypes,
-    )[0] as BookingSeatResponseGrade;
-    if (!firstSeatTypeKey) return;
+  const addPosition = (seatTypeKey: BookingSeatResponseGrade) => {
+    const seatType = formData.seatTypes[seatTypeKey];
+    if (!seatType) return;
 
     updateFormData({
-      seatGrades: [
-        ...formData.seatGrades,
-        { seatTypeKey: firstSeatTypeKey, position: "1:" },
-      ],
+      seatTypes: {
+        ...formData.seatTypes,
+        [seatTypeKey]: {
+          ...seatType,
+          positions: [...seatType.positions, "1:"],
+        },
+      },
     });
   };
 
   /**
-   * 좌석 등급 설정 삭제
+   * 특정 좌석 타입의 position 삭제
    */
-  const removeSeatGrade = (index: number) => {
-    updateFormData({
-      seatGrades: formData.seatGrades.filter((_, i) => i !== index),
-    });
-  };
-
-  /**
-   * 좌석 등급 설정 업데이트
-   */
-  const updateSeatGrade = (
-    index: number,
-    field: keyof SeatGradeConfig,
-    value: string | BookingSeatResponseGrade,
+  const removePosition = (
+    seatTypeKey: BookingSeatResponseGrade,
+    positionIndex: number,
   ) => {
-    const updated = [...formData.seatGrades];
-    updated[index] = { ...updated[index], [field]: value };
-    updateFormData({ seatGrades: updated });
+    const seatType = formData.seatTypes[seatTypeKey];
+    if (!seatType) return;
+
+    updateFormData({
+      seatTypes: {
+        ...formData.seatTypes,
+        [seatTypeKey]: {
+          ...seatType,
+          positions: seatType.positions.filter((_, i) => i !== positionIndex),
+        },
+      },
+    });
+  };
+
+  /**
+   * 특정 좌석 타입의 position 업데이트
+   */
+  const updatePosition = (
+    seatTypeKey: BookingSeatResponseGrade,
+    positionIndex: number,
+    value: string,
+  ) => {
+    const seatType = formData.seatTypes[seatTypeKey];
+    if (!seatType) return;
+
+    const updatedPositions = [...seatType.positions];
+    updatedPositions[positionIndex] = value;
+
+    updateFormData({
+      seatTypes: {
+        ...formData.seatTypes,
+        [seatTypeKey]: {
+          ...seatType,
+          positions: updatedPositions,
+        },
+      },
+    });
   };
 
   /**
    * 유효성 검사
    */
   const isValid = () => {
-    return (
-      formData.rows > 0 &&
-      formData.columns > 0 &&
-      Object.keys(formData.seatTypes).length > 0 &&
-      formData.seatGrades.length > 0
+    if (formData.rows <= 0 || formData.columns <= 0) return false;
+    if (Object.keys(formData.seatTypes).length === 0) return false;
+
+    // 모든 좌석 타입이 최소 하나의 position을 가지고 있는지 확인
+    return Object.values(formData.seatTypes).every(
+      (seatType) => seatType && seatType.positions.length > 0,
     );
   };
 
@@ -306,7 +328,7 @@ export function StaticSeatChart({
       ]),
     ) as Partial<Record<
       BookingSeatResponseGrade,
-      { label: BookingSeatResponseGrade; price: number }
+      { price: number; positions: string[] }
     >>;
 
     return {
@@ -326,7 +348,7 @@ export function StaticSeatChart({
       <div className="col-span-2">
         <Accordion
           type="multiple"
-          defaultValue={["basic", "seatTypes", "seatGrades"]}
+          defaultValue={["basic", "seatTypes"]}
           className="space-y-4"
         >
           {/* 기본 설정 */}
@@ -390,122 +412,97 @@ export function StaticSeatChart({
                   </Button>
                 </div>
                 {Object.entries(formData.seatTypes).map(([key, seatType]) => (
-                  <div key={key} className="flex items-center gap-3">
-                    <div className="flex-1">
-                      <Label htmlFor={`seatType-${key}`}>좌석 등급</Label>
-                      <select
-                        id={`seatType-${key}`}
-                        value={seatType.label}
-                        onChange={(e) =>
-                          updateSeatTypeLabel(
-                            key as BookingSeatResponseGrade,
-                            e.target.value as BookingSeatResponseGrade,
-                          )
+                  <div key={key} className="p-4 border border-gray-200 rounded-lg">
+                    {/* 좌석 타입 헤더 */}
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="flex-1">
+                        <Label htmlFor={`seatType-${key}`}>좌석 등급</Label>
+                        <select
+                          id={`seatType-${key}`}
+                          value={key}
+                          onChange={(e) =>
+                            updateSeatTypeLabel(
+                              key as BookingSeatResponseGrade,
+                              e.target.value as BookingSeatResponseGrade,
+                            )
+                          }
+                          className="w-full p-2 border border-gray-300 rounded-md"
+                        >
+                          <option value="VIP">VIP석</option>
+                          <option value="R">R석</option>
+                          <option value="S">S석</option>
+                          <option value="A">A석</option>
+                          <option value="B">B석</option>
+                        </select>
+                      </div>
+                      <Button
+                        onClick={() =>
+                          removeSeatType(key as BookingSeatResponseGrade)
                         }
-                        className="w-full p-2 border border-gray-300 rounded-md"
+                        variant="outline"
+                        size="sm"
+                        className="mt-6"
                       >
-                        <option value="VIP">VIP석</option>
-                        <option value="R">R석</option>
-                        <option value="S">S석</option>
-                        <option value="A">A석</option>
-                        <option value="B">B석</option>
-                      </select>
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     </div>
-                    <Button
-                      onClick={() =>
-                        removeSeatType(key as BookingSeatResponseGrade)
-                      }
-                      variant="outline"
-                      size="sm"
-                      className="mt-6"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
+
+                    {/* Positions 관리 */}
+                    <div className="pl-4 border-l-2 border-gray-200">
+                      <div className="flex items-center justify-between mb-2">
+                        <Label className="text-sm text-gray-600">
+                          좌석 위치 (예: "3:" or ":5" or "3:5")
+                        </Label>
+                        <Button
+                          onClick={() => addPosition(key as BookingSeatResponseGrade)}
+                          size="sm"
+                          variant="ghost"
+                        >
+                          <Plus className="w-3 h-3 mr-1" />
+                          위치 추가
+                        </Button>
+                      </div>
+                      <div className="space-y-2">
+                        {seatType.positions.map((position, posIdx) => (
+                          <div key={posIdx} className="flex items-center gap-2">
+                            <Input
+                              value={position}
+                              onChange={(e) =>
+                                updatePosition(
+                                  key as BookingSeatResponseGrade,
+                                  posIdx,
+                                  e.target.value,
+                                )
+                              }
+                              placeholder="1:, :5, 3:5 등"
+                              className="flex-1"
+                            />
+                            <Button
+                              onClick={() =>
+                                removePosition(
+                                  key as BookingSeatResponseGrade,
+                                  posIdx,
+                                )
+                              }
+                              variant="ghost"
+                              size="sm"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        ))}
+                        {seatType.positions.length === 0 && (
+                          <p className="py-2 text-xs text-center text-gray-400">
+                            위치를 추가해주세요
+                          </p>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 ))}
                 {Object.keys(formData.seatTypes).length === 0 && (
                   <p className="py-4 text-center text-gray-500">
                     좌석 타입을 추가해주세요
-                  </p>
-                )}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-
-          {/* 좌석 등급 설정 */}
-          <AccordionItem
-            value="seatGrades"
-            className="bg-white border border-gray-200 rounded-lg"
-          >
-            <AccordionTrigger className="px-6 py-4 text-lg font-semibold text-gray-900">
-              좌석 등급 설정
-            </AccordionTrigger>
-            <AccordionContent className="px-6 pb-6">
-              <div className="space-y-3">
-                <div className="flex justify-end">
-                  <Button
-                    onClick={addSeatGrade}
-                    size="sm"
-                    disabled={Object.keys(formData.seatTypes).length === 0}
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    등급 추가
-                  </Button>
-                </div>
-                {formData.seatGrades.map((grade, index) => (
-                  <div
-                    key={`${grade.seatTypeKey}-${index}`}
-                    className="flex items-center gap-3"
-                  >
-                    <div className="flex-1">
-                      <Label htmlFor={`seatType-${index}`}>좌석 타입</Label>
-                      <select
-                        id={`seatType-${index}`}
-                        value={grade.seatTypeKey}
-                        onChange={(e) =>
-                          updateSeatGrade(
-                            index,
-                            "seatTypeKey",
-                            e.target.value as BookingSeatResponseGrade,
-                          )
-                        }
-                        className="w-full p-2 border border-gray-300 rounded-md"
-                      >
-                        {Object.entries(formData.seatTypes).map(
-                          ([key, seatType]) => (
-                            <option key={key} value={key}>
-                              {seatType.label}
-                            </option>
-                          ),
-                        )}
-                      </select>
-                    </div>
-                    <div className="flex-1">
-                      <Label htmlFor={`position-${index}`}>
-                        위치 (예: "3:" or ":5")
-                      </Label>
-                      <Input
-                        id={`position-${index}`}
-                        value={grade.position}
-                        onChange={(e) =>
-                          updateSeatGrade(index, "position", e.target.value)
-                        }
-                        placeholder="1:, :5, 3:5 등"
-                      />
-                    </div>
-                    <Button
-                      onClick={() => removeSeatGrade(index)}
-                      variant="outline"
-                      size="sm"
-                      className="mt-6"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                ))}
-                {formData.seatGrades.length === 0 && (
-                  <p className="py-4 text-center text-gray-500">
-                    좌석 등급을 설정해주세요
                   </p>
                 )}
               </div>
@@ -727,12 +724,11 @@ export function StaticSeatChart({
             </p>
           </CardHeader>
           <CardContent>
-            {Object.keys(formData.seatTypes).length > 0 &&
-            formData.seatGrades.length > 0 ? (
+            {isValid() ? (
               <SeatChart config={createPreviewConfig()} />
             ) : (
               <div className="py-8 text-center text-gray-500">
-                <p>좌석 타입과 등급을 설정하면</p>
+                <p>좌석 타입과 위치를 설정하면</p>
                 <p>미리보기가 표시됩니다</p>
               </div>
             )}

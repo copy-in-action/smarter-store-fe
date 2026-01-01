@@ -140,6 +140,8 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
         touchHandled = true;
 
         if (!onSeatClick) return;
+        // payment 모드에서는 클릭 불가
+        if (config.mode === "payment") return;
         if (isDisabled || isReserved || isPending) return;
         onSeatClick(rowIndex, colIndex);
       };
@@ -154,6 +156,8 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
         e.preventDefault();
         e.stopPropagation();
         if (!onSeatClick) return;
+        // payment 모드에서는 클릭 불가
+        if (config.mode === "payment") return;
         if (isDisabled || isReserved || isPending) return;
         onSeatClick(rowIndex, colIndex);
       };
@@ -175,12 +179,15 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
         setHoveredSeat(null);
       };
 
+      const isClickDisabled =
+        isDisabled || isReserved || isPending || config.mode === "payment";
+
       seats.push(
         <button
           type="button"
           key={`${rowIndex}-${colIndex}`}
           className={`relative w-8 h-8 flex items-center justify-center rounded-md border text-xs font-medium touch-manipulation select-none focus:outline-none focus:ring-2 focus:ring-blue-300 ${
-            isDisabled || isReserved || isPending
+            isClickDisabled
               ? "cursor-not-allowed opacity-60"
               : "transition-transform duration-100 active:scale-90 md:hover:scale-105"
           }`}
@@ -195,7 +202,7 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
           onTouchEnd={handleTouchEnd}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          disabled={isDisabled || isReserved || isPending}
+          disabled={isClickDisabled}
         >
           {isDisabled ? "" : colIndex + 1}
         </button>,
@@ -252,7 +259,7 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
         <div>
           <h4 className="mb-2 text-sm font-semibold">좌석 등급</h4>
           <div className="flex flex-wrap gap-6 text-sm">
-            {Object.entries(config.seatTypes).map(([key, seatType], index) => {
+            {Object.keys(config.seatTypes).map((key, index) => {
               const seatColor =
                 PRESET_COLORS[index]?.value || PRESET_COLORS[0].value;
               return (
@@ -264,7 +271,7 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
                       borderColor: seatColor,
                     }}
                   ></div>
-                  <span>{seatType.label}</span>
+                  <span>{key}</span>
                 </div>
               );
             })}
@@ -339,7 +346,7 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
         >
           {[
             `좌석: ${hoveredSeat.row + 1}행 ${hoveredSeat.col + 1}열`,
-            `타입: ${config.seatTypes[getSeatType(hoveredSeat.row, hoveredSeat.col, config)]?.label || "기본"}`,
+            `타입: ${getSeatType(hoveredSeat.row, hoveredSeat.col, config) || "기본"}`,
             `가격: ${(config.seatTypes[getSeatType(hoveredSeat.row, hoveredSeat.col, config)]?.price || 0).toLocaleString()}원`,
             `상태: ${(() => {
               if (

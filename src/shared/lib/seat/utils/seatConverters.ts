@@ -22,9 +22,9 @@ export function extractSeatGradeInfo(
   > = {};
 
   // 모든 좌석 타입을 우선 초기화 (좌석 수 0으로)
-  Object.entries(staticSeatVenue.seatTypes).forEach(([seatGrade, seatType]) => {
+  Object.entries(staticSeatVenue.seatTypes).forEach(([seatGrade]) => {
     gradeInfo[seatGrade] = {
-      gradeName: seatType.label,
+      gradeName: seatGrade as BookingSeatResponseGrade,
       capacity: 0,
     };
   });
@@ -68,38 +68,50 @@ function getSeatGradeKey(
   col: number,
   step1Data: StaticSeatVenue,
 ): string {
-  // seatGrades 설정을 확인 (구체적인 것부터 확인)
-  for (const grade of step1Data.seatGrades) {
-    const [rowPart, colPart] = grade.position.split(":");
+  // 각 좌석 타입의 positions를 확인 (구체적인 것부터 확인)
+  for (const [seatTypeKey, seatType] of Object.entries(step1Data.seatTypes)) {
+    if (!seatType || !seatType.positions) continue;
 
-    // "3:5" 형태 - 3행 5열 (가장 구체적이므로 우선 확인)
-    if (
-      rowPart &&
-      colPart &&
-      Number(rowPart) - 1 === row &&
-      Number(colPart) - 1 === col
-    ) {
-      return grade.seatTypeKey;
+    for (const position of seatType.positions) {
+      const [rowPart, colPart] = position.split(":");
+
+      // "3:5" 형태 - 3행 5열 (가장 구체적이므로 우선 확인)
+      if (
+        rowPart &&
+        colPart &&
+        Number(rowPart) - 1 === row &&
+        Number(colPart) - 1 === col
+      ) {
+        return seatTypeKey;
+      }
     }
   }
 
   // 행 전체 매칭 확인
-  for (const grade of step1Data.seatGrades) {
-    const [rowPart, colPart] = grade.position.split(":");
+  for (const [seatTypeKey, seatType] of Object.entries(step1Data.seatTypes)) {
+    if (!seatType || !seatType.positions) continue;
 
-    // "3:" 형태 - 3행 전체
-    if (rowPart && !colPart && Number(rowPart) - 1 === row) {
-      return grade.seatTypeKey;
+    for (const position of seatType.positions) {
+      const [rowPart, colPart] = position.split(":");
+
+      // "3:" 형태 - 3행 전체
+      if (rowPart && !colPart && Number(rowPart) - 1 === row) {
+        return seatTypeKey;
+      }
     }
   }
 
   // 열 전체 매칭 확인
-  for (const grade of step1Data.seatGrades) {
-    const [rowPart, colPart] = grade.position.split(":");
+  for (const [seatTypeKey, seatType] of Object.entries(step1Data.seatTypes)) {
+    if (!seatType || !seatType.positions) continue;
 
-    // ":5" 형태 - 5열 전체
-    if (!rowPart && colPart && Number(colPart) - 1 === col) {
-      return grade.seatTypeKey;
+    for (const position of seatType.positions) {
+      const [rowPart, colPart] = position.split(":");
+
+      // ":5" 형태 - 5열 전체
+      if (!rowPart && colPart && Number(colPart) - 1 === col) {
+        return seatTypeKey;
+      }
     }
   }
 
@@ -124,8 +136,7 @@ export function restoreStaticSeatVenue(
   if (
     !jsonData.rows ||
     !jsonData.columns ||
-    !jsonData.seatTypes ||
-    !jsonData.seatGrades
+    !jsonData.seatTypes
   ) {
     throw new Error("Invalid StaticSeatVenue: Required fields are missing");
   }
@@ -156,7 +167,6 @@ export function restoreStaticSeatVenue(
     rows: jsonData.rows,
     columns: jsonData.columns,
     seatTypes: jsonData.seatTypes,
-    seatGrades: jsonData.seatGrades,
     disabledSeats: jsonData.disabledSeats || [],
     rowSpacers: jsonData.rowSpacers || [],
     columnSpacers: jsonData.columnSpacers || [],
