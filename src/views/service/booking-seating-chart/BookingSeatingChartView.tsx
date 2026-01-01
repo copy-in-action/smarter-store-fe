@@ -16,6 +16,7 @@ import type {
 } from "@/shared/api/orval/types";
 import { getSeatType, SeatChart } from "@/shared/lib/seat";
 import { Button } from "@/shared/ui/button";
+import { Spinner } from "@/shared/ui/spinner";
 
 /**
  * BookingSeatingChartView Props
@@ -78,35 +79,47 @@ const BookingSeatingChartView = ({
     return selectedSeats;
   }, [seatChartConfig]);
 
-  if (seatChartConfig == null) {
-    return <div>Loading...</div>;
-  }
   return (
     <section className="wrapper">
       <h1 className="my-4 text-lg font-bold">
         {performance.title}
         {/* TODO: 구현필요 */}
-        <Button className="ms-4" variant={"outline"}>
+        <Button
+          className="ms-4"
+          variant={"outline"}
+          disabled={seatChartConfig == null}
+        >
           일정변경
         </Button>
       </h1>
       <div className="flex flex-col gap-6 lg:flex-row">
-        <div className="relative overflow-auto grow">
-          <SeatChart
-            config={seatChartConfig}
-            onSeatClick={toggleSeatSelection}
-          />
-          <div className="absolute top-3 end-3">
-            <SeatGradePricePopover seatGradeInfo={seatGradeInfo} />
+        {seatChartConfig == null ? (
+          <div className="flex items-center justify-center w-full h-96">
+            <div>
+              <Spinner className="mx-auto mb-4 text-blue-500 size-12" />
+              좌석 정보를 불러오는 중입니다...
+            </div>
           </div>
-        </div>
-        <div className="md:w-80 md:min-w-80">
-          <SelectSeatInfo
-            userSelectedSeats={userSelectedSeats}
-            onClearSelection={clearSelection}
-            onToggleSeatSelection={toggleSeatSelection}
-          />
-        </div>
+        ) : (
+          <>
+            <div className="relative overflow-auto grow">
+              <SeatChart
+                config={seatChartConfig}
+                onSeatClick={toggleSeatSelection}
+              />
+              <div className="absolute top-3 end-3">
+                <SeatGradePricePopover seatGradeInfo={seatGradeInfo} />
+              </div>
+            </div>
+            <div className="md:w-80 md:min-w-80">
+              <SelectSeatInfo
+                userSelectedSeats={userSelectedSeats}
+                onClearSelection={clearSelection}
+                onToggleSeatSelection={toggleSeatSelection}
+              />
+            </div>
+          </>
+        )}
       </div>
     </section>
   );
