@@ -6,8 +6,6 @@
 // Components
 export { default as SeatChart } from "./components/SeatChart";
 export { StaticSeatChart } from "./components/StaticSeatChart";
-export { Step2PriceConfig } from "./components/Step2PriceConfig";
-export { Step3FinalView } from "./components/Step3FinalView";
 // Constants
 export { PRESET_COLORS } from "./constants/seatChart.constants";
 // Hooks
@@ -17,7 +15,6 @@ export type {
   BookingStatus,
   SeatChartConfig,
   SeatChartMode,
-  SeatGradeConfig,
   SeatPosition,
   SeatStatus,
   SeatType,

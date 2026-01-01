@@ -9,7 +9,10 @@ import {
   SelectSeatInfo,
   useBookingSeatSelection,
 } from "@/features/service/booking-seating-chart";
-import type { UserSelectedSeat } from "@/features/service/booking-seating-chart/model/booking-seating-chart.types";
+import type {
+  SeatGradeInfo,
+  UserSelectedSeat,
+} from "@/features/service/booking-seating-chart/model/booking-seating-chart.types";
 import type {
   BookingSeatResponseGrade,
   PerformanceResponse,
@@ -40,9 +43,9 @@ const BookingSeatingChartView = ({
    */
   const seatGradeInfo = useMemo(() => {
     const seatTypes = Object.entries(seatChartConfig?.seatTypes || {});
-    const seatGradeInfo: { label: string; price: number }[] = [];
-    for (const [_, value] of seatTypes) {
-      seatGradeInfo.push({ label: value.label, price: value.price || 0 });
+    const seatGradeInfo: SeatGradeInfo[] = [];
+    for (const [key, value] of seatTypes) {
+      seatGradeInfo.push({ label: key, price: value.price || 0 });
     }
     return seatGradeInfo;
   }, [seatChartConfig]);
@@ -58,8 +61,8 @@ const BookingSeatingChartView = ({
     }
     const seatTypes = Object.entries(seatChartConfig?.seatTypes || {});
     const seatGradeInfo: Partial<Record<BookingSeatResponseGrade, number>> = {};
-    for (const [_, value] of seatTypes) {
-      seatGradeInfo[value.label] = value.price;
+    for (const [key, value] of seatTypes) {
+      seatGradeInfo[key as BookingSeatResponseGrade] = value.price;
     }
 
     seatChartConfig.selectedSeats.forEach((seat) => {
@@ -68,7 +71,7 @@ const BookingSeatingChartView = ({
       selectedSeats.push({
         row: seat.row,
         col: seat.col,
-        grade: seatChartConfig.seatTypes[seatType]?.label || "Unknown",
+        grade: seatType || "Unknown",
         price: seatChartConfig.seatTypes[seatType]?.price || 0,
       });
     });

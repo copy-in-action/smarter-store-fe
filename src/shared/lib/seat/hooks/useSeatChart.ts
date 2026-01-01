@@ -57,9 +57,9 @@ export function useSeatChart(venueId: number, scheduleId?: number) {
         const schedule =
           (await scheduleResponse.json()) as AvailableScheduleResponse;
 
-        Object.entries(seatingChart.seatTypes).forEach(([type, info]) => {
+        Object.entries(seatingChart.seatTypes).forEach(([type]) => {
           const findOption = schedule.ticketOptions.find(
-            (option) => option.seatGrade === info.label,
+            (option) => option.seatGrade === type,
           );
 
           if (seatingChart.seatTypes[type as BookingSeatResponseGrade]) {
