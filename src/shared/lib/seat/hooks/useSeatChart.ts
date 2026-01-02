@@ -10,6 +10,7 @@ import type {
 import { getGetSeatingChartUrl } from "@/shared/api/orval/venue/venue";
 import type {
   BookingStatus,
+  BookingStatusByServer,
   SeatChartConfig,
   StaticSeatVenue,
   UserSeatSelection,
@@ -78,8 +79,33 @@ export function useSeatChart(venueId: number, scheduleId?: number) {
   /**
    * 예매 상태 업데이트 (실시간)
    */
-  const updateBookingStatus = useCallback((status: BookingStatus) => {
-    setBookingStatus(status);
+  const updateBookingStatus = useCallback((status: BookingStatusByServer) => {
+    setBookingStatus((pre) => {
+      const seats = status.seats.map((seat) => ({
+        row: seat.row - 1,
+        col: seat.col - 1,
+      }));
+
+      // 점유
+      if (status.action === "OCCUPIED") {
+        const newPendingSeats = [...pre.pendingSeats, ...seats];
+
+        return { ...pre, pendingSeats: newPendingSeats };
+      }
+      // 점유 해제
+      if (status.action === "RELEASED") {
+        const newPendingSeats = pre.pendingSeats.filter(
+          (preSeat) => !seats.includes(preSeat),
+        );
+        return { ...pre, pendingSeats: newPendingSeats };
+      }
+      if (status.action === "CONFIRMED") {
+        const newReservedSeats = [...pre.reservedSeats, ...seats];
+        return { ...pre, pendingSeats: newReservedSeats };
+      }
+
+      return pre;
+    });
   }, []);
 
   /**
@@ -140,7 +166,6 @@ export function useSeatChart(venueId: number, scheduleId?: number) {
 
     init();
   }, [venueId, loadStaticVenue]);
-
 
   return {
     // 데이터

@@ -77,7 +77,8 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
         borderColor: "#9ca3af",
         color: "#6b7280",
       };
-    } else if (isPending) {
+      // 예약 중이고 자신이 선택한 좌석이 아닐때
+    } else if (isPending && !isSelected) {
       return {
         backgroundColor: "#fef3c7",
         borderColor: "#f59e0b",
@@ -188,7 +189,7 @@ export default function SeatChart({ config, onSeatClick }: SeatChartProps) {
           key={`${rowIndex}-${colIndex}`}
           className={`relative w-8 h-8 flex items-center justify-center rounded-md border text-xs font-medium touch-manipulation select-none focus:outline-none focus:ring-2 focus:ring-blue-300 ${
             isClickDisabled
-              ? "cursor-not-allowed opacity-60"
+              ? `${config.mode === "edit" ? "opacity-60 cursor-not-allowed" : ""}`
               : "transition-transform duration-100 active:scale-90 md:hover:scale-105"
           }`}
           style={{

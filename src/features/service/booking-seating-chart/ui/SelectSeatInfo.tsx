@@ -28,6 +28,10 @@ type SelectSeatInfoProps = {
     /** 행 번호 */ row: number,
     /** 열 번호 */ col: number,
   ) => void;
+  /** 선택완료 버튼 클릭 핸들러 */
+  onComplete?: () => void;
+  /** 로딩 상태 */
+  isLoading?: boolean;
 };
 
 /**
@@ -35,19 +39,24 @@ type SelectSeatInfoProps = {
  * @param userSelectedSeats - 사용자가 선택한 좌석 배열
  * @param onClearSelection - 전체 선택 해제 핸들러
  * @param onToggleSeatSelection - 개별 좌석 선택/해제 토글 핸들러
+ * @param onComplete - 선택완료 버튼 클릭 핸들러
  * @returns 선택 좌석 정보 컴포넌트
  */
 const SelectSeatInfo = ({
   userSelectedSeats,
   onClearSelection,
   onToggleSeatSelection,
+  onComplete,
+  isLoading = false,
 }: SelectSeatInfoProps) => {
   return (
     <div className="flex flex-col justify-between h-full">
       <div className="flex items-center justify-between">
         <div className="mt-4 mb-2 text-lg font-semibold">
           선택좌석
-          <span className="text-blue-500 ms-3">{userSelectedSeats.length}</span>
+          <span className="text-blue-500 ms-3">
+            {userSelectedSeats.length}
+          </span>
         </div>
         <Button
           variant={"ghost"}
@@ -87,7 +96,12 @@ const SelectSeatInfo = ({
         ))}
       </div>
 
-      <Button className="mt-auto" disabled={userSelectedSeats.length === 0}>
+      <Button
+        className="mt-auto"
+        disabled={userSelectedSeats.length === 0 || isLoading}
+        size={"lg"}
+        onClick={onComplete}
+      >
         선택완료
       </Button>
     </div>
