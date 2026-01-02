@@ -38,6 +38,16 @@ export interface StaticSeatVenue {
   columnSpacers: number[];
 }
 
+export type SeatStatusByServer = "OCCUPIED" | "RELEASED" | "CONFIRMED";
+
+/**
+ * 동적 예매 상태 데이터 (서버에서 실시간으로 받아오는 데이터)
+ */
+export type BookingStatusByServer = {
+  action: SeatStatusByServer;
+  seats: SeatPosition[];
+};
+
 /**
  * 동적 예매 상태 데이터 (서버에서 실시간으로 받아오는 데이터)
  */
