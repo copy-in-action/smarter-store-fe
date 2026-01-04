@@ -4,6 +4,8 @@ import type { BookingSeatResponseGrade } from "@/shared/api/orval/types";
  * 좌석 위치 정보
  */
 export interface SeatPosition {
+  /** TODO: 현재 미사용  섹션 */
+  section?: string;
   /** 행 번호 (0부터 시작) */
   row: number;
   /** 열 번호 (0부터 시작) */

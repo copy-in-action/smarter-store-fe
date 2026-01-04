@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
 import { Inter, Noto_Sans_KR } from "next/font/google";
-import { AuthProvider, QueryProvider } from "@/app/providers";
+import { AuthProvider, MSWProvider, QueryProvider } from "@/app/providers";
 import { Toaster } from "@/shared/ui/sonner";
 import "./globals.css";
 import { headers } from "next/headers";
 import { getUserInfoServer } from "@/entities/user/api/user.server.api";
 import { AuthEventHandler, TokenRefreshManager } from "@/shared/components";
+import { DeviceProvider } from "@/shared/hooks/use-device";
 import {
   createOrganizationSchema,
   createWebsiteSchema,
   safeJsonLdStringify,
 } from "@/shared/lib/json-ld";
-import { DeviceProvider } from "@/shared/hooks/use-device";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -40,7 +40,8 @@ export default async function RootLayout({
   const hasInitialAuth = headersList.get("x-has-auth") === "true";
   const isUserRole = headersList.get("x-auth-role") === "ROLE_USER";
   const isFetchMe = hasInitialAuth && isUserRole;
-  const initialIsMobileDevice = headersList.get("x-is-mobile-device") === "true";
+  const initialIsMobileDevice =
+    headersList.get("x-is-mobile-device") === "true";
 
   // 인증된 경우 서버에서 사용자 정보 미리 조회
   const initialUserData = isFetchMe ? await getUserInfoServer() : null;
@@ -79,19 +80,21 @@ export default async function RootLayout({
       <body
         className={`${inter.variable} ${notoSansKR.variable} font-sans antialiased h-auto`}
       >
-        <QueryProvider>
-          <DeviceProvider initialIsMobileDevice={initialIsMobileDevice}>
-            <AuthProvider
-              hasInitialAuth={isFetchMe}
-              initialUserData={initialUserData}
-            >
-              <AuthEventHandler />
-              <TokenRefreshManager />
-              {children}
-            </AuthProvider>
-          </DeviceProvider>
-        </QueryProvider>
-        <Toaster position="top-center" richColors theme="light" />
+        <MSWProvider>
+          <QueryProvider>
+            <DeviceProvider initialIsMobileDevice={initialIsMobileDevice}>
+              <AuthProvider
+                hasInitialAuth={isFetchMe}
+                initialUserData={initialUserData}
+              >
+                <AuthEventHandler />
+                <TokenRefreshManager />
+                {children}
+              </AuthProvider>
+            </DeviceProvider>
+          </QueryProvider>
+          <Toaster position="top-center" richColors theme="light" />
+        </MSWProvider>
       </body>
     </html>
   );

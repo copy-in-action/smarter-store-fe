@@ -1,13 +1,12 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
-import { getGetScheduleUrl } from "@/shared/api/orval/schedule/schedule";
+import { getSchedule } from "@/shared/api/orval/schedule/schedule";
 import type {
-  AvailableScheduleResponse,
   BookingSeatResponseGrade,
-  SeatingChartResponse,
 } from "@/shared/api/orval/types";
-import { getGetSeatingChartUrl } from "@/shared/api/orval/venue/venue";
+import { getSeatingChart } from "@/shared/api/orval/venue/venue";
 import type {
   BookingStatus,
   BookingStatusByServer,
@@ -32,49 +31,70 @@ export function useSeatChart(venueId: number, scheduleId?: number) {
   const [userSelection, setUserSelection] = useState<UserSeatSelection>({
     selectedSeats: [],
   });
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   /**
-   * 정적 좌석 배치도 로드
+   * 좌석 배치도 조회 쿼리
    */
-  const loadStaticVenue = useCallback(async () => {
-    try {
-      const staticSeatVenueResponse = await fetch(
-        getGetSeatingChartUrl(venueId),
-      );
-      if (!staticSeatVenueResponse.ok)
-        throw new Error("Failed to load seat venue");
-
-      const seatChartData =
-        (await staticSeatVenueResponse.json()) as SeatingChartResponse;
-
-      const seatingChart =
-        seatChartData.seatingChart as unknown as StaticSeatVenue;
-
-      // scheduleId가 있을 때만 가격 정보 로드
-      if (scheduleId) {
-        const scheduleResponse = await fetch(getGetScheduleUrl(scheduleId));
-        const schedule =
-          (await scheduleResponse.json()) as AvailableScheduleResponse;
-
-        Object.entries(seatingChart.seatTypes).forEach(([type]) => {
-          const findOption = schedule.ticketOptions.find(
-            (option) => option.seatGrade === type,
-          );
-
-          if (seatingChart.seatTypes[type as BookingSeatResponseGrade]) {
-            seatingChart.seatTypes[type as BookingSeatResponseGrade]!.price =
-              findOption ? findOption.price : 0;
-          }
-        });
+  const {
+    data: seatingChartData,
+    isLoading: isLoadingSeatingChart,
+    error: seatingChartError,
+  } = useQuery({
+    queryKey: ["seatingChart", venueId],
+    queryFn: async () => {
+      const response = await getSeatingChart(venueId);
+      if (response.status === 404) {
+        throw new Error("좌석 배치도를 찾을 수 없습니다.");
       }
+      return response.data;
+    },
+    enabled: !!venueId,
+  });
 
-      setStaticVenue(seatingChart);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load venue");
+  /**
+   * 회차 정보 조회 쿼리 (가격 정보 포함)
+   */
+  const {
+    data: scheduleData,
+    isLoading: isLoadingSchedule,
+    error: scheduleError,
+  } = useQuery({
+    queryKey: ["schedule", scheduleId],
+    queryFn: async () => {
+      if (!scheduleId) return null;
+      const response = await getSchedule(scheduleId);
+      if (response.status === 404) {
+        throw new Error("회차 정보를 찾을 수 없습니다.");
+      }
+      return response.data;
+    },
+    enabled: !!scheduleId,
+  });
+
+  /**
+   * 좌석 배치도와 가격 정보를 조합하여 staticVenue 설정
+   */
+  useEffect(() => {
+    if (!seatingChartData?.seatingChart) return;
+
+    const seatingChart = seatingChartData.seatingChart as unknown as StaticSeatVenue;
+
+    // scheduleId가 있고 가격 정보가 로드되었을 때만 가격 업데이트
+    if (scheduleId && scheduleData) {
+      Object.entries(seatingChart.seatTypes).forEach(([type]) => {
+        const findOption = scheduleData.ticketOptions.find(
+          (option) => option.seatGrade === type,
+        );
+
+        const seatType = seatingChart.seatTypes[type as BookingSeatResponseGrade];
+        if (seatType) {
+          seatType.price = findOption ? findOption.price : 0;
+        }
+      });
     }
-  }, [venueId, scheduleId]);
+
+    setStaticVenue(seatingChart);
+  }, [seatingChartData, scheduleData, scheduleId]);
 
   /**
    * 예매 상태 업데이트 (실시간)
@@ -155,17 +175,17 @@ export function useSeatChart(venueId: number, scheduleId?: number) {
     };
   };
 
-  // 초기 데이터 로드
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    const init = async () => {
-      setIsLoading(true);
-      await loadStaticVenue();
-      setIsLoading(false);
-    };
+  /**
+   * 전체 로딩 상태 (좌석 배치도 + 회차 정보)
+   */
+  const isLoading = scheduleId
+    ? isLoadingSeatingChart || isLoadingSchedule
+    : isLoadingSeatingChart;
 
-    init();
-  }, [venueId, loadStaticVenue]);
+  /**
+   * 전체 에러 상태
+   */
+  const error = seatingChartError || scheduleError;
 
   return {
     // 데이터
@@ -176,7 +196,7 @@ export function useSeatChart(venueId: number, scheduleId?: number) {
 
     // 상태
     isLoading,
-    error,
+    error: error ? String(error) : null,
 
     // 액션
     toggleSeatSelection,
