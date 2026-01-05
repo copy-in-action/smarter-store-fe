@@ -1,5 +1,5 @@
 import type {
-  BookingSeatResponseGrade,
+  SeatGrade,
   VenueSeatCapacityRequest,
 } from "@/shared/api/orval/types";
 import type { StaticSeatVenue } from "../types/seatLayout.types";
@@ -16,15 +16,13 @@ import type { StaticSeatVenue } from "../types/seatLayout.types";
 export function extractSeatGradeInfo(
   staticSeatVenue: StaticSeatVenue,
 ): VenueSeatCapacityRequest[] {
-  const gradeInfo: Record<
-    string,
-    { gradeName: BookingSeatResponseGrade; capacity: number }
-  > = {};
+  const gradeInfo: Record<string, { gradeName: SeatGrade; capacity: number }> =
+    {};
 
   // 모든 좌석 타입을 우선 초기화 (좌석 수 0으로)
   Object.entries(staticSeatVenue.seatTypes).forEach(([seatGrade]) => {
     gradeInfo[seatGrade] = {
-      gradeName: seatGrade as BookingSeatResponseGrade,
+      gradeName: seatGrade as SeatGrade,
       capacity: 0,
     };
   });
@@ -133,11 +131,7 @@ export function restoreStaticSeatVenue(
   gradeInfo?: VenueSeatCapacityRequest[],
 ): Omit<StaticSeatVenue, "venueId"> {
   // JSON 데이터 유효성 검증
-  if (
-    !jsonData.rows ||
-    !jsonData.columns ||
-    !jsonData.seatTypes
-  ) {
+  if (!jsonData.rows || !jsonData.columns || !jsonData.seatTypes) {
     throw new Error("Invalid StaticSeatVenue: Required fields are missing");
   }
 

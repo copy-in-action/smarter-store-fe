@@ -22,7 +22,10 @@ export interface CreatePerformanceRequest {
   description?: string;
   /** 생성할 공연 카테고리 */
   category: string;
-  /** 생성할 공연 시간 (분) */
+  /**
+   * 생성할 공연 시간 (분)
+   * @minimum 1
+   */
   runningTime?: number;
   /** 생성할 공연 관람 연령 */
   ageRating?: string;
@@ -70,7 +73,10 @@ export interface CreatePerformanceRequest {
   detailImageUrl?: string;
   /** 판매자/기획사 ID */
   companyId?: number;
-  /** 예매 수수료 */
+  /**
+   * 예매 수수료
+   * @minimum 0
+   */
   bookingFee?: number;
   /** 배송 안내 */
   shippingGuide?: string;

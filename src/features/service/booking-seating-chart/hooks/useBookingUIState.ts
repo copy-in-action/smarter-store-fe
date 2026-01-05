@@ -2,10 +2,7 @@
  * 예매 UI 상태 관리 Hook
  */
 import { useMemo } from "react";
-import type {
-  BookingSeatResponseGrade,
-  PerformanceResponse,
-} from "@/shared/api/orval/types";
+import type { PerformanceResponse, SeatGrade } from "@/shared/api/orval/types";
 import {
   transformSeatGradeInfo,
   transformUserSelectedSeats,
@@ -42,16 +39,16 @@ export const useBookingUIState = (
    * - userSelectedSeats를 등급별로 그룹화
    * - GradeInfo[] 형태로 변환 (BookingDiscountSelectionForm에 전달용)
    */
-  const grades = useMemo(() => {
+  const selectedGradeInfoList = useMemo(() => {
     /**
      * 선택된 좌석을 등급별로 그룹화
      * - 각 좌석을 순회하며 등급(grade)을 키로 배열에 추가
      * - 같은 등급의 좌석들을 하나의 배열로 모음
      */
     const selectedSeatInfo = userSelectedSeats.reduce<
-      Partial<Record<BookingSeatResponseGrade, UserSelectedSeat[]>>
+      Partial<Record<SeatGrade, UserSelectedSeat[]>>
     >((acc, cur) => {
-      const gradeKey = cur.grade as BookingSeatResponseGrade;
+      const gradeKey = cur.grade as SeatGrade;
       if (!acc[gradeKey]) {
         acc[gradeKey] = [cur];
       } else {
@@ -67,7 +64,7 @@ export const useBookingUIState = (
     seatChartConfig,
     seatGradeInfo,
     userSelectedSeats,
-    grades,
+    selectedGradeInfoList,
     toggleSeatSelection,
     clearSelection,
   };

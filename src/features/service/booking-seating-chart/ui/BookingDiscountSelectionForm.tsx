@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft, Minus, Plus } from "lucide-react";
 import { useMemo } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import type { SeatGrade } from "@/shared/api/orval/types";
 import {
   Accordion,
   AccordionContent,
@@ -33,6 +34,25 @@ import type {
 } from "../model/booking-seating-chart.types";
 
 /**
+ * 선택된 할인 항목 (최종 제출 데이터)
+ */
+export interface SelectedDiscountItem {
+  id: string;
+  name: string;
+  discountRate: number;
+  count: number;
+  price: number;
+}
+
+/**
+ * 최종 제출 데이터 형식
+ * - 선택된 등급만 포함하므로 Partial 사용
+ */
+export type BookingDiscountSubmitData = Partial<
+  Record<SeatGrade, SelectedDiscountItem[]>
+>;
+
+/**
  * 예매 할인 선택 폼 Props
  */
 export interface BookingDiscountSelectionFormProps {
@@ -41,7 +61,7 @@ export interface BookingDiscountSelectionFormProps {
   /** 할인 방법 목록 (API로부터 받음, 없으면 기본값 사용) */
   discountMethods?: DiscountMethod[];
   /** 폼 제출 핸들러 */
-  onSubmit?: (data: BookingDiscountFormData) => void;
+  onSubmit?: (data: BookingDiscountSubmitData) => void;
   /** 이전 Step으로 돌아가기 핸들러 */
   onBackStep: () => void;
 }
@@ -91,6 +111,7 @@ const BookingDiscountSelectionForm = ({
 
   /**
    * 폼 초기값 생성
+   * - 기본적으로 모든 좌석을 "일반" 할인에 할당
    */
   const defaultValues = useMemo(
     () =>
@@ -102,6 +123,51 @@ const BookingDiscountSelectionForm = ({
       ) as BookingDiscountFormData,
     [grades, discountMethods],
   );
+
+  /**
+   * 폼 데이터를 최종 제출 형식으로 변환
+   * @param formData - 폼 내부 데이터 (Record 형식)
+   * @returns 배열 형식의 제출 데이터
+   */
+  const transformToSubmitData = (
+    formData: BookingDiscountFormData,
+  ): BookingDiscountSubmitData => {
+    return Object.fromEntries(
+      Object.entries(formData).map(([grade, discounts]) => {
+        const gradeInfo = grades.find((g) => g.grade === grade);
+        if (!gradeInfo) return [grade, []];
+
+        const selectedItems: SelectedDiscountItem[] = Object.entries(discounts)
+          .filter(([_, count]) => count > 0)
+          .map(([discountId, count]) => {
+            const method = discountMethods.find((m) => m.id === discountId);
+            if (!method) {
+              return {
+                id: discountId,
+                name: discountId,
+                discountRate: 0,
+                count,
+                price: gradeInfo.basePrice,
+              };
+            }
+
+            const price = Math.floor(
+              gradeInfo.basePrice * (1 - method.discountRate / 100),
+            );
+
+            return {
+              id: method.id,
+              name: method.name,
+              discountRate: method.discountRate,
+              count,
+              price,
+            };
+          });
+
+        return [grade, selectedItems];
+      }),
+    );
+  };
 
   /**
    * React Hook Form 초기화
@@ -174,7 +240,8 @@ const BookingDiscountSelectionForm = ({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit((data) => {
-          onSubmit?.(data);
+          const submitData = transformToSubmitData(data);
+          onSubmit?.(submitData);
         })}
         className="flex flex-col justify-between h-full"
       >

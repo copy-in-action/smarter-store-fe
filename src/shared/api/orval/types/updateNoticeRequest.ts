@@ -7,14 +7,13 @@
 **관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
-import type { UpdateNoticeRequestCategory } from './updateNoticeRequestCategory';
+import type { NoticeCategory } from './noticeCategory';
 
 /**
  * 공지사항 수정 요청
  */
 export interface UpdateNoticeRequest {
-  /** 공지사항 카테고리 (SYSTEM: 시스템 점검, BOOKING_NOTICE: 예매 유의사항, EVENT: 이벤트) */
-  category: UpdateNoticeRequestCategory;
+  category: NoticeCategory;
   /**
    * 제목
    * @minLength 0

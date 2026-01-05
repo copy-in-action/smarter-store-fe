@@ -1,7 +1,7 @@
 /**
  * 좌석 데이터 변환 유틸리티
  */
-import type { BookingSeatResponseGrade } from "@/shared/api/orval/types";
+import type { SeatGrade } from "@/shared/api/orval/types";
 import {
   getSeatType,
   type SeatChartConfig,
@@ -19,7 +19,7 @@ import type {
  * @returns 좌석 등급 정보 배열
  */
 export const transformSeatGradeInfo = (
-  seatTypes: Partial<Record<BookingSeatResponseGrade, SeatType>>,
+  seatTypes: Partial<Record<SeatGrade, SeatType>>,
 ): SeatGradeInfo[] => {
   return Object.entries(seatTypes).map(([key, value]) => ({
     label: key,

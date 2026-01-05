@@ -16,7 +16,10 @@ export interface CompanyRequest {
   name: string;
   /** 대표자명 */
   ceoName?: string;
-  /** 사업자등록번호 */
+  /**
+   * 사업자등록번호
+   * @pattern ^(\d{3}-\d{2}-\d{5}|\d{10})$
+   */
   businessNumber: string;
   /** 이메일 */
   email?: string;

@@ -69,6 +69,7 @@ export const getSchedule = async (scheduleId: number, options?: RequestInit): Pr
 
             **이벤트 타입:**
             - `connect`: 연결 성공
+            - `snapshot`: 현재 좌석 상태 스냅샷 (연결 직후 전송)
             - `seat-update`: 좌석 상태 변경 (OCCUPIED/RELEASED/CONFIRMED)
             - `heartbeat`: 연결 유지 (45초마다)
 
@@ -109,10 +110,15 @@ export const subscribeSeatEvents = async (scheduleId: number, options?: RequestI
 
 
 /**
- * 특정 회차의 좌석 상태 목록을 조회합니다. PENDING(점유 중), RESERVED(예약 완료) 상태인 좌석만 반환합니다.
+ * 
+            ⚠️ **Deprecated**: SSE 구독(/seats/stream) 시 `snapshot` 이벤트로 초기 상태를 수신할 수 있습니다.
 
-**권한: 누구나**
- * @summary 회차별 좌석 상태 조회
+            특정 회차의 좌석 상태 목록을 조회합니다. PENDING(점유 중), RESERVED(예약 완료) 상태인 좌석만 반환합니다.
+
+            **권한: 누구나**
+        
+ * @deprecated
+ * @summary 회차별 좌석 상태 조회 (Deprecated)
  */
 export type getSeatStatusResponse200 = {
   data: ScheduleSeatStatusResponse

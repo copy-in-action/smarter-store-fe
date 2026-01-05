@@ -8,7 +8,7 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { BookingSeatResponse } from './bookingSeatResponse';
-import type { BookingResponseStatus } from './bookingResponseStatus';
+import type { BookingStatus } from './bookingStatus';
 
 /**
  * 예매 상세 응답
@@ -26,6 +26,5 @@ export interface BookingResponse {
   seats: BookingSeatResponse[];
   /** 총 결제 금액 */
   totalPrice: number;
-  /** 예매 상태 (PENDING: 결제 대기중, CONFIRMED: 예매 확정, CANCELLED: 예매 취소, EXPIRED: 시간 만료) */
-  status: BookingResponseStatus;
+  status: BookingStatus;
 }

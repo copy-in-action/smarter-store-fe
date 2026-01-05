@@ -22,7 +22,10 @@ export interface UpdatePerformanceRequest {
   description?: string;
   /** 수정할 공연 카테고리 */
   category: string;
-  /** 수정할 공연 시간 (분) */
+  /**
+   * 수정할 공연 시간 (분)
+   * @minimum 1
+   */
   runningTime?: number;
   /** 수정할 공연 관람 연령 */
   ageRating?: string;
@@ -70,7 +73,10 @@ export interface UpdatePerformanceRequest {
   detailImageUrl?: string;
   /** 판매자/기획사 ID */
   companyId?: number;
-  /** 예매 수수료 */
+  /**
+   * 예매 수수료
+   * @minimum 0
+   */
   bookingFee?: number;
   /** 배송 안내 */
   shippingGuide?: string;

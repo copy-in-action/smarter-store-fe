@@ -54,9 +54,7 @@ const SelectSeatInfo = ({
       <div className="flex items-center justify-between">
         <div className="mt-4 mb-2 text-lg font-semibold">
           선택좌석
-          <span className="text-blue-500 ms-3">
-            {userSelectedSeats.length}
-          </span>
+          <span className="text-blue-500 ms-3">{userSelectedSeats.length}</span>
         </div>
         <Button
           variant={"ghost"}
@@ -74,7 +72,7 @@ const SelectSeatInfo = ({
               <ItemContent>
                 <ItemTitle className="font-bold">{seat.grade}석</ItemTitle>
                 <ItemDescription className="text-sm">
-                  {seat.row + 1}열 {seat.col + 1}번
+                  {seat.row + 1}행 {seat.col + 1}열
                 </ItemDescription>
               </ItemContent>
               <ItemActions>

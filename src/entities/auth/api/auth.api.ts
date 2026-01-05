@@ -15,7 +15,6 @@ import type {
   EmailVerificationRequest,
   LoginRequest,
   OtpConfirmationRequest,
-  RefreshTokenRequest,
   SignupRequest,
   UserResponse,
 } from "@/shared/api/orval/types";
@@ -49,10 +48,8 @@ export const signupUser = async (
  * @param refreshData - 리프레시 토큰 요청 데이터
  * @returns 갱신 성공 결과
  */
-export const refreshUserToken = async (
-  refreshData: RefreshTokenRequest,
-): Promise<ApiResultResponse> => {
-  await refresh(refreshData);
+export const refreshUserToken = async (): Promise<ApiResultResponse> => {
+  await refresh();
   return { result: true };
 };
 

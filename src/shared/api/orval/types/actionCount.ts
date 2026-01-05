@@ -7,14 +7,13 @@
 **관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
-import type { ActionCountAction } from './actionCountAction';
+import type { AuditAction } from './auditAction';
 
 /**
  * 액션별 통계
  */
 export interface ActionCount {
-  /** 액션 */
-  action: ActionCountAction;
+  action: AuditAction;
   /** 설명 */
   description: string;
   /** 건수 */

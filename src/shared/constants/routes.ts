@@ -196,6 +196,13 @@ export const SERVICE_PAGES = {
         description: "좌석을 선택해주세요",
       } as Metadata,
     },
+    PAYMENT: {
+      path: "/booking/payment",
+      metadata: {
+        title: "공연 결제",
+        description: "공연을 최종 결제합니다.",
+      } as Metadata,
+    },
   },
 
   /** 마이페이지 */

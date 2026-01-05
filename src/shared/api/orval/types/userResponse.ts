@@ -18,6 +18,8 @@ export interface UserResponse {
   email: string;
   /** 사용자 이름 */
   username: string;
+  /** 핸드폰 번호 */
+  phoneNumber?: string;
   /** 사용자 생성일시 */
   createdAt?: string;
 }

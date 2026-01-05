@@ -1,7 +1,7 @@
 /**
  * 좌석 정보 변환 유틸리티
  */
-import type { BookingSeatResponseGrade } from "@/shared/api/orval/types";
+import type { SeatGrade } from "@/shared/api/orval/types";
 import type {
   GradeInfo,
   UserSelectedSeat,
@@ -13,17 +13,17 @@ import type {
  * @returns 등급별 좌석 정보 배열
  */
 export function transformToGradeInfoArray(
-  selectedSeatInfo: Partial<Record<BookingSeatResponseGrade, UserSelectedSeat[]>>,
+  selectedSeatInfo: Partial<Record<SeatGrade, UserSelectedSeat[]>>,
 ): GradeInfo[] {
   return Object.entries(selectedSeatInfo).map(([grade, seats]) => {
     const firstSeat = seats[0];
     const seatDetails =
       seats.length > 1
-        ? `${firstSeat.row + 1}열 ${firstSeat.col + 1}번 외 ${seats.length - 1}건`
-        : `${firstSeat.row + 1}열 ${firstSeat.col + 1}번`;
+        ? `${firstSeat.row + 1}행 ${firstSeat.col + 1}열 외 ${seats.length - 1}건`
+        : `${firstSeat.row + 1}행 ${firstSeat.col + 1}열`;
 
     return {
-      grade,
+      grade: grade as SeatGrade,
       seatCount: seats.length,
       basePrice: firstSeat.price,
       seatDetails,

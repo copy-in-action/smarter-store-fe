@@ -7,14 +7,13 @@
 **관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
-import type { VenueSeatCapacityRequestSeatGrade } from './venueSeatCapacityRequestSeatGrade';
+import type { SeatGrade } from './seatGrade';
 
 /**
  * 공연장 등급별 좌석 수 요청 DTO
  */
 export interface VenueSeatCapacityRequest {
-  /** 좌석 등급 (VIP: VIP석, R: R석, S: S석, A: A석, B: B석) */
-  seatGrade: VenueSeatCapacityRequestSeatGrade;
+  seatGrade: SeatGrade;
   /**
    * 허용 좌석 수
    * @minimum 0

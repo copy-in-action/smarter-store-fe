@@ -7,14 +7,13 @@
 **관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
-import type { TicketOptionRequestSeatGrade } from './ticketOptionRequestSeatGrade';
+import type { SeatGrade } from './seatGrade';
 
 /**
  * 티켓 옵션 생성/수정 요청 DTO
  */
 export interface TicketOptionRequest {
-  /** 좌석 등급 (VIP: VIP석, R: R석, S: S석, A: A석, B: B석) */
-  seatGrade: TicketOptionRequestSeatGrade;
+  seatGrade: SeatGrade;
   /** 가격 */
   price: number;
 }

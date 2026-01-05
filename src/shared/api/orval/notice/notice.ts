@@ -8,6 +8,7 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
+  NoticeCategory,
   NoticeGroupResponse,
   NoticeResponse
 } from '.././types';
@@ -108,7 +109,7 @@ export type getActiveNoticesByCategoryResponseSuccess = (getActiveNoticesByCateg
 
 export type getActiveNoticesByCategoryResponse = (getActiveNoticesByCategoryResponseSuccess)
 
-export const getGetActiveNoticesByCategoryUrl = (category: 'SYSTEM' | 'BOOKING_NOTICE' | 'EVENT',) => {
+export const getGetActiveNoticesByCategoryUrl = (category: NoticeCategory,) => {
 
 
   
@@ -116,7 +117,7 @@ export const getGetActiveNoticesByCategoryUrl = (category: 'SYSTEM' | 'BOOKING_N
   return `https://ticket-api.devhong.cc/api/notices/category/${category}`
 }
 
-export const getActiveNoticesByCategory = async (category: 'SYSTEM' | 'BOOKING_NOTICE' | 'EVENT', options?: RequestInit): Promise<getActiveNoticesByCategoryResponse> => {
+export const getActiveNoticesByCategory = async (category: NoticeCategory, options?: RequestInit): Promise<getActiveNoticesByCategoryResponse> => {
   
   return orvalFetch<getActiveNoticesByCategoryResponse>(getGetActiveNoticesByCategoryUrl(category),
   {      

@@ -7,9 +7,9 @@
 **관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
-import type { GetAuditLogsAction } from './getAuditLogsAction';
-import type { GetAuditLogsCategory } from './getAuditLogsCategory';
-import type { GetAuditLogsTargetType } from './getAuditLogsTargetType';
+import type { AuditAction } from './auditAction';
+import type { AuditCategory } from './auditCategory';
+import type { AuditTargetType } from './auditTargetType';
 import type { Pageable } from './pageable';
 
 export type GetAuditLogsParams = {
@@ -20,15 +20,15 @@ userId?: number;
 /**
  * 액션 타입
  */
-action?: GetAuditLogsAction;
+action?: AuditAction;
 /**
  * 카테고리
  */
-category?: GetAuditLogsCategory;
+category?: AuditCategory;
 /**
  * 대상 타입
  */
-targetType?: GetAuditLogsTargetType;
+targetType?: AuditTargetType;
 /**
  * 대상 ID
  */

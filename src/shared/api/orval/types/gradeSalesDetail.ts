@@ -7,14 +7,13 @@
 **관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
-import type { GradeSalesDetailGrade } from './gradeSalesDetailGrade';
+import type { SeatGrade } from './seatGrade';
 
 /**
  * 등급별 판매 현황
  */
 export interface GradeSalesDetail {
-  /** 좌석 등급 (VIP: VIP석, R: R석, S: S석, A: A석, B: B석) */
-  grade: GradeSalesDetailGrade;
+  grade: SeatGrade;
   /** 총 좌석 수 */
   totalSeats: number;
   /** 판매 좌석 수 */

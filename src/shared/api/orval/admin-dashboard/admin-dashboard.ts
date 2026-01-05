@@ -10,8 +10,8 @@
 import type {
   DailySalesResponse,
   DashboardSummaryResponse,
-  GetDailySalesParams,
-  GetPerformanceSalesParams,
+  GetDailySales1Params,
+  GetPerformanceSales1Params,
   GetRecentBookingsParams,
   GetSummaryParams,
   PagePerformanceSalesResponse,
@@ -124,19 +124,19 @@ export const getScheduleSales = async (scheduleId: number, options?: RequestInit
         
  * @summary 일별 매출 추이 조회
  */
-export type getDailySalesResponse200 = {
+export type getDailySales1Response200 = {
   data: DailySalesResponse
   status: 200
 }
     
-export type getDailySalesResponseSuccess = (getDailySalesResponse200) & {
+export type getDailySales1ResponseSuccess = (getDailySales1Response200) & {
   headers: Headers;
 };
 ;
 
-export type getDailySalesResponse = (getDailySalesResponseSuccess)
+export type getDailySales1Response = (getDailySales1ResponseSuccess)
 
-export const getGetDailySalesUrl = (params: GetDailySalesParams,) => {
+export const getGetDailySales1Url = (params: GetDailySales1Params,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -151,9 +151,9 @@ export const getGetDailySalesUrl = (params: GetDailySalesParams,) => {
   return stringifiedParams.length > 0 ? `https://ticket-api.devhong.cc/api/admin/dashboard/sales/daily?${stringifiedParams}` : `https://ticket-api.devhong.cc/api/admin/dashboard/sales/daily`
 }
 
-export const getDailySales = async (params: GetDailySalesParams, options?: RequestInit): Promise<getDailySalesResponse> => {
+export const getDailySales1 = async (params: GetDailySales1Params, options?: RequestInit): Promise<getDailySales1Response> => {
   
-  return orvalFetch<getDailySalesResponse>(getGetDailySalesUrl(params),
+  return orvalFetch<getDailySales1Response>(getGetDailySales1Url(params),
   {      
     ...options,
     method: 'GET'
@@ -173,19 +173,19 @@ export const getDailySales = async (params: GetDailySalesParams, options?: Reque
         
  * @summary 공연별 매출 목록 조회
  */
-export type getPerformanceSalesResponse200 = {
+export type getPerformanceSales1Response200 = {
   data: PagePerformanceSalesResponse
   status: 200
 }
     
-export type getPerformanceSalesResponseSuccess = (getPerformanceSalesResponse200) & {
+export type getPerformanceSales1ResponseSuccess = (getPerformanceSales1Response200) & {
   headers: Headers;
 };
 ;
 
-export type getPerformanceSalesResponse = (getPerformanceSalesResponseSuccess)
+export type getPerformanceSales1Response = (getPerformanceSales1ResponseSuccess)
 
-export const getGetPerformanceSalesUrl = (params: GetPerformanceSalesParams,) => {
+export const getGetPerformanceSales1Url = (params: GetPerformanceSales1Params,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -200,9 +200,9 @@ export const getGetPerformanceSalesUrl = (params: GetPerformanceSalesParams,) =>
   return stringifiedParams.length > 0 ? `https://ticket-api.devhong.cc/api/admin/dashboard/performances?${stringifiedParams}` : `https://ticket-api.devhong.cc/api/admin/dashboard/performances`
 }
 
-export const getPerformanceSales = async (params: GetPerformanceSalesParams, options?: RequestInit): Promise<getPerformanceSalesResponse> => {
+export const getPerformanceSales1 = async (params: GetPerformanceSales1Params, options?: RequestInit): Promise<getPerformanceSales1Response> => {
   
-  return orvalFetch<getPerformanceSalesResponse>(getGetPerformanceSalesUrl(params),
+  return orvalFetch<getPerformanceSales1Response>(getGetPerformanceSales1Url(params),
   {      
     ...options,
     method: 'GET'
@@ -255,14 +255,6 @@ export const getPerformanceDetailSales = async (performanceId: number, options?:
 
 
 /**
- * 
-            최근 예매 내역을 조회합니다.
-            - 예매 상태별 필터링 가능
-            - 특정 공연 필터링 가능
-            - 사용자 정보 마스킹 처리
-
-            **권한: ADMIN**
-        
  * @summary 최근 예매 내역 조회
  */
 export type getRecentBookingsResponse200 = {

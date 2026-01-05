@@ -7,7 +7,6 @@
 **관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
-import type { BookingSeatResponseGrade } from './bookingSeatResponseGrade';
 
 /**
  * 예매 좌석 응답
@@ -17,12 +16,8 @@ export interface BookingSeatResponse {
   id: number;
   /** 좌석 구역 */
   section: string;
-  /** 좌석 열 */
-  rowName: string;
-  /** 좌석 번호 */
-  seatNumber: number;
-  /** 좌석 등급 (VIP: VIP석, R: R석, S: S석, A: A석, B: B석) */
-  grade: BookingSeatResponseGrade;
-  /** 좌석 가격 */
-  price: number;
+  /** 행 번호 */
+  row: number;
+  /** 열 번호 */
+  col: number;
 }

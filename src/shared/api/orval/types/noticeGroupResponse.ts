@@ -7,15 +7,14 @@
 **관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
-import type { NoticeGroupResponseCategory } from './noticeGroupResponseCategory';
+import type { NoticeCategory } from './noticeCategory';
 import type { NoticeResponse } from './noticeResponse';
 
 /**
  * 카테고리별 공지사항 그룹 응답
  */
 export interface NoticeGroupResponse {
-  /** 공지사항 카테고리 (SYSTEM: 시스템 점검, BOOKING_NOTICE: 예매 유의사항, EVENT: 이벤트) */
-  category: NoticeGroupResponseCategory;
+  category: NoticeCategory;
   /** 카테고리 설명 */
   categoryDescription: string;
   /** 공지사항 목록 */
