@@ -8,7 +8,7 @@ import { Button } from "@/shared/ui/button";
 const notFound = () => {
   const router = useRouter();
   return (
-    <div className="flex flex-col items-center justify-center h-dvh w-dvw">
+    <div className="flex flex-col items-center justify-center h-dvh">
       <CloudAlert size={70} />
       화면을 불러오지 못했어요.
       <div className="mt-4 w-36">
