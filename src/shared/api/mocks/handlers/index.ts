@@ -1,8 +1,7 @@
-import { bookingHandlers } from "./booking.handlers";
 import { getPerformanceHandler } from "./performance.handlers";
 import {
-	getScheduleDatesHandler,
-	getSchedulesHandler,
+  getScheduleDatesHandler,
+  getSchedulesHandler,
 } from "./performance-schedule.handlers";
 import { scheduleHandlers } from "./schedule.handlers";
 import { venueHandlers } from "./venue.handlers";
@@ -33,10 +32,9 @@ import { venueHandlers } from "./venue.handlers";
  * - bookingHandlers: POST /api/bookings/start, DELETE /api/bookings/:id
  */
 export const handlers = [
-	getPerformanceHandler, // 공연 상세 정보 조회
-	getSchedulesHandler, // 회차 목록 조회
-	getScheduleDatesHandler, // 예매 가능한 날짜 목록 조회
-	...scheduleHandlers, // 회차 정보 조회
-	...venueHandlers, // 좌석 배치도 조회
-	...bookingHandlers, // 예매 시작/취소
+  getPerformanceHandler, // 공연 상세 정보 조회
+  getSchedulesHandler, // 회차 목록 조회
+  getScheduleDatesHandler, // 예매 가능한 날짜 목록 조회
+  ...scheduleHandlers, // 회차 정보 조회
+  ...venueHandlers, // 좌석 배치도 조회
 ];
