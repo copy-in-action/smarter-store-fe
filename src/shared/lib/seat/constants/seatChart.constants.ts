@@ -16,3 +16,6 @@ export const PRESET_COLORS = [
   { name: "브라운", value: "#6D4C41" },
   { name: "핑크", value: "#D81B60" },
 ] as const;
+
+/** 결제정보 스토리지 키 */
+export const PAYMENT_INFO_STORAGE_KEY = "paymentConfirmationData";

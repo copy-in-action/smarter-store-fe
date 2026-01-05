@@ -3,14 +3,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { getSchedule } from "@/shared/api/orval/schedule/schedule";
-import type {
-  BookingSeatResponseGrade,
-} from "@/shared/api/orval/types";
+import type { SeatGrade } from "@/shared/api/orval/types";
 import { getSeatingChart } from "@/shared/api/orval/venue/venue";
 import type {
   BookingStatus,
   BookingStatusByServer,
   SeatChartConfig,
+  SeatPosition,
   StaticSeatVenue,
   UserSeatSelection,
 } from "../types/seatLayout.types";
@@ -77,7 +76,8 @@ export function useSeatChart(venueId: number, scheduleId?: number) {
   useEffect(() => {
     if (!seatingChartData?.seatingChart) return;
 
-    const seatingChart = seatingChartData.seatingChart as unknown as StaticSeatVenue;
+    const seatingChart =
+      seatingChartData.seatingChart as unknown as StaticSeatVenue;
 
     // scheduleId가 있고 가격 정보가 로드되었을 때만 가격 업데이트
     if (scheduleId && scheduleData) {
@@ -86,7 +86,7 @@ export function useSeatChart(venueId: number, scheduleId?: number) {
           (option) => option.seatGrade === type,
         );
 
-        const seatType = seatingChart.seatTypes[type as BookingSeatResponseGrade];
+        const seatType = seatingChart.seatTypes[type as SeatGrade];
         if (seatType) {
           seatType.price = findOption ? findOption.price : 0;
         }
@@ -99,27 +99,28 @@ export function useSeatChart(venueId: number, scheduleId?: number) {
   /**
    * 예매 상태 업데이트 (실시간)
    */
-  const updateBookingStatus = useCallback((status: BookingStatusByServer) => {
+  const updateBookingStatus = useCallback((seatData: BookingStatusByServer) => {
+    console.log("🚀 ~ useSeatChart ~ seatData:", seatData);
     setBookingStatus((pre) => {
-      const seats = status.seats.map((seat) => ({
+      const seats = (seatData.seats as SeatPosition[]).map((seat) => ({
         row: seat.row - 1,
         col: seat.col - 1,
       }));
 
       // 점유
-      if (status.action === "OCCUPIED") {
+      if (seatData.action === "OCCUPIED") {
         const newPendingSeats = [...pre.pendingSeats, ...seats];
 
         return { ...pre, pendingSeats: newPendingSeats };
       }
       // 점유 해제
-      if (status.action === "RELEASED") {
+      if (seatData.action === "RELEASED") {
         const newPendingSeats = pre.pendingSeats.filter(
           (preSeat) => !seats.includes(preSeat),
         );
         return { ...pre, pendingSeats: newPendingSeats };
       }
-      if (status.action === "CONFIRMED") {
+      if (seatData.action === "CONFIRMED") {
         const newReservedSeats = [...pre.reservedSeats, ...seats];
         return { ...pre, pendingSeats: newReservedSeats };
       }

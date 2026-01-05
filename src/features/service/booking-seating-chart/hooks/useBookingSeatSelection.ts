@@ -3,12 +3,14 @@
  */
 "use client";
 
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect } from "react";
 import { toast } from "sonner";
 import { getSubscribeSeatEventsUrl } from "@/shared/api/orval/schedule/schedule";
 import { MAX_SEAT_SELECTION, useSeatChart } from "@/shared/lib/seat";
-import type { BookingStatusByServer } from "@/shared/lib/seat/types/seatLayout.types";
-import { useSeatStatus } from "../api/useSeatStatus";
+import type {
+  BookingStatusByServer,
+  SeatPosition,
+} from "@/shared/lib/seat/types/seatLayout.types";
 
 /**
  * 예매 좌석 선택 Hook
@@ -20,14 +22,6 @@ export function useBookingSeatSelection(venueId: number, scheduleId: number) {
   const seatChartHook = useSeatChart(venueId, scheduleId);
   const { toggleSeatSelection, seatChartConfig, updateBookingStatus } =
     seatChartHook;
-  console.log(
-    "🚀 ~ useBookingSeatSelection ~ seatChartConfig:",
-    seatChartConfig,
-  );
-
-  const { data: seatStatus } = useSeatStatus(scheduleId, {
-    enabled: !!seatChartConfig,
-  });
 
   /**
    * 좌석 선택/해제 토글 (최대 4개 제한)
@@ -66,6 +60,27 @@ export function useBookingSeatSelection(venueId: number, scheduleId: number) {
     if (!scheduleId) return;
     const eventSource = new EventSource(getSubscribeSeatEventsUrl(scheduleId));
 
+    // 최초 연결 시 모든 점유상태를 다 받음
+    eventSource.addEventListener("snapshot", (event: MessageEvent) => {
+      try {
+        const status: {
+          pending: SeatPosition[];
+          reserved: SeatPosition[];
+        } = JSON.parse(event.data);
+
+        updateBookingStatus({
+          action: "OCCUPIED",
+          seats: status.pending,
+        });
+        updateBookingStatus({
+          action: "OCCUPIED",
+          seats: status.reserved,
+        });
+      } catch (error) {
+        console.error("SSE snapshot 메시지 파싱 에러:", error);
+      }
+    });
+
     /**
      * seat-update 이벤트 수신 시 좌석 상태 업데이트
      */
@@ -74,7 +89,7 @@ export function useBookingSeatSelection(venueId: number, scheduleId: number) {
         const status: BookingStatusByServer = JSON.parse(event.data);
         updateBookingStatus(status);
       } catch (error) {
-        console.error("SSE 메시지 파싱 에러:", error);
+        console.error("SSE seat-update 메시지 파싱 에러:", error);
       }
     });
 

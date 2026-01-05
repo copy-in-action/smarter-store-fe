@@ -4,7 +4,7 @@
 import { useCancelBooking } from "../api/useCancelBooking";
 import { useStartBooking } from "../api/useStartBooking";
 import type { BookingSeatFormData } from "../model/booking-seating-chart.types";
-import { useBookingStepStore } from "../model/booking-step.store";
+import { BookingStep, useBookingStepStore } from "../model/booking-step.store";
 
 /**
  * 예매 프로세스 Step 제어 및 API 연동을 담당하는 hook
@@ -38,7 +38,7 @@ export const useBookingStepControl = (scheduleId: number) => {
       onSuccess: (response) => {
         console.log("좌석 점유 성공:", response);
         setBookingData(response);
-        setStep(2);
+        setStep(BookingStep.DISCOUNT_SELECTION);
       },
       onError: (error) => {
         console.error("좌석 점유 실패:", error);
@@ -57,7 +57,7 @@ export const useBookingStepControl = (scheduleId: number) => {
      * - 좌석 점유 해제 API 호출
      * - 성공 시 bookingData 초기화 및 Step 이동
      */
-    if (step === 2 && bookingData) {
+    if (step === BookingStep.DISCOUNT_SELECTION && bookingData) {
       cancelBooking(bookingData.bookingId, {
         onSuccess: () => {
           console.log("좌석 점유 해제 성공");
@@ -75,6 +75,7 @@ export const useBookingStepControl = (scheduleId: number) => {
 
   return {
     step,
+    setStep,
     bookingData,
     isLoading: isStarting || isCanceling,
     isStarting,

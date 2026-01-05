@@ -2,21 +2,22 @@
  * 예매 좌석 선택 기능 타입 정의
  */
 
-import type { BookingSeatResponseGrade } from "@/shared/api/orval/types";
+import type {
+  BookingResponse,
+  PerformanceResponse,
+  SeatGrade,
+} from "@/shared/api/orval/types";
+import type { SeatPosition } from "@/shared/lib/seat";
 
 /**
  * 사용자가 선택한 좌석 정보
  */
-export interface UserSelectedSeat {
-  /** 행 번호 (0-based index) */
-  row: number;
-  /** 열 번호 (0-based index) */
-  col: number;
+export type UserSelectedSeat = SeatPosition & {
   /** 좌석 등급 */
-  grade: BookingSeatResponseGrade | string;
+  grade: SeatGrade;
   /** 좌석 가격 (원) */
   price: number;
-}
+};
 
 /**
  * 좌석 등급별 가격 정보
@@ -45,7 +46,7 @@ export interface DiscountMethod {
  */
 export interface GradeDiscountSelection {
   /** 좌석 등급 */
-  grade: BookingSeatResponseGrade | string;
+  grade: SeatGrade;
   /** 할인 방법별 수량 { discountId: quantity } */
   discounts: Record<string, number>;
 }
@@ -55,7 +56,7 @@ export interface GradeDiscountSelection {
  */
 export interface GradeInfo {
   /** 좌석 등급 */
-  grade: BookingSeatResponseGrade | string;
+  grade: SeatGrade;
   /** 선택된 좌석 수 */
   seatCount: number;
   /** 기본 가격 (원) */
@@ -69,8 +70,64 @@ export interface GradeInfo {
  */
 export interface BookingSeatFormData {
   scheduleId: number;
-  seats: {
-    row: number;
-    col: number;
-  }[];
+  seats: SeatPosition[];
+}
+
+/**
+ * 할인 방법별 가격 정보
+ */
+export interface PriceInfo {
+  /** 할인 방법명 */
+  discountName: string;
+  /** 수량 */
+  quantity: number;
+  /** 단가 */
+  unitPrice: number;
+  /** 총 가격 */
+  totalPrice: number;
+}
+
+/**
+ * 등급별 티켓 상세 정보
+ */
+export interface TicketDetail {
+  /** 좌석 등급 */
+  grade: SeatGrade;
+  /** 좌석 수 */
+  seatCount: number;
+  /** 좌석 목록 */
+  seats: SeatPosition[];
+  /** 가격 정보 */
+  priceInfo: PriceInfo[];
+}
+
+/**
+ * 결제 금액 정보
+ */
+export interface PaymentInfo {
+  /** 티켓 금액 */
+  ticketAmount: number;
+  /** 예매 수수료 */
+  bookingFee: number;
+  /** 최종 결제 금액 */
+  totalAmount: number;
+}
+
+/**
+ * 결제 확인 데이터
+ */
+export interface PaymentConfirmationData {
+  /** 공연 정보 */
+  performance: PerformanceResponse;
+  /** 공연 회차 ID */
+  scheduleId: number;
+  /** 예매 정보 (BookingResponse 기반) */
+  booking: Pick<
+    BookingResponse,
+    "bookingId" | "bookingNumber" | "remainingSeconds"
+  >;
+  /** 등급별 좌석 및 할인 정보 */
+  ticketDetails: TicketDetail[];
+  /** 결제 금액 */
+  payment: PaymentInfo;
 }

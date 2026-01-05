@@ -18,10 +18,10 @@ interface Props {
  */
 const BookingLayout = ({ children }: Props) => {
   return (
-    <div className="wrapper">
+    <>
       <BookingHeader />
-      <section>{children}</section>
-    </div>
+      <div>{children}</div>
+    </>
   );
 };
 

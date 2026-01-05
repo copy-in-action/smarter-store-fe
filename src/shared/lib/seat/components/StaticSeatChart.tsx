@@ -3,7 +3,7 @@
 import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import type {
-  BookingSeatResponseGrade,
+  SeatGrade,
   VenueSeatCapacityRequest,
 } from "@/shared/api/orval/types";
 import {
@@ -65,20 +65,12 @@ export function StaticSeatChart({
   };
 
   /**
-   * 좌석 타입 추가 (BookingSeatResponseGrade 기준)
+   * 좌석 타입 추가 (SeatGrade 기준)
    */
   const addSeatType = () => {
     // 사용 가능한 등급 목록
-    const availableGrades: BookingSeatResponseGrade[] = [
-      "VIP",
-      "R",
-      "S",
-      "A",
-      "B",
-    ];
-    const usedGrades = Object.keys(
-      formData.seatTypes,
-    ) as BookingSeatResponseGrade[];
+    const availableGrades: SeatGrade[] = ["VIP", "R", "S", "A", "B"];
+    const usedGrades = Object.keys(formData.seatTypes) as SeatGrade[];
     const unusedGrades = availableGrades.filter(
       (grade) => !usedGrades.includes(grade),
     );
@@ -102,7 +94,7 @@ export function StaticSeatChart({
   /**
    * 좌석 타입 삭제
    */
-  const removeSeatType = (keyToRemove: BookingSeatResponseGrade) => {
+  const removeSeatType = (keyToRemove: SeatGrade) => {
     const { [keyToRemove]: removed, ...remaining } = formData.seatTypes;
     updateFormData({
       seatTypes: remaining,
@@ -110,12 +102,9 @@ export function StaticSeatChart({
   };
 
   /**
-   * 좌석 타입 라벨 변경 (BookingSeatResponseGrade로 제한)
+   * 좌석 타입 라벨 변경 (SeatGrade로 제한)
    */
-  const updateSeatTypeLabel = (
-    oldKey: BookingSeatResponseGrade,
-    newKey: BookingSeatResponseGrade,
-  ) => {
+  const updateSeatTypeLabel = (oldKey: SeatGrade, newKey: SeatGrade) => {
     const { [oldKey]: oldValue, ...rest } = formData.seatTypes;
     updateFormData({
       seatTypes: {
@@ -128,7 +117,7 @@ export function StaticSeatChart({
   /**
    * 특정 좌석 타입에 position 추가
    */
-  const addPosition = (seatTypeKey: BookingSeatResponseGrade) => {
+  const addPosition = (seatTypeKey: SeatGrade) => {
     const seatType = formData.seatTypes[seatTypeKey];
     if (!seatType) return;
 
@@ -146,10 +135,7 @@ export function StaticSeatChart({
   /**
    * 특정 좌석 타입의 position 삭제
    */
-  const removePosition = (
-    seatTypeKey: BookingSeatResponseGrade,
-    positionIndex: number,
-  ) => {
+  const removePosition = (seatTypeKey: SeatGrade, positionIndex: number) => {
     const seatType = formData.seatTypes[seatTypeKey];
     if (!seatType) return;
 
@@ -168,7 +154,7 @@ export function StaticSeatChart({
    * 특정 좌석 타입의 position 업데이트
    */
   const updatePosition = (
-    seatTypeKey: BookingSeatResponseGrade,
+    seatTypeKey: SeatGrade,
     positionIndex: number,
     value: string,
   ) => {
@@ -326,10 +312,7 @@ export function StaticSeatChart({
           price: 0, // 1단계에서는 가격 0으로 표시
         },
       ]),
-    ) as Partial<Record<
-      BookingSeatResponseGrade,
-      { price: number; positions: string[] }
-    >>;
+    ) as Partial<Record<SeatGrade, { price: number; positions: string[] }>>;
 
     return {
       ...formData,
@@ -412,7 +395,10 @@ export function StaticSeatChart({
                   </Button>
                 </div>
                 {Object.entries(formData.seatTypes).map(([key, seatType]) => (
-                  <div key={key} className="p-4 border border-gray-200 rounded-lg">
+                  <div
+                    key={key}
+                    className="p-4 border border-gray-200 rounded-lg"
+                  >
                     {/* 좌석 타입 헤더 */}
                     <div className="flex items-center gap-3 mb-3">
                       <div className="flex-1">
@@ -422,8 +408,8 @@ export function StaticSeatChart({
                           value={key}
                           onChange={(e) =>
                             updateSeatTypeLabel(
-                              key as BookingSeatResponseGrade,
-                              e.target.value as BookingSeatResponseGrade,
+                              key as SeatGrade,
+                              e.target.value as SeatGrade,
                             )
                           }
                           className="w-full p-2 border border-gray-300 rounded-md"
@@ -436,9 +422,7 @@ export function StaticSeatChart({
                         </select>
                       </div>
                       <Button
-                        onClick={() =>
-                          removeSeatType(key as BookingSeatResponseGrade)
-                        }
+                        onClick={() => removeSeatType(key as SeatGrade)}
                         variant="outline"
                         size="sm"
                         className="mt-6"
@@ -454,7 +438,7 @@ export function StaticSeatChart({
                           좌석 위치 (예: "3:" or ":5" or "3:5")
                         </Label>
                         <Button
-                          onClick={() => addPosition(key as BookingSeatResponseGrade)}
+                          onClick={() => addPosition(key as SeatGrade)}
                           size="sm"
                           variant="ghost"
                         >
@@ -469,7 +453,7 @@ export function StaticSeatChart({
                               value={position}
                               onChange={(e) =>
                                 updatePosition(
-                                  key as BookingSeatResponseGrade,
+                                  key as SeatGrade,
                                   posIdx,
                                   e.target.value,
                                 )
@@ -479,10 +463,7 @@ export function StaticSeatChart({
                             />
                             <Button
                               onClick={() =>
-                                removePosition(
-                                  key as BookingSeatResponseGrade,
-                                  posIdx,
-                                )
+                                removePosition(key as SeatGrade, posIdx)
                               }
                               variant="ghost"
                               size="sm"

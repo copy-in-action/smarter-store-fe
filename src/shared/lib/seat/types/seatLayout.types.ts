@@ -1,4 +1,4 @@
-import type { BookingSeatResponseGrade } from "@/shared/api/orval/types";
+import type { SeatGrade } from "@/shared/api/orval/types";
 
 /**
  * 좌석 위치 정보
@@ -10,6 +10,8 @@ export interface SeatPosition {
   row: number;
   /** 열 번호 (0부터 시작) */
   col: number;
+  /** 층 or 섹션 */
+  section?: string;
 }
 
 /**
@@ -30,8 +32,8 @@ export interface StaticSeatVenue {
   rows: number;
   /** 총 열 수 */
   columns: number;
-  /** 좌석 타입들 (BookingSeatResponseGrade 키만 허용, 선택적) */
-  seatTypes: Partial<Record<BookingSeatResponseGrade, SeatType>>;
+  /** 좌석 타입들 (SeatGrade 키만 허용, 선택적) */
+  seatTypes: Partial<Record<SeatGrade, SeatType>>;
   /** 비활성화된 좌석들 (물리적으로 존재하지 않는 좌석) */
   disabledSeats: SeatPosition[];
   /** 행 간격 추가 위치들 */
@@ -103,6 +105,6 @@ export const MAX_SEAT_SELECTION = 4 as const;
  * 2단계: 좌석 타입별 가격 데이터
  */
 export interface SeatTypeObject {
-  /** 좌석 타입들 (가격 포함, BookingSeatResponseGrade 키만 허용, 선택적) */
-  seatTypes: Partial<Record<BookingSeatResponseGrade, SeatType>>;
+  /** 좌석 타입들 (가격 포함, SeatGrade 키만 허용, 선택적) */
+  seatTypes: Partial<Record<SeatGrade, SeatType>>;
 }

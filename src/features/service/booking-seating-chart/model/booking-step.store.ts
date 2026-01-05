@@ -5,12 +5,19 @@ import { create } from "zustand";
 import type { BookingResponse } from "@/shared/api/orval/types";
 
 /**
- * 예매 Step 타입
- * - 1: 좌석 선택
- * - 2: 할인 선택
- * - 3: 결제 (예약)
+ * 예매 Step enum
+ * - SEAT_SELECTION: 좌석 선택
+ * - DISCOUNT_SELECTION: 할인 선택
+ * - PAYMENT: 결제 (예약)
  */
-export type BookingStep = 1 | 2 | 3;
+export enum BookingStep {
+  /** 좌석 선택 */
+  SEAT_SELECTION = 1,
+  /** 할인 선택 */
+  DISCOUNT_SELECTION = 2,
+  /** 결제 (예약) */
+  PAYMENT = 3,
+}
 
 /**
  * 예매 Step Store 상태
@@ -36,11 +43,17 @@ interface BookingStepState {
  * 예매 프로세스 Step 관리를 위한 zustand store
  */
 export const useBookingStepStore = create<BookingStepState>((set) => ({
-  step: 1,
+  step: BookingStep.SEAT_SELECTION,
   bookingData: null,
   setStep: (step) => set({ step }),
   setBookingData: (bookingData) => set({ bookingData }),
-  nextStep: () => set((state) => ({ step: Math.min(state.step + 1, 3) as BookingStep })),
-  prevStep: () => set((state) => ({ step: Math.max(state.step - 1, 1) as BookingStep })),
-  reset: () => set({ step: 1, bookingData: null }),
+  nextStep: () =>
+    set((state) => ({
+      step: Math.min(state.step + 1, BookingStep.PAYMENT) as BookingStep,
+    })),
+  prevStep: () =>
+    set((state) => ({
+      step: Math.max(state.step - 1, BookingStep.SEAT_SELECTION) as BookingStep,
+    })),
+  reset: () => set({ step: BookingStep.SEAT_SELECTION, bookingData: null }),
 }));

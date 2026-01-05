@@ -5,13 +5,13 @@
 // API
 export { useAvailableSchedulesByDate } from "./api/bookingSeatingChart.api";
 export { useCancelBooking } from "./api/useCancelBooking";
-export { useSeatStatus } from "./api/useSeatStatus";
 export { useStartBooking } from "./api/useStartBooking";
 // Hooks
 export { useBookingSeatSelection } from "./hooks/useBookingSeatSelection";
 export { useBookingStepControl } from "./hooks/useBookingStepControl";
 export { useBookingUIState } from "./hooks/useBookingUIState";
 // Utils
+export { createPaymentConfirmationData } from "./lib/createPaymentConfirmationData";
 export { transformToGradeInfoArray } from "./lib/transformSeatInfo";
 // Schemas
 export {
@@ -24,12 +24,16 @@ export type {
   DiscountMethod,
   GradeDiscountSelection,
   GradeInfo,
+  PaymentConfirmationData,
+  PaymentInfo,
+  PriceInfo,
   SeatGradeInfo,
+  TicketDetail,
   UserSelectedSeat,
 } from "./model/booking-seating-chart.types";
 // Store
 export {
-  type BookingStep,
+  BookingStep,
   useBookingStepStore,
 } from "./model/booking-step.store";
 export { default as BookingDiscountSelectionForm } from "./ui/BookingDiscountSelectionForm";

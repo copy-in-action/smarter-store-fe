@@ -1,4 +1,4 @@
-import type { BookingSeatResponseGrade } from "@/shared/api/orval/types";
+import type { SeatGrade } from "@/shared/api/orval/types";
 import type { SeatChartConfig, SeatPosition } from "../types/seatLayout.types";
 
 /**
@@ -31,7 +31,7 @@ export const getSeatType = (
   row: number,
   col: number,
   config: SeatChartConfig,
-): BookingSeatResponseGrade => {
+): SeatGrade => {
   // 각 좌석 타입의 positions를 확인 (구체적인 것부터 확인)
   for (const [seatTypeKey, seatType] of Object.entries(config.seatTypes)) {
     if (!seatType || !seatType.positions) continue;
@@ -46,7 +46,7 @@ export const getSeatType = (
         Number(rowPart) - 1 === row &&
         Number(colPart) - 1 === col
       ) {
-        return seatTypeKey as BookingSeatResponseGrade;
+        return seatTypeKey as SeatGrade;
       }
     }
   }
@@ -60,7 +60,7 @@ export const getSeatType = (
 
       // "3:" 형태 - 3행 전체
       if (rowPart && !colPart && Number(rowPart) - 1 === row) {
-        return seatTypeKey as BookingSeatResponseGrade;
+        return seatTypeKey as SeatGrade;
       }
     }
   }
@@ -74,16 +74,14 @@ export const getSeatType = (
 
       // ":5" 형태 - 5열 전체
       if (!rowPart && colPart && Number(colPart) - 1 === col) {
-        return seatTypeKey as BookingSeatResponseGrade;
+        return seatTypeKey as SeatGrade;
       }
     }
   }
 
   // 기본값: 마지막 좌석 타입 반환
   const seatTypeKeys = Object.keys(config.seatTypes);
-  return (
-    (seatTypeKeys[seatTypeKeys.length - 1] as BookingSeatResponseGrade) || "B"
-  );
+  return (seatTypeKeys[seatTypeKeys.length - 1] as SeatGrade) || "B";
 };
 
 /**
