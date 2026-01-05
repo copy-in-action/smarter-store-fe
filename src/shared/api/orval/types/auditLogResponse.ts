@@ -7,10 +7,10 @@
 **관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
-import type { AuditLogResponseUserRole } from './auditLogResponseUserRole';
-import type { AuditLogResponseAction } from './auditLogResponseAction';
-import type { AuditLogResponseCategory } from './auditLogResponseCategory';
-import type { AuditLogResponseTargetType } from './auditLogResponseTargetType';
+import type { Role } from './role';
+import type { AuditAction } from './auditAction';
+import type { AuditCategory } from './auditCategory';
+import type { AuditTargetType } from './auditTargetType';
 
 /**
  * 감사 로그 응답
@@ -22,16 +22,12 @@ export interface AuditLogResponse {
   userId: number;
   /** 사용자 이메일 */
   userEmail?: string;
-  /** 사용자 역할 */
-  userRole?: AuditLogResponseUserRole;
-  /** 액션 */
-  action: AuditLogResponseAction;
+  userRole?: Role;
+  action: AuditAction;
   /** 액션 설명 */
   actionDescription: string;
-  /** 카테고리 */
-  category: AuditLogResponseCategory;
-  /** 대상 타입 */
-  targetType?: AuditLogResponseTargetType;
+  category: AuditCategory;
+  targetType?: AuditTargetType;
   /** 대상 ID */
   targetId?: string;
   /** 설명 */

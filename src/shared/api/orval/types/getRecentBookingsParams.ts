@@ -7,19 +7,10 @@
 **관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
-import type { GetRecentBookingsStatus } from './getRecentBookingsStatus';
+import type { BookingStatus } from './bookingStatus';
 
 export type GetRecentBookingsParams = {
-/**
- * 조회 건수 (기본: 10, 최대: 50)
- */
 limit?: number;
-/**
- * 예매 상태 (PENDING: 결제 대기중, CONFIRMED: 예매 확정, CANCELLED: 예매 취소, EXPIRED: 시간 만료)
- */
-status?: GetRecentBookingsStatus;
-/**
- * 공연 ID (선택)
- */
+bookingStatus?: BookingStatus;
 performanceId?: number;
 };

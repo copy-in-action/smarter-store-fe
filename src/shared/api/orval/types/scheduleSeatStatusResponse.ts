@@ -7,6 +7,7 @@
 **관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
+import type { SeatPositionResponse } from './seatPositionResponse';
 
 /**
  * 회차별 좌석 상태 목록 응답 DTO
@@ -14,8 +15,8 @@
 export interface ScheduleSeatStatusResponse {
   /** 회차 ID */
   scheduleId: number;
-  /** 점유 중인 좌석 목록 (row,col 형식) */
-  pending: string[];
-  /** 예약 완료된 좌석 목록 (row,col 형식) */
-  reserved: string[];
+  /** 점유 중인 좌석 목록 */
+  pending: SeatPositionResponse[];
+  /** 예약 완료된 좌석 목록 */
+  reserved: SeatPositionResponse[];
 }

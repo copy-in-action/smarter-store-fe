@@ -12,7 +12,6 @@ import type {
   ErrorResponse,
   LoginRequest,
   OtpConfirmationRequest,
-  RefreshTokenRequest,
   SignupRequest,
   UserResponse
 } from '.././types';
@@ -71,7 +70,7 @@ export const signup = async (signupRequest: SignupRequest, options?: RequestInit
 
 
 /**
- * 리프레시 토큰으로 새로운 액세스 토큰을 발급받습니다.
+ * 쿠키의 리프레시 토큰으로 새로운 액세스 토큰을 발급받습니다.
 
 **권한: 누구나**
  * @summary 토큰 갱신
@@ -103,23 +102,22 @@ export const getRefreshUrl = () => {
   return `https://ticket-api.devhong.cc/api/auth/refresh`
 }
 
-export const refresh = async (refreshTokenRequest: RefreshTokenRequest, options?: RequestInit): Promise<refreshResponse> => {
+export const refresh = async ( options?: RequestInit): Promise<refreshResponse> => {
   
   return orvalFetch<refreshResponse>(getRefreshUrl(),
   {      
     ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      refreshTokenRequest,)
+    method: 'POST'
+    
+    
   }
 );}
 
 
 /**
- * 사용자 세션을 종료하고 인증 쿠키를 삭제합니다.
+ * 사용자 세션을 종료하고 인증 쿠키 및 Refresh Token을 삭제합니다.
 
-**권한: 누구나**
+**권한: USER, ADMIN**
 
 **[Audit Log]** 이 작업은 감사 로그에 기록됩니다.
  * @summary 로그아웃

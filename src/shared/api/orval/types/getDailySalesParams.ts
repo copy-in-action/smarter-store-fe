@@ -9,16 +9,5 @@
  */
 
 export type GetDailySalesParams = {
-/**
- * 조회 시작일
- */
-startDate: string;
-/**
- * 조회 종료일
- */
-endDate: string;
-/**
- * 공연 ID (선택)
- */
-performanceId?: number;
+date: string;
 };
