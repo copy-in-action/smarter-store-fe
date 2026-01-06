@@ -27,14 +27,11 @@ import { venueHandlers } from "./venue.handlers";
  *
  * [공연장]
  * - venueHandlers: GET /api/venues/:id/seating-chart
- *
- * [예매]
- * - bookingHandlers: POST /api/bookings/start, DELETE /api/bookings/:id
  */
 export const handlers = [
-  getPerformanceHandler, // 공연 상세 정보 조회
-  getSchedulesHandler, // 회차 목록 조회
-  getScheduleDatesHandler, // 예매 가능한 날짜 목록 조회
-  ...scheduleHandlers, // 회차 정보 조회
-  ...venueHandlers, // 좌석 배치도 조회
+  // getPerformanceHandler, // 공연 상세 정보 조회
+  // getSchedulesHandler, // 회차 목록 조회
+  // getScheduleDatesHandler, // 예매 가능한 날짜 목록 조회
+  // ...scheduleHandlers, // 회차 정보 조회
+  // ...venueHandlers, // 좌석 배치도 조회
 ];

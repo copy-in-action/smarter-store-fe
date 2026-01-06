@@ -15,7 +15,7 @@ export default async function RootLayout({
   return (
     <>
       <Header />
-      <main className="mb-20 sm:mb-0">{children}</main>
+      <main className="mb-14 sm:mb-0">{children}</main>
       <BottomNavigation />
     </>
   );

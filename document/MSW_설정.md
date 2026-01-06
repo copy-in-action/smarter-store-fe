@@ -314,7 +314,7 @@ export default async function RootLayout({ children }) {
   seatingChart?: {                    // 좌석 배치도 JSON
     rows: number;                     // 총 행 수
     columns: number;                  // 총 열 수
-    seatTypes: Partial<Record<BookingSeatResponseGrade, SeatType>>;
+    seatTypes: Partial<Record<SeatGrade, SeatType>>;
     disabledSeats: SeatPosition[];    // 비활성 좌석 목록
     rowSpacers: number[];             // 행 간격 위치
     columnSpacers: number[];          // 열 간격 위치

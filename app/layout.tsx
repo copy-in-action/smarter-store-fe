@@ -80,21 +80,21 @@ export default async function RootLayout({
       <body
         className={`${inter.variable} ${notoSansKR.variable} font-sans antialiased h-auto`}
       >
-        <MSWProvider>
-          <QueryProvider>
-            <DeviceProvider initialIsMobileDevice={initialIsMobileDevice}>
-              <AuthProvider
-                hasInitialAuth={isFetchMe}
-                initialUserData={initialUserData}
-              >
-                <AuthEventHandler />
-                <TokenRefreshManager />
-                {children}
-              </AuthProvider>
-            </DeviceProvider>
-          </QueryProvider>
-          <Toaster position="top-center" richColors theme="light" />
-        </MSWProvider>
+        {/* <MSWProvider> */}
+        <QueryProvider>
+          <DeviceProvider initialIsMobileDevice={initialIsMobileDevice}>
+            <AuthProvider
+              hasInitialAuth={isFetchMe}
+              initialUserData={initialUserData}
+            >
+              <AuthEventHandler />
+              <TokenRefreshManager />
+              {children}
+            </AuthProvider>
+          </DeviceProvider>
+        </QueryProvider>
+        <Toaster position="top-center" richColors theme="light" />
+        {/* </MSWProvider> */}
       </body>
     </html>
   );
