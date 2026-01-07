@@ -9,87 +9,97 @@ Generate a complete CRUD system for admin panel following FSD architecture and C
 
 ## Arguments
 
-- `$1`: **Domain Name** (kebab-case, e.g., "coupon", "product-category", "user-profile")
-- `$2`: **Display Name** (Korean, e.g., "쿠폰", "상품 카테고리", "사용자 프로필")
-- `$3`: **Icon Name** (lucide-react icon, e.g., "Ticket", "Package", "Users")
+- `$1`: **Domain Name** (kebab-case, e.g., "coupon", "product-category")
+- `$2`: **Display Name** (Korean, e.g., "쿠폰", "상품 카테고리")
+- `$3`: **Icon Name** (lucide-react icon, e.g., "Ticket", "Package")
 
 ## Example Usage
 
 ```bash
 /generate-crud coupon 쿠폰 Ticket
 /generate-crud product-category "상품 카테고리" Package
-/generate-crud user-profile "사용자 프로필" Users
 ```
 
-## What Gets Generated
+## ⚠️ CRITICAL: Orval 기반 개발
 
-### 1. PAGES 상수 추가 (`src/shared/constants/routes.ts`)
+**반드시 다음 순서로 진행:**
+
+1. ✅ **Orval 타입 확인** (`src/shared/api/orval/types/`)
+   - `[Domain]CreateRequest` - 생성 요청 타입
+   - `[Domain]Response` - 응답 타입
+
+2. ✅ **Orval API 확인** (`src/shared/api/orval/admin-[domain]/`)
+   - `getAll[Domain]s()`, `get[Domain](id)`, `create[Domain]()` 등
+
+3. ✅ **React Query 사용** (Admin용)
+   - Entity API에서 useQuery, useMutation hooks 생성
+
+## FSD Structure
+
+**⚠️ 중요: Admin 전용 - admin 경로 사용**
+
+```
+src/
+├── entities/[domain]/
+│   ├── api/[domain].api.ts (React Query hooks)
+│   ├── model/[domain].schema.ts (Zod schema)
+│   └── index.ts
+├── features/admin/ (관리자 전용)
+│   ├── [domain]-form/ (Form component)
+│   └── [domain]-table/ (DataTable)
+├── views/admin/ (관리자 전용)
+│   └── [domain]/ (list/detail/create/edit)
+└── widgets/admin-sidebar/
+
+app/admin/[domain]s/ (4개 페이지)
+```
+
+**서비스(일반 사용자)용이면:**
+```
+features/service/[domain]-form/
+views/service/[domain]/
+app/(layout)/[domain]s/
+```
+
+## 생성 파일 목록
+
+### 1. PAGES 상수 (`src/shared/constants/routes.ts`)
 
 ```typescript
-ADMIN_PAGES.ADMIN[DOMAIN_UPPER]: {
-  LIST: {
-    path: "/admin/[domain]s",
-    metadata: {
-      title: "[DisplayName] 관리 | 관리자",
-      description: "등록된 [DisplayName]을 관리하고 새로운 [DisplayName]을 추가할 수 있습니다.",
-    } as Metadata,
-  },
-  DETAIL: {
-    path: (id: number) => `/admin/[domain]s/${id}`,
-    metadata: {
-      title: "[DisplayName] 상세 | 관리자",
-      description: "[DisplayName] 상세 페이지",
-    } as Metadata,
-  },
-  CREATE: {
-    path: "/admin/[domain]s/create",
-    metadata: {
-      title: "[DisplayName] 등록 | 관리자",
-      description: "새로운 [DisplayName]을 등록하는 관리자 페이지",
-    } as Metadata,
-  },
-  EDIT: {
-    path: (id: number) => `/admin/[domain]s/${id}/edit`,
-    metadata: {
-      title: "[DisplayName] 수정 | 관리자",
-      description: "[DisplayName] 정보를 수정하는 관리자 페이지",
-    } as Metadata,
-  },
+[DOMAIN_UPPER]: {
+  LIST: { path: "/admin/[domain]s", metadata: {...} },
+  DETAIL: { path: (id) => `/admin/[domain]s/${id}`, metadata: {...} },
+  CREATE: { path: "/admin/[domain]s/create", metadata: {...} },
+  EDIT: { path: (id) => `/admin/[domain]s/${id}/edit`, metadata: {...} },
 }
 ```
 
-### 2. AdminSidebar 메뉴 추가 (`src/widgets/admin-sidebar/lib/sidebarData.ts`)
+### 2. AdminSidebar 메뉴 (`src/widgets/admin-sidebar/lib/sidebarData.ts`)
 
 ```typescript
 {
   title: "[DisplayName]",
-  url: "#",
   icon: [IconName],
   items: [
-    {
-      title: "[DisplayName] 리스트",
-      url: PAGES.ADMIN.[DOMAIN_UPPER].LIST.path,
-    },
-    {
-      title: "[DisplayName] 추가",
-      url: PAGES.ADMIN.[DOMAIN_UPPER].CREATE.path,
-    },
+    { title: "[DisplayName] 리스트", url: PAGES.ADMIN.[DOMAIN].LIST.path },
+    { title: "[DisplayName] 추가", url: PAGES.ADMIN.[DOMAIN].CREATE.path },
   ],
 }
 ```
 
 ### 3. Entity Schema (`src/entities/[domain]/model/[domain].schema.ts`)
 
+**중요**: Orval CreateRequest → Zod 변환, update는 partial()
+
 ```typescript
 import { z } from "zod";
 
 /**
- * [Domain] 생성 요청 스키마
+ * [Domain] 생성 요청 스키마 (Orval [Domain]CreateRequest 기반)
  */
 export const create[Domain]Schema = z.object({
-  /** 필드 설명 */
-  name: z.string().min(1, "이름을 입력해주세요"),
-  // orval API 스펙 기반 필드 추가
+  // Orval CreateRequest의 모든 필드를 Zod로 변환
+  // 예: name: z.string().min(1, "입력해주세요")
 });
 
 /**
@@ -101,562 +111,204 @@ export type Create[Domain]Form = z.infer<typeof create[Domain]Schema>;
 export type Update[Domain]Form = z.infer<typeof update[Domain]Schema>;
 ```
 
-**Index**: `src/entities/[domain]/index.ts`
+### 4. Entity API (`src/entities/[domain]/api/[domain].api.ts`)
 
-### 4. API Functions (`src/entities/[domain]/api/[domain].api.ts`)
+React Query hooks 생성:
 
 ```typescript
-import { api } from "@/shared/api";
-import type { [Domain] } from "@/shared/api/generated";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getAll[Domain]s, get[Domain], create[Domain] } from "@/shared/api/orval/...";
 
-/**
- * [Domain] 목록 조회
- */
-export async function get[Domain]List() {
-  const response = await api.get<[Domain][]>("/api/[domain]s");
-  return response.data;
-}
+export const [domain]QueryKeys = {
+  all: ["[domain]s"] as const,
+  lists: () => [[domain]QueryKeys.all, "list"] as const,
+  details: () => [[domain]QueryKeys.all, "detail"] as const,
+  detail: (id: number) => [[domain]QueryKeys.details(), id] as const,
+};
 
-/**
- * [Domain] 상세 조회
- */
-export async function get[Domain](id: number) {
-  const response = await api.get<[Domain]>(`/api/[domain]s/${id}`);
-  return response.data;
-}
-
-/**
- * [Domain] 생성
- */
-export async function create[Domain](data: Create[Domain]Form) {
-  const response = await api.post<[Domain]>("/api/[domain]s", data);
-  return response.data;
-}
-
-/**
- * [Domain] 수정
- */
-export async function update[Domain](id: number, data: Update[Domain]Form) {
-  const response = await api.put<[Domain]>(`/api/[domain]s/${id}`, data);
-  return response.data;
-}
-
-/**
- * [Domain] 삭제
- */
-export async function delete[Domain](id: number) {
-  await api.delete(`/api/[domain]s/${id}`);
-}
+// useGetAll[Domain]s, useGet[Domain], useCreate[Domain], useUpdate[Domain], useDelete[Domain]
 ```
 
-### 5. Form Schema (`src/features/[domain]-form/model/[domain]-form.schema.ts`)
+### 5. Form Schema
+
+**경로:**
+- 관리자: `src/features/admin/[domain]-form/model/[domain]-form.schema.ts`
+- 서비스: `src/features/service/[domain]-form/model/[domain]-form.schema.ts`
+
+**핵심 원칙:**
+- ❌ **NO transform** - UI 데이터 구조와 일치
+- ✅ **Entity 상속** + 복합 검증만
+- ✅ **날짜 변환은 onSubmit에서 처리**
 
 ```typescript
-import { create[Domain]Schema, update[Domain]Schema } from "@/entities/[domain]";
+import { create[Domain]Schema } from "@/entities/[domain]";
 import { z } from "zod";
 
-/**
- * [Domain] 생성 폼 스키마 (문자열→숫자 변환)
- */
 export const create[Domain]FormSchema = create[Domain]Schema.extend({
-  // transform 필드 추가
-});
+  // 추가 검증만 (transform 금지)
+}).refine((data) => {
+  // 복합 검증 (예: 날짜 비교)
+  return true;
+}, { message: "검증 실패", path: ["field"] });
 
-/**
- * [Domain] 수정 폼 스키마
- */
-export const update[Domain]FormSchema = update[Domain]Schema.extend({
-  // transform 필드 추가
-});
+export const update[Domain]FormSchema = create[Domain]FormSchema
+  .extend({
+    // Edit 모드 전용 필드 추가 (예: isActive)
+  })
+  .partial();
 
-export type Create[Domain]FormInput = z.input<typeof create[Domain]FormSchema>;
-export type Create[Domain]FormData = z.output<typeof create[Domain]FormSchema>;
-export type Update[Domain]FormInput = z.input<typeof update[Domain]FormSchema>;
-export type Update[Domain]FormData = z.output<typeof update[Domain]FormSchema>;
+export type Create[Domain]FormInput = z.infer<typeof create[Domain]FormSchema>;
+export type Update[Domain]FormInput = z.infer<typeof update[Domain]FormSchema>;
+
+// 호환성
+export const [domain]FormSchema = create[Domain]FormSchema;
+export type [Domain]FormInput = Create[Domain]FormInput;
 ```
 
-**Index**: `src/features/[domain]-form/index.ts`
+### 6. Form Component
 
-### 6. Form Component (`src/features/[domain]-form/ui/[Domain]Form.tsx`)
+**경로:**
+- 관리자: `src/features/admin/[domain]-form/ui/[Domain]Form.tsx`
+- 서비스: `src/features/service/[domain]-form/ui/[Domain]Form.tsx`
+
+**핵심 패턴:**
 
 ```typescript
-'use client';
+"use client";
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/shared/ui/button';
-import { Input } from '@/shared/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
-
-interface [Domain]FormProps {
-  mode: 'create' | 'edit';
-  initialValues?: Partial<Create[Domain]FormInput>;
-  onSubmit: (data: Create[Domain]FormData | Update[Domain]FormData) => Promise<void>;
-  isLoading?: boolean;
-}
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { [Domain]CreateRequest } from "@/shared/api/orval/types";
 
 /**
- * [Domain] 생성/수정 폼
+ * Discriminated Union Props
  */
-export function [Domain]Form({ mode, initialValues, onSubmit, isLoading }: [Domain]FormProps) {
-  const schema = mode === 'create' ? create[Domain]FormSchema : update[Domain]FormSchema;
+type CreateProps = {
+  mode: "create";
+  initialValues?: never;
+  onSubmit: (data: [Domain]CreateRequest) => Promise<void>;
+  isLoading?: boolean;
+};
 
-  const form = useForm({
-    resolver: zodResolver(schema),
-    defaultValues: initialValues,
+type EditProps = {
+  mode: "edit";
+  initialValues: Partial<Update[Domain]FormInput>;
+  onSubmit: (data: Partial<[Domain]CreateRequest>) => Promise<void>;
+  isLoading?: boolean;
+};
+
+type [Domain]FormProps = CreateProps | EditProps;
+
+export function [Domain]Form({ mode, initialValues, onSubmit, isLoading }: [Domain]FormProps) {
+  // 1. Mode 기반 스키마 선택
+  const form = useForm<Create[Domain]FormInput | Update[Domain]FormInput>({
+    resolver: zodResolver(
+      mode === "edit" ? update[Domain]FormSchema : create[Domain]FormSchema
+    ),
+    defaultValues: getDefaultValues(),
   });
 
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{mode === 'create' ? '[DisplayName] 등록' : '[DisplayName] 수정'}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div>
-            <label htmlFor="name">이름</label>
-            <Input {...form.register('name')} placeholder="이름 입력" />
-            {form.formState.errors.name && (
-              <p className="text-sm text-red-500">{form.formState.errors.name.message}</p>
-            )}
-          </div>
-
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? '처리 중...' : mode === 'create' ? '등록' : '수정'}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
-  );
-}
-```
-
-### 7. DataTable Component (`src/features/[domain]-table/ui/[Domain]DataTable.tsx`)
-
-```typescript
-'use client';
-
-import { useRouter } from 'next/navigation';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/shared/ui/table';
-import { Button } from '@/shared/ui/button';
-import type { [Domain] } from '@/shared/api/generated';
-import { PAGES } from '@/shared/constants';
-
-interface [Domain]DataTableProps {
-  data: [Domain][];
-  onDelete?: (id: number) => void;
-}
-
-/**
- * [Domain] DataTable 컴포넌트
- * Row 클릭 시 상세 페이지로 이동
- */
-export function [Domain]DataTable({ data, onDelete }: [Domain]DataTableProps) {
-  const router = useRouter();
-
-  const handleRowClick = (id: number) => {
-    router.push(PAGES.ADMIN.[DOMAIN_UPPER].DETAIL.path(id));
+  // 2. 날짜 변환 헬퍼 (필요시)
+  const formatToApi = (dateString: string): string => {
+    return new Date(dateString).toISOString();
   };
 
-  return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>ID</TableHead>
-          <TableHead>이름</TableHead>
-          <TableHead className="text-right">작업</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data.map((item) => (
-          <TableRow
-            key={item.id}
-            onClick={() => handleRowClick(item.id)}
-            className="cursor-pointer hover:bg-muted/50"
-          >
-            <TableCell>{item.id}</TableCell>
-            <TableCell>{item.name}</TableCell>
-            <TableCell className="text-right">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  router.push(PAGES.ADMIN.[DOMAIN_UPPER].EDIT.path(item.id));
-                }}
-              >
-                수정
-              </Button>
-              {onDelete && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete(item.id);
-                  }}
-                >
-                  삭제
-                </Button>
-              )}
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  );
-}
-```
+  // 3. dirtyFields 기반 제출 (Edit 모드에서 변경된 필드만 전송)
+  const handleOnSubmit = async (values: Create[Domain]FormInput | Update[Domain]FormInput) => {
+    if (mode === "edit") {
+      const data = values as Update[Domain]FormInput;
+      const { dirtyFields } = form.formState;
+      const dirtyData: Partial<[Domain]CreateRequest> = {};
 
-**Index**: `src/features/[domain]-table/index.ts`
+      Object.keys(dirtyFields).forEach((key) => {
+        const k = key as keyof Update[Domain]FormInput;
+        const value = data[k];
+        if (value === undefined) return;
 
-### 8. View Components
+        // 날짜 필드 변환 (도메인별로 조정)
+        if (k === "validFrom" || k === "validUntil") {
+          dirtyData[k] = formatToApi(value as string);
+        } else {
+          (dirtyData as any)[k] = value;
+        }
+      });
 
-#### List View (`src/views/[domain]/list/ui/[Domain]ListView.tsx`)
-
-```typescript
-'use client';
-
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { [Domain]DataTable } from '@/features/[domain]-table';
-import { delete[Domain] } from '@/entities/[domain]';
-import { Button } from '@/shared/ui/button';
-import { PAGES } from '@/shared/constants';
-import type { [Domain] } from '@/shared/api/generated';
-
-interface [Domain]ListViewProps {
-  initialData: [Domain][];
-}
-
-/**
- * [Domain] 리스트 뷰
- */
-export function [Domain]ListView({ initialData }: [Domain]ListViewProps) {
-  const router = useRouter();
-  const [data, setData] = useState(initialData);
-
-  const handleDelete = async (id: number) => {
-    if (!confirm('[DisplayName]을(를) 삭제하시겠습니까?')) return;
-
-    try {
-      await delete[Domain](id);
-      setData(data.filter(item => item.id !== id));
-    } catch (error) {
-      console.error('삭제 실패:', error);
+      await onSubmit(dirtyData);
+    } else {
+      // Create 모드: 전체 데이터 변환
+      const data = values as Create[Domain]FormInput;
+      const createData: [Domain]CreateRequest = {
+        // 필드별로 변환 (날짜는 formatToApi 사용)
+      };
+      await onSubmit(createData);
     }
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">[DisplayName] 관리</h1>
-        <Button onClick={() => router.push(PAGES.ADMIN.[DOMAIN_UPPER].CREATE.path)}>
-          [DisplayName] 추가
-        </Button>
-      </div>
-      <[Domain]DataTable data={data} onDelete={handleDelete} />
-    </div>
+    <form onSubmit={form.handleSubmit(handleOnSubmit)}>
+      {/* Shadcn UI 컴포넌트 사용 */}
+      {/* Input, Select, Checkbox, Textarea 등 */}
+      {/* mode === "edit"일 때만 표시할 필드는 조건부 렌더링 */}
+    </form>
   );
 }
 ```
 
-#### Detail View (`src/views/[domain]/detail/ui/[Domain]DetailView.tsx`)
+### 7. Views
+
+**Create View**: useMutation으로 생성
+**Edit View**: useGet[Domain] + useUpdate[Domain]
+- ISO → YYYY-MM-DD 변환: `isoString.split("T")[0]`
+
+**List View**: useGetAll[Domain]s + DataTable
+
+### 8. App Routes (`app/admin/[domain]s/`)
 
 ```typescript
-import { Button } from '@/shared/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
-import { PAGES } from '@/shared/constants';
-import Link from 'next/link';
-import type { [Domain] } from '@/shared/api/generated';
-
-interface [Domain]DetailViewProps {
-  data: [Domain];
-}
-
-/**
- * [Domain] 상세 뷰
- */
-export function [Domain]DetailView({ data }: [Domain]DetailViewProps) {
-  return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">[DisplayName] 상세</h1>
-        <Link href={PAGES.ADMIN.[DOMAIN_UPPER].EDIT.path(data.id)}>
-          <Button>수정</Button>
-        </Link>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>{data.name}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <dl className="space-y-2">
-            <div>
-              <dt className="font-semibold">ID</dt>
-              <dd>{data.id}</dd>
-            </div>
-            {/* 추가 필드 표시 */}
-          </dl>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
+// page.tsx - List
+// [id]/page.tsx - Detail
+// create/page.tsx - Create
+// [id]/edit/page.tsx - Edit
 ```
 
-#### Create View (`src/views/[domain]/create/ui/[Domain]CreateView.tsx`)
+## 핵심 체크리스트
 
-```typescript
-'use client';
+### Schema & Form
+- [ ] NO transform (UI 데이터 유지)
+- [ ] Update schema는 partial()
+- [ ] Edit 전용 필드는 extend로 추가
+- [ ] Mode 기반 스키마 선택
+- [ ] dirtyFields로 변경 필드만 전송
+- [ ] Discriminated Union Props
 
-import { useRouter } from 'next/navigation';
-import { [Domain]Form } from '@/features/[domain]-form';
-import { create[Domain] } from '@/entities/[domain]';
-import { PAGES } from '@/shared/constants';
-import type { Create[Domain]FormData } from '@/features/[domain]-form';
+### API & Data
+- [ ] Orval 타입 직접 사용
+- [ ] React Query hooks (queryKeys, useQuery, useMutation)
+- [ ] Edit View에서 ISO → YYYY-MM-DD 변환
 
-/**
- * [Domain] 생성 뷰
- */
-export function [Domain]CreateView() {
-  const router = useRouter();
+### UI & UX
+- [ ] Shadcn UI 컴포넌트
+- [ ] Toast 메시지 (toast.success, toast.error)
+- [ ] 조건부 렌더링 (mode === "edit")
+- [ ] PAGES 상수 사용
 
-  const handleSubmit = async (data: Create[Domain]FormData) => {
-    try {
-      await create[Domain](data);
-      router.push(PAGES.ADMIN.[DOMAIN_UPPER].LIST.path);
-    } catch (error) {
-      console.error('생성 실패:', error);
-    }
-  };
+### FSD & Code Quality
+- [ ] JSDoc 주석 (함수, 인터페이스)
+- [ ] Public API (index.ts)
+- [ ] 레이어 의존성 준수
 
-  return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold">[DisplayName] 등록</h1>
-      <[Domain]Form mode="create" onSubmit={handleSubmit} />
-    </div>
-  );
-}
-```
+## 변환 패턴 예시
 
-#### Edit View (`src/views/[domain]/edit/ui/[Domain]EditView.tsx`)
+**날짜 필드:**
+- UI: `YYYY-MM-DD` (Input type="date")
+- API: ISO String
+- Edit View 초기값: `isoString.split("T")[0]`
+- onSubmit: `new Date(dateString).toISOString()`
 
-```typescript
-'use client';
+**Edit 전용 필드 (예: isActive):**
+- Update schema에만 추가
+- `mode === "edit"`일 때만 렌더링
+- Checkbox 컴포넌트 사용
 
-import { useRouter } from 'next/navigation';
-import { [Domain]Form } from '@/features/[domain]-form';
-import { update[Domain] } from '@/entities/[domain]';
-import { PAGES } from '@/shared/constants';
-import type { [Domain] } from '@/shared/api/generated';
-import type { Update[Domain]FormData } from '@/features/[domain]-form';
-
-interface [Domain]EditViewProps {
-  data: [Domain];
-}
-
-/**
- * [Domain] 수정 뷰
- */
-export function [Domain]EditView({ data }: [Domain]EditViewProps) {
-  const router = useRouter();
-
-  const handleSubmit = async (formData: Update[Domain]FormData) => {
-    try {
-      await update[Domain](data.id, formData);
-      router.push(PAGES.ADMIN.[DOMAIN_UPPER].DETAIL.path(data.id));
-    } catch (error) {
-      console.error('수정 실패:', error);
-    }
-  };
-
-  return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold">[DisplayName] 수정</h1>
-      <[Domain]Form mode="edit" initialValues={data} onSubmit={handleSubmit} />
-    </div>
-  );
-}
-```
-
-**Index files for all views**: `src/views/[domain]/*/index.ts`
-
-### 9. App Routes
-
-#### List Page (`app/admin/[domain]s/page.tsx`)
-
-```typescript
-import { get[Domain]List } from '@/entities/[domain]';
-import { [Domain]ListView } from '@/views/[domain]/list';
-import { PAGES } from '@/shared/constants';
-
-export const metadata = PAGES.ADMIN.[DOMAIN_UPPER].LIST.metadata;
-
-/**
- * [Domain] 리스트 페이지
- */
-export default async function [Domain]ListPage() {
-  const data = await get[Domain]List();
-  return <[Domain]ListView initialData={data} />;
-}
-```
-
-#### Detail Page (`app/admin/[domain]s/[id]/page.tsx`)
-
-```typescript
-import { get[Domain] } from '@/entities/[domain]';
-import { [Domain]DetailView } from '@/views/[domain]/detail';
-import { PAGES } from '@/shared/constants';
-
-export const metadata = PAGES.ADMIN.[DOMAIN_UPPER].DETAIL.metadata;
-
-interface Props {
-  params: Promise<{ id: string }>;
-}
-
-/**
- * [Domain] 상세 페이지
- */
-export default async function [Domain]DetailPage({ params }: Props) {
-  const { id } = await params;
-  const data = await get[Domain](parseInt(id));
-  return <[Domain]DetailView data={data} />;
-}
-```
-
-#### Create Page (`app/admin/[domain]s/create/page.tsx`)
-
-```typescript
-import { [Domain]CreateView } from '@/views/[domain]/create';
-import { PAGES } from '@/shared/constants';
-
-export const metadata = PAGES.ADMIN.[DOMAIN_UPPER].CREATE.metadata;
-
-/**
- * [Domain] 생성 페이지
- */
-export default function [Domain]CreatePage() {
-  return <[Domain]CreateView />;
-}
-```
-
-#### Edit Page (`app/admin/[domain]s/[id]/edit/page.tsx`)
-
-```typescript
-import { get[Domain] } from '@/entities/[domain]';
-import { [Domain]EditView } from '@/views/[domain]/edit';
-import { PAGES } from '@/shared/constants';
-
-export const metadata = PAGES.ADMIN.[DOMAIN_UPPER].EDIT.metadata;
-
-interface Props {
-  params: Promise<{ id: string }>;
-}
-
-/**
- * [Domain] 수정 페이지
- */
-export default async function [Domain]EditPage({ params }: Props) {
-  const { id } = await params;
-  const data = await get[Domain](parseInt(id));
-  return <[Domain]EditView data={data} />;
-}
-```
-
-## Implementation Checklist
-
-- [ ] PAGES 상수 추가 (routes.ts)
-- [ ] AdminSidebar 메뉴 추가 (sidebarData.ts)
-- [ ] Entity 스키마 생성 (순수 요청 스키마)
-- [ ] Entity API 함수 생성 (CRUD operations)
-- [ ] Form 스키마 생성 (transform + validation)
-- [ ] Form 컴포넌트 생성 (create/edit 모드)
-- [ ] DataTable 컴포넌트 생성 (row click → detail)
-- [ ] View 컴포넌트 생성 (list/detail/create/edit)
-- [ ] App Route 생성 (4개 페이지)
-- [ ] 모든 파일에 JSDoc 주석
-- [ ] 모든 인터페이스 프로퍼티 주석
-- [ ] Index.ts Public API exports
-- [ ] FSD 의존성 규칙 준수
-- [ ] Shadcn UI 컴포넌트 사용
-
-## FSD Structure Output
-
-```
-src/
-├── entities/
-│   └── [domain]/
-│       ├── api/
-│       │   └── [domain].api.ts
-│       ├── model/
-│       │   └── [domain].schema.ts
-│       └── index.ts
-├── features/
-│   ├── [domain]-form/
-│   │   ├── model/
-│   │   │   └── [domain]-form.schema.ts
-│   │   ├── ui/
-│   │   │   └── [Domain]Form.tsx
-│   │   └── index.ts
-│   └── [domain]-table/
-│       ├── ui/
-│       │   └── [Domain]DataTable.tsx
-│       └── index.ts
-├── views/
-│   └── [domain]/
-│       ├── list/
-│       │   ├── ui/
-│       │   │   └── [Domain]ListView.tsx
-│       │   └── index.ts
-│       ├── detail/
-│       │   ├── ui/
-│       │   │   └── [Domain]DetailView.tsx
-│       │   └── index.ts
-│       ├── create/
-│       │   ├── ui/
-│       │   │   └── [Domain]CreateView.tsx
-│       │   └── index.ts
-│       └── edit/
-│           ├── ui/
-│           │   └── [Domain]EditView.tsx
-│           └── index.ts
-└── widgets/
-    └── admin-sidebar/
-        └── lib/
-            └── sidebarData.ts (updated)
-
-app/
-└── admin/
-    └── [domain]s/
-        ├── page.tsx (list)
-        ├── create/
-        │   └── page.tsx
-        └── [id]/
-            ├── page.tsx (detail)
-            └── edit/
-                └── page.tsx
-
-src/shared/constants/
-└── routes.ts (updated)
-```
-
-## Key Features
-
-✅ **Complete CRUD**: List, Create, Detail, Edit, Delete
-✅ **Shadcn DataTable**: Row click navigation to detail page
-✅ **AdminSidebar Integration**: Auto-add menu with icon
-✅ **PAGES Constants**: Type-safe routing
-✅ **FSD Architecture**: Clean layer separation
-✅ **Full JSDoc**: All functions and interfaces documented
-✅ **Server Components**: List/Detail pages are Server Components
-✅ **Client Components**: Form and interactive components only
-✅ **Type Safety**: Full TypeScript with Zod validation
+**숫자 필드:**
+- `{...form.register("field", { valueAsNumber: true })}`
