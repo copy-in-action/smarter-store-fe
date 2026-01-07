@@ -1,4 +1,4 @@
-import { BarChart3, Music, Settings, ShoppingCart, Users } from "lucide-react";
+import { BarChart3, Gift, Music, Settings, ShoppingCart, Users } from "lucide-react";
 import { PAGES } from "@/shared/constants";
 import type { SidebarData } from "../model/types";
 
@@ -59,6 +59,21 @@ export const adminSidebarData: SidebarData = {
         {
           title: "판매자 리스트",
           url: PAGES.ADMIN.COMPANY.LIST.path,
+        },
+      ],
+    },
+    {
+      title: "쿠폰",
+      url: "#",
+      icon: Gift,
+      items: [
+        {
+          title: "쿠폰 리스트",
+          url: PAGES.ADMIN.COUPON.LIST.path,
+        },
+        {
+          title: "쿠폰 추가",
+          url: PAGES.ADMIN.COUPON.CREATE.path,
         },
       ],
     },

@@ -408,6 +408,40 @@ const ADMIN_PAGES = {
         } as Metadata,
       },
     },
+    COUPON: {
+      /** 쿠폰 목록 */
+      LIST: {
+        path: "/admin/coupons",
+        metadata: {
+          title: "쿠폰 관리 | 관리자",
+          description: "등록된 쿠폰을 관리하고 새로운 쿠폰을 추가할 수 있습니다.",
+        } as Metadata,
+      },
+      /** 쿠폰 상세 */
+      DETAIL: {
+        path: (id: number) => `/admin/coupons/${id}`,
+        metadata: {
+          title: "쿠폰 상세 | 관리자",
+          description: "쿠폰 상세 페이지",
+        } as Metadata,
+      },
+      /** 쿠폰 생성 */
+      CREATE: {
+        path: "/admin/coupons/create",
+        metadata: {
+          title: "쿠폰 등록 | 관리자",
+          description: "새로운 쿠폰을 등록하는 관리자 페이지",
+        } as Metadata,
+      },
+      /** 쿠폰 수정 */
+      EDIT: {
+        path: (id: number) => `/admin/coupons/${id}/edit`,
+        metadata: {
+          title: "쿠폰 수정 | 관리자",
+          description: "쿠폰 정보를 수정하는 관리자 페이지",
+        } as Metadata,
+      },
+    },
   },
 } as const;
 
