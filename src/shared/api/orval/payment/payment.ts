@@ -20,6 +20,8 @@ import { orvalFetch } from '../../fetch-wrapper';
 
 /**
  * 예매 정보를 기반으로 새로운 결제 요청을 생성합니다.
+
+**권한: USER**
  * @summary 결제 요청 생성
  */
 export type createPaymentResponse200 = {
@@ -64,6 +66,8 @@ export const createPayment = async (paymentCreateRequest: PaymentCreateRequest, 
 
 /**
  * PG사 결제 완료 후 승인 처리를 수행합니다.
+
+**권한: USER**
  * @summary 결제 완료 승인
  */
 export type completePaymentResponse200 = {
@@ -109,6 +113,8 @@ export const completePayment = async (id: string,
 
 /**
  * 결제 완료된 건에 대해 취소를 요청합니다.
+
+**권한: USER**
  * @summary 결제 취소
  */
 export type cancelPaymentResponse200 = {
@@ -147,6 +153,8 @@ export const cancelPayment = async (id: string,
 
 /**
  * 특정 결제 건의 상세 내역과 항목을 조회합니다.
+
+**권한: USER**
  * @summary 결제 상세 조회
  */
 export type getPaymentResponse200 = {
@@ -183,6 +191,8 @@ export const getPayment = async (id: string, options?: RequestInit): Promise<get
 
 /**
  * 로그인한 사용자의 전체 결제 내역을 조회합니다.
+
+**권한: USER**
  * @summary 내 결제 목록 조회
  */
 export type getMyPaymentsResponse200 = {

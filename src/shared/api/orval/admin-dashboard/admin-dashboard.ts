@@ -255,6 +255,9 @@ export const getPerformanceDetailSales = async (performanceId: number, options?:
 
 
 /**
+ * 최근 발생한 예매 내역들을 조회합니다.
+
+**권한: ADMIN**
  * @summary 최근 예매 내역 조회
  */
 export type getRecentBookingsResponse200 = {

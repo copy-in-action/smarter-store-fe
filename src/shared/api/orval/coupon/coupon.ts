@@ -18,6 +18,8 @@ import { orvalFetch } from '../../fetch-wrapper';
 
 /**
  * 좌석별로 적용된 쿠폰의 유효성을 검증하고 할인 금액을 계산합니다.
+
+**권한: USER**
  * @summary 좌석별 쿠폰 적용 검증
  */
 export type validateCouponsResponse200 = {
@@ -62,6 +64,8 @@ export const validateCoupons = async (couponValidateRequest: CouponValidateReque
 
 /**
  * 현재 사용 가능한 쿠폰 목록을 조회합니다. 남은 사용 횟수가 0인 쿠폰은 제외됩니다.
+
+**권한: USER**
  * @summary 사용 가능한 쿠폰 목록 조회
  */
 export type getAvailableCouponsResponse200 = {

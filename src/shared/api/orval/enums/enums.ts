@@ -15,6 +15,8 @@ import { orvalFetch } from '../../fetch-wrapper';
 
 /**
  * 모든 공통 Enum을 한번에 조회합니다. 앱 초기화 시 호출하여 캐싱해서 사용하세요.
+
+**권한: 누구나**
  * @summary 전체 Enum 목록
  */
 export type getAllEnumsResponse200 = {

@@ -10,13 +10,113 @@
 import type {
   CouponCreateRequest,
   CouponResponse,
+  CouponUpdateRequest,
   ErrorResponse
 } from '.././types';
 
 import { orvalFetch } from '../../fetch-wrapper';
 
 /**
+ * 특정 쿠폰의 상세 정보를 조회합니다.
+
+**권한: ADMIN**
+ * @summary 쿠폰 상세 조회
+ */
+export type getCouponResponse200 = {
+  data: CouponResponse
+  status: 200
+}
+
+export type getCouponResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type getCouponResponseSuccess = (getCouponResponse200) & {
+  headers: Headers;
+};
+export type getCouponResponseError = (getCouponResponse404) & {
+  headers: Headers;
+};
+
+export type getCouponResponse = (getCouponResponseSuccess | getCouponResponseError)
+
+export const getGetCouponUrl = (id: number,) => {
+
+
+  
+
+  return `https://ticket-api.devhong.cc/api/admin/coupons/${id}`
+}
+
+export const getCoupon = async (id: number, options?: RequestInit): Promise<getCouponResponse> => {
+  
+  return orvalFetch<getCouponResponse>(getGetCouponUrl(id),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+/**
+ * 쿠폰 정보를 수정합니다.
+
+**권한: ADMIN**
+ * @summary 쿠폰 수정
+ */
+export type updateCouponResponse200 = {
+  data: CouponResponse
+  status: 200
+}
+
+export type updateCouponResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type updateCouponResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type updateCouponResponseSuccess = (updateCouponResponse200) & {
+  headers: Headers;
+};
+export type updateCouponResponseError = (updateCouponResponse400 | updateCouponResponse404) & {
+  headers: Headers;
+};
+
+export type updateCouponResponse = (updateCouponResponseSuccess | updateCouponResponseError)
+
+export const getUpdateCouponUrl = (id: number,) => {
+
+
+  
+
+  return `https://ticket-api.devhong.cc/api/admin/coupons/${id}`
+}
+
+export const updateCoupon = async (id: number,
+    couponUpdateRequest: CouponUpdateRequest, options?: RequestInit): Promise<updateCouponResponse> => {
+  
+  return orvalFetch<updateCouponResponse>(getUpdateCouponUrl(id),
+  {      
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      couponUpdateRequest,)
+  }
+);}
+
+
+/**
  * 전체 쿠폰 목록을 조회합니다.
+
+**권한: ADMIN**
  * @summary 쿠폰 목록 조회
  */
 export type getAllCouponsResponse200 = {
@@ -53,6 +153,8 @@ export const getAllCoupons = async ( options?: RequestInit): Promise<getAllCoupo
 
 /**
  * 새로운 쿠폰을 생성합니다.
+
+**권한: ADMIN**
  * @summary 쿠폰 생성
  */
 export type createCouponResponse200 = {
@@ -97,6 +199,8 @@ export const createCoupon = async (couponCreateRequest: CouponCreateRequest, opt
 
 /**
  * 쿠폰을 비활성화합니다. 비활성화된 쿠폰은 사용이 불가합니다.
+
+**권한: ADMIN**
  * @summary 쿠폰 비활성화
  */
 export type deactivateCouponResponse200 = {
@@ -132,49 +236,6 @@ export const deactivateCoupon = async (id: number, options?: RequestInit): Promi
   {      
     ...options,
     method: 'PATCH'
-    
-    
-  }
-);}
-
-
-/**
- * 특정 쿠폰의 상세 정보를 조회합니다.
- * @summary 쿠폰 상세 조회
- */
-export type getCouponResponse200 = {
-  data: CouponResponse
-  status: 200
-}
-
-export type getCouponResponse404 = {
-  data: ErrorResponse
-  status: 404
-}
-    
-export type getCouponResponseSuccess = (getCouponResponse200) & {
-  headers: Headers;
-};
-export type getCouponResponseError = (getCouponResponse404) & {
-  headers: Headers;
-};
-
-export type getCouponResponse = (getCouponResponseSuccess | getCouponResponseError)
-
-export const getGetCouponUrl = (id: number,) => {
-
-
-  
-
-  return `https://ticket-api.devhong.cc/api/admin/coupons/${id}`
-}
-
-export const getCoupon = async (id: number, options?: RequestInit): Promise<getCouponResponse> => {
-  
-  return orvalFetch<getCouponResponse>(getGetCouponUrl(id),
-  {      
-    ...options,
-    method: 'GET'
     
     
   }

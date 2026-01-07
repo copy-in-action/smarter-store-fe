@@ -9,9 +9,9 @@
  */
 
 /**
- * 쿠폰 생성 요청 (관리자)
+ * 쿠폰 수정 요청 (관리자)
  */
-export interface CouponCreateRequest {
+export interface CouponUpdateRequest {
   /** 쿠폰명 */
   name: string;
   /**
@@ -23,4 +23,6 @@ export interface CouponCreateRequest {
   validFrom: string;
   /** 유효 종료일 */
   validUntil: string;
+  /** 활성화 여부 */
+  isActive: boolean;
 }

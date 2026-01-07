@@ -12,8 +12,8 @@
  * 좌석별 쿠폰 적용 요청
  */
 export interface SeatCouponRequest {
-  /** 좌석 ID (BookingItem ID) */
-  seatId: number;
+  /** 예매 좌석 ID (BookingSeat ID) */
+  bookingSeatId: number;
   /** 적용할 쿠폰 ID */
   couponId: number;
   /**

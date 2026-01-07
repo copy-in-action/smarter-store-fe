@@ -7,9 +7,13 @@
 **관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
+import type { SeatGrade } from './seatGrade';
 
 export interface PaymentItemResponse {
   performanceTitle: string;
-  seatLabel: string;
+  seatGrade: SeatGrade;
+  section: string;
+  row: number;
+  col: number;
   finalPrice: number;
 }
