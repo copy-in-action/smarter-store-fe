@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { Fragment } from "react/jsx-runtime";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
 import { Skeleton } from "@/shared/ui/skeleton";
-import type { TicketDetail } from "../../booking-seating-chart";
+import type { TicketDetail } from "../../booking-process";
 
 /**
  * 티켓 주문 상세 Props

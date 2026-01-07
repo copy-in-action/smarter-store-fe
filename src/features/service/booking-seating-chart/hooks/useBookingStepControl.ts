@@ -1,10 +1,14 @@
 /**
  * 예매 Step 제어 및 API 연동 Hook
  */
+
+import {
+  type BookingSeatFormData,
+  BookingStep,
+  useBookingStepStore,
+} from "@/features/service/booking-process";
 import { useCancelBooking } from "../api/useCancelBooking";
 import { useStartBooking } from "../api/useStartBooking";
-import type { BookingSeatFormData } from "../model/booking-seating-chart.types";
-import { BookingStep, useBookingStepStore } from "../model/booking-step.store";
 
 /**
  * 예매 프로세스 Step 제어 및 API 연동을 담당하는 hook
@@ -36,7 +40,6 @@ export const useBookingStepControl = (scheduleId: number) => {
 
     startBooking(bookingData, {
       onSuccess: (response) => {
-        console.log("좌석 점유 성공:", response);
         setBookingData(response);
         setStep(BookingStep.DISCOUNT_SELECTION);
       },

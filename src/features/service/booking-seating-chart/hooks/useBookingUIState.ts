@@ -3,12 +3,12 @@
  */
 import { useMemo } from "react";
 import type { PerformanceResponse, SeatGrade } from "@/shared/api/orval/types";
+import type { UserSelectedSeat } from "../../booking-process";
 import {
   transformSeatGradeInfo,
   transformUserSelectedSeats,
 } from "../lib/seatTransformer";
 import { transformToGradeInfoArray } from "../lib/transformSeatInfo";
-import type { UserSelectedSeat } from "../model/booking-seating-chart.types";
 import { useBookingSeatSelection } from "./useBookingSeatSelection";
 
 /**

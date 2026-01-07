@@ -196,4 +196,3 @@ if (user.role === 'admin') {
 - [ ] FSD Public API export (index.ts)
 - [ ] PAGES 상수 사용 (routes.ts)
 - [ ] Shadcn UI 컴포넌트 활용
-- [ ] `pnpm lint` 통과

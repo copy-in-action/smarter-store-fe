@@ -9,7 +9,7 @@ import type {
 import type {
   PaymentConfirmationData,
   UserSelectedSeat,
-} from "../model/booking-seating-chart.types";
+} from "../../booking-process";
 import type { BookingDiscountSubmitData } from "../ui/BookingDiscountSelectionForm";
 
 /**
@@ -26,9 +26,6 @@ export function createPaymentConfirmationData(
   userSelectedSeats: UserSelectedSeat[],
   scheduleId: number,
 ): PaymentConfirmationData {
-  /**
-
-
   /**
    * 티켓 상세 정보 생성
    * - 등급별 좌석 정보와 할인 정보 조합

@@ -4,14 +4,15 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useCouponsQuery } from "@/entities/coupon";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
 import { PAGES } from "@/shared/constants";
 import { SeatChart } from "@/shared/lib/seat";
 import { PAYMENT_INFO_STORAGE_KEY } from "@/shared/lib/seat/constants/seatChart.constants";
+import { BookingStep } from "../../booking-process";
 import { useBookingStepControl } from "../hooks/useBookingStepControl";
 import { useBookingUIState } from "../hooks/useBookingUIState";
 import { createPaymentConfirmationData } from "../lib/createPaymentConfirmationData";
-import { BookingStep } from "../model/booking-step.store";
 import BookingDiscountSelectionForm, {
   type BookingDiscountSubmitData,
 } from "./BookingDiscountSelectionForm";
@@ -59,6 +60,8 @@ const BookingSeatingChart = ({
     clearSelection,
   } = useBookingUIState(performance, scheduleId);
 
+  const { data: couponData, isLoading: isCouponsLoading } = useCouponsQuery();
+
   /**
    * 좌석 선택 완료 핸들러
    * - userSelectedSeats를 좌석 점유 API 형식으로 변환하여 전달
@@ -74,7 +77,7 @@ const BookingSeatingChart = ({
     handleCompleteSelection(seats);
   };
 
-  if (seatChartConfig == null) {
+  if (seatChartConfig == null || isCouponsLoading) {
     return <LoadingSpinner />;
   }
 
@@ -135,6 +138,7 @@ const BookingSeatingChart = ({
         {step === BookingStep.DISCOUNT_SELECTION && (
           <BookingDiscountSelectionForm
             grades={selectedGradeInfoList}
+            discountMethods={couponData || []}
             onBackStep={handleBackStep}
             onSubmit={handleCompleteDiscount}
           />

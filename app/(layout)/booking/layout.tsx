@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { BookingHeader } from "@/features/service/booking-seating-chart";
+import { BookingHeader } from "@/widgets/booking-header";
 
 /**
  * Booking Layout Props

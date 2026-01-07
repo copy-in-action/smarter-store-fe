@@ -1,5 +1,5 @@
 import { Button } from "@/shared/ui/button";
-import type { PaymentConfirmationData } from "../../booking-seating-chart";
+import type { PaymentConfirmationData } from "../../booking-process";
 
 /**
  * 결제 정보 Props

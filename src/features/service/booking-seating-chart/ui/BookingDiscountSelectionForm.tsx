@@ -9,7 +9,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft, Minus, Plus } from "lucide-react";
 import { useMemo } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import type { SeatGrade } from "@/shared/api/orval/types";
+import type {
+  AvailableCouponResponse,
+  SeatGrade,
+} from "@/shared/api/orval/types";
 import {
   Accordion,
   AccordionContent,
@@ -24,20 +27,17 @@ import {
   FormItem,
   FormMessage,
 } from "@/shared/ui/form";
+import type { GradeInfo } from "../../booking-process";
 import {
   type BookingDiscountFormData,
   createBookingDiscountSchema,
 } from "../model/booking-discount.schema";
-import type {
-  DiscountMethod,
-  GradeInfo,
-} from "../model/booking-seating-chart.types";
 
 /**
  * 선택된 할인 항목 (최종 제출 데이터)
  */
 export interface SelectedDiscountItem {
-  id: string;
+  id: number; // 변경: string -> number
   name: string;
   discountRate: number;
   count: number;
@@ -59,25 +59,12 @@ export interface BookingDiscountSelectionFormProps {
   /** 등급별 좌석 정보 배열 */
   grades: GradeInfo[];
   /** 할인 방법 목록 (API로부터 받음, 없으면 기본값 사용) */
-  discountMethods?: DiscountMethod[];
+  discountMethods: AvailableCouponResponse[];
   /** 폼 제출 핸들러 */
   onSubmit?: (data: BookingDiscountSubmitData) => void;
   /** 이전 Step으로 돌아가기 핸들러 */
   onBackStep: () => void;
 }
-
-/**
- * 기본 할인 방법 목록 (API 없을 시 사용)
- */
-const DEFAULT_DISCOUNT_METHODS: DiscountMethod[] = [
-  { id: "general", name: "일반", discountRate: 0 },
-  { id: "rewatch", name: "재관람 할인", discountRate: 20 },
-  {
-    id: "personOfNationalMerit",
-    name: "국가 유공자 할인(본인)",
-    discountRate: 30,
-  },
-];
 
 /**
  * 예매 할인 선택 폼 컴포넌트
@@ -89,7 +76,7 @@ const DEFAULT_DISCOUNT_METHODS: DiscountMethod[] = [
  */
 const BookingDiscountSelectionForm = ({
   grades,
-  discountMethods = DEFAULT_DISCOUNT_METHODS,
+  discountMethods,
   onSubmit,
   onBackStep,
 }: BookingDiscountSelectionFormProps) => {
@@ -118,7 +105,7 @@ const BookingDiscountSelectionForm = ({
       Object.fromEntries(
         grades.map((g) => [
           g.grade,
-          Object.fromEntries(discountMethods.map((m) => [m.id, 0])),
+          Object.fromEntries(discountMethods.map((m) => [String(m.id), 0])),
         ]),
       ) as BookingDiscountFormData,
     [grades, discountMethods],
@@ -139,12 +126,13 @@ const BookingDiscountSelectionForm = ({
 
         const selectedItems: SelectedDiscountItem[] = Object.entries(discounts)
           .filter(([_, count]) => count > 0)
-          .map(([discountId, count]) => {
+          .map(([discountIdStr, count]) => {
+            const discountId = Number(discountIdStr); // string to number
             const method = discountMethods.find((m) => m.id === discountId);
             if (!method) {
               return {
                 id: discountId,
-                name: discountId,
+                name: discountIdStr, // Fallback name
                 discountRate: 0,
                 count,
                 price: gradeInfo.basePrice,
@@ -207,7 +195,7 @@ const BookingDiscountSelectionForm = ({
       return (
         sum +
         discountMethods.reduce((gradeSum, method) => {
-          const quantity = gradeDiscounts[method.id] || 0;
+          const quantity = gradeDiscounts[String(method.id)] || 0; // Ensure key is string
           const discountedPrice =
             gradeInfo.basePrice * (1 - method.discountRate / 100);
           return gradeSum + quantity * discountedPrice;
@@ -226,7 +214,7 @@ const BookingDiscountSelectionForm = ({
    */
   const handleQuantityChange = (
     grade: string,
-    discountId: string,
+    discountId: number, // Change to number
     delta: number,
   ) => {
     const currentValue = form.getValues(`${grade}.${discountId}`) || 0;

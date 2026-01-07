@@ -7,6 +7,7 @@
 export { useGetPerformanceSchedule } from "./api/useBookingPayment.api";
 
 // UI Components
+export { default as BookingPayment } from "./ui/BookingPayment";
 export { default as BookingPaymentInfo } from "./ui/BookingPaymentInfo";
 export { default as PaymentMethodSelector } from "./ui/PaymentMethodSelector";
 export { default as ReservationInfo } from "./ui/ReservationInfo";
