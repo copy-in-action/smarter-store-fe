@@ -7,7 +7,6 @@
 **관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
-import type { AvailableCouponResponseDiscountMethod } from './availableCouponResponseDiscountMethod';
 
 /**
  * 사용 가능한 쿠폰 응답
@@ -17,18 +16,8 @@ export interface AvailableCouponResponse {
   id: number;
   /** 쿠폰명 */
   name: string;
-  /** 쿠폰 설명 */
-  description?: string;
-  /** 할인 방식 */
-  discountMethod: AvailableCouponResponseDiscountMethod;
-  /** 할인값 */
-  discountValue: number;
-  /** 최대 할인금액 */
-  maxDiscountAmount?: number;
-  /** 최소 주문금액 */
-  minOrderAmount?: number;
-  /** 남은 사용 횟수 (null=무제한) */
-  remainingUsage?: number;
+  /** 할인율 */
+  discountRate: number;
   /** 유효 종료일 */
   validUntil: string;
 }

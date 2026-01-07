@@ -12,8 +12,8 @@
  * 좌석별 쿠폰 적용 결과
  */
 export interface SeatCouponResult {
-  /** 좌석 ID */
-  seatId: number;
+  /** 예매 좌석 ID */
+  bookingSeatId: number;
   /** 쿠폰 ID */
   couponId: number;
   /** 원가 */

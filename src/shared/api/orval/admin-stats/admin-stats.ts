@@ -20,6 +20,9 @@ import type {
 import { orvalFetch } from '../../fetch-wrapper';
 
 /**
+ * 특정 공연의 전체 매출 통계를 조회합니다.
+
+**권한: ADMIN**
  * @summary 공연별 매출 통계 조회
  */
 export type getPerformanceSalesResponse200 = {
@@ -55,6 +58,9 @@ export const getPerformanceSales = async (id: number, options?: RequestInit): Pr
 
 
 /**
+ * 지정된 날짜의 결제 수단별 통계를 조회합니다.
+
+**권한: ADMIN**
  * @summary 결제 수단별 통계 조회
  */
 export type getPaymentMethodStatsResponse200 = {
@@ -97,6 +103,9 @@ export const getPaymentMethodStats = async (params: GetPaymentMethodStatsParams,
 
 
 /**
+ * 지정된 날짜의 할인 종류별 통계를 조회합니다.
+
+**권한: ADMIN**
  * @summary 할인 종류별 통계 조회
  */
 export type getDiscountStatsResponse200 = {
@@ -139,6 +148,9 @@ export const getDiscountStats = async (params: GetDiscountStatsParams, options?:
 
 
 /**
+ * 지정된 날짜의 매출 통계를 조회합니다.
+
+**권한: ADMIN**
  * @summary 일별 매출 통계 조회
  */
 export type getDailySalesResponse200 = {

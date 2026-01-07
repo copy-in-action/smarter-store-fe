@@ -19,6 +19,8 @@ import { orvalFetch } from '../../fetch-wrapper';
 /**
  * 결제를 완료하고 예매를 최종 확정합니다.
 
+**권한: USER**
+
 **[Audit Log]** 이 작업은 감사 로그에 기록됩니다.
  * @summary 예매 확정
  */
@@ -75,6 +77,8 @@ export const confirmBooking = async (bookingId: string, options?: RequestInit): 
             - 기존 진행 중인 예매가 있으면 자동 취소 후 새 예매 생성
             - 동시에 같은 좌석을 선택한 경우 먼저 요청한 사용자만 성공 (409 Conflict)
 
+            **권한: USER**
+
             **[Audit Log]** 이 작업은 감사 로그에 기록됩니다.
         
  * @summary 예매 시작 (좌석 일괄 점유)
@@ -126,6 +130,8 @@ export const startBooking = async (startBookingRequest: StartBookingRequest, opt
 
 /**
  * 진행 중인 예매의 남은 시간(초)을 조회합니다.
+
+**권한: USER**
  * @summary 예매 남은 시간 조회
  */
 export type getRemainingTimeResponse200 = {
@@ -169,6 +175,8 @@ export const getRemainingTime = async (bookingId: string, options?: RequestInit)
 
 /**
  * 진행 중인 예매 건 전체를 취소합니다.
+
+**권한: USER**
 
 **[Audit Log]** 이 작업은 감사 로그에 기록됩니다.
  * @summary 예매 취소 (전체)

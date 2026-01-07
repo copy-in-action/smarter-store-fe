@@ -13,6 +13,10 @@ import type { SeatCouponRequest } from './seatCouponRequest';
  * 쿠폰 검증 요청
  */
 export interface CouponValidateRequest {
-  /** 좌석별 쿠폰 적용 목록 */
+  /** 예매 ID */
+  bookingId: string;
+  /** 좌석별 쿠폰 적용 목록 (명시적 매핑 시) */
   seatCoupons: SeatCouponRequest[];
+  /** 적용할 쿠폰 ID 목록 (자동 매핑 시) */
+  couponIds: number[];
 }

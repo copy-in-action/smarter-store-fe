@@ -13,6 +13,6 @@ export interface AppliedDiscountDto {
   type: AppliedDiscountDtoType;
   name: string;
   amount: number;
-  referenceId?: string;
+  couponId?: number;
   bookingSeatId?: number;
 }
