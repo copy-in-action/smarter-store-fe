@@ -15,11 +15,12 @@ This skill activates when the user says:
 - "Add [domain] form component"
 - "I need a form to handle [feature]"
 - "Make a validation schema for [domain]"
+- "[도메인] 폼 만들어줘"
 
 ## Auto-Detection Examples
 
 ✅ **User**: "Create a form for payment processing"
-→ Generates: `booking-payment` form structure
+→ Generates: `payment-processing` form structure
 
 ✅ **User**: "I need a form schema for product filtering"
 → Generates: `product-filter` form structure
@@ -27,127 +28,223 @@ This skill activates when the user says:
 ✅ **User**: "Add a user settings form with validation"
 → Generates: `user-settings` form structure
 
+## File Structure Output
+
+**⚠️ 중요: Admin vs Service 경로 구분**
+
+### 관리자 전용인 경우:
+```
+src/
+├── entities/[domain]/
+│   ├── model/[domain].schema.ts
+│   └── index.ts
+└── features/admin/ (관리자 전용)
+    └── [domain]-form/
+        ├── model/[domain]-form.schema.ts
+        ├── ui/[Domain]Form.tsx
+        └── index.ts
+```
+
+### 서비스(일반 사용자)용인 경우:
+```
+src/
+├── entities/[domain]/
+│   ├── model/[domain].schema.ts
+│   └── index.ts
+└── features/service/ (일반 사용자)
+    └── [domain]-form/
+        ├── model/[domain]-form.schema.ts
+        ├── ui/[Domain]Form.tsx
+        └── index.ts
+```
+
 ## What Gets Auto-Generated
 
 ### 1. Entity Schema (`src/entities/[domain]/model/[domain].schema.ts`)
 
-Pure request validation schema based on API spec:
+**원칙:**
+- ❌ 응답 스키마 생성 금지 (orval 타입 사용)
+- ✅ 요청 스키마만 생성 (Create/Update)
+- ✅ Update는 partial()
 
 ```typescript
 import { z } from "zod";
 
 /**
- * [Domain] 생성 요청 스키마
- * orval 타입 기반 - 응답 스키마 생성 금지
+ * [Domain] 생성 요청 스키마 (Orval [Domain]CreateRequest 기반)
  */
 export const create[Domain]Schema = z.object({
   /** 필드 설명 */
-  field: z.string().min(1, "필드를 입력해주세요"),
+  field1: z.string().min(1, "필드를 입력해주세요"),
+  // orval API 스펙의 모든 필드
 });
 
+/**
+ * [Domain] 수정 요청 스키마
+ */
+export const update[Domain]Schema = create[Domain]Schema.partial();
+
 export type Create[Domain]Form = z.infer<typeof create[Domain]Schema>;
+export type Update[Domain]Form = z.infer<typeof update[Domain]Schema>;
 ```
 
-**Key Rules**:
-- ❌ No response schemas (use orval generated types)
-- ✅ Request schemas only (create, update)
-- ✅ All fields documented with JSDoc
-- ✅ Proper zod validators
+**Index Export**: `src/entities/[domain]/index.ts`
 
-### 2. Form Schema (`src/features/[domain]-form/model/[domain]-form.schema.ts`)
+### 2. Form Schema
 
-Extends entity schema with form-specific logic:
+**경로:**
+- 관리자: `src/features/admin/[domain]-form/model/[domain]-form.schema.ts`
+- 서비스: `src/features/service/[domain]-form/model/[domain]-form.schema.ts`
+
+**핵심 원칙:**
+- ❌ **NO transform** - UI 상태 값과 일치
+- ✅ **Entity 상속** + 복합 검증만
+- ✅ **데이터 변환은 onSubmit에서**
 
 ```typescript
 import { create[Domain]Schema } from "@/entities/[domain]";
 import { z } from "zod";
 
 /**
- * [Domain] 폼 스키마
- * - 문자열→숫자 변환
- * - 복합 검증 로직
+ * [Domain] 생성 폼 스키마 (Entity 상속 + 복합 검증)
  */
 export const create[Domain]FormSchema = create[Domain]Schema.extend({
-  numericField: z.string().transform(val => parseInt(val, 10)),
+  // 추가 검증만 (transform 금지)
 }).refine(
-  (data) => validateLogic(data),
+  (data) => {
+    // 복합 검증 로직 (예: 날짜 비교)
+    return true;
+  },
   { message: "검증 오류", path: ["field"] }
 );
 
-export type Create[Domain]FormInput = z.input<typeof create[Domain]FormSchema>;
-export type Create[Domain]FormData = z.output<typeof create[Domain]FormSchema>;
+/**
+ * [Domain] 수정 폼 스키마
+ * Edit 전용 필드가 있다면 extend로 추가 후 partial()
+ */
+export const update[Domain]FormSchema = create[Domain]FormSchema
+  .extend({
+    // Edit 모드 전용 필드 (예: isActive: z.boolean())
+  })
+  .partial();
+
+export type Create[Domain]FormInput = z.infer<typeof create[Domain]FormSchema>;
+export type Update[Domain]FormInput = z.infer<typeof update[Domain]FormSchema>;
+
+// 호환성 유지
+export const [domain]FormSchema = create[Domain]FormSchema;
+export type [Domain]FormInput = Create[Domain]FormInput;
 ```
 
-**Key Features**:
-- ✅ Extends entity schema (FSD dependency)
-- ✅ `.transform()` for type conversions
-- ✅ `.refine()` for complex validations
-- ✅ Separate input/output types
+**Index Export:**
+- 관리자: `src/features/admin/[domain]-form/index.ts`
+- 서비스: `src/features/service/[domain]-form/index.ts`
 
-### 3. Form Component (`src/features/[domain]-form/ui/[Domain]Form.tsx`)
+### 3. Form Component
 
-React Hook Form + Zod integration:
+**경로:**
+- 관리자: `src/features/admin/[domain]-form/ui/[Domain]Form.tsx`
+- 서비스: `src/features/service/[domain]-form/ui/[Domain]Form.tsx`
+
+**핵심 패턴:**
 
 ```typescript
 'use client';
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { create[Domain]FormSchema } from '../model/[domain]-form.schema';
-import type { Create[Domain]FormInput, Create[Domain]FormData } from '../model/[domain]-form.schema';
+import type { [Domain]CreateRequest } from '@/shared/api/orval/types';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 
 /**
- * [Domain] 폼 Props
+ * Discriminated Union Props
  */
-interface [Domain]FormProps {
-  /** 초기값 */
-  initialValues?: Partial<Create[Domain]FormInput>;
-  /** 제출 핸들러 */
-  onSubmit: (data: Create[Domain]FormData) => Promise<void>;
-  /** 로딩 상태 */
+type CreateProps = {
+  mode: "create";
+  initialValues?: never;
+  onSubmit: (data: [Domain]CreateRequest) => Promise<void>;
   isLoading?: boolean;
-}
+};
+
+type EditProps = {
+  mode: "edit";
+  initialValues: Partial<Update[Domain]FormInput>;
+  onSubmit: (data: Partial<[Domain]CreateRequest>) => Promise<void>;
+  isLoading?: boolean;
+};
+
+type [Domain]FormProps = CreateProps | EditProps;
 
 /**
  * [Domain] 생성/수정 폼 컴포넌트
  */
-export function [Domain]Form({ initialValues, onSubmit, isLoading }: [Domain]FormProps) {
-  const form = useForm<Create[Domain]FormInput>({
-    resolver: zodResolver(create[Domain]FormSchema),
-    defaultValues: initialValues,
+export function [Domain]Form({ mode, initialValues, onSubmit, isLoading }: [Domain]FormProps) {
+  // 1. Mode 기반 스키마 선택
+  const form = useForm<Create[Domain]FormInput | Update[Domain]FormInput>({
+    resolver: zodResolver(
+      mode === "edit" ? update[Domain]FormSchema : create[Domain]FormSchema
+    ),
+    defaultValues: getDefaultValues(),
   });
 
+  // 2. 데이터 변환 헬퍼 (도메인별로 필요시)
+  const formatToApi = (dateString: string): string => {
+    return new Date(dateString).toISOString();
+  };
+
+  // 3. dirtyFields 기반 제출
+  const handleOnSubmit = async (values: [Domain]FormInput | Update[Domain]FormInput) => {
+    if (mode === "edit") {
+      const data = values as Update[Domain]FormInput;
+      const { dirtyFields } = form.formState;
+      const dirtyData: Partial<[Domain]CreateRequest> = {};
+
+      Object.keys(dirtyFields).forEach((key) => {
+        const k = key as keyof Update[Domain]FormInput;
+        const value = data[k];
+        if (value === undefined) return;
+
+        // 필드별 변환 (날짜 등)
+        (dirtyData as any)[k] = value;
+      });
+
+      await onSubmit(dirtyData);
+    } else {
+      // Create 모드: 전체 데이터 변환
+      const data = values as Create[Domain]FormInput;
+      const createData: [Domain]CreateRequest = {
+        // 필드별 변환
+      };
+      await onSubmit(createData);
+    }
+  };
+
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-      {/* Fields with Shadcn UI components */}
-      <Button type="submit" disabled={isLoading}>제출</Button>
-    </form>
+    <Card>
+      <CardHeader>
+        <CardTitle>{mode === "create" ? "[Domain] 등록" : "[Domain] 수정"}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={form.handleSubmit(handleOnSubmit)} className="space-y-4">
+          {/* Shadcn UI 컴포넌트 */}
+
+          {/* Edit 전용 필드는 조건부 렌더링 */}
+          {mode === "edit" && (
+            <div>
+              {/* Edit 모드 전용 필드 */}
+            </div>
+          )}
+
+          <Button type="submit" disabled={isLoading} className="w-full">
+            {isLoading ? '처리 중...' : mode === "create" ? "등록" : "수정"}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
-```
-
-**Key Features**:
-- ✅ 'use client' directive
-- ✅ react-hook-form + zodResolver
-- ✅ Shadcn UI components (@/shared/ui)
-- ✅ Full JSDoc documentation
-- ✅ Proper TypeScript types
-
-### 4. Index Exports
-
-**Entity**: `src/entities/[domain]/index.ts`
-```typescript
-export { create[Domain]Schema } from './model/[domain].schema';
-export type { Create[Domain]Form } from './model/[domain].schema';
-```
-
-**Feature**: `src/features/[domain]-form/index.ts`
-```typescript
-export { create[Domain]FormSchema } from './model/[domain]-form.schema';
-export type { Create[Domain]FormInput, Create[Domain]FormData } from './model/[domain]-form.schema';
-export { [Domain]Form } from './ui/[Domain]Form';
 ```
 
 ## FSD Architecture Rules
@@ -158,8 +255,62 @@ app → views → widgets → features → entities → shared
 ```
 
 - **entities**: Pure domain schemas (request only)
-- **features**: Business logic + UI (extends entities)
+- **features/admin**: Admin business logic + UI
+- **features/service**: Service business logic + UI
 - **shared**: Reusable UI components (Shadcn)
+
+## 핵심 패턴 정리
+
+### 1. Schema 설계
+- **NO transform**: UI 데이터 구조와 일치
+- **Update Schema**: `.partial()` + Edit 전용 필드 `.extend()`
+- **타입**: `z.infer`만 사용 (input/output 분리 없음)
+
+### 2. Props 설계
+- **Discriminated Union**: `CreateProps | EditProps`
+- **Mode 기반 스키마**: `mode === "edit" ? update : create`
+
+### 3. Submit 처리
+- **dirtyFields**: Edit 모드에서 변경된 필드만 전송
+- **forEach + undefined 체크**: Type-Safe 처리
+- **데이터 변환**: onSubmit에서 처리 (날짜, 숫자 등)
+
+### 4. 조건부 렌더링
+- Edit 전용 필드: `mode === "edit" && (...)`
+
+## 변환 패턴 예시
+
+**날짜 필드:**
+```typescript
+// UI → API
+if (k === "startDate") {
+  dirtyData[k] = new Date(value as string).toISOString();
+}
+
+// API → UI (Edit View에서)
+initialValues={{ startDate: data.startDate.split("T")[0] }}
+```
+
+**Edit 전용 필드:**
+```typescript
+// Schema
+export const update[Domain]FormSchema = create[Domain]FormSchema
+  .extend({ isActive: z.boolean() })
+  .partial();
+
+// Component
+{mode === "edit" && (
+  <Checkbox
+    checked={form.watch("isActive") ?? true}
+    onCheckedChange={(checked) => form.setValue("isActive", checked as boolean)}
+  />
+)}
+```
+
+**숫자 필드:**
+```typescript
+<Input type="number" {...form.register("price", { valueAsNumber: true })} />
+```
 
 ## Mandatory Requirements
 
@@ -173,74 +324,58 @@ app → views → widgets → features → entities → shared
 - ✅ **FSD Public API**: index.ts를 통한 export만 허용
 - ✅ **pnpm 사용**: npm, yarn 금지
 - ✅ **Shadcn UI**: @/shared/ui에서 import
-- ✅ **PAGES 상수**: routes.ts의 PAGES 상수 사용
 
 ### Schema Rules
-- ❌ **응답 스키마 생성 금지**: orval 자동 생성 타입 사용
+- ❌ **응답 스키마 생성 금지**: orval 타입 사용
 - ✅ **요청 스키마만**: create, update용만
 - ✅ **FSD 의존성**: features가 entities 상속
 - ✅ **폼 로직 분리**: entities(순수) vs features(폼 특화)
-- ✅ **변환 로직**: `.transform()` 사용
+- ❌ **NO transform**: 스키마에서 변환 금지
 - ✅ **검증 로직**: `.refine()` 사용
 
 ## Implementation Flow
 
-1. **Detect Domain Name**
+1. **Detect Domain Name & Context**
    - Extract from user's natural language
-   - Convert to kebab-case (e.g., "payment processing" → "payment-processing")
+   - Convert to kebab-case
+   - **Determine if admin or service**
 
-2. **Check Existing Code**
-   - Look for orval generated API types
-   - Check existing entity/feature structure
-   - Identify similar patterns in codebase
+2. **Check Orval Types**
+   - Look for `src/shared/api/orval/types/`
+   - Identify `[Domain]CreateRequest` fields
 
 3. **Generate Entity Schema**
    - Pure request validation
-   - No response schemas
-   - All fields documented
+   - Update는 partial()
 
 4. **Generate Form Schema**
+   - **Path: features/admin/ or features/service/**
    - Extend entity schema
-   - Add transforms and refinements
-   - Separate input/output types
+   - NO transform, only refine
+   - Edit 전용 필드 extend
 
 5. **Generate Form Component**
-   - react-hook-form setup
-   - Shadcn UI components
-   - Full JSDoc documentation
+   - **Path: features/admin/ or features/service/**
+   - Discriminated Union Props
+   - Mode 기반 스키마 선택
+   - dirtyFields 처리
+   - 조건부 렌더링
 
 6. **Create Index Exports**
    - Entity public API
    - Feature public API
 
 7. **Verify**
-   - Check FSD dependencies
-   - Verify all JSDoc present
-   - Confirm Shadcn imports
-
-## File Structure Output
-
-```
-src/
-├── entities/
-│   └── [domain]/
-│       ├── model/
-│       │   └── [domain].schema.ts
-│       └── index.ts
-└── features/
-    └── [domain]-form/
-        ├── model/
-        │   └── [domain]-form.schema.ts
-        ├── ui/
-        │   └── [Domain]Form.tsx
-        └── index.ts
-```
+   - Correct path (admin/service)
+   - FSD dependencies
+   - JSDoc present
+   - Shadcn imports
 
 ## Integration with Orval
 
-When orval types exist at `src/shared/api/generated/`:
-1. Read the API spec types
-2. Match request payload interfaces
+When orval types exist:
+1. Read `src/shared/api/orval/types/`
+2. Match `[Domain]CreateRequest` payload
 3. Generate zod schema based on API fields
 4. Use orval response types (don't recreate)
 
