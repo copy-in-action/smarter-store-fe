@@ -7,14 +7,11 @@
 **관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
-import type { SeatCouponRequest } from './seatCouponRequest';
 
 /**
- * 쿠폰 검증 요청
+ * 예매 해제 요청 (POST 방식)
  */
-export interface CouponValidateRequest {
+export interface ReleaseBookingRequest {
   /** 예매 ID */
   bookingId: string;
-  /** 좌석별 쿠폰 적용 목록 */
-  seatCoupons: SeatCouponRequest[];
 }

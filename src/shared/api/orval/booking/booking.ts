@@ -11,6 +11,7 @@ import type {
   BookingResponse,
   BookingTimeResponse,
   ErrorResponse,
+  ReleaseBookingRequest,
   StartBookingRequest
 } from '.././types';
 
@@ -124,6 +125,60 @@ export const startBooking = async (startBookingRequest: StartBookingRequest, opt
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       startBookingRequest,)
+  }
+);}
+
+
+/**
+ * 
+            페이지 unload 시 navigator.sendBeacon을 통한 예매 해제용 POST 엔드포인트입니다.
+
+            - sendBeacon은 POST 방식만 지원하므로 별도 엔드포인트 제공
+            - 기능은 DELETE /api/bookings/{bookingId}와 동일
+            - 진행 중인 예매 건을 취소하고 좌석 점유를 해제합니다.
+
+            **권한: USER**
+
+            **[Audit Log]** 이 작업은 감사 로그에 기록됩니다.
+        
+ * @summary 예매 해제 (POST 방식)
+ */
+export type releaseBookingResponse200 = {
+  data: BookingResponse
+  status: 200
+}
+
+export type releaseBookingResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type releaseBookingResponseSuccess = (releaseBookingResponse200) & {
+  headers: Headers;
+};
+export type releaseBookingResponseError = (releaseBookingResponse404) & {
+  headers: Headers;
+};
+
+export type releaseBookingResponse = (releaseBookingResponseSuccess | releaseBookingResponseError)
+
+export const getReleaseBookingUrl = () => {
+
+
+  
+
+  return `https://ticket-api.devhong.cc/api/bookings/released`
+}
+
+export const releaseBooking = async (releaseBookingRequest: ReleaseBookingRequest, options?: RequestInit): Promise<releaseBookingResponse> => {
+  
+  return orvalFetch<releaseBookingResponse>(getReleaseBookingUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      releaseBookingRequest,)
   }
 );}
 
