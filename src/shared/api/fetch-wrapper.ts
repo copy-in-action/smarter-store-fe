@@ -196,9 +196,9 @@ export const apiClient = async <T = any>(
   };
 
   try {
-    console.log(
-      `🚀 API Request: ${config.method || "GET"} ${fullUrl}${isRetry ? " (재시도)" : ""}`,
-    );
+    // console.log(
+    //   `🚀 API Request: ${config.method || "GET"} ${fullUrl}${isRetry ? " (재시도)" : ""}`,
+    // );
 
     const response = await fetch(fullUrl, config);
 
@@ -265,7 +265,7 @@ export const apiClient = async <T = any>(
     // JSON 응답 파싱
     const body = await response.text();
     const data = body ? JSON.parse(body) : {};
-    console.log(`✅ API Response: ${response.status}`, data);
+    // console.log(`✅ API Response: ${response.status}`, data);
 
     return { status: response.status, data, headers: response.headers } as T;
   } catch (error) {

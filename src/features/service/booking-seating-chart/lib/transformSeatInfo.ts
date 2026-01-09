@@ -2,10 +2,7 @@
  * 좌석 정보 변환 유틸리티
  */
 import type { SeatGrade } from "@/shared/api/orval/types";
-import type {
-  GradeInfo,
-  UserSelectedSeat,
-} from "../model/booking-seating-chart.types";
+import type { GradeInfo, UserSelectedSeat } from "../../booking-process";
 
 /**
  * selectedSeatInfo를 GradeInfo 배열로 변환

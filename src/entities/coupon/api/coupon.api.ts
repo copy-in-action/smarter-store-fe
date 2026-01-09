@@ -6,11 +6,29 @@ import {
   getCoupon,
   updateCoupon,
 } from "@/shared/api/orval/admin-coupon/admin-coupon";
+import { getAvailableCoupons } from "@/shared/api/orval/coupon/coupon";
 import type {
+  AvailableCouponResponse,
   CouponCreateRequest,
   CouponResponse,
   CouponUpdateRequest,
 } from "@/shared/api/orval/types";
+
+/**
+ * 모든 사용 가능한 쿠폰을 조회합니다.
+ * @returns 사용 가능한 쿠폰 목록
+ */
+export const getCouponsApi = async (): Promise<AvailableCouponResponse[]> => {
+  const response = await getAvailableCoupons();
+  // Orval에서 생성된 getCoupons 함수는 Response 타입을 반환하므로,
+  // 실제 데이터는 response.data에 있을 것으로 예상합니다.
+  // API 응답 구조에 따라 직접 확인이 필요할 수 있습니다.
+  // 현재 orval.md에 제시된 패턴을 따릅니다.
+  if (response.status !== 200) {
+    throw new Error("쿠폰 목록을 불러오는 데 실패했습니다.");
+  }
+  return response.data;
+};
 
 /**
  * 쿠폰 쿼리 키

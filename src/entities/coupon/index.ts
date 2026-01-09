@@ -4,7 +4,7 @@ export type {
   CouponResponse,
   CouponUpdateRequest,
 } from "./api/coupon.api";
-
+export * from "./api/coupon.api";
 // API (React Query)
 export {
   couponQueryKeys,
@@ -14,6 +14,8 @@ export {
   useGetCoupon,
   useUpdateCoupon,
 } from "./api/coupon.api";
+export * from "./hooks/useCouponsQuery";
+export { useValidateCoupons } from "./hooks/useValidateCoupons";
 
 // Schema
 export type { CreateCouponForm, UpdateCouponForm } from "./model/coupon.schema";

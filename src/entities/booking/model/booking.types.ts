@@ -1,5 +1,7 @@
 /**
- * 예매 좌석 선택 기능 타입 정의
+ * 예매 관련 타입 정의 (entities layer)
+ * - 비즈니스 도메인 타입 중앙 관리
+ * - features 레이어에서 사용
  */
 
 import type {
@@ -11,6 +13,8 @@ import type { SeatPosition } from "@/shared/lib/seat";
 
 /**
  * 사용자가 선택한 좌석 정보
+ * 용도: UI 표시, 가격 계산
+ * 확장: SeatPosition + 등급 + 가격
  */
 export type UserSelectedSeat = SeatPosition & {
   /** 좌석 등급 */
@@ -21,38 +25,18 @@ export type UserSelectedSeat = SeatPosition & {
 
 /**
  * 좌석 등급별 가격 정보
+ * 용도: 등급별 가격 표시 (팝오버, 범례 등)
  */
 export interface SeatGradeInfo {
-  /** 등급 라벨 */
+  /** 등급 라벨 (VIP, R, S, A) */
   label: string;
   /** 가격 (원) */
   price: number;
 }
 
 /**
- * 할인 방법 정보 (API 응답 타입)
- */
-export interface DiscountMethod {
-  /** 할인 방법 ID */
-  id: string;
-  /** 할인 방법명 (예: "일반", "청소년", "경로우대") */
-  name: string;
-  /** 할인율 (0-100) */
-  discountRate: number;
-}
-
-/**
- * 등급별 할인 방법 수량 선택
- */
-export interface GradeDiscountSelection {
-  /** 좌석 등급 */
-  grade: SeatGrade;
-  /** 할인 방법별 수량 { discountId: quantity } */
-  discounts: Record<string, number>;
-}
-
-/**
  * 등급별 좌석 정보 (폼 컴포넌트용)
+ * 용도: 할인 선택 폼에서 등급별 그룹화된 좌석 정보 표시
  */
 export interface GradeInfo {
   /** 좌석 등급 */
@@ -66,15 +50,8 @@ export interface GradeInfo {
 }
 
 /**
- * 좌석 선점 요청 타입
- */
-export interface BookingSeatFormData {
-  scheduleId: number;
-  seats: SeatPosition[];
-}
-
-/**
  * 할인 방법별 가격 정보
+ * 용도: 결제 화면에서 할인 방법별 가격 표시
  */
 export interface PriceInfo {
   /** 할인 방법명 */
@@ -89,6 +66,7 @@ export interface PriceInfo {
 
 /**
  * 등급별 티켓 상세 정보
+ * 용도: 결제 화면에서 등급별 티켓 정보 표시
  */
 export interface TicketDetail {
   /** 좌석 등급 */
@@ -103,6 +81,7 @@ export interface TicketDetail {
 
 /**
  * 결제 금액 정보
+ * 용도: 결제 화면에서 금액 정보 표시
  */
 export interface PaymentInfo {
   /** 티켓 금액 */
@@ -115,19 +94,27 @@ export interface PaymentInfo {
 
 /**
  * 결제 확인 데이터
+ * 용도: Step 3 (결제 화면)에서 사용할 최종 데이터
  */
 export interface PaymentConfirmationData {
   /** 공연 정보 */
-  performance: PerformanceResponse;
+  performance: Pick<PerformanceResponse, "id" | "title" | "venue">;
   /** 공연 회차 ID */
   scheduleId: number;
   /** 예매 정보 (BookingResponse 기반) */
-  booking: Pick<
-    BookingResponse,
-    "bookingId" | "bookingNumber" | "remainingSeconds"
-  >;
+  booking: Pick<BookingResponse, "bookingId" | "bookingNumber">;
   /** 등급별 좌석 및 할인 정보 */
   ticketDetails: TicketDetail[];
   /** 결제 금액 */
   payment: PaymentInfo;
+}
+
+/**
+ * 서버에서 받은 좌석 정보 (BookingSeatResponse + UserSelectedSeat 조합)
+ * 용도: 결제 데이터 생성, 쿠폰 적용
+ * 확장: UserSelectedSeat + id (서버에서 부여)
+ */
+export interface SeatTotalInfo extends UserSelectedSeat {
+  /** 예매 좌석 ID */
+  id: number;
 }

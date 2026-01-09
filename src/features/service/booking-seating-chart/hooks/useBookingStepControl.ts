@@ -1,10 +1,14 @@
 /**
  * 예매 Step 제어 및 API 연동 Hook
  */
+
+import {
+  BookingStep,
+  useBookingStepStore,
+} from "@/features/service/booking-process";
+import type { StartBookingRequest } from "@/shared/api/orval/types";
 import { useCancelBooking } from "../api/useCancelBooking";
 import { useStartBooking } from "../api/useStartBooking";
-import type { BookingSeatFormData } from "../model/booking-seating-chart.types";
-import { BookingStep, useBookingStepStore } from "../model/booking-step.store";
 
 /**
  * 예매 프로세스 Step 제어 및 API 연동을 담당하는 hook
@@ -14,8 +18,16 @@ import { BookingStep, useBookingStepStore } from "../model/booking-step.store";
  * @returns Step 제어 관련 함수 및 상태
  */
 export const useBookingStepControl = (scheduleId: number) => {
-  const { step, bookingData, setStep, setBookingData, prevStep, reset } =
-    useBookingStepStore();
+  const {
+    step,
+    bookingData,
+    setStep,
+    setBookingData,
+    prevStep,
+    reset,
+    setSelectedDiscountInput,
+    setPaymentConfirmation,
+  } = useBookingStepStore();
 
   const { mutate: startBooking, isPending: isStarting } = useStartBooking();
   const { mutate: cancelBooking, isPending: isCanceling } = useCancelBooking();
@@ -26,17 +38,16 @@ export const useBookingStepControl = (scheduleId: number) => {
    * - 성공 시 bookingId 저장 및 Step 2로 전환
    * @param seats - 선택된 좌석 정보
    */
-  const handleCompleteSelection = (seats: BookingSeatFormData["seats"]) => {
+  const handleCompleteSelection = (seats: StartBookingRequest["seats"]) => {
     if (seats.length === 0) return;
 
-    const bookingData: BookingSeatFormData = {
+    const bookingData: StartBookingRequest = {
       scheduleId,
       seats,
     };
 
     startBooking(bookingData, {
       onSuccess: (response) => {
-        console.log("좌석 점유 성공:", response);
         setBookingData(response);
         setStep(BookingStep.DISCOUNT_SELECTION);
       },
@@ -55,13 +66,15 @@ export const useBookingStepControl = (scheduleId: number) => {
     /**
      * Step 2에서 1로 돌아가는 경우
      * - 좌석 점유 해제 API 호출
-     * - 성공 시 bookingData 초기화 및 Step 이동
+     * - 성공 시 데이터 초기화 및 Step 이동
      */
+    if (!confirm("좌석선택으로 이동 시 선택하신 좌석의 점유는 해제됩니다.")) {
+      return;
+    }
     if (step === BookingStep.DISCOUNT_SELECTION && bookingData) {
       cancelBooking(bookingData.bookingId, {
         onSuccess: () => {
-          console.log("좌석 점유 해제 성공");
-          setBookingData(null);
+          reset();
           prevStep();
         },
         onError: (error) => {
@@ -83,5 +96,7 @@ export const useBookingStepControl = (scheduleId: number) => {
     handleCompleteSelection,
     handleBackStep,
     reset,
+    setSelectedDiscountInput,
+    setPaymentConfirmation,
   };
 };

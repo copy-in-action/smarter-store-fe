@@ -100,7 +100,6 @@ export function useSeatChart(venueId: number, scheduleId?: number) {
    * 예매 상태 업데이트 (실시간)
    */
   const updateBookingStatus = useCallback((seatData: BookingStatusByServer) => {
-    console.log("🚀 ~ useSeatChart ~ seatData:", seatData);
     setBookingStatus((pre) => {
       const seats = (seatData.seats as SeatPosition[]).map((seat) => ({
         row: seat.row - 1,
@@ -116,7 +115,10 @@ export function useSeatChart(venueId: number, scheduleId?: number) {
       // 점유 해제
       if (seatData.action === "RELEASED") {
         const newPendingSeats = pre.pendingSeats.filter(
-          (preSeat) => !seats.includes(preSeat),
+          (preSeat) =>
+            !seats.some(
+              (seat) => seat.row === preSeat.row && seat.col === preSeat.col,
+            ),
         );
         return { ...pre, pendingSeats: newPendingSeats };
       }

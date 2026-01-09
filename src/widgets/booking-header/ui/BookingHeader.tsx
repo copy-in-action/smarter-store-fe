@@ -7,11 +7,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { notFound, useRouter, useSearchParams } from "next/navigation";
 import { getPerformanceDetail } from "@/entities/performance/api/performance.api";
+import {
+  BookingStep,
+  useBookingStepStore,
+} from "@/features/service/booking-process";
 import { PAGES } from "@/shared/constants";
-import { PAYMENT_INFO_STORAGE_KEY } from "@/shared/lib/seat/constants/seatChart.constants";
 import { Button } from "@/shared/ui/button";
-import type { PaymentConfirmationData } from "../model/booking-seating-chart.types";
-import { BookingStep, useBookingStepStore } from "../model/booking-step.store";
 import BookingTimer from "./BookingTimer";
 
 /**
@@ -23,23 +24,18 @@ import BookingTimer from "./BookingTimer";
 const BookingHeader = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { step, bookingData, reset } = useBookingStepStore();
-  let paymentData: PaymentConfirmationData | null = null;
-  if (step === BookingStep.PAYMENT) {
-    const paymentSessionData = sessionStorage.getItem(PAYMENT_INFO_STORAGE_KEY);
-    paymentData = JSON.parse(
-      paymentSessionData || "",
-    ) as PaymentConfirmationData;
+  const { step, bookingData, reset, paymentConfirmation } =
+    useBookingStepStore(); // Get paymentConfirmation from store
 
-    if (!paymentData) {
-      notFound();
-    }
+  const paymentData = paymentConfirmation; // Use paymentConfirmation directly
+
+  // Add a check to ensure paymentData is available when step is PAYMENT
+  if (step === BookingStep.PAYMENT && !paymentData) {
+    notFound();
   }
 
   const performanceId =
-    searchParams.get("performanceId") || paymentData
-      ? paymentData?.performance.id
-      : 0;
+    searchParams.get("performanceId") || paymentData?.performance.id || 0;
 
   // 공연 정보 조회 (React Query 캐싱)
   const { data: performance } = useQuery({
@@ -68,10 +64,12 @@ const BookingHeader = () => {
     // TODO: 일정 변경 로직 구현
   };
 
-  if (!performance) return <div className="h-14"></div>;
+  if (!performance) {
+    return <div className="h-14"></div>;
+  }
 
   return (
-    <div className="my-4 flex items-center justify-between wrapper">
+    <div className="flex items-center justify-between my-4 wrapper">
       <h1 className="text-lg font-bold">{performance.title}</h1>
 
       <div className="flex items-center gap-4">

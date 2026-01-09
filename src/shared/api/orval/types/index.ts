@@ -93,6 +93,7 @@ export * from './periodInfo';
 export * from './pgInfoResponse';
 export * from './recentBookingResponse';
 export * from './recentBookingsResponse';
+export * from './releaseBookingRequest';
 export * from './role';
 export * from './salesSummary';
 export * from './scheduleInfo';

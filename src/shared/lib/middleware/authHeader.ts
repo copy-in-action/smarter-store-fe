@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import type { MiddlewareFunction } from "./chainMiddleware";
 import { PAGES } from "@/shared/constants/routes";
+import type { MiddlewareFunction } from "./chainMiddleware";
 
 /**
  * 로그인이 필수인 경로 목록

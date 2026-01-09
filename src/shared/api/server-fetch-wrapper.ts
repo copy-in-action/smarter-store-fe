@@ -74,7 +74,7 @@ export async function serverFetch<T = any>(
   };
 
   try {
-    console.log(`🚀 Server API Request: ${config.method || "GET"} ${url}`);
+    // console.log(`🚀 Server API Request: ${config.method || "GET"} ${url}`);
 
     const response = await fetch(url, config);
 
@@ -103,7 +103,7 @@ export async function serverFetch<T = any>(
     // JSON 응답 파싱
     const body = await response.text();
     const data = body ? JSON.parse(body) : {};
-    console.log(`✅ Server API Response: ${response.status}`);
+    // console.log(`✅ Server API Response: ${response.status}`);
 
     return { status: response.status, data, headers: response.headers } as T;
   } catch (error) {
