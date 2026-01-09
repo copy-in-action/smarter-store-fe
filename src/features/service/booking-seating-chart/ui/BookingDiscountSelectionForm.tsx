@@ -7,7 +7,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft, Minus, Plus } from "lucide-react";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import type {
   AvailableCouponResponse,
@@ -27,30 +27,11 @@ import {
   FormItem,
   FormMessage,
 } from "@/shared/ui/form";
-import type { GradeInfo } from "../../booking-process";
+import { type GradeInfo, useBookingStepStore } from "../../booking-process";
 import {
   type BookingDiscountFormData,
   createBookingDiscountSchema,
 } from "../model/booking-discount.schema";
-
-/**
- * 선택된 할인 항목 (최종 제출 데이터)
- */
-export interface SelectedDiscountItem {
-  id: number; // 변경: string -> number
-  name: string;
-  discountRate: number;
-  count: number;
-  price: number;
-}
-
-/**
- * 최종 제출 데이터 형식
- * - 선택된 등급만 포함하므로 Partial 사용
- */
-export type BookingDiscountSubmitData = Partial<
-  Record<SeatGrade, SelectedDiscountItem[]>
->;
 
 /**
  * 예매 할인 선택 폼 Props
@@ -61,9 +42,11 @@ export interface BookingDiscountSelectionFormProps {
   /** 할인 방법 목록 (API로부터 받음, 없으면 기본값 사용) */
   discountMethods: AvailableCouponResponse[];
   /** 폼 제출 핸들러 */
-  onSubmit?: (data: BookingDiscountSubmitData) => void;
+  onSubmit?: (selectedDiscountInput: BookingDiscountFormData) => void;
   /** 이전 Step으로 돌아가기 핸들러 */
   onBackStep: () => void;
+  /** 쿠폰 검증 중 여부 */
+  isLoading?: boolean;
 }
 
 /**
@@ -79,7 +62,11 @@ const BookingDiscountSelectionForm = ({
   discountMethods,
   onSubmit,
   onBackStep,
+  isLoading = false,
 }: BookingDiscountSelectionFormProps) => {
+  // 스토어에서 selectedDiscountInput을 가져옴 (새로고침 시 복원용)
+  const { selectedDiscountInput } = useBookingStepStore();
+
   /**
    * 등급별 좌석 수 Map 생성 (스키마용)
    */
@@ -98,64 +85,22 @@ const BookingDiscountSelectionForm = ({
 
   /**
    * 폼 초기값 생성
-   * - 기본적으로 모든 좌석을 "일반" 할인에 할당
+   * - 스토어에 저장된 selectedDiscountInput이 있다면 복원하고, 없으면 기본값 사용
    */
-  const defaultValues = useMemo(
-    () =>
-      Object.fromEntries(
-        grades.map((g) => [
-          g.grade,
-          Object.fromEntries(discountMethods.map((m) => [String(m.id), 0])),
-        ]),
-      ) as BookingDiscountFormData,
-    [grades, discountMethods],
-  );
+  const defaultValues = useMemo(() => {
+    if (selectedDiscountInput) {
+      // 스토어에 저장된 값이 있으면 해당 값으로 초기화
+      return selectedDiscountInput;
+    }
 
-  /**
-   * 폼 데이터를 최종 제출 형식으로 변환
-   * @param formData - 폼 내부 데이터 (Record 형식)
-   * @returns 배열 형식의 제출 데이터
-   */
-  const transformToSubmitData = (
-    formData: BookingDiscountFormData,
-  ): BookingDiscountSubmitData => {
+    // 없으면 기존 로직대로 기본값 생성 (모든 좌석을 "일반" 할인에 할당)
     return Object.fromEntries(
-      Object.entries(formData).map(([grade, discounts]) => {
-        const gradeInfo = grades.find((g) => g.grade === grade);
-        if (!gradeInfo) return [grade, []];
-
-        const selectedItems: SelectedDiscountItem[] = Object.entries(discounts)
-          .filter(([_, count]) => count > 0)
-          .map(([discountIdStr, count]) => {
-            const discountId = Number(discountIdStr); // string to number
-            const method = discountMethods.find((m) => m.id === discountId);
-            if (!method) {
-              return {
-                id: discountId,
-                name: discountIdStr, // Fallback name
-                discountRate: 0,
-                count,
-                price: gradeInfo.basePrice,
-              };
-            }
-
-            const price = Math.floor(
-              gradeInfo.basePrice * (1 - method.discountRate / 100),
-            );
-
-            return {
-              id: method.id,
-              name: method.name,
-              discountRate: method.discountRate,
-              count,
-              price,
-            };
-          });
-
-        return [grade, selectedItems];
-      }),
-    );
-  };
+      grades.map((g) => [
+        g.grade,
+        Object.fromEntries(discountMethods.map((m) => [String(m.id), 0])),
+      ]),
+    ) as BookingDiscountFormData;
+  }, [grades, discountMethods, selectedDiscountInput]); // selectedDiscountInput을 의존성 배열에 추가
 
   /**
    * React Hook Form 초기화
@@ -228,13 +173,17 @@ const BookingDiscountSelectionForm = ({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit((data) => {
-          const submitData = transformToSubmitData(data);
-          onSubmit?.(submitData);
+          onSubmit?.(data);
         })}
         className="flex flex-col justify-between h-full"
       >
         <h2>
-          <Button variant={"ghost"} size={"icon"} onClick={onBackStep}>
+          <Button
+            variant={"ghost"}
+            size={"icon"}
+            onClick={onBackStep}
+            type="button"
+          >
             <ChevronLeft />
           </Button>
           가격선택
@@ -350,8 +299,12 @@ const BookingDiscountSelectionForm = ({
             <p className="text-xl font-bold">{totalPrice.toLocaleString()}원</p>
           </div>
 
-          <Button size="lg" type="submit" disabled={!form.formState.isValid}>
-            예매하기
+          <Button
+            size="lg"
+            type="submit"
+            disabled={!form.formState.isValid || isLoading}
+          >
+            {isLoading ? "검증 중..." : "예매하기"}
           </Button>
         </div>
       </form>

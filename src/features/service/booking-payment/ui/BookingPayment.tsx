@@ -1,7 +1,5 @@
-"use client";
-
 import { ChevronLeft } from "lucide-react";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import { useAuth } from "@/app/providers";
 import {
   BookingPaymentInfo,
@@ -11,12 +9,7 @@ import {
   TicketOrderDetail,
   useGetPerformanceSchedule,
 } from "@/features/service/booking-payment";
-import {
-  BookingStep,
-  type PaymentConfirmationData,
-  useBookingStepStore,
-} from "@/features/service/booking-process";
-import { PAYMENT_INFO_STORAGE_KEY } from "@/shared/lib/seat/constants/seatChart.constants";
+import { useBookingStepStore } from "@/features/service/booking-process";
 import { Button } from "@/shared/ui/button";
 
 /**
@@ -25,14 +18,18 @@ import { Button } from "@/shared/ui/button";
  * @returns 예매 결제 페이지 UI
  */
 const BookingPayment = () => {
-  const paymentInfoStr = sessionStorage.getItem(PAYMENT_INFO_STORAGE_KEY);
-  let paymentInfo: PaymentConfirmationData;
-  try {
-    paymentInfo = JSON.parse(paymentInfoStr || "") as PaymentConfirmationData;
-  } catch (error) {
+  const { prevStep, paymentConfirmation } = useBookingStepStore(); // Get paymentConfirmation from store
+
+  const paymentInfo = paymentConfirmation;
+  if (!paymentInfo) {
     notFound();
   }
-  const { setStep } = useBookingStepStore();
+
+  const router = useRouter();
+  const handleBackStep = () => {
+    prevStep();
+    router.back();
+  };
 
   const { data: schedule } = useGetPerformanceSchedule(paymentInfo.scheduleId);
   const { user } = useAuth();
@@ -43,13 +40,7 @@ const BookingPayment = () => {
       <div className="flex flex-col lg:gap-6 gap-0 lg:flex-row px-0! wrapper w-full pb-24 lg:pb-0">
         <div className="grow">
           <h2 className="items-center hidden mb-6 text-xl font-bold lg:flex">
-            <Button
-              variant={"ghost"}
-              size={"icon"}
-              onClick={() => {
-                setStep(BookingStep.DISCOUNT_SELECTION);
-              }}
-            >
+            <Button variant={"ghost"} size={"icon"} onClick={handleBackStep}>
               <ChevronLeft className="size-6" />
             </Button>
             티켓 결제

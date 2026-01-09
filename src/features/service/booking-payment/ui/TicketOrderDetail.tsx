@@ -11,7 +11,7 @@ import type { TicketDetail } from "../../booking-process";
  */
 interface Props {
   /** 공연 정보 */
-  performance: PerformanceResponse;
+  performance: Pick<PerformanceResponse, "title" | "venue">;
   /** 티켓 상세 목록 */
   tickets: TicketDetail[];
   /** 공연 일시 (ISO 8601 형식) */
@@ -67,7 +67,7 @@ const TicketOrderDetail = ({ performance, tickets, showDateTime }: Props) => {
               <p>
                 {ticket.seats.map((seat, index) => (
                   <Fragment key={`${seat.col}_${seat.row}`}>
-                    {seat.section} {seat.col}행 {seat.row}열
+                    {seat.section} {seat.row}행 {seat.col}열
                     {index !== ticket.seats.length - 1 && <br />}
                   </Fragment>
                 ))}

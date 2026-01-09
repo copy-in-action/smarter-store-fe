@@ -9,11 +9,9 @@ import { notFound, useRouter, useSearchParams } from "next/navigation";
 import { getPerformanceDetail } from "@/entities/performance/api/performance.api";
 import {
   BookingStep,
-  type PaymentConfirmationData,
   useBookingStepStore,
 } from "@/features/service/booking-process";
 import { PAGES } from "@/shared/constants";
-import { PAYMENT_INFO_STORAGE_KEY } from "@/shared/lib/seat/constants/seatChart.constants";
 import { Button } from "@/shared/ui/button";
 import BookingTimer from "./BookingTimer";
 
@@ -26,17 +24,14 @@ import BookingTimer from "./BookingTimer";
 const BookingHeader = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { step, bookingData, reset } = useBookingStepStore();
-  let paymentData: PaymentConfirmationData | null = null;
-  if (step === BookingStep.PAYMENT) {
-    const paymentSessionData = sessionStorage.getItem(PAYMENT_INFO_STORAGE_KEY);
-    paymentData = JSON.parse(
-      paymentSessionData || "",
-    ) as PaymentConfirmationData;
+  const { step, bookingData, reset, paymentConfirmation } =
+    useBookingStepStore(); // Get paymentConfirmation from store
 
-    if (!paymentData) {
-      notFound();
-    }
+  const paymentData = paymentConfirmation; // Use paymentConfirmation directly
+
+  // Add a check to ensure paymentData is available when step is PAYMENT
+  if (step === BookingStep.PAYMENT && !paymentData) {
+    notFound();
   }
 
   const performanceId =
@@ -70,7 +65,6 @@ const BookingHeader = () => {
   };
 
   if (!performance) {
-    console.error("performance not found");
     return <div className="h-14"></div>;
   }
 

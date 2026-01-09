@@ -1,16 +1,13 @@
 /**
  * 예매 좌석 선택 비즈니스 로직을 관리하는 Hook
+ * SSE 구독 로직은 useSeatSSESubscription으로 분리
  */
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { toast } from "sonner";
-import { getSubscribeSeatEventsUrl } from "@/shared/api/orval/schedule/schedule";
 import { MAX_SEAT_SELECTION, useSeatChart } from "@/shared/lib/seat";
-import type {
-  BookingStatusByServer,
-  SeatPosition,
-} from "@/shared/lib/seat/types/seatLayout.types";
+import { useSeatSSESubscription } from "./useSeatSSESubscription";
 
 /**
  * 예매 좌석 선택 Hook
@@ -22,6 +19,11 @@ export function useBookingSeatSelection(venueId: number, scheduleId: number) {
   const seatChartHook = useSeatChart(venueId, scheduleId);
   const { toggleSeatSelection, seatChartConfig, updateBookingStatus } =
     seatChartHook;
+
+  /**
+   * SSE 구독으로 실시간 좌석 상태 업데이트
+   */
+  useSeatSSESubscription(scheduleId, updateBookingStatus);
 
   /**
    * 좌석 선택/해제 토글 (최대 4개 제한)
@@ -52,79 +54,6 @@ export function useBookingSeatSelection(venueId: number, scheduleId: number) {
     },
     [seatChartConfig, toggleSeatSelection],
   );
-
-  /**
-   * 실시간 예매 상태 구독 (SSE)
-   */
-  useEffect(() => {
-    if (!scheduleId) return;
-    const eventSource = new EventSource(getSubscribeSeatEventsUrl(scheduleId));
-
-    // 최초 연결 시 모든 점유상태를 다 받음
-    eventSource.addEventListener("snapshot", (event: MessageEvent) => {
-      try {
-        const status: {
-          pending: SeatPosition[];
-          reserved: SeatPosition[];
-        } = JSON.parse(event.data);
-
-        updateBookingStatus({
-          action: "OCCUPIED",
-          seats: status.pending,
-        });
-        updateBookingStatus({
-          action: "OCCUPIED",
-          seats: status.reserved,
-        });
-      } catch (error) {
-        console.error("SSE snapshot 메시지 파싱 에러:", error);
-      }
-    });
-
-    /**
-     * seat-update 이벤트 수신 시 좌석 상태 업데이트
-     */
-    eventSource.addEventListener("seat-update", (event: MessageEvent) => {
-      try {
-        const status: BookingStatusByServer = JSON.parse(event.data);
-        updateBookingStatus(status);
-      } catch (error) {
-        console.error("SSE seat-update 메시지 파싱 에러:", error);
-      }
-    });
-
-    /**
-     * SSE 에러 처리
-     * - readyState 0 (CONNECTING): 연결 중
-     * - readyState 1 (OPEN): 연결됨
-     * - readyState 2 (CLOSED): 연결 종료
-     */
-    eventSource.onerror = (error) => {
-      console.error("SSE 연결 에러:", error);
-      console.error("EventSource readyState:", eventSource.readyState);
-
-      /**
-       * 연결이 닫힌 경우 (CLOSED 상태)
-       * - 재연결 시도하지 않고 연결 종료
-       */
-      if (eventSource.readyState === EventSource.CLOSED) {
-        console.log("SSE 연결이 닫혔습니다.");
-        eventSource.close();
-        toast.error("실시간 좌석 상태 업데이트 연결이 종료되었습니다.");
-      } else if (eventSource.readyState === EventSource.CONNECTING) {
-        /**
-         * 연결 실패 또는 에러 발생 (CONNECTING 상태)
-         * - EventSource가 자동으로 재연결 시도
-         */
-        console.log("SSE 재연결 시도 중...");
-      }
-    };
-
-    return () => {
-      console.log("SSE 연결 종료");
-      eventSource.close();
-    };
-  }, [scheduleId, updateBookingStatus]);
 
   return {
     ...seatChartHook,
