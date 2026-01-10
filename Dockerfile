@@ -8,8 +8,8 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # GitHub Actions에서 빌드된 standalone 결과 복사
-COPY .next/standalone ./
-COPY .next/static .next/static
+COPY --chown=nextjs:nodejs .next/standalone ./
+COPY --chown=nextjs:nodejs .next/static .next/static
 COPY --chown=nextjs:nodejs public ./public
 
 # 사용자 권한 설정
