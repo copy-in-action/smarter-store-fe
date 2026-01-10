@@ -51,7 +51,7 @@ const BookingPayment = () => {
             tickets={paymentInfo.ticketDetails}
             showDateTime={schedule?.showDateTime || ""}
           />
-          <hr className="h-2 my-5 bg-ray-100 sm:h-[1px] mx-auto max-w-4xl" />
+          <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto max-w-4xl" />
 
           {/* 예약자 정보 */}
           <ReservationInfo user={user} />
@@ -62,17 +62,17 @@ const BookingPayment = () => {
           <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto max-w-4xl" />
 
           {/* 결제정보 모바일에서만 표시*/}
-          <section className="block wrapper sm:hidden">
+          <section className="block wrapper lg:hidden px-4!">
             <BookingPaymentInfo payment={paymentInfo.payment} />
           </section>
-          <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto max-w-4xl" />
+          <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto max-w-4xl block lg:hidden" />
 
           {/* 약관동의 */}
           <TermsAgreement />
         </div>
 
         {/* 결제정보: sm이상에서만 표시 */}
-        <section className="hidden px-4 border rounded-2xl sm:border-none lg:w-80 lg:min-w-80 sm:block">
+        <section className="hidden px-4 border rounded-2xl sm:border-none lg:w-80 lg:min-w-80 lg:block lg:sticky lg:top-[135px] h-fit">
           <BookingPaymentInfo payment={paymentInfo.payment} />
         </section>
       </div>

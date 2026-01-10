@@ -31,11 +31,11 @@ const BookingPaymentInfo = ({ payment }: Props) => {
         </div>
       </div>
       <hr className="my-4 bg-gray-100" />
-      <div className="flex justify-between text-lg font-semibold text-primary">
+      <div className="justify-between mb-6 text-lg font-semibold lg:flex text-primary lg:mb-0">
         <span>최종 결제금액</span>
         <span>{payment.totalAmount.toLocaleString()}원</span>
       </div>
-      <Button size={"lg"} className="hidden w-full mt-6 lg:block">
+      <Button size={"lg"} className="hidden w-full mt-6 mb-6 lg:block">
         총 {payment.totalAmount.toLocaleString()}원 결제하기
       </Button>
     </>
