@@ -4,7 +4,13 @@
  */
 
 // API
-export { useGetPerformanceSchedule } from "./api/useBookingPayment.api";
+export {
+  useCreatePayment,
+  useGetPerformanceSchedule,
+} from "./api/useBookingPayment.api";
+export type { PaymentFormData } from "./model";
+// Model
+export { paymentFormSchema } from "./model";
 
 // UI Components
 export { default as BookingPayment } from "./ui/BookingPayment";

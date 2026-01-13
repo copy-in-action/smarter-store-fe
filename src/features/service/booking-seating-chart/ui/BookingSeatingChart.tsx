@@ -19,6 +19,7 @@ import {
 import { useBookingSeatSelection } from "../hooks/useBookingSeatSelection";
 import { useBookingStepControl } from "../hooks/useBookingStepControl";
 import { createPaymentConfirmationData } from "../lib/createPaymentConfirmationData";
+import { createPaymentRequestData } from "../lib/createPaymentRequestData";
 import { transformToSeatCoupons } from "../lib/transform-booking-discount";
 import type { BookingDiscountFormData } from "../model/booking-discount.schema";
 import DiscountSelectionStep from "./DiscountSelectionStep";
@@ -52,6 +53,7 @@ const BookingSeatingChart = ({
     bookingData,
     setSelectedDiscountInput,
     setPaymentConfirmation,
+    setPaymentRequestData,
     isLoading,
     handleCompleteSelection,
     handleBackStep,
@@ -142,6 +144,7 @@ const BookingSeatingChart = ({
 
       setSelectedDiscountInput(selectedDiscountInput);
 
+      // 화면 표시용 데이터 생성
       const paymentData = createPaymentConfirmationData(
         performance,
         bookingData,
@@ -151,6 +154,17 @@ const BookingSeatingChart = ({
         couponData || [],
       );
       setPaymentConfirmation(paymentData);
+
+      // 서버 전송용 데이터 생성 (paymentMethod, isAgreed 제외)
+      const paymentRequestData = createPaymentRequestData(
+        bookingData,
+        validationResponse,
+        performance,
+        seatInfos,
+        couponData || [],
+      );
+
+      setPaymentRequestData(paymentRequestData);
 
       const seatPositions = userSelectedSeats.map((seat) => ({
         row: seat.row,

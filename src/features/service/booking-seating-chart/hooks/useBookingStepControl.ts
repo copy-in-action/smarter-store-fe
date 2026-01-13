@@ -27,6 +27,7 @@ export const useBookingStepControl = (scheduleId: number) => {
     reset,
     setSelectedDiscountInput,
     setPaymentConfirmation,
+    setPaymentRequestData,
   } = useBookingStepStore();
 
   const { mutate: startBooking, isPending: isStarting } = useStartBooking();
@@ -98,5 +99,6 @@ export const useBookingStepControl = (scheduleId: number) => {
     reset,
     setSelectedDiscountInput,
     setPaymentConfirmation,
+    setPaymentRequestData,
   };
 };

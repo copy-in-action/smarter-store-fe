@@ -1,6 +1,9 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
 import { notFound, usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { useAuth } from "@/app/providers";
 import {
   BookingPaymentInfo,
@@ -8,8 +11,13 @@ import {
   ReservationInfo,
   TermsAgreement,
   TicketOrderDetail,
+  useCreatePayment,
   useGetPerformanceSchedule,
 } from "@/features/service/booking-payment";
+import {
+  type PaymentFormData,
+  paymentFormSchema,
+} from "@/features/service/booking-payment/model/payment-form.schema";
 import { useBookingStepStore } from "@/features/service/booking-process";
 import { PAGES } from "@/shared/constants";
 import { Button } from "@/shared/ui/button";
@@ -20,7 +28,8 @@ import { Button } from "@/shared/ui/button";
  * @returns 예매 결제 페이지 UI
  */
 const BookingPayment = () => {
-  const { prevStep, paymentConfirmation, reset } = useBookingStepStore(); // Get paymentConfirmation from store
+  const { prevStep, paymentConfirmation, paymentRequestData, reset } =
+    useBookingStepStore();
   const router = useRouter();
   const pathname = usePathname();
   const { user } = useAuth();
@@ -31,9 +40,74 @@ const BookingPayment = () => {
   // popstate 이벤트 발생 여부를 추적하는 ref
   const isPopStateRef = useRef(false);
 
+  // 결제 폼 초기화
+  const methods = useForm<PaymentFormData>({
+    resolver: zodResolver(paymentFormSchema),
+    defaultValues: {
+      isAgreed: false,
+      paymentMethod: "CREDIT_CARD",
+      bankCode: undefined,
+    },
+    mode: "onChange",
+  });
+
+  const { formState } = methods;
+
+  /**
+   * 폼 에러 감지 및 Toast 표시
+   */
+  useEffect(() => {
+    const errors = formState.errors;
+    if (Object.keys(errors).length > 0) {
+      // 첫 번째 에러 메시지 표시
+      const firstError = Object.values(errors)[0];
+      if (firstError?.message) {
+        toast.error(firstError.message as string, {
+          id: "payment-error-toast",
+        });
+      }
+    }
+  }, [formState.errors]);
+
+  // 결제 생성 mutation
+  const { mutate: createPaymentMutation, isPending } = useCreatePayment();
+
   const handleBackStep = () => {
     prevStep();
     router.back();
+  };
+
+  /**
+   * 결제 폼 제출 처리
+   * - handleSubmit을 통과했으므로 폼 스키마 검증은 이미 완료됨
+   * @param formData - 검증된 폼 데이터
+   */
+  const onSubmit = (formData: PaymentFormData) => {
+    // 스토어 데이터 검증 (폼 스키마와 무관)
+    if (!paymentRequestData) {
+      toast.error("결제 정보가 없습니다. 다시 시도해주세요.");
+      return;
+    }
+
+    // 결제 요청 데이터 생성 (폼 데이터 + 스토어 데이터 병합)
+    const finalPaymentRequest = {
+      ...paymentRequestData,
+      paymentMethod: formData.paymentMethod,
+      isAgreed: formData.isAgreed,
+    };
+
+    // 결제 생성 API 호출
+    createPaymentMutation(finalPaymentRequest, {
+      onSuccess: (data) => {
+        toast.success("결제 요청이 생성되었습니다.");
+        // TODO: PG 결제 팝업 열기
+        console.log("Payment created:", data);
+      },
+      onError: (error) => {
+        toast.error("결제 요청 생성에 실패했습니다.");
+        console.error("Payment creation failed:", error);
+      },
+    });
   };
 
   /**
@@ -78,56 +152,73 @@ const BookingPayment = () => {
   }
 
   return (
-    <div className="flex flex-col justify-between lg:pb-10">
-      <div className="flex flex-col lg:gap-6 gap-0 lg:flex-row px-0! wrapper w-full pb-24 lg:pb-0">
-        <div className="grow">
-          <h2 className="items-center hidden mb-6 text-xl font-bold lg:flex">
-            <Button variant={"ghost"} size={"icon"} onClick={handleBackStep}>
-              <ChevronLeft className="size-6" />
-            </Button>
-            티켓 결제
-          </h2>
-          {/* 티켓 주문상세 */}
-          <TicketOrderDetail
-            performance={paymentInfo.performance}
-            tickets={paymentInfo.ticketDetails}
-            showDateTime={schedule?.showDateTime || ""}
-          />
-          <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto max-w-4xl" />
+    <FormProvider {...methods}>
+      <form
+        onSubmit={methods.handleSubmit(onSubmit)}
+        className="flex flex-col justify-between lg:pb-10"
+      >
+        <div className="flex flex-col lg:gap-6 gap-0 lg:flex-row px-0! wrapper w-full pb-24 lg:pb-0">
+          <div className="grow">
+            <h2 className="items-center hidden mb-6 text-xl font-bold lg:flex">
+              <Button
+                type="button"
+                variant={"ghost"}
+                size={"icon"}
+                onClick={handleBackStep}
+              >
+                <ChevronLeft className="size-6" />
+              </Button>
+              티켓 결제
+            </h2>
+            {/* 티켓 주문상세 */}
+            <TicketOrderDetail
+              performance={paymentInfo.performance}
+              tickets={paymentInfo.ticketDetails}
+              showDateTime={schedule?.showDateTime || ""}
+            />
+            <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto max-w-4xl" />
 
-          {/* 예약자 정보 */}
-          <ReservationInfo user={user} />
-          <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto max-w-4xl" />
+            {/* 예약자 정보 */}
+            <ReservationInfo user={user} />
+            <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto max-w-4xl" />
 
-          {/* 결제수단 */}
-          <PaymentMethodSelector />
-          <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto max-w-4xl" />
+            {/* 결제수단 */}
+            <PaymentMethodSelector />
+            <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto max-w-4xl" />
 
-          {/* 결제정보 모바일에서만 표시*/}
-          <section className="block wrapper lg:hidden px-4!">
+            {/* 결제정보 모바일에서만 표시*/}
+            <section className="block wrapper lg:hidden px-4!">
+              <BookingPaymentInfo payment={paymentInfo.payment} />
+            </section>
+            <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto max-w-4xl block lg:hidden" />
+
+            {/* 약관동의 */}
+            <TermsAgreement />
+          </div>
+
+          {/* 결제정보: sm이상에서만 표시 */}
+          <section className="hidden px-4 border rounded-2xl sm:border-none lg:w-80 lg:min-w-80 lg:block lg:sticky lg:top-[135px] h-fit">
             <BookingPaymentInfo payment={paymentInfo.payment} />
           </section>
-          <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto max-w-4xl block lg:hidden" />
-
-          {/* 약관동의 */}
-          <TermsAgreement />
         </div>
-
-        {/* 결제정보: sm이상에서만 표시 */}
-        <section className="hidden px-4 border rounded-2xl sm:border-none lg:w-80 lg:min-w-80 lg:block lg:sticky lg:top-[135px] h-fit">
-          <BookingPaymentInfo payment={paymentInfo.payment} />
-        </section>
-      </div>
-      <div
-        className="fixed bottom-14 left-0 z-50 w-full bg-white wrapper flex sm:bottom-0 lg:hidden
-                  /* 중요: 하단바가 덜덜 떨리는 것을 방지하는 속성 */
-                  will-change-transform transform-none"
-      >
-        <Button size={"lg"} className="w-full my-2">
-          총 {paymentInfo.payment.totalAmount.toLocaleString()}원 결제하기
-        </Button>
-      </div>
-    </div>
+        <div
+          className="fixed bottom-14 left-0 z-50 w-full bg-white wrapper flex sm:bottom-0 lg:hidden
+                    /* 중요: 하단바가 덜덜 떨리는 것을 방지하는 속성 */
+                    will-change-transform transform-none"
+        >
+          <Button
+            type="submit"
+            size={"lg"}
+            className="w-full my-2"
+            disabled={isPending}
+          >
+            {isPending
+              ? "결제 요청 중..."
+              : `총 ${paymentInfo.payment.totalAmount.toLocaleString()}원 결제하기`}
+          </Button>
+        </div>
+      </form>
+    </FormProvider>
   );
 };
 
