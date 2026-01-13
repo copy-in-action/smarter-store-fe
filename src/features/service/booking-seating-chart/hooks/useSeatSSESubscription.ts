@@ -94,7 +94,6 @@ export function useSeatSSESubscription(
     };
 
     return () => {
-      console.log("SSE 연결 종료");
       eventSource.close();
     };
   }, [scheduleId, updateBookingStatus]);

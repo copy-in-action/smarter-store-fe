@@ -5,7 +5,8 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { notFound, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 import { getPerformanceDetail } from "@/entities/performance/api/performance.api";
 import {
   BookingStep,
@@ -23,17 +24,15 @@ import BookingTimer from "./BookingTimer";
  */
 const BookingHeader = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const { step, bookingData, reset, paymentConfirmation } =
     useBookingStepStore(); // Get paymentConfirmation from store
 
+  // Zustand hydration 완료 상태 체크
+  const [isHydrated, setIsHydrated] = useState(false);
+
   const paymentData = paymentConfirmation; // Use paymentConfirmation directly
-
-  // Add a check to ensure paymentData is available when step is PAYMENT
-  if (step === BookingStep.PAYMENT && !paymentData) {
-    notFound();
-  }
-
   const performanceId =
     searchParams.get("performanceId") || paymentData?.performance.id || 0;
 
@@ -45,16 +44,91 @@ const BookingHeader = () => {
   });
 
   /**
+   * Zustand persist hydration 완료 체크
+   * - sessionStorage 복원이 완료될 때까지 대기
+   */
+  useEffect(() => {
+    const unsubscribe = useBookingStepStore.persist.onFinishHydration(() => {
+      setIsHydrated(true);
+    });
+    // 이미 hydration이 완료된 경우
+    if (useBookingStepStore.persist.hasHydrated()) {
+      setIsHydrated(true);
+    }
+    return unsubscribe;
+  }, []);
+
+  /**
+   * 결제 페이지에서 결제 데이터가 없으면 홈으로 리다이렉트
+   * - hydration 완료 후에만 체크하여 false positive 방지
+   */
+  useEffect(() => {
+    if (!isHydrated) return; // hydration 대기
+
+    if (pathname === PAGES.BOOKING.PAYMENT.path && !paymentData) {
+      router.replace(PAGES.HOME.path);
+    }
+  }, [isHydrated, pathname, paymentData, router]);
+
+  // 페이지를 벗어날때
+  useEffect(() => {
+    return () => {
+      if (
+        !(
+          step !== BookingStep.DISCOUNT_SELECTION &&
+          step !== BookingStep.PAYMENT
+        )
+      )
+        reset();
+    };
+  }, [reset, step]);
+
+  /**
+   * 브라우저 뒤로가기 감지 (Step 3 → Step 2)
+   * - BookingHeader는 항상 마운트되어 있으므로 여기서 처리
+   * - Step 3에서 뒤로가기 시 prevStep() 호출하여 step을 2로, paymentConfirmation 제거
+   */
+  useEffect(() => {
+    if (!isHydrated) return; // hydration 대기
+
+    const handlePopState = () => {
+      // popstate 시점의 최신 step 상태 가져오기
+      const currentStep = useBookingStepStore.getState().step;
+      const { prevStep, reset } = useBookingStepStore.getState();
+
+      /**
+       * Step 3(결제 페이지)에서 popstate 발생 시 무조건 prevStep() 호출
+       * - pathname 체크 안 함 (popstate 시점에는 아직 pathname이 업데이트 안 됨)
+       * - Step 3에서는 뒤로가기 = Step 2로 돌아가는 것만 가능
+       */
+      if (currentStep === BookingStep.PAYMENT) {
+        console.log("✅ Step 3 → Step 2 뒤로가기 처리");
+        prevStep(); // step을 2로, paymentConfirmation을 null로 초기화
+      }
+
+      if (currentStep === BookingStep.DISCOUNT_SELECTION) {
+        console.log("✅ Step 2 뒤로가기 처리");
+        reset();
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [isHydrated]);
+
+  /**
    * 타이머 만료 핸들러
    * - 예매 시간 만료 알림 및 store 초기화
+   * - 페이지 이동 전에 상태를 먼저 정리하여 언마운트 시 hooks 오류 방지
    */
-  const handleTimerExpire = () => {
+  const handleTimerExpire = useCallback(() => {
     alert(
       "결제가능 시간이 만료되었습니다. 선택하신 공연의 상세페이지로 이동합니다.",
     );
+
     router.push(PAGES.PERFORMANCE.DETAIL.path(performanceId!.toString()));
     reset();
-  };
+  }, [performanceId, reset, router]);
 
   /**
    * 일정변경 버튼 클릭 핸들러
@@ -73,12 +147,13 @@ const BookingHeader = () => {
       <h1 className="text-lg font-bold">{performance.title}</h1>
 
       <div className="flex items-center gap-4">
-        {bookingData && (
+        {bookingData?.expiresAt && (
           <BookingTimer
-            remainingSeconds={bookingData.remainingSeconds}
+            expiresAt={bookingData.expiresAt}
             onExpire={handleTimerExpire}
           />
         )}
+
         {step === BookingStep.SEAT_SELECTION && (
           <Button variant={"outline"} onClick={handleScheduleChange}>
             일정변경

@@ -4,14 +4,14 @@
 "use client";
 
 import { intervalToDuration } from "date-fns";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
 /**
  * BookingTimer Props
  */
 interface BookingTimerProps {
-  /** 남은 시간 (초) */
-  remainingSeconds: number;
+  /** 만료 시각 (ISO 8601) */
+  expiresAt: string;
   /** 시간 만료 시 콜백 */
   onExpire?: () => void;
 }
@@ -39,31 +39,46 @@ const formatTime = (totalSeconds: number): string => {
 };
 
 /**
+ * expiresAt을 기반으로 남은 시간(초) 계산
+ * @param expiresAt - 만료 시각 (ISO 8601 형식)
+ * @returns 남은 시간 (초)
+ */
+const calculateRemainingSeconds = (expiresAt: string): number => {
+  const expiresTime = new Date(expiresAt).getTime();
+  const now = Date.now();
+  const remainingMs = expiresTime - now;
+  return Math.max(0, Math.floor(remainingMs / 1000));
+};
+
+/**
  * 예매 결제 가능 시간을 카운트다운으로 표시하는 타이머 컴포넌트
- * - remainingSeconds를 기준으로 1초마다 감소
+ * - expiresAt을 기준으로 1초마다 남은 시간 계산
  * - 0초가 되면 onExpire 콜백 호출
+ * - React.memo로 메모이제이션되어 expiresAt 변경 시에만 리렌더링
  * @param props - 컴포넌트 Props
  * @returns 타이머 UI
  */
-const BookingTimer = ({ remainingSeconds, onExpire }: BookingTimerProps) => {
-  const [timeLeft, setTimeLeft] = useState(remainingSeconds);
+const BookingTimer = memo(({ expiresAt, onExpire }: BookingTimerProps) => {
+  const [timeLeft, setTimeLeft] = useState(() => calculateRemainingSeconds(expiresAt));
   const onExpireRef = useRef(onExpire);
   const hasExpiredRef = useRef(false);
+  const expiresAtRef = useRef(expiresAt);
 
   // onExpire 함수의 최신 버전을 ref에 저장
   useEffect(() => {
     onExpireRef.current = onExpire;
   }, [onExpire]);
 
-  // remainingSeconds가 변경되면 timeLeft 초기화 및 만료 플래그 리셋
+  // expiresAt이 변경되면 timeLeft 재계산 및 만료 플래그 리셋
   useEffect(() => {
-    setTimeLeft(remainingSeconds);
+    expiresAtRef.current = expiresAt;
+    setTimeLeft(calculateRemainingSeconds(expiresAt));
     hasExpiredRef.current = false;
-  }, [remainingSeconds]);
+  }, [expiresAt]);
 
   useEffect(() => {
     /**
-     * 1초마다 남은 시간 감소
+     * 1초마다 expiresAt 기준으로 남은 시간 재계산
      * - 0초가 되면 타이머 중지 및 onExpire 호출 (한 번만)
      */
     if (timeLeft <= 0) {
@@ -75,12 +90,13 @@ const BookingTimer = ({ remainingSeconds, onExpire }: BookingTimerProps) => {
     }
 
     const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          return 0;
-        }
-        return prev - 1;
-      });
+      const remaining = calculateRemainingSeconds(expiresAtRef.current);
+      setTimeLeft(remaining);
+
+      if (remaining <= 0 && !hasExpiredRef.current) {
+        hasExpiredRef.current = true;
+        onExpireRef.current?.();
+      }
     }, 1000);
 
     return () => clearInterval(timer);
@@ -105,6 +121,8 @@ const BookingTimer = ({ remainingSeconds, onExpire }: BookingTimerProps) => {
       </span>
     </div>
   );
-};
+});
+
+BookingTimer.displayName = "BookingTimer";
 
 export default BookingTimer;
