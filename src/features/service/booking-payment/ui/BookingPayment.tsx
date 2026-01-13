@@ -2,7 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
 import { notFound, usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import {
+  type FieldError,
+  type FieldErrors,
+  FormProvider,
+  useForm,
+} from "react-hook-form";
 import { toast } from "sonner";
 import { useAuth } from "@/app/providers";
 import {
@@ -47,27 +52,13 @@ const BookingPayment = () => {
       isAgreed: false,
       paymentMethod: "CREDIT_CARD",
       bankCode: undefined,
+      reserverInfo: {
+        name: user?.username,
+        email: user?.email,
+        phone: user?.phoneNumber,
+      },
     },
-    mode: "onChange",
   });
-
-  const { formState } = methods;
-
-  /**
-   * 폼 에러 감지 및 Toast 표시
-   */
-  useEffect(() => {
-    const errors = formState.errors;
-    if (Object.keys(errors).length > 0) {
-      // 첫 번째 에러 메시지 표시
-      const firstError = Object.values(errors)[0];
-      if (firstError?.message) {
-        toast.error(firstError.message as string, {
-          id: "payment-error-toast",
-        });
-      }
-    }
-  }, [formState.errors]);
 
   // 결제 생성 mutation
   const { mutate: createPaymentMutation, isPending } = useCreatePayment();
@@ -94,6 +85,7 @@ const BookingPayment = () => {
       ...paymentRequestData,
       paymentMethod: formData.paymentMethod,
       isAgreed: formData.isAgreed,
+      reserverInfo: formData.reserverInfo,
     };
 
     // 결제 생성 API 호출
@@ -108,6 +100,22 @@ const BookingPayment = () => {
         console.error("Payment creation failed:", error);
       },
     });
+  };
+
+  const onSubmitError = (errors: FieldErrors<PaymentFormData>) => {
+    const reserverInfoError = errors.reserverInfo;
+    // 중첩 객체이므로
+    if (reserverInfoError) {
+      const firstError = Object.values(reserverInfoError)[0] as FieldError;
+      toast.error(firstError?.message, { id: "payment-error-toast" });
+      return;
+    }
+
+    const firstError = Object.values(errors)[0];
+    if (firstError.message) {
+      toast.error(firstError.message, { id: "payment-error-toast" });
+      return;
+    }
   };
 
   /**
@@ -154,7 +162,7 @@ const BookingPayment = () => {
   return (
     <FormProvider {...methods}>
       <form
-        onSubmit={methods.handleSubmit(onSubmit)}
+        onSubmit={methods.handleSubmit(onSubmit, onSubmitError)}
         className="flex flex-col justify-between lg:pb-10"
       >
         <div className="flex flex-col lg:gap-6 gap-0 lg:flex-row px-0! wrapper w-full pb-24 lg:pb-0">
@@ -179,7 +187,7 @@ const BookingPayment = () => {
             <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto max-w-4xl" />
 
             {/* 예약자 정보 */}
-            <ReservationInfo user={user} />
+            <ReservationInfo />
             <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto max-w-4xl" />
 
             {/* 결제수단 */}
