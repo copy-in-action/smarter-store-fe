@@ -70,19 +70,6 @@ const BookingHeader = () => {
     }
   }, [isHydrated, pathname, paymentData, router]);
 
-  // 페이지를 벗어날때
-  useEffect(() => {
-    return () => {
-      if (
-        !(
-          step !== BookingStep.DISCOUNT_SELECTION &&
-          step !== BookingStep.PAYMENT
-        )
-      )
-        reset();
-    };
-  }, [reset, step]);
-
   /**
    * 브라우저 뒤로가기 감지 (Step 3 → Step 2)
    * - BookingHeader는 항상 마운트되어 있으므로 여기서 처리
