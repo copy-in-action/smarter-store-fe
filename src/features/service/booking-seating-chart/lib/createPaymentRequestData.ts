@@ -34,15 +34,13 @@ export function createPaymentRequestData(
   /**
    * 할인 정보 변환: validationResponse.results → AppliedDiscountDto[]
    */
-  const discounts = validationResponse.results
-    .filter((result) => result.couponId) // 쿠폰이 적용된 좌석만
-    .map((result) => ({
-      type: "COUPON" as const,
-      name: couponMap.get(result.couponId!) || "할인",
-      amount: result.discountAmount,
-      couponId: result.couponId,
-      bookingSeatId: result.bookingSeatId,
-    }));
+  const discounts = validationResponse.results.map((result) => ({
+    type: "COUPON" as const,
+    name: couponMap.get(result.couponId!) || "할인",
+    amount: result.discountAmount,
+    couponId: result.couponId,
+    bookingSeatId: result.bookingSeatId,
+  }));
 
   /**
    * 티켓 총 금액 (할인 적용 후)

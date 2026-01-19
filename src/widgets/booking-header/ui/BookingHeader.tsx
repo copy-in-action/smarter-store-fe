@@ -95,7 +95,7 @@ const BookingHeader = () => {
 
       if (currentStep === BookingStep.DISCOUNT_SELECTION) {
         console.log("✅ Step 2 뒤로가기 처리");
-        reset();
+        // reset();
       }
     };
 
@@ -109,12 +109,11 @@ const BookingHeader = () => {
    * - 페이지 이동 전에 상태를 먼저 정리하여 언마운트 시 hooks 오류 방지
    */
   const handleTimerExpire = useCallback(() => {
-    alert(
-      "결제가능 시간이 만료되었습니다. 선택하신 공연의 상세페이지로 이동합니다.",
-    );
-
-    router.push(PAGES.PERFORMANCE.DETAIL.path(performanceId!.toString()));
-    reset();
+    // alert(
+    //   "결제가능 시간이 만료되었습니다. 선택하신 공연의 상세페이지로 이동합니다.",
+    // );
+    // router.push(PAGES.PERFORMANCE.DETAIL.path(performanceId!.toString()));
+    // reset();
   }, [performanceId, reset, router]);
 
   /**

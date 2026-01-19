@@ -30,16 +30,21 @@ const paymentMethods: {
 }[] = [
   {
     id: 1,
+    label: "무통장",
+    value: "VIRTUAL_ACCOUNT",
+  },
+  {
+    id: 2,
     label: "신용카드",
     value: "CREDIT_CARD",
   },
   {
-    id: 2,
+    id: 3,
     label: "카카오페이",
     value: "KAKAO_PAY",
   },
   {
-    id: 3,
+    id: 4,
     label: "토스페이",
     value: "TOSS_PAY",
   },
@@ -60,7 +65,7 @@ const banks = [
 /**
  * 신용카드 결제 컴포넌트
  */
-const CreditCardPayment = () => {
+const VirtualAccountPayment = () => {
   const { setValue, control } = useFormContext();
   const bankCode = useWatch({
     control,
@@ -193,7 +198,7 @@ const PaymentMethodSelector = () => {
         <TabsContent value={paymentMethods[0].label}>
           <Card className="py-3 border-none rounded-none shadow-none">
             <CardContent className="px-0">
-              <CreditCardPayment />
+              <VirtualAccountPayment />
             </CardContent>
           </Card>
         </TabsContent>
@@ -203,6 +208,11 @@ const PaymentMethodSelector = () => {
           </Card>
         </TabsContent>
         <TabsContent value={paymentMethods[2].label}>
+          <Card className="border-none rounded-none shadow-none">
+            <CardContent>미구현</CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value={paymentMethods[3].label}>
           <Card className="border-none rounded-none shadow-none">
             <CardContent>미구현</CardContent>
           </Card>

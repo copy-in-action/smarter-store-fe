@@ -112,6 +112,7 @@ const TermsAgreement = () => {
         variant="ghost"
         className="p-0! text-base"
         onClick={handleCheckAll}
+        type="button"
       >
         <CircleCheck
           className={cn(

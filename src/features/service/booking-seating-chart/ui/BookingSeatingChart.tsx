@@ -69,7 +69,11 @@ const BookingSeatingChart = ({
    * - SeatSelectionStep과 DiscountSelectionStep이 동일한 좌석 선택 상태 공유
    */
   const { seatChartConfig, toggleSeatSelection, clearSelection } =
-    useBookingSeatSelection(performance.venue?.id || 0, scheduleId);
+    useBookingSeatSelection(
+      performance.venue?.id || 0,
+      step === BookingStep.SEAT_SELECTION ? "view" : "payment",
+      scheduleId,
+    );
 
   /**
    * Step 3 → Step 2 복귀 시 저장된 좌석 위치 복원

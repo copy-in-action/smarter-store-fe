@@ -2,6 +2,7 @@
  * 예매 Step 제어 및 API 연동 Hook
  */
 
+import { useEffect } from "react";
 import {
   BookingStep,
   useBookingStepStore,
@@ -86,6 +87,39 @@ export const useBookingStepControl = (scheduleId: number) => {
       prevStep();
     }
   };
+
+  /**
+   * 브라우저 뒤로 가기 방지 및 이탈 처리 (Step 2에서)
+   */
+  useEffect(() => {
+    // Step 2가 아니면 아무것도 하지 않음
+    if (step !== BookingStep.DISCOUNT_SELECTION) return;
+
+    // 1. History Lock: 현재 상태를 스택에 추가하여 뒤로 가기를 가로챌 준비
+    history.pushState(null, "", window.location.href);
+
+    const handlePopState = () => {
+      // 2. 뒤로 가기 감지 (Lock이 풀리면서 이벤트 발생)
+      if (confirm("예매를 취소하고 나가시겠습니까? 선택한 좌석은 해제됩니다.")) {
+        // [확인]: 초기화 및 진짜 뒤로 가기 수행
+        if (bookingData) {
+          cancelBooking(bookingData.bookingId);
+        }
+        reset();
+
+        // 이미 Lock이 하나 빠진 상태이므로, 한 번 더 뒤로 가면 원래 페이지로 이동
+        history.back();
+      } else {
+        // [취소]: 다시 Lock을 걸어 현재 페이지 유지
+        history.pushState(null, "", window.location.href);
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [step, bookingData, cancelBooking, reset]);
 
   return {
     step,

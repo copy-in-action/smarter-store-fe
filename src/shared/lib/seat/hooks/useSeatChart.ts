@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 import { getSchedule } from "@/shared/api/orval/schedule/schedule";
 import type { SeatGrade } from "@/shared/api/orval/types";
 import { getSeatingChart } from "@/shared/api/orval/venue/venue";
@@ -21,7 +22,11 @@ import { isSeatInState } from "../utils/seatChart.utils";
  * @param scheduleId - 회차 ID (옵셔널, 제공 시 가격 정보 로드)
  * @returns 좌석 차트 설정 및 제어 함수
  */
-export function useSeatChart(venueId: number, scheduleId?: number) {
+export function useSeatChart(
+  venueId: number,
+  mode: "view" | "payment",
+  scheduleId?: number,
+) {
   const [staticVenue, setStaticVenue] = useState<StaticSeatVenue | null>(null);
   const [bookingStatus, setBookingStatus] = useState<BookingStatus>({
     reservedSeats: [],
@@ -99,37 +104,80 @@ export function useSeatChart(venueId: number, scheduleId?: number) {
   /**
    * 예매 상태 업데이트 (실시간)
    */
-  const updateBookingStatus = useCallback((seatData: BookingStatusByServer) => {
-    setBookingStatus((pre) => {
+  const updateBookingStatus = useCallback(
+    (seatData: BookingStatusByServer) => {
       const seats = (seatData.seats as SeatPosition[]).map((seat) => ({
         row: seat.row - 1,
         col: seat.col - 1,
       }));
 
-      // 점유
-      if (seatData.action === "OCCUPIED") {
-        const newPendingSeats = [...pre.pendingSeats, ...seats];
+      // 점유 또는 예약 확정 시
+      if (seatData.action === "OCCUPIED" || seatData.action === "CONFIRMED") {
+        setBookingStatus((pre) => {
+          const targetSeats =
+            seatData.action === "OCCUPIED"
+              ? pre.pendingSeats
+              : pre.reservedSeats;
+          const newSeats = [...targetSeats, ...seats];
 
-        return { ...pre, pendingSeats: newPendingSeats };
+          return {
+            ...pre,
+            [seatData.action === "OCCUPIED" ? "pendingSeats" : "reservedSeats"]:
+              newSeats,
+          };
+        });
+
+        // 사용자가 선택한 좌석 중 중복되는 것이 있는지 확인
+        if (mode === "view") {
+          setUserSelection((prevSelection) => {
+            const conflictingSeats = prevSelection.selectedSeats.filter(
+              (selected) =>
+                seats.some(
+                  (incoming) =>
+                    incoming.row === selected.row &&
+                    incoming.col === selected.col,
+                ),
+            );
+
+            if (conflictingSeats.length > 0) {
+              conflictingSeats.forEach((seat) => {
+                toast.error(
+                  `선택하신 ${seat.row + 1}행 ${seat.col + 1}열 좌석이 다른 사용자에 의해 '예매${seatData.action === "CONFIRMED" ? " 완료'" : " 진행 중' "}으로 번경 되었습니다.`,
+                  { id: "seating-chart-error" },
+                );
+              });
+
+              return {
+                selectedSeats: prevSelection.selectedSeats.filter(
+                  (selected) =>
+                    !seats.some(
+                      (incoming) =>
+                        incoming.row === selected.row &&
+                        incoming.col === selected.col,
+                    ),
+                ),
+              };
+            }
+            return prevSelection;
+          });
+        }
       }
+
       // 점유 해제
       if (seatData.action === "RELEASED") {
-        const newPendingSeats = pre.pendingSeats.filter(
-          (preSeat) =>
-            !seats.some(
-              (seat) => seat.row === preSeat.row && seat.col === preSeat.col,
-            ),
-        );
-        return { ...pre, pendingSeats: newPendingSeats };
+        setBookingStatus((pre) => {
+          const newPendingSeats = pre.pendingSeats.filter(
+            (preSeat) =>
+              !seats.some(
+                (seat) => seat.row === preSeat.row && seat.col === preSeat.col,
+              ),
+          );
+          return { ...pre, pendingSeats: newPendingSeats };
+        });
       }
-      if (seatData.action === "CONFIRMED") {
-        const newReservedSeats = [...pre.reservedSeats, ...seats];
-        return { ...pre, pendingSeats: newReservedSeats };
-      }
-
-      return pre;
-    });
-  }, []);
+    },
+    [mode],
+  );
 
   /**
    * 좌석 선택/해제 토글 (제한 없음)
