@@ -49,6 +49,7 @@ export function CouponEditView({ couponId }: CouponEditViewProps) {
         validFrom: formData.validFrom ?? data.validFrom,
         validUntil: formData.validUntil ?? data.validUntil,
         isActive: formData.isActive ?? data.isActive,
+        sortOrder: formData.sortOrder ?? data.sortOrder,
       };
 
       await updateCoupon.mutateAsync({ id: couponId, data: updateData });
@@ -79,6 +80,7 @@ export function CouponEditView({ couponId }: CouponEditViewProps) {
           validFrom: formatDateForInput(data.validFrom),
           validUntil: formatDateForInput(data.validUntil),
           isActive: data.isActive,
+          sortOrder: data.sortOrder,
         }}
         onSubmit={handleSubmit}
         isLoading={updateCoupon.isPending}

@@ -55,6 +55,7 @@ export function CouponDataTable({ data, onDeactivate }: CouponDataTableProps) {
           <TableHead>쿠폰명</TableHead>
           <TableHead>할인율</TableHead>
           <TableHead>유효 기간</TableHead>
+          <TableHead>정렬 순서</TableHead>
           <TableHead>상태</TableHead>
           <TableHead className="text-right">작업</TableHead>
         </TableRow>
@@ -72,6 +73,7 @@ export function CouponDataTable({ data, onDeactivate }: CouponDataTableProps) {
             <TableCell>
               {dateFormat(coupon.validFrom)} ~ {dateFormat(coupon.validUntil)}
             </TableCell>
+            <TableCell>{coupon.sortOrder}</TableCell>
             <TableCell>
               <Badge variant={coupon.isActive ? "default" : "secondary"}>
                 {coupon.isActive ? "활성" : "비활성"}
