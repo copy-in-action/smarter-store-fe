@@ -70,19 +70,6 @@ const BookingHeader = () => {
     }
   }, [isHydrated, pathname, paymentData, router]);
 
-  // 페이지를 벗어날때
-  useEffect(() => {
-    return () => {
-      if (
-        !(
-          step !== BookingStep.DISCOUNT_SELECTION &&
-          step !== BookingStep.PAYMENT
-        )
-      )
-        reset();
-    };
-  }, [reset, step]);
-
   /**
    * 브라우저 뒤로가기 감지 (Step 3 → Step 2)
    * - BookingHeader는 항상 마운트되어 있으므로 여기서 처리
@@ -108,7 +95,7 @@ const BookingHeader = () => {
 
       if (currentStep === BookingStep.DISCOUNT_SELECTION) {
         console.log("✅ Step 2 뒤로가기 처리");
-        reset();
+        // reset();
       }
     };
 
@@ -125,7 +112,6 @@ const BookingHeader = () => {
     alert(
       "결제가능 시간이 만료되었습니다. 선택하신 공연의 상세페이지로 이동합니다.",
     );
-
     router.push(PAGES.PERFORMANCE.DETAIL.path(performanceId!.toString()));
     reset();
   }, [performanceId, reset, router]);

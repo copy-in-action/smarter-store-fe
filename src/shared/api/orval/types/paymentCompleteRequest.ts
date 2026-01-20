@@ -8,10 +8,18 @@
  * OpenAPI spec version: 1.0.0
  */
 
+/**
+ * 결제 완료 승인 요청 (PG 결과)
+ */
 export interface PaymentCompleteRequest {
+  /** PG사 명 */
   pgProvider: string;
+  /** PG사 거래 ID */
   pgTransactionId: string;
+  /** 카드사 명 */
   cardCompany?: string;
+  /** 마스킹된 카드 번호 */
   cardNumberMasked?: string;
+  /** 할부 개월 수 (0: 일시불) */
   installmentMonths?: number;
 }

@@ -1,13 +1,27 @@
 # Claude 개발 가이드 (AI 참조용)
 
 ## 🚀 필수 준수 사항
+
+### 코드 작성
 - ✅ **함수 JSDoc 주석**: 목적, @param, @returns 필수
 - ✅ **인터페이스 프로퍼티 주석**: `/** 설명 */` 필수
 - ✅ **5줄 이상 분기문**: 분기 로직 설명 주석 필수
+
+### FSD 아키텍처
+- ✅ **레이어 의존성**: 상위 레이어만 하위 레이어 import 가능
+- ✅ **Public API**: index.ts를 통한 export만 허용 (내부 경로 접근 금지)
+- ✅ **Segment 네이밍**: 목적 중심 이름 사용 (components/hooks/types 지양)
+- ✅ **Export 최소화**: 타입, API, 메인 컴포넌트만 노출
+
+### Next.js & React
 - ✅ **Server Component 우선**: 상호작용 필요시만 `'use client'`
-- ✅ **FSD Public API**: index.ts를 통한 export만 허용
+- ✅ **하이드레이션 방지**: 서버/클라이언트 컴포넌트 혼용 시 배럴 파일 분리
+
+### 도구 & 라이브러리
 - ✅ **pnpm 사용**: npm, yarn 사용 금지
 - ✅ **Shadcn UI**: shared/ui에 설치, `@/shared/ui`로 import
+- ✅ **PAGES 상수**: `@/shared/config` 사용
+- ✅ **API 파일**: xxx.api.ts (API 함수), xxx.queries.ts (React Query)
 
 ## FSD 레이어 의존성
 ```
@@ -15,10 +29,48 @@ app → views → widgets → features → entities → shared
      (하위 레이어만 import 가능)
 ```
 
+## FSD Segment 네이밍 원칙
+> **핵심**: 폴더 이름은 "무엇을 담고 있는지"가 아닌 "무엇을 위해 존재하는지(목적)"를 표현
+
+### ❌ 피해야 할 이름 (기술적 분류)
+- `components/` - 컴포넌트가 들어있다는 것만 알 수 있음
+- `hooks/` - 훅이 들어있다는 것만 알 수 있음
+- `types/` - 타입이 들어있다는 것만 알 수 있음
+- `utils/` - 유틸리티가 들어있다는 것만 알 수 있음
+
+### ✅ 권장하는 이름 (목적 중심)
+- `ui/` - UI 컴포넌트 (FSD 공식 segment)
+- `api/` - API 통신 (FSD 공식 segment)
+- `model/` - 비즈니스 로직, 스키마, 타입 (FSD 공식 segment)
+- `lib/` - 해당 슬라이스 전용 유틸리티 (FSD 공식 segment)
+- `config/` - 설정 및 상수 (FSD 공식 segment)
+
+### Shared 레이어 특수 케이스
+```typescript
+shared/
+├── ui/               # UI 컴포넌트 (shadcn 포함)
+│   ├── button.tsx    # shadcn 컴포넌트 (배럴 파일 없음)
+│   ├── input.tsx
+│   ├── Logo/         # 커스텀 컴포넌트 (폴더 단위)
+│   │   ├── Logo.tsx
+│   │   └── index.ts  # 배럴 파일
+│   └── BackButton/
+│       ├── BackButton.tsx
+│       └── index.ts
+├── api/              # 공통 API 설정 (axios, fetch wrapper)
+├── lib/              # 공통 유틸리티 함수
+├── config/           # 라우팅, 환경 변수 등 설정
+└── [목적명]/         # 특정 목적의 기능 (예: device-detection, auth-events)
+    ├── ui/           # UI 컴포넌트
+    ├── lib/          # 유틸리티
+    ├── model/        # 타입
+    └── index.ts      # Public API
+```
+
 ## 라우팅 & 메타데이터
 ```typescript
-// PAGES 상수 사용 필수 (src/shared/constants/routes.ts)
-import { PAGES } from '@/shared/constants/routes';
+// PAGES 상수 사용 필수 (src/shared/config/routes.ts)
+import { PAGES } from '@/shared/config';
 
 // ✅ 링크 생성
 <Link href={PAGES.AUTH.LOGIN.path}>로그인</Link>
@@ -115,31 +167,92 @@ import { Input } from '@/shared/ui/input';
 ```
 
 ## 폴더 구조 & Import 규칙
+
+### 슬라이스 내부 구조
 ```typescript
-// 슬라이스 내부 구조
 feature-name/
 ├── ui/              # UI 컴포넌트
-├── api/             # API 메서드
-├── model/           # 타입, 스키마
+├── api/             # API 메서드 및 쿼리 hooks
+│   ├── xxx.api.ts   # API 함수 (fetch, axios 등)
+│   └── xxx.queries.ts  # React Query hooks (useQuery, useMutation)
+├── model/           # 타입, 스키마, 비즈니스 로직
 ├── lib/             # 유틸리티
 └── index.ts         # Public API
+```
 
-// Public API만 export
-// src/entities/product/index.ts
-export { ProductCard } from './ui/ProductCard';
-export { getProducts } from './api/product.api';
-export type { Product } from './model/types';
+### Public API Export 전략 (index.ts)
+> **원칙**: 외부에서 필요한 것만 노출 (타입, API, 메인 컴포넌트)
 
-// ✅ 올바른 import
-import { ProductCard, getProducts } from '@/entities/product';
+```typescript
+// src/features/product-form/index.ts
 
-// ❌ 직접 접근 금지
+// ✅ 메인 컴포넌트만 export (내부 하위 컴포넌트는 노출 X)
+export { ProductForm } from './ui/ProductForm';
+
+// ✅ API 및 쿼리 hooks
+export { createProduct, updateProduct } from './api/product.api';
+export { useCreateProductMutation } from './api/product.queries';
+
+// ✅ 타입 및 스키마 (외부에서 사용할 것만)
+export type { ProductFormInput, ProductFormData } from './model/product-form.schema';
+export { productFormSchema } from './model/product-form.schema';
+
+// ❌ 내부 구현 세부사항은 노출하지 않음
+// - 하위 UI 컴포넌트 (ProductFormField, ProductFormActions 등)
+// - lib 유틸리티 함수
+// - 내부에서만 사용하는 타입
+```
+
+### Import 규칙
+```typescript
+// ✅ 올바른 import (Public API 사용)
+import { ProductCard, useProductsQuery } from '@/entities/product';
+import { ProductForm } from '@/features/product-form';
+
+// ❌ 직접 접근 금지 (내부 구조 의존)
 import { ProductCard } from '@/entities/product/ui/ProductCard';
+import { useProductsQuery } from '@/entities/product/api/product.queries';
+```
+
+### Shared/UI 특수 규칙
+```typescript
+// shadcn 컴포넌트: 배럴 파일 없이 직접 import
+import { Button } from '@/shared/ui/button';
+import { Input } from '@/shared/ui/input';
+
+// 커스텀 컴포넌트: 폴더 단위로 배럴 파일 사용
+import { Logo } from '@/shared/ui/Logo';
+import { BackButton } from '@/shared/ui/BackButton';
+```
+
+### 서버/클라이언트 컴포넌트 분리 전략
+> **문제**: index.ts에서 서버/클라이언트 컴포넌트를 혼용하면 하이드레이션 에러 발생
+
+```typescript
+// ❌ 문제가 되는 구조
+// src/shared/ui/index.ts
+export { ServerComponent } from './ServerComponent';  // 서버 컴포넌트
+export { ClientComponent } from './ClientComponent';  // 'use client'
+
+// 해결 방법 1: shadcn처럼 각 컴포넌트별 개별 import
+import { ServerComponent } from '@/shared/ui/ServerComponent';
+import { ClientComponent } from '@/shared/ui/ClientComponent';
+
+// 해결 방법 2: 폴더로 분리하여 각각 배럴 파일 생성
+// src/shared/ui/ServerComponent/index.ts
+export { ServerComponent } from './ServerComponent';
+
+// src/shared/ui/ClientComponent/index.ts
+export { ClientComponent } from './ClientComponent';
+
+import { ServerComponent } from '@/shared/ui/ServerComponent';
+import { ClientComponent } from '@/shared/ui/ClientComponent';
 ```
 
 ## 파일 네이밍
 - 컴포넌트: `PascalCase.tsx`
 - API: `camelCase.api.ts`
+- 쿼리: `camelCase.queries.ts` (React Query/TanStack Query hooks)
 - 스키마: `camelCase.schema.ts`
 - 타입: `camelCase.types.ts`
 
@@ -191,8 +304,27 @@ if (user.role === 'admin') {
 ```
 
 ## 개발 체크리스트
-- [ ] 함수/인터페이스 JSDoc 주석 작성
+
+### 코드 품질
+- [ ] 함수 JSDoc 주석 작성 (목적, @param, @returns)
+- [ ] 인터페이스 프로퍼티 주석 작성
+- [ ] 5줄 이상 분기문에 설명 주석 추가
+
+### FSD 아키텍처
+- [ ] 레이어 의존성 준수 (상위 → 하위만 import)
+- [ ] Segment 이름을 목적 중심으로 작성 (components/hooks/types 지양)
+- [ ] Public API (index.ts)를 통한 export만 허용
+- [ ] index.ts에 필요한 것만 노출 (타입, API, 메인 컴포넌트)
+- [ ] 내부 구현 세부사항 노출 금지
+
+### Next.js & React
 - [ ] Server Component 우선 적용 ('use client' 최소화)
-- [ ] FSD Public API export (index.ts)
-- [ ] PAGES 상수 사용 (routes.ts)
-- [ ] Shadcn UI 컴포넌트 활용
+- [ ] 서버/클라이언트 컴포넌트 혼용 시 배럴 파일 분리
+- [ ] PAGES 상수 사용 (@/shared/config)
+- [ ] Shadcn UI 컴포넌트 활용 (@/shared/ui)
+
+### API & 데이터
+- [ ] API 함수는 xxx.api.ts에 작성
+- [ ] React Query hooks는 xxx.queries.ts에 작성
+- [ ] Zod 스키마는 entities에서 정의, features에서 상속
+- [ ] pnpm 사용 (npm, yarn 금지)

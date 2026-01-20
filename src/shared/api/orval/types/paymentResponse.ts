@@ -10,13 +10,24 @@
 import type { PaymentResponsePaymentMethod } from './paymentResponsePaymentMethod';
 import type { PaymentResponsePaymentStatus } from './paymentResponsePaymentStatus';
 
+/**
+ * 결제 정보 응답
+ */
 export interface PaymentResponse {
+  /** 결제 ID */
   id: string;
+  /** 예매 ID */
   bookingId: string;
+  /** 결제 번호 (주문 번호) */
   paymentNumber: string;
+  /** 결제 수단 */
   paymentMethod: PaymentResponsePaymentMethod;
+  /** 결제 상태 */
   paymentStatus: PaymentResponsePaymentStatus;
+  /** 최종 결제 금액 */
   finalPrice: number;
+  /** 결제 요청 일시 */
   requestedAt: string;
+  /** 결제 완료 일시 */
   completedAt?: string;
 }

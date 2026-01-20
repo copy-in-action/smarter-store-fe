@@ -9,10 +9,18 @@
  */
 import type { AppliedDiscountDtoType } from './appliedDiscountDtoType';
 
+/**
+ * 적용된 할인 정보
+ */
 export interface AppliedDiscountDto {
+  /** 할인 유형 (COUPON, POINT, PROMOTION) */
   type: AppliedDiscountDtoType;
+  /** 할인 명칭 (통계 및 스냅샷 보존용) */
   name: string;
+  /** 적용된 할인 금액 (수량이 아닌 KRW 단위 금액) */
   amount: number;
+  /** 적용된 쿠폰 ID (쿠폰 할인인 경우 필수) */
   couponId?: number;
+  /** 할인이 적용된 단일 좌석 ID (1좌석 1할인 원칙에 따라 단일 ID 사용) */
   bookingSeatId?: number;
 }

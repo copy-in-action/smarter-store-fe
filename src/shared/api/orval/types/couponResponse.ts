@@ -22,6 +22,8 @@ export interface CouponResponse {
   validFrom: string;
   /** 유효 종료일 */
   validUntil: string;
+  /** 정렬 순서 */
+  sortOrder: number;
   /** 활성화 여부 */
   isActive: boolean;
 }

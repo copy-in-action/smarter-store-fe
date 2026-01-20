@@ -8,6 +8,9 @@
  * OpenAPI spec version: 1.0.0
  */
 
+/**
+ * 할인 유형 (COUPON, POINT, PROMOTION)
+ */
 export type AppliedDiscountDtoType = typeof AppliedDiscountDtoType[keyof typeof AppliedDiscountDtoType];
 
 

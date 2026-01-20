@@ -119,13 +119,7 @@ export function createPaymentConfirmationData(
    * - validationResponse의 totalFinalPrice 사용
    */
   const ticketAmount = validationResponse.totalFinalPrice;
-
-  /**
-   * 예매 수수료 계산
-   * - 전체 좌석 수 × bookingFee
-   */
-  const totalSeatCount = bookingData.seats.length;
-  const totalBookingFee = totalSeatCount * (performance?.bookingFee || 0);
+  const totalBookingFee = performance?.bookingFee || 0;
 
   return {
     performance: {

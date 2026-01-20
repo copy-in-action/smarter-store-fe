@@ -1,24 +1,17 @@
-import type { UserResponse } from "@/shared/api/orval/types";
+import { useFormContext } from "react-hook-form";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/shared/ui/field";
 import { Input } from "@/shared/ui/input";
-
-/**
- * 예약자 정보 Props
- */
-interface Props {
-  /** 사용자 정보 */
-  user: UserResponse;
-}
+import type { PaymentFormData } from "../model";
 
 /**
  * 예약자 정보 컴포넌트
  * 예약자의 이름, 이메일, 휴대폰 번호를 표시합니다
- * @param props - 컴포넌트 Props
- * @param props.user - 사용자 정보
  * @returns 예약자 정보 입력 폼
  * @todo hookform 연결 필요
  */
-const ReservationInfo = ({ user }: Props) => {
+const ReservationInfo = () => {
+  const { register } = useFormContext<PaymentFormData>();
+
   return (
     <section className="px-4">
       <h2 className="text-lg font-semibold">예약자 정보</h2>
@@ -37,8 +30,7 @@ const ReservationInfo = ({ user }: Props) => {
               <Input
                 id="name font-normal"
                 readOnly
-                required
-                value={user.username}
+                {...register("reserverInfo.name")}
                 className="read-only:bg-gray-100"
               />
             </Field>
@@ -54,8 +46,8 @@ const ReservationInfo = ({ user }: Props) => {
                 이메일
               </FieldLabel>
               <Input
+                {...register("reserverInfo.email")}
                 id="email"
-                value={user.email}
                 className="read-only:bg-gray-100"
               />
             </Field>
@@ -71,9 +63,8 @@ const ReservationInfo = ({ user }: Props) => {
                 휴대폰
               </FieldLabel>
               <Input
+                {...register("reserverInfo.phone")}
                 id="phoneNumber"
-                required
-                value={user.phoneNumber}
                 className="read-only:bg-gray-100"
               />
             </Field>

@@ -15,8 +15,12 @@ import { useSeatSSESubscription } from "./useSeatSSESubscription";
  * @param scheduleId - 회차 ID
  * @returns 좌석 차트 설정 및 예매 전용 제어 함수
  */
-export function useBookingSeatSelection(venueId: number, scheduleId: number) {
-  const seatChartHook = useSeatChart(venueId, scheduleId);
+export function useBookingSeatSelection(
+  venueId: number,
+  mode: "view" | "payment",
+  scheduleId: number,
+) {
+  const seatChartHook = useSeatChart(venueId, mode, scheduleId);
   const { toggleSeatSelection, seatChartConfig, updateBookingStatus } =
     seatChartHook;
 

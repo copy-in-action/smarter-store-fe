@@ -8,6 +8,9 @@
  * OpenAPI spec version: 1.0.0
  */
 
+/**
+ * 결제 상태
+ */
 export type PaymentResponsePaymentStatus = typeof PaymentResponsePaymentStatus[keyof typeof PaymentResponsePaymentStatus];
 
 

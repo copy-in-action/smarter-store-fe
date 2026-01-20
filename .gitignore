@@ -42,3 +42,11 @@ next-env.d.ts
 
 # Sentry Config File
 .env.sentry-build-plugin
+
+# testing - playwright
+/playwright-report/
+/test-results/
+
+# local documents (temporary notes)
+/document/*-todo.md
+/document/payment-todo.md

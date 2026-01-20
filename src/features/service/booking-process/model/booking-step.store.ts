@@ -4,11 +4,13 @@
 
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import type { BookingResponse } from "@/shared/api/orval/types";
+import type {
+  BookingResponse,
+  PaymentCreateRequest,
+} from "@/shared/api/orval/types";
 import type { SeatPosition } from "@/shared/lib/seat";
 import type { BookingDiscountFormData } from "../../booking-seating-chart";
 import type { PaymentConfirmationData } from "./booking.types";
-
 /**
  * 예매 Step enum
  * - SEAT_SELECTION: 좌석 선택
@@ -36,6 +38,11 @@ interface BookingStepState {
   selectedDiscountInput: BookingDiscountFormData | null;
   /** 결제 화면에 보여주기 위한 최종 가공 데이터 */
   paymentConfirmation: PaymentConfirmationData | null;
+  /** 서버에 전송할 결제 요청 데이터 (paymentMethod, isAgreed 제외) */
+  paymentRequestData: Omit<
+    PaymentCreateRequest,
+    "isAgreed" | "paymentMethod"
+  > | null;
   /** 저장된 좌석 위치 (Step 3 → 2 복원용) */
   savedSeatPositions: SeatPosition[] | null;
   /** Step 변경 */
@@ -46,6 +53,10 @@ interface BookingStepState {
   setSelectedDiscountInput: (input: BookingDiscountFormData | null) => void;
   /** 최종 결제 데이터 설정 */
   setPaymentConfirmation: (data: PaymentConfirmationData | null) => void;
+  /** 서버 전송용 결제 요청 데이터 설정 */
+  setPaymentRequestData: (
+    data: Omit<PaymentCreateRequest, "isAgreed" | "paymentMethod"> | null,
+  ) => void;
   /** 저장된 좌석 위치 설정 */
   setSavedSeatPositions: (seats: SeatPosition[] | null) => void;
   /** 다음 Step으로 이동 */
@@ -62,12 +73,14 @@ const initialState: Pick<
   | "bookingData"
   | "selectedDiscountInput"
   | "paymentConfirmation"
+  | "paymentRequestData"
   | "savedSeatPositions"
 > = {
   step: BookingStep.SEAT_SELECTION,
   bookingData: null,
   selectedDiscountInput: null,
   paymentConfirmation: null,
+  paymentRequestData: null,
   savedSeatPositions: null,
 };
 
@@ -84,6 +97,7 @@ export const useBookingStepStore = create<BookingStepState>()(
       setSelectedDiscountInput: (input) =>
         set({ selectedDiscountInput: input }),
       setPaymentConfirmation: (data) => set({ paymentConfirmation: data }),
+      setPaymentRequestData: (data) => set({ paymentRequestData: data }),
       setSavedSeatPositions: (seats) => set({ savedSeatPositions: seats }),
       nextStep: () =>
         set((state) => ({
@@ -95,8 +109,9 @@ export const useBookingStepStore = create<BookingStepState>()(
             state.step - 1,
             BookingStep.SEAT_SELECTION,
           ) as BookingStep,
-          // Step 3 -> 2로 갈 때, paymentConfirmation만 초기화
+          // Step 3 -> 2로 갈 때, paymentConfirmation과 paymentRequestData 초기화
           paymentConfirmation: null,
+          paymentRequestData: null,
         })),
       reset: () => set(initialState),
     }),

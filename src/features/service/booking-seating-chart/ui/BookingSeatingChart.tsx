@@ -19,6 +19,7 @@ import {
 import { useBookingSeatSelection } from "../hooks/useBookingSeatSelection";
 import { useBookingStepControl } from "../hooks/useBookingStepControl";
 import { createPaymentConfirmationData } from "../lib/createPaymentConfirmationData";
+import { createPaymentRequestData } from "../lib/createPaymentRequestData";
 import { transformToSeatCoupons } from "../lib/transform-booking-discount";
 import type { BookingDiscountFormData } from "../model/booking-discount.schema";
 import DiscountSelectionStep from "./DiscountSelectionStep";
@@ -52,6 +53,7 @@ const BookingSeatingChart = ({
     bookingData,
     setSelectedDiscountInput,
     setPaymentConfirmation,
+    setPaymentRequestData,
     isLoading,
     handleCompleteSelection,
     handleBackStep,
@@ -67,7 +69,11 @@ const BookingSeatingChart = ({
    * - SeatSelectionStep과 DiscountSelectionStep이 동일한 좌석 선택 상태 공유
    */
   const { seatChartConfig, toggleSeatSelection, clearSelection } =
-    useBookingSeatSelection(performance.venue?.id || 0, scheduleId);
+    useBookingSeatSelection(
+      performance.venue?.id || 0,
+      step === BookingStep.SEAT_SELECTION ? "view" : "payment",
+      scheduleId,
+    );
 
   /**
    * Step 3 → Step 2 복귀 시 저장된 좌석 위치 복원
@@ -142,6 +148,7 @@ const BookingSeatingChart = ({
 
       setSelectedDiscountInput(selectedDiscountInput);
 
+      // 화면 표시용 데이터 생성
       const paymentData = createPaymentConfirmationData(
         performance,
         bookingData,
@@ -151,6 +158,17 @@ const BookingSeatingChart = ({
         couponData || [],
       );
       setPaymentConfirmation(paymentData);
+
+      // 서버 전송용 데이터 생성 (paymentMethod, isAgreed 제외)
+      const paymentRequestData = createPaymentRequestData(
+        bookingData,
+        validationResponse,
+        performance,
+        seatInfos,
+        couponData || [],
+      );
+
+      setPaymentRequestData(paymentRequestData);
 
       const seatPositions = userSelectedSeats.map((seat) => ({
         row: seat.row,

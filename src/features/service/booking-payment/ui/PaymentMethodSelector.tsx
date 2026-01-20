@@ -10,6 +10,8 @@ import {
 } from "date-fns";
 import { ko } from "date-fns/locale";
 import { useMemo } from "react";
+import { useFormContext, useWatch } from "react-hook-form";
+import type { PaymentResponsePaymentMethod } from "@/shared/api/orval/types";
 import { Card, CardContent } from "@/shared/ui/card";
 import {
   Select,
@@ -21,18 +23,30 @@ import {
 } from "@/shared/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 
-const paymentMethods = [
+const paymentMethods: {
+  id: number;
+  label: string;
+  value: PaymentResponsePaymentMethod;
+}[] = [
   {
     id: 1,
     label: "무통장",
+    value: "VIRTUAL_ACCOUNT",
   },
   {
     id: 2,
-    label: "카카오페이",
+    label: "신용카드",
+    value: "CREDIT_CARD",
   },
   {
     id: 3,
+    label: "카카오페이",
+    value: "KAKAO_PAY",
+  },
+  {
+    id: 4,
     label: "토스페이",
+    value: "TOSS_PAY",
   },
 ];
 
@@ -49,9 +63,15 @@ const banks = [
 ];
 
 /**
- * 무통장 결제 컴포넌트
+ * 신용카드 결제 컴포넌트
  */
 const VirtualAccountPayment = () => {
+  const { setValue, control } = useFormContext();
+  const bankCode = useWatch({
+    control,
+    name: "bankCode",
+  });
+
   /**
    * 입금기한 계산: 현재 시각 + 24시간 후, 가장 가까운 12시간 단위로 올림
    * - 0~12시: 같은 날 11:59 AM
@@ -83,7 +103,10 @@ const VirtualAccountPayment = () => {
 
   return (
     <div>
-      <Select>
+      <Select
+        value={bankCode}
+        onValueChange={(value) => setValue("bankCode", value)}
+      >
         <SelectTrigger className="w-full text-base">
           <SelectValue placeholder="은행 선택" />
         </SelectTrigger>
@@ -120,18 +143,45 @@ const VirtualAccountPayment = () => {
 };
 
 const PaymentMethodSelector = () => {
+  const { setValue, control } = useFormContext();
+
+  // useWatch를 사용하여 실시간으로 값 구독
+  const currentPaymentMethod = useWatch({
+    control,
+    name: "paymentMethod",
+  });
+
+  /**
+   * 결제 수단 변경 핸들러
+   * @param value - 선택된 탭 라벨
+   */
+  const handleTabChange = (label: string) => {
+    const selectedMethod = paymentMethods.find((m) => m.label === label);
+    if (selectedMethod) {
+      setValue("paymentMethod", selectedMethod.value);
+    }
+  };
+
+  // 현재 선택된 결제 수단의 라벨 찾기
+  const currentLabel = useMemo(() => {
+    return (
+      paymentMethods.find((m) => m.value === currentPaymentMethod)?.label ||
+      paymentMethods[0].label
+    );
+  }, [currentPaymentMethod]);
+
   return (
     <section className="px-4">
       <h2 className="text-lg font-semibold">결제수단</h2>
 
-      <Tabs defaultValue={paymentMethods[0].label}>
+      <Tabs value={currentLabel} onValueChange={handleTabChange}>
         <TabsList className="w-full bg-background border-b rounded-none p-0!">
           {paymentMethods.map((paymentMethod) => (
             <TabsTrigger
               key={paymentMethod.id}
               value={paymentMethod.label}
               className="relative border-none shadow-none bg-transparent px-4 py-2
-                data-[state=active]:bg-transparent 
+                data-[state=active]:bg-transparent
                 data-[state=active]:shadow-none
                 data-[state=active]:after:content-['']
                 data-[state=active]:after:absolute
@@ -145,7 +195,7 @@ const PaymentMethodSelector = () => {
             </TabsTrigger>
           ))}
         </TabsList>
-        <TabsContent value="무통장">
+        <TabsContent value={paymentMethods[0].label}>
           <Card className="py-3 border-none rounded-none shadow-none">
             <CardContent className="px-0">
               <VirtualAccountPayment />
@@ -158,6 +208,11 @@ const PaymentMethodSelector = () => {
           </Card>
         </TabsContent>
         <TabsContent value={paymentMethods[2].label}>
+          <Card className="border-none rounded-none shadow-none">
+            <CardContent>미구현</CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value={paymentMethods[3].label}>
           <Card className="border-none rounded-none shadow-none">
             <CardContent>미구현</CardContent>
           </Card>

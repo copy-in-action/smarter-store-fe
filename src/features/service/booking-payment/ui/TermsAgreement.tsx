@@ -1,7 +1,8 @@
 "use client";
 
 import { CircleCheck } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useFormContext } from "react-hook-form";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { Checkbox } from "@/shared/ui/checkbox";
@@ -40,8 +41,10 @@ const termsItems: TermItem[] = [
   },
 ];
 
-// TODO: HOOKFORM 연동 필요
 const TermsAgreement = () => {
+  const { setValue, watch } = useFormContext();
+  const isAgreed = watch("isAgreed");
+
   const [isCheckedAll, setIsCheckedAll] = useState(false);
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
 
@@ -58,6 +61,12 @@ const TermsAgreement = () => {
       newCheckedItems[item.id] = newCheckedAll;
     });
     setCheckedItems(newCheckedItems);
+
+    // 필수 약관이 모두 체크되었는지 확인하여 폼에 반영
+    const allRequiredChecked = termsItems
+      .filter((item) => item.required)
+      .every((item) => newCheckedItems[item.id]);
+    setValue("isAgreed", allRequiredChecked);
   };
 
   /**
@@ -73,7 +82,27 @@ const TermsAgreement = () => {
     // 모든 항목이 체크되었는지 확인
     const allChecked = termsItems.every((item) => newCheckedItems[item.id]);
     setIsCheckedAll(allChecked);
+
+    // 필수 약관이 모두 체크되었는지 확인하여 폼에 반영
+    const allRequiredChecked = termsItems
+      .filter((item) => item.required)
+      .every((item) => newCheckedItems[item.id]);
+    setValue("isAgreed", allRequiredChecked);
   };
+
+  /**
+   * 폼 상태와 로컬 상태 동기화
+   */
+  useEffect(() => {
+    setIsCheckedAll(isAgreed);
+    if (isAgreed) {
+      const newCheckedItems: Record<string, boolean> = {};
+      termsItems.forEach((item) => {
+        newCheckedItems[item.id] = true;
+      });
+      setCheckedItems(newCheckedItems);
+    }
+  }, [isAgreed]);
 
   return (
     <section className="px-4">
@@ -83,6 +112,7 @@ const TermsAgreement = () => {
         variant="ghost"
         className="p-0! text-base"
         onClick={handleCheckAll}
+        type="button"
       >
         <CircleCheck
           className={cn(
