@@ -1,8 +1,10 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { confirmBooking } from "@/shared/api/orval/booking/booking";
 import { createPayment } from "@/shared/api/orval/payment/payment";
 import { getSchedule } from "@/shared/api/orval/schedule/schedule";
 import type {
   AvailableScheduleResponse,
+  BookingResponse,
   PaymentCreateRequest,
   PaymentResponse,
 } from "@/shared/api/orval/types";
@@ -33,6 +35,19 @@ export const useCreatePayment = () => {
     ): Promise<PaymentResponse> => {
       const response = await createPayment(request);
       return response.data as PaymentResponse;
+    },
+  });
+};
+
+/**
+ * 예매를 최종 확정하는 mutation
+ * @returns 예매 확정 mutation
+ */
+export const useConfirmBooking = () => {
+  return useMutation({
+    mutationFn: async (bookingId: string): Promise<BookingResponse> => {
+      const response = await confirmBooking(bookingId);
+      return response.data as BookingResponse;
     },
   });
 };

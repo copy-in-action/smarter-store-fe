@@ -12,11 +12,13 @@ import { useCompletePayment } from "../api/useCompletePayment";
 export const PgPaymentPopup = () => {
   const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
-  
+
   // 결제 승인 Mutation
-  const { mutate: completePayment, isPending: isCompletePending } = useCompletePayment();
+  const { mutate: completePayment, isPending: isCompletePending } =
+    useCompletePayment();
   // 결제 취소 Mutation
-  const { mutate: cancelPayment, isPending: isCancelPending } = useCancelPayment();
+  const { mutate: cancelPayment, isPending: isCancelPending } =
+    useCancelPayment();
 
   const isPending = isCompletePending || isCancelPending;
 
@@ -55,7 +57,7 @@ export const PgPaymentPopup = () => {
         onSuccess: (data) => {
           if (window.opener) {
             window.opener.postMessage(
-              { type: "PAYMENT_RESULT", status: "SUCCESS", data },
+              { type: "PAYMENT_RESULT", status: "SUCCESS", data: data.data },
               "*",
             );
             window.close();
@@ -63,7 +65,7 @@ export const PgPaymentPopup = () => {
         },
         onError: (error) => {
           console.error("결제 승인 실패:", error);
-          toast.error("결제 승인 처리에 실패했습니다.");
+          toast.error(error.message || "결제 승인 처리에 실패했습니다.");
           if (window.opener) {
             window.opener.postMessage(
               { type: "PAYT_RESULT", status: "FAIL" },
@@ -71,7 +73,7 @@ export const PgPaymentPopup = () => {
             );
           }
         },
-      }
+      },
     );
   };
 
@@ -108,7 +110,8 @@ export const PgPaymentPopup = () => {
           // 취소 API 실패 시에도 일단 창은 닫거나 사용자에게 알림
           toast.error("결제 취소 처리에 실패했습니다.");
           // 실패했더라도 팝업 닫기는 진행 (UX 결정 필요)
-           if (window.opener) {
+
+          if (window.opener) {
             window.opener.postMessage(
               { type: "PAYMENT_RESULT", status: "CANCEL" },
               "*",
@@ -116,7 +119,7 @@ export const PgPaymentPopup = () => {
             window.close();
           }
         },
-      }
+      },
     );
   };
 
