@@ -14,6 +14,8 @@ export const createCouponFormSchema = createCouponSchema
     validFrom: z.string().min(1, "유효 시작일을 입력해주세요"),
     /** 유효 종료일 (YYYY-MM-DD 형식) */
     validUntil: z.string().min(1, "유효 종료일을 입력해주세요"),
+    /** 정렬 순서 (낮을수록 먼저 표시) */
+    sortOrder: z.number().int("정렬 순서는 정수여야 합니다"),
   })
   .refine(
     (data) => {

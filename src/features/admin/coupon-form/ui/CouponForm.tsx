@@ -76,10 +76,11 @@ export function CouponForm({
       validFrom: initialValues?.validFrom ?? "",
       validUntil: initialValues?.validUntil ?? "",
       discountRate: initialValues?.discountRate ?? 0,
+      sortOrder: initialValues?.sortOrder ?? 0,
       ...(mode === "edit" && { isActive: initialValues?.isActive ?? true }),
     };
   };
-
+  console.log("🚀 ~ CouponForm ~ getDefaultValues():", getDefaultValues());
   const form = useForm<CreateCouponFormInput | UpdateCouponFormInput>({
     resolver: zodResolver(
       mode === "edit" ? updateCouponFormSchema : createCouponFormSchema,
@@ -132,6 +133,7 @@ export function CouponForm({
         discountRate: data.discountRate,
         validFrom: formatToApi(data.validFrom),
         validUntil: formatToApi(data.validUntil),
+        sortOrder: data.sortOrder,
       };
       await onSubmit(createData);
     }
@@ -213,6 +215,26 @@ export function CouponForm({
             {form.formState.errors.validUntil && (
               <p className="mt-1 text-sm text-red-500">
                 {form.formState.errors.validUntil.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label
+              htmlFor="sortOrder"
+              className="block mb-1 text-sm font-medium"
+            >
+              정렬 순서
+            </label>
+            <Input
+              id="sortOrder"
+              type="number"
+              {...form.register("sortOrder", { valueAsNumber: true })}
+              placeholder="정렬 순서 입력 (낮을수록 먼저 표시)"
+            />
+            {form.formState.errors.sortOrder && (
+              <p className="mt-1 text-sm text-red-500">
+                {form.formState.errors.sortOrder.message}
               </p>
             )}
           </div>

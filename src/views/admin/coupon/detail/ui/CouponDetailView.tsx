@@ -92,6 +92,12 @@ export function CouponDetailView({ couponId }: CouponDetailViewProps) {
               </dt>
               <dd>{data.validUntil}</dd>
             </div>
+            <div className="flex">
+              <dt className="w-32 font-semibold text-muted-foreground">
+                정렬 순서
+              </dt>
+              <dd>{data.sortOrder}</dd>
+            </div>
           </dl>
         </CardContent>
       </Card>
