@@ -8,6 +8,10 @@
  * OpenAPI spec version: 1.0.0
  */
 
+/**
+ * 결제 취소 요청
+ */
 export interface PaymentCancelRequest {
+  /** 취소 사유 */
   reason: string;
 }

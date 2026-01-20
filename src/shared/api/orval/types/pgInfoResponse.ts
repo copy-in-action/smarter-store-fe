@@ -8,9 +8,16 @@
  * OpenAPI spec version: 1.0.0
  */
 
+/**
+ * PG 결제 정보
+ */
 export interface PgInfoResponse {
+  /** PG사 */
   provider: string;
+  /** PG사 거래 ID */
   transactionId: string;
+  /** 카드사 명 */
   cardCompany?: string;
+  /** 카드 번호 (마스킹됨) */
   cardNumber?: string;
 }

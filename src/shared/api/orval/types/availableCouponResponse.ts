@@ -20,4 +20,6 @@ export interface AvailableCouponResponse {
   discountRate: number;
   /** 유효 종료일 */
   validUntil: string;
+  /** 정렬 순서 */
+  sortOrder: number;
 }

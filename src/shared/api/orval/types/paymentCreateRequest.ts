@@ -10,13 +10,24 @@
 import type { PaymentCreateRequestPaymentMethod } from './paymentCreateRequestPaymentMethod';
 import type { AppliedDiscountDto } from './appliedDiscountDto';
 
+/**
+ * 결제 생성 요청
+ */
 export interface PaymentCreateRequest {
+  /** 예매 ID */
   bookingId: string;
+  /** 결제 수단 */
   paymentMethod: PaymentCreateRequestPaymentMethod;
+  /** 총 결제 금액 (검증용) */
   totalAmount: number;
+  /** 순수 티켓 금액 */
   ticketAmount: number;
+  /** 예매 수수료 */
   bookingFee: number;
+  /** 할인 전 원가 */
   originalPrice: number;
+  /** 결제 약관 동의 여부 */
   isAgreed: boolean;
+  /** 적용된 할인 목록 */
   discounts: AppliedDiscountDto[];
 }

@@ -23,6 +23,8 @@ export interface CouponUpdateRequest {
   validFrom: string;
   /** 유효 종료일 */
   validUntil: string;
+  /** 정렬 순서 (낮을수록 먼저 표시) */
+  sortOrder: number;
   /** 활성화 여부 */
   isActive: boolean;
 }

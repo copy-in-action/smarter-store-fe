@@ -11,8 +11,12 @@ import type { PaymentResponse } from './paymentResponse';
 import type { PaymentItemResponse } from './paymentItemResponse';
 import type { PgInfoResponse } from './pgInfoResponse';
 
+/**
+ * 결제 상세 정보 응답
+ */
 export interface PaymentDetailResponse {
   payment: PaymentResponse;
+  /** 결제 항목 목록 (티켓 등) */
   items: PaymentItemResponse[];
   pgInfo?: PgInfoResponse;
 }
