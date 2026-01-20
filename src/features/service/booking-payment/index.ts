@@ -5,6 +5,7 @@
 
 // API
 export {
+  useConfirmBooking,
   useCreatePayment,
   useGetPerformanceSchedule,
 } from "./api/useBookingPayment.api";

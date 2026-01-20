@@ -44,7 +44,7 @@ export function useSeatSSESubscription(
           seats: status.pending,
         });
         updateBookingStatus({
-          action: "OCCUPIED",
+          action: "CONFIRMED",
           seats: status.reserved,
         });
       } catch (error) {

@@ -16,6 +16,7 @@ import {
   ReservationInfo,
   TermsAgreement,
   TicketOrderDetail,
+  useConfirmBooking,
   useCreatePayment,
   useGetPerformanceSchedule,
 } from "@/features/service/booking-payment";
@@ -67,6 +68,8 @@ const BookingPayment = () => {
 
   // 결제 생성 mutation
   const { mutate: createPaymentMutation, isPending } = useCreatePayment();
+  // 예매 확정 mutation
+  const { mutate: confirmBookingMutation } = useConfirmBooking();
 
   const handleBackStep = () => {
     if (isPaymentProcessing) return;
@@ -127,8 +130,6 @@ const BookingPayment = () => {
     // 2. 결제 생성 API 호출
     createPaymentMutation(finalPaymentRequest, {
       onSuccess: (data) => {
-        toast.info("PG 결제 창이 열렸습니다.");
-
         // API 성공 시 실제 결제 팝업 페이지로 이동
         if (popupRef.current && !popupRef.current.closed) {
           const popupUrl = `/booking/payment/pg?paymentId=${data.id}&bankName=${encodeURIComponent(bankName)}&amount=${amount}`;
@@ -176,8 +177,26 @@ const BookingPayment = () => {
         const { status } = event.data;
 
         if (status === "SUCCESS") {
-          toast.success("결제가 성공적으로 완료되었습니다!");
-          // TODO: 결제 완료 페이지로 이동
+          // 결제 성공 시 예매 확정 API 호출
+          const paymentData = event.data?.data;
+          if (paymentData?.bookingId) {
+            confirmBookingMutation(paymentData.bookingId, {
+              onSuccess: () => {
+                // 스토어 초기화
+                reset();
+                alert(
+                  "예매가 완료되었습니다. 확인 버튼을 누르면 메인페이지로 이동되며 예매 이력은 마이 페이지에서 확인 할 수 있습니다.",
+                );
+                router.push(PAGES.HOME.path);
+              },
+              onError: (error) => {
+                toast.error("예매 확정에 실패했습니다.");
+                console.error("Booking confirmation failed:", error);
+              },
+            });
+          } else {
+            toast.error("예매 정보를 찾을 수 없습니다.");
+          }
         } else if (status === "CANCEL") {
           toast.warning("결제가 취소되었습니다.");
         } else {
@@ -192,7 +211,7 @@ const BookingPayment = () => {
 
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
-  }, []);
+  }, [reset, router.push, confirmBookingMutation]);
 
   /**
    * popstate 이벤트 감지 (브라우저 뒤로가기/앞으로가기)
@@ -279,21 +298,21 @@ const BookingPayment = () => {
                 tickets={paymentInfo.ticketDetails}
                 showDateTime={schedule?.showDateTime || ""}
               />
-              <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto max-w-4xl" />
+              <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto" />
 
               {/* 예약자 정보 */}
               <ReservationInfo />
-              <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto max-w-4xl" />
+              <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto" />
 
               {/* 결제수단 */}
               <PaymentMethodSelector />
-              <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto max-w-4xl" />
+              <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto" />
 
               {/* 결제정보 모바일에서만 표시*/}
               <section className="block wrapper lg:hidden px-4!">
                 <BookingPaymentInfo payment={paymentInfo.payment} />
               </section>
-              <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto max-w-4xl block lg:hidden" />
+              <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto block lg:hidden" />
 
               {/* 약관동의 */}
               <TermsAgreement />
