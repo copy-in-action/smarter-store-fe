@@ -190,7 +190,7 @@ const BookingPayment = () => {
                 alert(
                   "예매가 완료되었습니다. 확인 버튼을 누르면 메인페이지로 이동되며 예매 이력은 마이 페이지에서 확인 할 수 있습니다.",
                 );
-                router.push(PAGES.HOME.path);
+                router.replace(PAGES.HOME.path);
               },
               onError: (error) => {
                 toast.error("예매 확정에 실패했습니다.");
@@ -214,7 +214,7 @@ const BookingPayment = () => {
 
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
-  }, [reset, router.push, confirmBookingMutation]);
+  }, [reset, router.replace, confirmBookingMutation]);
 
   /**
    * popstate 이벤트 감지 (브라우저 뒤로가기/앞으로가기)
