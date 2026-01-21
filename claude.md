@@ -1,5 +1,11 @@
 # Claude 개발 가이드 (AI 참조용)
 
+> 이 프로젝트는 **FSD(Feature-Sliced Design)** 아키텍처를 따릅니다.
+> FSD는 비즈니스 기능 중심으로 코드를 구조화하는 방법론입니다.
+>
+> **핵심**: Layer(계층) → Slice(도메인) → Segment(목적)으로 코드를 조직하며,
+> 상위 레이어는 하위 레이어로만 의존할 수 있습니다.
+
 ## 🚀 필수 준수 사항
 
 ### 코드 작성
@@ -8,10 +14,11 @@
 - ✅ **5줄 이상 분기문**: 분기 로직 설명 주석 필수
 
 ### FSD 아키텍처
-- ✅ **레이어 의존성**: 상위 레이어만 하위 레이어 import 가능
+- ✅ **3대 원칙**: Public API, Isolation(격리), Needs Driven(비즈니스 중심)
+- ✅ **레이어 의존성**: 상위 레이어만 하위 레이어 import 가능 (같은 레이어 간 직접 참조 금지)
 - ✅ **Public API**: index.ts를 통한 export만 허용 (내부 경로 접근 금지)
-- ✅ **Segment 네이밍**: 목적 중심 이름 사용 (components/hooks/types 지양)
-- ✅ **Export 최소화**: 타입, API, 메인 컴포넌트만 노출
+- ✅ **Segment 네이밍**: 목적 중심 (ui/api/model/lib/config) 사용, 기술 분류(components/hooks/types) 금지
+- ✅ **Export 최소화**: 메인 컴포넌트, 외부 필요 타입/API만 노출 (내부 구현 세부사항 금지)
 
 ### Next.js & React
 - ✅ **Server Component 우선**: 상호작용 필요시만 `'use client'`
@@ -23,48 +30,116 @@
 - ✅ **PAGES 상수**: `@/shared/config` 사용
 - ✅ **API 파일**: xxx.api.ts (API 함수), xxx.queries.ts (React Query)
 
-## FSD 레이어 의존성
+## FSD 레이어 구조
+
+### 레이어 의존성
 ```
-app → views → widgets → features → entities → shared
-     (하위 레이어만 import 가능)
+app       ← 최상위 (앱 전역 설정)
+  ↓
+pages     ← 화면/페이지
+  ↓
+widgets   ← 자체완결 UI 블록
+  ↓
+features  ← 사용자 기능
+  ↓
+entities  ← 비즈니스 개념
+  ↓
+shared    ← 최하위 (공통 인프라)
+
+** 상위 레이어는 하위 레이어로만 의존 가능 **
 ```
 
-## FSD Segment 네이밍 원칙
-> **핵심**: 폴더 이름은 "무엇을 담고 있는지"가 아닌 "무엇을 위해 존재하는지(목적)"를 표현
+### 각 레이어 역할 요약
 
-### ❌ 피해야 할 이름 (기술적 분류)
-- `components/` - 컴포넌트가 들어있다는 것만 알 수 있음
-- `hooks/` - 훅이 들어있다는 것만 알 수 있음
-- `types/` - 타입이 들어있다는 것만 알 수 있음
-- `utils/` - 유틸리티가 들어있다는 것만 알 수 있음
+| 레이어 | 역할 | 포함 내용 | 예시 |
+|--------|------|-----------|------|
+| **app** (필수) | 앱 전역 설정 | Provider, 글로벌 스타일 | QueryProvider, layout.tsx |
+| **pages** (필수) | 페이지/화면 | UI 렌더링, 데이터 페칭 | booking-detail, product-list |
+| **widgets** (선택) | 재사용 UI 블록 | 헤더, 푸터, 사이드바 | header, admin-sidebar |
+| **features** (선택) | 사용자 기능 | 폼, API 호출, 인터랙션 | booking-payment, login-form |
+| **entities** (선택) | 비즈니스 개념 | 도메인 타입, CRUD API, 스키마 | product, booking, venue |
+| **shared** (필수) | 공통 인프라 | API 클라이언트, UI 키트, 유틸 | button, routes, format |
 
-### ✅ 권장하는 이름 (목적 중심)
-- `ui/` - UI 컴포넌트 (FSD 공식 segment)
-- `api/` - API 통신 (FSD 공식 segment)
-- `model/` - 비즈니스 로직, 스키마, 타입 (FSD 공식 segment)
-- `lib/` - 해당 슬라이스 전용 유틸리티 (FSD 공식 segment)
-- `config/` - 설정 및 상수 (FSD 공식 segment)
+## FSD 3단계 구조: Layer → Slice → Segment
 
-### Shared 레이어 특수 케이스
+```
+📂 features/              # Layer: 계층 (책임도별 수평 분할)
+  📂 booking-payment/     # Slice: 슬라이스 (도메인별 수직 분할)
+    📂 ui/                # Segment: 세그먼트 (목적별 분류)
+    📂 api/
+    📂 model/
+    📄 index.ts           # Public API
+```
+
+| 구조 | 정의 | 규칙 | 예시 |
+|------|------|------|------|
+| **Layer** | 책임도별 수평 분할 | 상위 → 하위만 의존 | `features`, `entities`, `shared` |
+| **Slice** | 도메인별 수직 분할 | 같은 레이어 내 직접 참조 금지 | `booking-payment`, `product` |
+| **Segment** | 목적별 분류 | 목적 중심 네이밍 | `ui`, `api`, `model` (⭕) / `components`, `hooks` (❌) |
+
+### 실제 프로젝트 구조 예시
 ```typescript
-shared/
-├── ui/               # UI 컴포넌트 (shadcn 포함)
-│   ├── button.tsx    # shadcn 컴포넌트 (배럴 파일 없음)
-│   ├── input.tsx
-│   ├── Logo/         # 커스텀 컴포넌트 (폴더 단위)
-│   │   ├── Logo.tsx
-│   │   └── index.ts  # 배럴 파일
-│   └── BackButton/
-│       ├── BackButton.tsx
+src/
+├── app/                          # Layer: 앱 전역 설정
+│   ├── layout.tsx                # 루트 레이아웃
+│   ├── providers/                # 전역 Provider
+│   └── styles/                   # 글로벌 스타일
+│
+├── pages/                        # Layer: 페이지 (Next.js App Router는 app/ 사용)
+│   └── booking-detail/           # Slice: 예약 상세 페이지
+│       ├── ui/                   # Segment: UI
+│       │   └── BookingDetailPage.tsx
 │       └── index.ts
-├── api/              # 공통 API 설정 (axios, fetch wrapper)
-├── lib/              # 공통 유틸리티 함수
-├── config/           # 라우팅, 환경 변수 등 설정
-└── [목적명]/         # 특정 목적의 기능 (예: device-detection, auth-events)
-    ├── ui/           # UI 컴포넌트
-    ├── lib/          # 유틸리티
-    ├── model/        # 타입
-    └── index.ts      # Public API
+│
+├── widgets/                      # Layer: 재사용 UI 블록
+│   ├── admin-sidebar/            # Slice: 관리자 사이드바
+│   └── header/                   # Slice: 헤더
+│
+├── features/                     # Layer: 사용자 기능
+│   ├── booking-payment/          # Slice: 예약 결제
+│   │   ├── ui/                   # Segment: UI 컴포넌트
+│   │   │   ├── BookingPayment.tsx        # 메인 컴포넌트 (export)
+│   │   │   └── PaymentMethod.tsx         # 내부 컴포넌트 (export X)
+│   │   ├── api/                  # Segment: API
+│   │   │   ├── payment.api.ts
+│   │   │   └── payment.queries.ts
+│   │   ├── model/                # Segment: 비즈니스 로직
+│   │   │   └── payment.schema.ts
+│   │   └── index.ts              # Public API
+│   └── performance-form/         # Slice: 공연 폼
+│
+├── entities/                     # Layer: 비즈니스 개념
+│   ├── booking/                  # Slice: 예약 도메인
+│   │   ├── ui/                   # Segment: UI
+│   │   │   └── BookingCard.tsx
+│   │   ├── api/                  # Segment: API
+│   │   │   ├── booking.api.ts
+│   │   │   └── booking.queries.ts
+│   │   ├── model/                # Segment: 모델
+│   │   │   ├── booking.types.ts  # orval 생성 타입
+│   │   │   └── booking.schema.ts # Zod 스키마
+│   │   └── index.ts
+│   ├── performance/              # Slice: 공연 도메인
+│   └── venue/                    # Slice: 공연장 도메인
+│
+└── shared/                       # Layer: 공통 인프라
+    ├── ui/                       # UI 컴포넌트
+    │   ├── button.tsx            # shadcn (배럴 파일 없음)
+    │   ├── input.tsx
+    │   └── Logo/                 # 커스텀 (폴더 단위)
+    │       ├── Logo.tsx
+    │       └── index.ts
+    ├── api/                      # API 설정
+    │   └── client.ts             # axios 클라이언트
+    ├── lib/                      # 공통 유틸리티
+    │   └── format.ts
+    ├── config/                   # 설정
+    │   ├── routes.ts             # PAGES 상수
+    │   └── env.ts
+    └── auth-events/              # 특정 목적 (auth 이벤트)
+        ├── ui/
+        ├── lib/
+        └── index.ts
 ```
 
 ## 라우팅 & 메타데이터
@@ -92,13 +167,38 @@ export default async function ProductPage({ params }: Props) {
   return <ProductDetail product={product} />;
 }
 ```
+## Entities vs Features 관계
+
+```
+features (폼 로직)  →  entities (도메인)  →  shared (인프라)
+   ✅ import            ✅ import
+   ❌ reverse           ❌ reverse
+
+// ✅ features → entities
+import { createProductSchema } from '@/entities/product';
+
+// ❌ entities → features (불가능!)
+import { productFormSchema } from '@/features/product-form';
+```
+
+| | Entities | Features |
+|---|----------|----------|
+| **역할** | 순수 도메인 (서버 API 스펙) | 폼 로직 (UI ↔ 서버 변환) |
+| **스키마** | 기본 검증만 | entities 상속 + UI 변환 |
+| **의존** | shared만 | entities + shared |
+
 ## FSD 스키마 설정 (Zod)
 
-### entities: 기본 스키마
+### Entities: 기본 스키마 (순수 도메인)
+
+**목적**: 서버 API 스펙과 일치하는 순수한 데이터 검증
 
 ```typescript
 // src/entities/performance/model/performance.schema.ts
-// orval 타입 기반 요청 스키마만 생성 (응답 스키마 X)
+import { z } from 'zod';
+
+// ✅ orval 타입 기반 요청 스키마만 생성 (응답 스키마 X)
+// ✅ 순수한 도메인 검증 (UI 로직 포함 X)
 export const createPerformanceSchema = z.object({
   title: z.string().min(1, "공연명을 입력해주세요").max(255),
   category: z.string().min(1, "카테고리를 선택해주세요"),
@@ -117,12 +217,17 @@ export type CreatePerformanceForm = z.infer<typeof createPerformanceSchema>;
 export type UpdatePerformanceForm = z.infer<typeof updatePerformanceSchema>;
 ```
 
-### features: entities 상속 + 폼 로직
+### Features: Entities 상속 + 폼 로직
+
+**목적**: UI 입력 처리 및 서버 데이터로 변환
+
 ```typescript
 // src/features/performance-form/model/performance-form.schema.ts
-import { createPerformanceSchema } from "@/entities/performance/model/performance.schema";
+import { createPerformanceSchema } from "@/entities/performance";
+import { z } from 'zod';
 
-// 폼 특화: 문자열→숫자 변환, 날짜 검증 등
+// ✅ entities 스키마 상속
+// ✅ 폼 특화: 문자열→숫자 변환, UI 검증 추가
 export const createPerformanceFormSchema = createPerformanceSchema.extend({
   runningTime: z.string().optional().transform(val => parseInt(val, 10)),
   venueId: z.string().transform(val => parseInt(val, 10)).optional(),
@@ -137,7 +242,7 @@ export const createPerformanceFormSchema = createPerformanceSchema.extend({
   { message: "종료일은 시작일보다 늦어야 합니다", path: ["endDate"] }
 );
 
-// 타입 분리: input(폼) vs output(서버)
+// ✅ 타입 분리: input(폼에서 입력) vs output(서버로 전송)
 export type CreatePerformanceFormInput = z.input<typeof createPerformanceFormSchema>;
 export type CreatePerformanceFormData = z.output<typeof createPerformanceFormSchema>;
 
@@ -149,11 +254,14 @@ export type PerformanceFormData = CreatePerformanceFormData;
 
 ### 스키마 설계 원칙
 - ❌ **응답 스키마 생성 금지**: orval 자동 생성 타입 사용
-- ✅ **요청 스키마만**: 생성/수정용만 
-- ✅ **FSD 의존성**: features가 entities 상속
-- ✅ **폼 로직 분리**: entities(순수) vs features(폼 특화)
+- ✅ **요청 스키마만**: 생성/수정용만 Zod로 정의
+- ✅ **FSD 의존성 준수**: features가 entities 상속 (역방향 금지)
+- ✅ **레이어 분리**:
+  - **Entities**: 순수 도메인 검증 (서버 API 스펙)
+  - **Features**: 폼 특화 로직 (UI ↔ 서버 변환)
 - ✅ **변환 로직**: `.transform()` 사용 (문자열 → 숫자)
 - ✅ **검증 로직**: `.refine()` 사용 (복합 검증)
+- ✅ **타입 구분**: `z.input<T>` (입력) vs `z.output<T>` (출력)
 
 ## Shadcn UI 사용법
 ```typescript
@@ -183,15 +291,39 @@ feature-name/
 ### Public API Export 전략 (index.ts)
 > **원칙**: 외부에서 필요한 것만 노출 (타입, API, 메인 컴포넌트)
 
+#### Entities Layer 예시
+```typescript
+// src/entities/product/index.ts
+
+// ✅ UI 컴포넌트
+export { ProductCard } from './ui/ProductCard';
+export { ProductList } from './ui/ProductList';
+
+// ✅ API 함수 및 React Query hooks
+export { fetchProducts, fetchProduct, createProduct } from './api/product.api';
+export { useProductsQuery, useProductQuery } from './api/product.queries';
+
+// ✅ 타입 (orval 생성 타입)
+export type { Product, ProductListResponse } from './model/product.types';
+
+// ✅ 스키마 (요청용)
+export { createProductSchema, updateProductSchema } from './model/product.schema';
+export type { CreateProductForm, UpdateProductForm } from './model/product.schema';
+
+// ❌ 내부 구현 세부사항은 노출 X
+// - ProductCardImage, ProductCardPrice 등 내부 컴포넌트
+// - lib 유틸리티 함수
+```
+
+#### Features Layer 예시
 ```typescript
 // src/features/product-form/index.ts
 
 // ✅ 메인 컴포넌트만 export (내부 하위 컴포넌트는 노출 X)
 export { ProductForm } from './ui/ProductForm';
 
-// ✅ API 및 쿼리 hooks
-export { createProduct, updateProduct } from './api/product.api';
-export { useCreateProductMutation } from './api/product.queries';
+// ✅ API 및 쿼리 hooks (feature 레벨 로직)
+export { useCreateProductMutation, useUpdateProductMutation } from './api/product.queries';
 
 // ✅ 타입 및 스키마 (외부에서 사용할 것만)
 export type { ProductFormInput, ProductFormData } from './model/product-form.schema';
@@ -202,6 +334,29 @@ export { productFormSchema } from './model/product-form.schema';
 // - lib 유틸리티 함수
 // - 내부에서만 사용하는 타입
 ```
+
+#### Widgets Layer 예시
+```typescript
+// src/widgets/header/index.ts
+
+// ✅ 위젯 메인 컴포넌트
+export { Header } from './ui/Header';
+
+// ✅ 외부에서 필요한 타입만
+export type { HeaderProps } from './ui/Header';
+
+// ❌ 내부 컴포넌트는 노출 X
+// - HeaderLogo, HeaderNav, HeaderActions 등
+```
+
+#### Export 기준
+
+| ✅ Export 필수 | ❌ Export 금지 |
+|---------------|----------------|
+| 메인 UI 컴포넌트 | 내부 하위 컴포넌트 |
+| API 함수, React Query hooks | lib 유틸리티 함수 |
+| 외부 필요 타입 (Props, Form) | 내부 구현 타입 |
+| 재사용 가능 스키마 | 테스트 유틸리티 |
 
 ### Import 규칙
 ```typescript
@@ -311,11 +466,22 @@ if (user.role === 'admin') {
 - [ ] 5줄 이상 분기문에 설명 주석 추가
 
 ### FSD 아키텍처
-- [ ] 레이어 의존성 준수 (상위 → 하위만 import)
-- [ ] Segment 이름을 목적 중심으로 작성 (components/hooks/types 지양)
-- [ ] Public API (index.ts)를 통한 export만 허용
-- [ ] index.ts에 필요한 것만 노출 (타입, API, 메인 컴포넌트)
-- [ ] 내부 구현 세부사항 노출 금지
+- [ ] **FSD 3대 원칙 준수**:
+  - [ ] Public API: index.ts를 통한 export만 허용
+  - [ ] Isolation: 상위/동일 레이어 의존 금지
+  - [ ] Needs Driven: 비즈니스 중심 구조화
+- [ ] **레이어 의존성**: 상위 레이어만 하위 레이어 import 가능
+  - [ ] features → entities (⭕)
+  - [ ] entities → features (❌)
+  - [ ] features → features (❌)
+- [ ] **Segment 네이밍**: 목적 중심 이름 사용
+  - [ ] ui/, api/, model/, lib/, config/ 사용
+  - [ ] components/, hooks/, types/, utils/ 금지
+- [ ] **Public API Export 최소화**:
+  - [ ] 메인 컴포넌트만 export (내부 컴포넌트 X)
+  - [ ] 외부에서 필요한 타입/API만 노출
+  - [ ] lib 유틸리티 함수 노출 금지
+- [ ] **Slice 독립성**: 같은 레이어 내 슬라이스 간 직접 참조 금지
 
 ### Next.js & React
 - [ ] Server Component 우선 적용 ('use client' 최소화)
