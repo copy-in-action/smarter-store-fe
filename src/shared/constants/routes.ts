@@ -179,10 +179,21 @@ export const SERVICE_PAGES = {
             openGraph: {
               type: "article",
             },
+            robots: {
+              index: true,
+              follow: true,
+              googleBot: {
+                index: true,
+                follow: true,
+                "max-video-preview": -1,
+                "max-image-preview": "large",
+                "max-snippet": -1,
+              },
+            },
           },
         ),
       siteMap: {
-        priority: 8.0,
+        priority: 0.8,
         changeFrequency: "daily" as const,
       },
     },
@@ -414,7 +425,8 @@ const ADMIN_PAGES = {
         path: "/admin/coupons",
         metadata: {
           title: "쿠폰 관리 | 관리자",
-          description: "등록된 쿠폰을 관리하고 새로운 쿠폰을 추가할 수 있습니다.",
+          description:
+            "등록된 쿠폰을 관리하고 새로운 쿠폰을 추가할 수 있습니다.",
         } as Metadata,
       },
       /** 쿠폰 상세 */
