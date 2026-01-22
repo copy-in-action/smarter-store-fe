@@ -3,12 +3,12 @@
 import Autoplay from "embla-carousel-autoplay";
 import { Pause, Play, Plus } from "lucide-react";
 import { type ReactNode, useRef, useState } from "react";
-import { useAutoplay } from "@/shared/lib/hooks/useAutoplay";
+import { useAutoplay } from "@/shared/lib/useAutoplay";
 import {
   NextButton,
   PrevButton,
   usePrevNextButtons,
-} from "@/shared/lib/hooks/usePrevNextButtons";
+} from "@/shared/lib/usePrevNextButtons";
 import { Button } from "@/shared/ui/button";
 import {
   Carousel,

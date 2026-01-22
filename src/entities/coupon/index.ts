@@ -14,8 +14,8 @@ export {
   useGetCoupon,
   useUpdateCoupon,
 } from "./api/coupon.api";
-export * from "./hooks/useCouponsQuery";
-export { useValidateCoupons } from "./hooks/useValidateCoupons";
+export * from "./api/coupon.queries";
+export { useValidateCoupons } from "./api/coupon.queries";
 
 // Schema
 export type { CreateCouponForm, UpdateCouponForm } from "./model/coupon.schema";

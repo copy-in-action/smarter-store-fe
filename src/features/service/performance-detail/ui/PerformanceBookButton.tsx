@@ -8,7 +8,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/app/providers";
 import { PAGES } from "@/shared/constants";
-import { useIsMobile } from "@/shared/hooks/use-device";
+import { useIsMobile } from "@/shared/lib/use-device";
 import { Button } from "@/shared/ui/button";
 import {
   Dialog,

@@ -7,9 +7,9 @@ export { useAvailableSchedulesByDate } from "./api/bookingSeatingChart.api";
 export { useCancelBooking } from "./api/useCancelBooking";
 export { useStartBooking } from "./api/useStartBooking";
 // Hooks
-export { useBookingSeatSelection } from "./hooks/useBookingSeatSelection";
-export { useBookingStepControl } from "./hooks/useBookingStepControl";
-export { useSeatSSESubscription } from "./hooks/useSeatSSESubscription";
+export { useBookingSeatSelection } from "./lib/useBookingSeatSelection";
+export { useBookingStepControl } from "./lib/useBookingStepControl";
+export { useSeatSSESubscription } from "./lib/useSeatSSESubscription";
 // Utils
 export { createPaymentConfirmationData } from "./lib/createPaymentConfirmationData";
 export { transformToSeatCoupons } from "./lib/transform-booking-discount";

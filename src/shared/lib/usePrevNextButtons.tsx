@@ -6,7 +6,7 @@ import {
   useCallback,
 } from "react";
 import type { CarouselApi } from "@/shared/ui/carousel";
-import { cn } from "../utils";
+import { cn } from "./utils";
 
 /**
  * 이전/다음 버튼 훅 반환 타입

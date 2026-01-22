@@ -6,7 +6,7 @@ import "./globals.css";
 import { headers } from "next/headers";
 import { getUserInfoServer } from "@/entities/user/api/user.server.api";
 import { AuthEventHandler, TokenRefreshManager } from "@/shared/components";
-import { DeviceProvider } from "@/shared/hooks/use-device";
+import { DeviceProvider } from "@/shared/lib/use-device";
 import {
   createOrganizationSchema,
   createWebsiteSchema,

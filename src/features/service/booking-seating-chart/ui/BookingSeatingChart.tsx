@@ -16,8 +16,8 @@ import {
   type SeatTotalInfo,
   useBookingStepStore,
 } from "../../booking-process";
-import { useBookingSeatSelection } from "../hooks/useBookingSeatSelection";
-import { useBookingStepControl } from "../hooks/useBookingStepControl";
+import { useBookingSeatSelection } from "../lib/useBookingSeatSelection";
+import { useBookingStepControl } from "../lib/useBookingStepControl";
 import { createPaymentConfirmationData } from "../lib/createPaymentConfirmationData";
 import { createPaymentRequestData } from "../lib/createPaymentRequestData";
 import { transformToSeatCoupons } from "../lib/transform-booking-discount";
