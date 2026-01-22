@@ -1,10 +1,10 @@
 "use client";
+
 //TODO: 페이지 네이션 필요
 
 import { Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import { useState } from "react";
-import type { VenueResponse } from "@/shared/api/orval/types";
-import { Badge } from "@/shared/ui/badge";
+import type { VenueResponse } from "@/entities/venue";
 import { Button } from "@/shared/ui/button";
 import {
   DropdownMenu,

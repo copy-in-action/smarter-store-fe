@@ -9,7 +9,8 @@ import {
   useForm,
 } from "react-hook-form";
 import { toast } from "sonner";
-import { useAuth } from "@/app/providers";
+import { useAuth } from "@/entities/user";
+import { useBookingStepStore } from "@/features/booking";
 import {
   BookingPaymentInfo,
   PaymentMethodSelector,
@@ -24,7 +25,6 @@ import {
   type PaymentFormData,
   paymentFormSchema,
 } from "@/features/booking/payment/model/payment-form.schema";
-import { useBookingStepStore } from "@/features/booking";
 import { PAGES } from "@/shared/config";
 import { Button } from "@/shared/ui/button";
 
@@ -56,10 +56,7 @@ const BookingPayment = () => {
     resolver: zodResolver(paymentFormSchema),
     defaultValues: {
       isAgreed: false,
-      paymentMethod: (() => {
-        const methods = ["VIRTUAL_ACCOUNT", "CREDIT_CARD", "KAKAO_PAY", "TOSS_PAY"] as const;
-        return methods[Math.floor(Math.random() * methods.length)];
-      })(),
+      paymentMethod: "VIRTUAL_ACCOUNT",
       bankCode: undefined,
       reserverInfo: {
         name: user?.username,

@@ -6,7 +6,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { useAuth } from "@/app/providers";
+import { useAuth } from "@/entities/user";
 import { PAGES } from "@/shared/config";
 import { useIsMobile } from "@/shared/lib/use-device";
 import { Button } from "@/shared/ui/button";

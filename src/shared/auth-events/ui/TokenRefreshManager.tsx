@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useAuth } from "@/app/providers/AuthProvider";
+import { useAuth } from "@/entities/user";
 
 /**
  * 토큰 자동 갱신을 관리하는 컴포넌트

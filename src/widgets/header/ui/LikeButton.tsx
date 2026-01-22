@@ -2,7 +2,7 @@
 
 import { Heart } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/app/providers";
+import { useAuth } from "@/entities/user";
 import { PAGES } from "@/shared/config";
 import { Button } from "@/shared/ui/button";
 
