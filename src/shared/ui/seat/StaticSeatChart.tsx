@@ -20,8 +20,8 @@ import { Textarea } from "@/shared/ui/textarea";
 import type {
   SeatChartConfig,
   StaticSeatVenue,
-} from "../types/seatLayout.types";
-import { extractSeatGradeInfo } from "../utils/seatConverters";
+} from "@/shared/lib/seat.types";
+import { extractSeatGradeInfo } from "@/shared/lib/seat.converters";
 import SeatChart from "./SeatChart";
 
 interface StaticSeatChartProps {

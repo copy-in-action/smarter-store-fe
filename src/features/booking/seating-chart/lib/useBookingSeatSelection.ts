@@ -6,7 +6,8 @@
 
 import { useCallback } from "react";
 import { toast } from "sonner";
-import { MAX_SEAT_SELECTION, useSeatChart } from "@/shared/lib/seat";
+import { MAX_SEAT_SELECTION } from "@/shared/lib/seat.types";
+import { useSeatChart } from "@/shared/lib/useSeatChart";
 import { useSeatSSESubscription } from "./useSeatSSESubscription";
 
 /**

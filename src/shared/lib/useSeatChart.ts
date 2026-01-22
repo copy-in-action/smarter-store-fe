@@ -13,8 +13,8 @@ import type {
   SeatPosition,
   StaticSeatVenue,
   UserSeatSelection,
-} from "../types/seatLayout.types";
-import { isSeatInState } from "../utils/seatChart.utils";
+} from "./seat.types";
+import { isSeatInState } from "./seat.utils";
 
 /**
  * 좌석 차트 데이터를 관리하는 Hook (범용)

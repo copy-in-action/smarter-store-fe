@@ -1,4 +1,4 @@
-import type { StaticSeatVenue } from "@/shared/lib/seat/types/seatLayout.types";
+import type { StaticSeatVenue } from "@/shared/lib/seat.types";
 
 /**
  * 기본 좌석 배치도 설정을 반환합니다

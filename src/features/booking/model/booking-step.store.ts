@@ -8,7 +8,7 @@ import type {
   BookingResponse,
   PaymentCreateRequest,
 } from "@/shared/api/orval/types";
-import type { SeatPosition } from "@/shared/lib/seat";
+import type { SeatPosition } from "@/shared/lib/seat.types";
 import type { BookingDiscountFormData } from "../seating-chart";
 import type { PaymentConfirmationData } from "./booking.types";
 /**

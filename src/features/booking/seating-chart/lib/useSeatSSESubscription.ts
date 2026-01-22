@@ -10,7 +10,7 @@ import { getSubscribeSeatEventsUrl } from "@/shared/api/orval/schedule/schedule"
 import type {
   BookingStatusByServer,
   SeatPosition,
-} from "@/shared/lib/seat/types/seatLayout.types";
+} from "@/shared/lib/seat.types";
 
 /**
  * 실시간 좌석 상태를 SSE로 구독하는 Hook

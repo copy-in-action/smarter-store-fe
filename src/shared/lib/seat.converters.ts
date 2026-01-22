@@ -2,7 +2,7 @@ import type {
   SeatGrade,
   VenueSeatCapacityRequest,
 } from "@/shared/api/orval/types";
-import type { StaticSeatVenue } from "../types/seatLayout.types";
+import type { StaticSeatVenue } from "./seat.types";
 
 /**
  * 좌석 배치도 컨버터 유틸리티

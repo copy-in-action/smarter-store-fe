@@ -4,9 +4,9 @@
 "use client";
 
 import { useState } from "react";
-import { PRESET_COLORS } from "../constants/seatChart.constants";
-import type { SeatChartConfig } from "../types/seatLayout.types";
-import { getSeatType, isSeatInState } from "../utils/seatChart.utils";
+import { PRESET_COLORS } from "@/shared/lib/seat.constants";
+import type { SeatChartConfig } from "@/shared/lib/seat.types";
+import { getSeatType, isSeatInState } from "@/shared/lib/seat.utils";
 
 /**
  * SeatChart 컴포넌트 Props

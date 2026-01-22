@@ -2,12 +2,12 @@
  * 좌석 데이터 변환 유틸리티
  */
 import type { SeatGrade } from "@/shared/api/orval/types";
-import {
-  getSeatType,
-  type SeatChartConfig,
-  type SeatPosition,
-  type SeatType,
-} from "@/shared/lib/seat";
+import { getSeatType } from "@/shared/lib/seat.utils";
+import type {
+  SeatChartConfig,
+  SeatPosition,
+  SeatType,
+} from "@/shared/lib/seat.types";
 import type { SeatGradeInfo, UserSelectedSeat  } from "@/entities/booking";
 
 /**

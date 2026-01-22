@@ -9,7 +9,7 @@ import type {
   PerformanceResponse,
   SeatGrade,
 } from "@/shared/api/orval/types";
-import type { SeatPosition } from "@/shared/lib/seat";
+import type { SeatPosition } from "@/shared/lib/seat.types";
 
 /**
  * 사용자가 선택한 좌석 정보

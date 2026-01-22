@@ -12,7 +12,8 @@ import {
 import { useCouponsQuery } from "@/entities/coupon";
 import type { UserSelectedSeat } from "@/features/booking";
 import type { SeatGrade } from "@/shared/api/orval/types";
-import { SeatChart, type SeatChartConfig } from "@/shared/lib/seat";
+import { SeatChart } from "@/shared/ui/seat";
+import type { SeatChartConfig } from "@/shared/lib/seat.types";
 import { transformToGradeInfoArray } from "../lib/transformSeatInfo";
 import type { BookingDiscountFormData } from "../model/booking-discount.schema";
 import BookingDiscountSelectionForm from "./BookingDiscountSelectionForm";

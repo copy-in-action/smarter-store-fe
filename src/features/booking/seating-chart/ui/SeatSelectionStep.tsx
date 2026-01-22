@@ -10,7 +10,8 @@ import {
   transformUserSelectedSeats,
 } from "@/entities/booking";
 import type { StartBookingRequest } from "@/shared/api/orval/types";
-import { SeatChart, type SeatChartConfig } from "@/shared/lib/seat";
+import { SeatChart } from "@/shared/ui/seat";
+import type { SeatChartConfig } from "@/shared/lib/seat.types";
 import LoadingSpinner from "./LoadingSpinner";
 import SeatGradePricePopover from "./SeatGradePricePopover";
 import SelectSeatInfo from "./SelectSeatInfo";

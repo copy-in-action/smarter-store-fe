@@ -1,5 +1,5 @@
 import type { SeatGrade } from "@/shared/api/orval/types";
-import type { SeatChartConfig, SeatPosition } from "../types/seatLayout.types";
+import type { SeatChartConfig, SeatPosition } from "./seat.types";
 
 /**
  * 좌석 차트 관련 유틸리티 함수들
