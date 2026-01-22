@@ -1,6 +1,6 @@
 "use client";
 
-import { PgPaymentPopup } from "@/features/service/booking-bg";
+import { PgPaymentPopup } from "@/features/booking/bg";
 
 /**
  * PG 결제 팝업 뷰

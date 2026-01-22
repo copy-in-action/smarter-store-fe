@@ -10,7 +10,7 @@ import {
   transformUserSelectedSeats,
 } from "@/entities/booking";
 import { useCouponsQuery } from "@/entities/coupon";
-import type { UserSelectedSeat } from "@/features/service/booking-process";
+import type { UserSelectedSeat } from "@/features/booking";
 import type { SeatGrade } from "@/shared/api/orval/types";
 import { SeatChart, type SeatChartConfig } from "@/shared/lib/seat";
 import { transformToGradeInfoArray } from "../lib/transformSeatInfo";

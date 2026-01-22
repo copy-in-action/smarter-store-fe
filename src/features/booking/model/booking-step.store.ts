@@ -9,7 +9,7 @@ import type {
   PaymentCreateRequest,
 } from "@/shared/api/orval/types";
 import type { SeatPosition } from "@/shared/lib/seat";
-import type { BookingDiscountFormData } from "../../booking-seating-chart";
+import type { BookingDiscountFormData } from "../seating-chart";
 import type { PaymentConfirmationData } from "./booking.types";
 /**
  * 예매 Step enum

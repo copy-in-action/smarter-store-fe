@@ -8,7 +8,7 @@ import type {
   PaymentCreateRequest,
   PerformanceResponse,
 } from "@/shared/api/orval/types";
-import type { SeatTotalInfo } from "../../booking-process";
+import type { SeatTotalInfo  } from "@/entities/booking";
 
 /**
  * 예매 데이터와 할인 검증 결과를 서버 전송용 결제 요청 데이터로 변환

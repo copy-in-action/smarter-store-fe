@@ -27,7 +27,8 @@ import {
   FormItem,
   FormMessage,
 } from "@/shared/ui/form";
-import { type GradeInfo, useBookingStepStore } from "../../booking-process";
+import { type  GradeInfo } from "@/entities/booking";
+import { useBookingStepStore } from "@/features/booking";
 import {
   type BookingDiscountFormData,
   createBookingDiscountSchema,

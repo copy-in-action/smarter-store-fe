@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { getReleaseBookingUrl } from "@/shared/api/orval/booking/booking";
-import { BookingStep, useBookingStepStore } from "../model/booking-step.store";
+import { BookingStep, useBookingStepStore } from "../../model/booking-step.store";
 
 /**
  * 예매 프로세스 이탈 시 좌석 점유 해제를 처리하는 클라이언트 컴포넌트

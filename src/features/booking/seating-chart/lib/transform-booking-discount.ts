@@ -2,7 +2,7 @@
  * 예매 할인 폼 데이터 변환 유틸리티
  */
 import type { SeatCouponRequest } from "@/shared/api/orval/types";
-import type { SeatTotalInfo } from "../../booking-process";
+import type { SeatTotalInfo  } from "@/entities/booking";
 import type { BookingDiscountFormData } from "../model/booking-discount.schema";
 
 /**

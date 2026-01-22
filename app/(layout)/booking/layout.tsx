@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { BookingUnloadManager } from "@/features/service/booking-process/ui/BookingUnloadManager";
+import { BookingUnloadManager } from "@/features/booking";
 import { BookingHeader } from "@/widgets/booking-header";
 
 /**

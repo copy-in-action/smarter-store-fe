@@ -11,11 +11,8 @@ import { transformUserSelectedSeats } from "@/entities/booking";
 import { useCouponsQuery, useValidateCoupons } from "@/entities/coupon";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
 import { PAGES } from "@/shared/config";
-import {
-  BookingStep,
-  type SeatTotalInfo,
-  useBookingStepStore,
-} from "../../booking-process";
+import { BookingStep, useBookingStepStore } from "@/features/booking";
+import type { SeatTotalInfo } from "@/entities/booking";
 import { useBookingSeatSelection } from "../lib/useBookingSeatSelection";
 import { useBookingStepControl } from "../lib/useBookingStepControl";
 import { createPaymentConfirmationData } from "../lib/createPaymentConfirmationData";

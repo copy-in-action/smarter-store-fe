@@ -13,7 +13,7 @@ import {
   ItemDescription,
   ItemTitle,
 } from "@/shared/ui/item";
-import type { UserSelectedSeat } from "../../booking-process";
+import type {  UserSelectedSeat } from "@/entities/booking";
 
 /**
  * SelectSeatInfo Props

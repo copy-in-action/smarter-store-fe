@@ -19,12 +19,12 @@ import {
   useConfirmBooking,
   useCreatePayment,
   useGetPerformanceSchedule,
-} from "@/features/service/booking-payment";
+} from "@/features/booking/payment";
 import {
   type PaymentFormData,
   paymentFormSchema,
-} from "@/features/service/booking-payment/model/payment-form.schema";
-import { useBookingStepStore } from "@/features/service/booking-process";
+} from "@/features/booking/payment/model/payment-form.schema";
+import { useBookingStepStore } from "@/features/booking";
 import { PAGES } from "@/shared/config";
 import { Button } from "@/shared/ui/button";
 

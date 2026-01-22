@@ -13,7 +13,7 @@ import type {
   PriceInfo,
   SeatTotalInfo,
   TicketDetail,
-} from "../../booking-process";
+ } from "@/entities/booking";
 
 /**
  * BookingResponse와 할인 검증 결과를 결제 확인 데이터로 변환

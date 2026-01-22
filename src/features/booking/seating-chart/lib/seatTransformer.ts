@@ -8,7 +8,7 @@ import {
   type SeatPosition,
   type SeatType,
 } from "@/shared/lib/seat";
-import type { SeatGradeInfo, UserSelectedSeat } from "../../booking-process";
+import type { SeatGradeInfo, UserSelectedSeat  } from "@/entities/booking";
 
 /**
  * 좌석 등급 정보를 UI 표시용 배열로 변환

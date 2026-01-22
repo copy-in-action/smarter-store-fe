@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import {
   BookingStep,
   useBookingStepStore,
-} from "@/features/service/booking-process";
+} from "@/features/booking";
 import type { StartBookingRequest } from "@/shared/api/orval/types";
 import { useCancelBooking } from "../api/useCancelBooking";
 import { useStartBooking } from "../api/useStartBooking";
