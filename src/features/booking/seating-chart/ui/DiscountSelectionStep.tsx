@@ -8,7 +8,7 @@ import { useMemo } from "react";
 import {
   transformSeatGradeInfo,
   transformUserSelectedSeats,
-} from "@/entities/booking";
+} from "../lib/seat-transformers";
 import { useCouponsQuery } from "@/entities/coupon";
 import type { UserSelectedSeat } from "@/features/booking";
 import type { SeatGrade } from "@/shared/api/orval/types";

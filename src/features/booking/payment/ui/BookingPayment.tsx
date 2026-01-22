@@ -135,7 +135,7 @@ const BookingPayment = () => {
       onSuccess: (data) => {
         // API 성공 시 실제 결제 팝업 페이지로 이동
         if (popupRef.current && !popupRef.current.closed) {
-          const popupUrl = `/booking/payment/pg?paymentId=${data.id}&bankName=${encodeURIComponent(bankName)}&amount=${amount}`;
+          const popupUrl = `/booking/payment/gateway?paymentId=${data.id}&bankName=${encodeURIComponent(bankName)}&amount=${amount}`;
           popupRef.current.location.href = popupUrl;
         } else {
           toast.error("결제 팝업이 닫혔습니다. 다시 시도해주세요.");

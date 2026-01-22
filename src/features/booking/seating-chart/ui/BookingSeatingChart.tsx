@@ -7,7 +7,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { transformUserSelectedSeats } from "@/entities/booking";
+import { transformUserSelectedSeats } from "../lib/seat-transformers";
 import { useCouponsQuery, useValidateCoupons } from "@/entities/coupon";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
 import { PAGES } from "@/shared/config";

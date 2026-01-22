@@ -28,7 +28,7 @@ import {
 import {
   usePerformanceDates,
   usePerformancesByDate,
-} from "../api/performanceSchedules.api";
+} from "../api/performanceSchedules.queries";
 import PerformanceScheduleContent from "./PerformanceScheduleContent";
 
 interface Props {

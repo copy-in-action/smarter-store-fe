@@ -8,7 +8,7 @@ export {
   useConfirmBooking,
   useCreatePayment,
   useGetPerformanceSchedule,
-} from "./api/useBookingPayment.api";
+} from "./api/bookingPayment.queries";
 export type { PaymentFormData } from "./model";
 // Model
 export { paymentFormSchema } from "./model";

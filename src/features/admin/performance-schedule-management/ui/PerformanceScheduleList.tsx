@@ -5,7 +5,7 @@ import { ItemGroup, ItemSeparator } from "@/shared/ui/item";
 import {
   useDeletePerformanceSchedule,
   useGetPerformanceSchedules,
-} from "../api/performanceSchedule.api";
+} from "../api/performanceSchedule.queries";
 import { sortSchedulesByShowTime } from "../lib/utils";
 import { PerformanceScheduleItem } from "./PerformanceScheduleItem";
 

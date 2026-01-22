@@ -5,13 +5,13 @@
 "use client";
 
 import { useMemo } from "react";
+import type { StartBookingRequest } from "@/shared/api/orval/types";
+import type { SeatChartConfig } from "@/shared/lib/seat.types";
+import { SeatChart } from "@/shared/ui/seat";
 import {
   transformSeatGradeInfo,
   transformUserSelectedSeats,
-} from "@/entities/booking";
-import type { StartBookingRequest } from "@/shared/api/orval/types";
-import { SeatChart } from "@/shared/ui/seat";
-import type { SeatChartConfig } from "@/shared/lib/seat.types";
+} from "../lib/seat-transformers";
 import LoadingSpinner from "./LoadingSpinner";
 import SeatGradePricePopover from "./SeatGradePricePopover";
 import SelectSeatInfo from "./SelectSeatInfo";

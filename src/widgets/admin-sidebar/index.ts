@@ -1,13 +1,13 @@
-// UI Components
+/**
+ * 관리자 사이드바 위젯 Public API
+ */
 
-// Data & Utils
-export { adminSidebarData, updateSidebarUser } from "./lib/sidebarData";
 // Types
 export type {
   AdminSidebarMenuItem as SidebarMenuItem,
   SidebarData,
   SidebarUser,
 } from "./model/types";
+
+// UI Components (메인 컴포넌트만)
 export { AdminSidebar } from "./ui/AdminSidebar";
-export { NavMain } from "./ui/NavMain";
-export { NavUser } from "./ui/NavUser";

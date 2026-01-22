@@ -1,5 +1,4 @@
-import { Suspense } from "react";
-import { PerformanceDetailView } from "@/views/admin/performance-management/PerformanceDetailView";
+import { PerformanceDetailView } from "@/views/admin/performance-management";
 
 /**
  * 공연 상세 페이지 속성
@@ -21,9 +20,5 @@ export default async function PerformanceDetailPage({
   const { id } = await params;
   const performanceId = Number.parseInt(id, 10);
 
-  return (
-    <Suspense fallback={<div>로딩 중...</div>}>
-      <PerformanceDetailView performanceId={performanceId} />
-    </Suspense>
-  );
+  return <PerformanceDetailView performanceId={performanceId} />;
 }

@@ -1,3 +1,7 @@
+/**
+ * 공연 회차 관리 기능 Public API
+ */
+
 // API exports
 export {
   useCreatePerformanceSchedule,
@@ -5,23 +9,27 @@ export {
   useGetPerformanceSchedule,
   useGetPerformanceSchedules,
   useUpdatePerformanceSchedule,
-} from "./api/performanceSchedule.api";
+} from "./api/performanceSchedule.queries";
 
-// Lib exports
-export * from "./lib/utils";
+// Schema exports
 export type {
   CreatePerformanceScheduleFormData,
   CreatePerformanceScheduleFormInput,
   PerformanceScheduleFormData,
   PerformanceScheduleFormInput,
 } from "./model/performance-schedule-form.schema";
-// Schema exports
 export {
   createPerformanceScheduleFormSchema,
   performanceScheduleFormSchema,
 } from "./model/performance-schedule-form.schema";
 
-// UI exports
+// Lib exports (외부 필요 유틸리티만)
+export {
+  canDeleteSchedule,
+  formatDateTime,
+  getScheduleStatus,
+} from "./lib/utils";
+
+// UI exports (메인 컴포넌트만)
 export { PerformanceScheduleForm } from "./ui/PerformanceScheduleForm";
-export { PerformanceScheduleItem } from "./ui/PerformanceScheduleItem";
 export { PerformanceScheduleList } from "./ui/PerformanceScheduleList";
