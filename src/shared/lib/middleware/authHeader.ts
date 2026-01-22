@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { PAGES } from "@/shared/constants/routes";
+import { PAGES } from "@/shared/config/routes";
 import type { MiddlewareFunction } from "./chainMiddleware";
 
 /**

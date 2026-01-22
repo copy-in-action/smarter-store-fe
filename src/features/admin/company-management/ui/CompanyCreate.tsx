@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { type CompanyRequest, useCreateCompany } from "@/entities/company";
-import { PAGES } from "@/shared/constants/routes";
+import { PAGES } from "@/shared/config/routes";
 import { CompanyForm } from "./CompanyForm";
 
 /**

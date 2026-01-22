@@ -1,5 +1,4 @@
-import { Suspense } from "react";
-import { PerformanceEditView } from "@/views/admin/performance-management/PerformanceEditView";
+import { PerformanceEditView } from "@/views/admin/performance-management";
 
 /**
  * 공연 수정 페이지 속성
@@ -21,9 +20,5 @@ export default async function PerformanceEditPage({
   const { id } = await params;
   const performanceId = Number.parseInt(id, 10);
 
-  return (
-    <Suspense fallback={<div>로딩 중...</div>}>
-      <PerformanceEditView performanceId={performanceId} />
-    </Suspense>
-  );
+  return <PerformanceEditView performanceId={performanceId} />;
 }

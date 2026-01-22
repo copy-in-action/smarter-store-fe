@@ -29,7 +29,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import {
   useCreatePerformanceSchedule,
   useUpdatePerformanceSchedule,
-} from "../api/performanceSchedule.api";
+} from "../api/performanceSchedule.queries";
 import {
   createPerformanceScheduleFormSchema,
   type PerformanceScheduleFormData,

@@ -6,7 +6,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import type { ErrorResponse } from "@/shared/api/orval/types";
-import { PAGES } from "@/shared/constants/routes";
+import { PAGES } from "@/shared/config/routes";
 import { createApiError, UnauthorizedError } from "../lib/errors";
 
 /**

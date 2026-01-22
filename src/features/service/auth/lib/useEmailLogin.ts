@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useAuth } from "@/app/providers";
 import { loginUser } from "@/entities/auth";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 
 /**
  * 이메일 로그인 훅

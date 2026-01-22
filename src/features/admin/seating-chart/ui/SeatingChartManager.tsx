@@ -5,8 +5,9 @@ import type {
   SeatingChartRequestSeatingChart,
   SeatingChartResponse,
 } from "@/shared/api/orval/types";
-import { extractSeatGradeInfo, StaticSeatChart } from "@/shared/lib/seat";
-import type { StaticSeatVenue } from "@/shared/lib/seat/types/seatLayout.types";
+import { extractSeatGradeInfo } from "@/shared/lib/seat.converters";
+import { StaticSeatChart } from "@/shared/ui/seat";
+import type { StaticSeatVenue } from "@/shared/lib/seat.types";
 import { useSaveSeatingChart, useSeatingChart } from "../lib/hooks";
 import { getDefaultSeatingChart } from "../lib/utils";
 

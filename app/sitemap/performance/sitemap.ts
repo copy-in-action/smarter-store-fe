@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getPerformancesForServer } from "@/entities/performance/api/performance.server.api";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 
 const MAX_URLS_PER_SITEMAP = 50000;
 

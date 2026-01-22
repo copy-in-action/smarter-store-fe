@@ -1,6 +1,6 @@
 "use client";
 
-import { BookingPayment } from "@/features/service/booking-payment";
+import { BookingPayment } from "@/features/booking";
 
 /**
  * 예매 결제 페이지 뷰 컴포넌트

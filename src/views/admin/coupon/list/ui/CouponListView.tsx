@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useDeactivateCoupon, useGetAllCoupons } from "@/entities/coupon";
 import { CouponDataTable } from "@/features/admin/coupon-table";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import { Button } from "@/shared/ui/button";
 
 /**

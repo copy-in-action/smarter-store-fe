@@ -1,6 +1,7 @@
 import { fetchSeatingChartOnServer } from "@/features/admin/seating-chart/api/seatingChart.server.api";
-import { PAGES } from "@/shared/constants/routes";
-import { SeatChart, type SeatChartConfig } from "@/shared/lib/seat";
+import { PAGES } from "@/shared/config/routes";
+import { SeatChart } from "@/shared/ui/seat";
+import type { SeatChartConfig } from "@/shared/lib/seat.types";
 import VenueDetailView from "@/views/admin/venues/VenueDetailView";
 
 /**

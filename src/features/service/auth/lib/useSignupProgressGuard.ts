@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import { SignupStep, useSignupStore } from "./useSignupStore";
 
 /**

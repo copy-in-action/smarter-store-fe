@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useDeleteCompany, useGetCompany } from "@/entities/company";
-import { PAGES } from "@/shared/constants/routes";
+import { PAGES } from "@/shared/config/routes";
 import {
   AlertDialog,
   AlertDialogAction,

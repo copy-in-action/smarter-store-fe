@@ -3,4 +3,4 @@
  */
 
 // API 쿼리 export
-export { useGetUserInfo } from "./api/user.api";
+export { useGetUserInfo } from "./api/user.queries";

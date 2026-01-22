@@ -20,3 +20,13 @@ export {
   performanceFilterSchema,
   updatePerformanceSchema,
 } from "./model/performance.schema";
+
+// React Query hooks
+export {
+  usePerformances,
+  usePerformance,
+  useCreatePerformance,
+  useUpdatePerformance,
+  useDeletePerformance,
+  PERFORMANCE_QUERY_KEYS,
+} from "./api/performance.queries";

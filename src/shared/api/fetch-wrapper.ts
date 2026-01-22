@@ -2,7 +2,7 @@ import { toast } from "sonner";
 import {
   dispatchAdminUnauthorizedEvent,
   dispatchUnauthorizedEvent,
-} from "../events/auth-events";
+} from "../auth-events";
 import { getRefreshUrl } from "./orval/auth/auth";
 
 /**

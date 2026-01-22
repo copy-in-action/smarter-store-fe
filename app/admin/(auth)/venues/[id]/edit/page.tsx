@@ -1,4 +1,4 @@
-import { PAGES } from "@/shared/constants/routes";
+import { PAGES } from "@/shared/config/routes";
 import VenueEditView from "@/views/admin/venues/VenueEditView";
 
 /**

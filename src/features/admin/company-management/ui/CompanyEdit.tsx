@@ -8,7 +8,7 @@ import {
   useGetCompany,
   useUpdateCompany,
 } from "@/entities/company";
-import { PAGES } from "@/shared/constants/routes";
+import { PAGES } from "@/shared/config/routes";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent } from "@/shared/ui/card";
 import { CompanyForm } from "./CompanyForm";

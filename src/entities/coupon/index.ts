@@ -1,21 +1,31 @@
-// Model
-export type {
-  CouponCreateRequest,
-  CouponResponse,
-  CouponUpdateRequest,
-} from "./api/coupon.api";
-export * from "./api/coupon.api";
-// API (React Query)
+/**
+ * Coupon 엔티티 Public API
+ */
+
+// API 함수 (순수 API)
+export { getCouponsApi } from "./api/coupon.api";
+
+// React Query hooks
 export {
   couponQueryKeys,
   useCreateCoupon,
+  useCouponsQuery,
   useDeactivateCoupon,
   useGetAllCoupons,
   useGetCoupon,
   useUpdateCoupon,
-} from "./api/coupon.api";
-export * from "./hooks/useCouponsQuery";
-export { useValidateCoupons } from "./hooks/useValidateCoupons";
+  useValidateCoupons,
+} from "./api/coupon.queries";
+
+// Types
+export type {
+  AvailableCouponResponse,
+  CouponCreateRequest,
+  CouponResponse,
+  CouponUpdateRequest,
+  CouponValidateRequest,
+  CouponValidateResponse,
+} from "@/shared/api/orval/types";
 
 // Schema
 export type { CreateCouponForm, UpdateCouponForm } from "./model/coupon.schema";

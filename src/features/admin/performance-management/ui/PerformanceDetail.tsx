@@ -3,7 +3,7 @@
 import { Calendar, Edit, Trash2 } from "lucide-react";
 import Link from "next/link";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import { cn } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";

@@ -5,8 +5,8 @@ import { Toaster } from "@/shared/ui/sonner";
 import "./globals.css";
 import { headers } from "next/headers";
 import { getUserInfoServer } from "@/entities/user/api/user.server.api";
-import { AuthEventHandler, TokenRefreshManager } from "@/shared/components";
-import { DeviceProvider } from "@/shared/hooks/use-device";
+import { AuthEventHandler, TokenRefreshManager } from "@/shared/auth-events";
+import { DeviceProvider } from "@/shared/lib/use-device";
 import {
   createOrganizationSchema,
   createWebsiteSchema,

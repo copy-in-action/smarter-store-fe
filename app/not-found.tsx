@@ -2,7 +2,7 @@
 
 import { CloudAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import { Button } from "@/shared/ui/button";
 
 const notFound = () => {

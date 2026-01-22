@@ -7,8 +7,8 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/app/providers";
-import { PAGES } from "@/shared/constants";
-import { useIsMobile } from "@/shared/hooks/use-device";
+import { PAGES } from "@/shared/config";
+import { useIsMobile } from "@/shared/lib/use-device";
 import { Button } from "@/shared/ui/button";
 import {
   Dialog,
@@ -28,7 +28,7 @@ import {
 import {
   usePerformanceDates,
   usePerformancesByDate,
-} from "../api/performanceSchedules.api";
+} from "../api/performanceSchedules.queries";
 import PerformanceScheduleContent from "./PerformanceScheduleContent";
 
 interface Props {

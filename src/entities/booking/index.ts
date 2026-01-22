@@ -1,14 +1,8 @@
 /**
  * entities/booking Public API
- * FSD 규칙: index.ts를 통한 export만 허용
+ * FSD 규칙: 순수 도메인 타입만 export
  */
 
-// 변환 함수 export
-export {
-  transformSeatGradeInfo,
-  transformToGradeInfoArray,
-  transformUserSelectedSeats,
-} from "./lib/seat-transformers";
 // 타입 export
 export type {
   GradeInfo,

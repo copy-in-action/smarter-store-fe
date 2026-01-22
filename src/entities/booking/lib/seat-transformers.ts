@@ -5,12 +5,12 @@
  */
 
 import type { SeatGrade } from "@/shared/api/orval/types";
-import {
-  getSeatType,
-  type SeatChartConfig,
-  type SeatPosition,
-  type SeatType,
-} from "@/shared/lib/seat";
+import { getSeatType } from "@/shared/lib/seat.utils";
+import type {
+  SeatChartConfig,
+  SeatPosition,
+  SeatType,
+} from "@/shared/lib/seat.types";
 import type { GradeInfo, SeatGradeInfo, UserSelectedSeat } from "../model/booking.types";
 
 /**

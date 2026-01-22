@@ -2,7 +2,6 @@
  * 관리자 공연 관리 기능 Public API
  */
 
-export * from "./lib/usePerformanceQueries";
 export {
   type CreatePerformanceFormData,
   type CreatePerformanceFormInput,

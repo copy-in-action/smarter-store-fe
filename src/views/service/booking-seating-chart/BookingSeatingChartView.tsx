@@ -3,7 +3,7 @@
  */
 "use client";
 
-import { BookingSeatingChart } from "@/features/service/booking-seating-chart";
+import { BookingSeatingChart } from "@/features/booking";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
 
 /**

@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useCreateVenue, type VenueResponse } from "@/entities/venue";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import type { VenueFormData } from "../model/venue-form.schema";
 import { VenueForm } from "./VenueForm";
 

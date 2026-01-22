@@ -7,7 +7,7 @@ import AppleIcon from "@/../public/icons/apple.svg";
 import GoogleIcon from "@/../public/icons/google.svg";
 import KakaoIcon from "@/../public/icons/kakao.svg";
 import NaverIcon from "@/../public/icons/naver.svg";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import { Button } from "@/shared/ui/button";
 import { Logo } from "@/shared/ui/Logo";
 

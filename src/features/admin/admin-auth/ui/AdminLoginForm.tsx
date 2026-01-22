@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
-import { useAdminLoginMutation } from "../api/adminAuth.api";
+import { useAdminLoginMutation } from "../api/adminAuth.queries";
 import { type AdminLoginFormData, adminLoginFormSchema } from "../model/schema";
 
 /**

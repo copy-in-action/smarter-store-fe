@@ -8,7 +8,7 @@ import { useDeleteVenue, useVenues } from "@/entities/venue";
 import { VenueDeleteDialog } from "@/features/admin/venue-delete";
 import { ApiErrorClass } from "@/shared/api";
 import type { VenueResponse } from "@/shared/api/orval/types";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Input } from "@/shared/ui/input";

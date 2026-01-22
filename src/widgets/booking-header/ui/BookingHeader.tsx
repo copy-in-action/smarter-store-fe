@@ -11,8 +11,8 @@ import { getPerformanceDetail } from "@/entities/performance/api/performance.api
 import {
   BookingStep,
   useBookingStepStore,
-} from "@/features/service/booking-process";
-import { PAGES } from "@/shared/constants";
+} from "@/features/booking";
+import { PAGES } from "@/shared/config";
 import { Button } from "@/shared/ui/button";
 import BookingTimer from "./BookingTimer";
 

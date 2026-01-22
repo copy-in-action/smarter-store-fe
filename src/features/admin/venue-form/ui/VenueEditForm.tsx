@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useUpdateVenue } from "@/entities/venue";
 import type { VenueResponse } from "@/shared/api/orval/types";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import type { VenueFormData } from "../model/venue-form.schema";
 import { VenueForm } from "./VenueForm";
 

@@ -19,7 +19,7 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { ApiErrorClass } from "@/shared/api/fetch-wrapper";
-import { PAGES } from "@/shared/constants/routes";
+import { PAGES } from "@/shared/config/routes";
 
 /**
  * 현재 페이지가 관리자 페이지인지 확인

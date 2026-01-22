@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { EmailLoginForm } from "@/features/service/auth";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import { AuthTitle } from "./AuthTitle";
 
 /**
