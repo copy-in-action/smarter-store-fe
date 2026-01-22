@@ -2,12 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import type { PerformanceFormData } from "@/features/admin/performance-management";
 import {
-  PerformanceForm,
   usePerformance,
   useUpdatePerformance,
-} from "@/features/admin/performance-management";
+} from "@/entities/performance";
+import type { PerformanceFormData } from "@/features/admin/performance-management";
+import { PerformanceForm } from "@/features/admin/performance-management";
 import { PAGES } from "@/shared/config";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent } from "@/shared/ui/card";

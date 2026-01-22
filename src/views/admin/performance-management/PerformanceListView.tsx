@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import {
   useDeletePerformance,
   usePerformances,
-} from "@/features/admin/performance-management";
+} from "@/entities/performance";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
 import { PAGES } from "@/shared/config/routes";
 import {
