@@ -1,4 +1,4 @@
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import { CouponDetailView } from "@/views/admin/coupon/detail";
 
 export const metadata = PAGES.ADMIN.COUPON.DETAIL.metadata;

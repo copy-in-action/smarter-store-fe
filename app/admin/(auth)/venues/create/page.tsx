@@ -2,7 +2,7 @@
  * 관리자 공연장 등록 페이지
  */
 
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import VenueCreateView from "@/views/admin/venues/VenueCreateView";
 
 /**

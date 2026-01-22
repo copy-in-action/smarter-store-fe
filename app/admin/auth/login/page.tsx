@@ -1,4 +1,4 @@
-import { PAGES } from "@/shared/constants/routes";
+import { PAGES } from "@/shared/config/routes";
 import { AdminLoginView } from "@/views/admin/admin-login";
 
 /**

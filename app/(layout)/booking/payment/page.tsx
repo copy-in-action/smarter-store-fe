@@ -1,4 +1,4 @@
-import { PAGES } from "@/shared/constants/routes";
+import { PAGES } from "@/shared/config/routes";
 import { BookingPaymentView } from "@/views/service/booking-payment";
 
 export const metadata = PAGES.BOOKING.PAYMENT.metadata;

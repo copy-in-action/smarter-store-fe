@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePerformances } from "@/features/admin/performance-management";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import { CarouselItem } from "@/shared/ui/carousel";
 import { ReusableCarousel } from "@/shared/ui/reusable-carousel";
 import { PerformanceListSkeleton } from "./PerformanceListSkeleton";

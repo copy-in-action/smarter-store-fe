@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import { EmailVerificationView } from "@/views/service/auth";
 
 /**

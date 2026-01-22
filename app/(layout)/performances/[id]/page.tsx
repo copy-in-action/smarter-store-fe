@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPerformanceDetailForServer } from "@/entities/performance/api/performance.server.api";
-import { PAGES } from "@/shared/constants/routes";
+import { PAGES } from "@/shared/config/routes";
 import {
   createPerformanceSchema,
   safeJsonLdStringify,

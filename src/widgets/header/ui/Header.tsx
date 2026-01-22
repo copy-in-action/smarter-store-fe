@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import { cn } from "@/shared/lib/utils";
 import { Logo } from "@/shared/ui/Logo";
 import { CartButton } from "./CartButton";

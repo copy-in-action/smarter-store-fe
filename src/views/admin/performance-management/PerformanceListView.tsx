@@ -9,7 +9,7 @@ import {
   usePerformances,
 } from "@/features/admin/performance-management";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
-import { PAGES } from "@/shared/constants/routes";
+import { PAGES } from "@/shared/config/routes";
 import {
   AlertDialog,
   AlertDialogAction,

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { login1 } from "@/shared/api/orval/admin-auth/admin-auth";
 import type { AdminLoginRequest } from "@/shared/api/orval/types";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 
 /**
  * 관리자 로그인 뮤테이션 훅

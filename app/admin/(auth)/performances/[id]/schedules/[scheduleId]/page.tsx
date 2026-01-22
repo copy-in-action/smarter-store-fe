@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import { PerformanceScheduleDetailView } from "@/views/admin/performance-schedule-detail";
 
 interface PerformanceScheduleDetailPage {

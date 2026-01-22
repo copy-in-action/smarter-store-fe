@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { useGetAllCompanies } from "@/entities/company";
 import { useVenues } from "@/entities/venue";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 
 /**
  * 페이지 아이템 컴포넌트

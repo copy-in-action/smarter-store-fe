@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { SERVICE_PAGES } from "@/shared/constants";
+import { SERVICE_PAGES } from "@/shared/config";
 
 type PageNode = {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>

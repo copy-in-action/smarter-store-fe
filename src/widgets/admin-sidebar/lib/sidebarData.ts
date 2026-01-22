@@ -1,5 +1,5 @@
 import { BarChart3, Gift, Music, Settings, ShoppingCart, Users } from "lucide-react";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import type { SidebarData } from "../model/types";
 
 /**

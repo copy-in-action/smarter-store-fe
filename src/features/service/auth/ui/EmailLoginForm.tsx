@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { loginRequestSchema } from "@/entities/auth";
 import type { LoginRequest } from "@/shared/api/orval/types";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import { Button } from "@/shared/ui/button";
 import { Form } from "@/shared/ui/form";
 import { ValidatedField } from "@/shared/ui/ValidatedField";

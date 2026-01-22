@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import type { VenueResponse } from "@/shared/api/orval/types";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import { Button } from "@/shared/ui/button";
 import type { VenueFormData } from "../model/venue-form.schema";
 import { VenueForm } from "./VenueForm";

@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import type { CouponResponse } from "@/entities/coupon";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import {

@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { transformUserSelectedSeats } from "@/entities/booking";
 import { useCouponsQuery, useValidateCoupons } from "@/entities/coupon";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import {
   BookingStep,
   type SeatTotalInfo,

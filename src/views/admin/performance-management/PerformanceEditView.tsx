@@ -8,7 +8,7 @@ import {
   usePerformance,
   useUpdatePerformance,
 } from "@/features/admin/performance-management";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent } from "@/shared/ui/card";
 

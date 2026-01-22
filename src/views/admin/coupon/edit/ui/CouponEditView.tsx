@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useGetCoupon, useUpdateCoupon } from "@/entities/coupon";
 import { CouponForm } from "@/features/admin/coupon-form";
 import type { CouponUpdateRequest } from "@/shared/api/orval/types";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 
 /**
  * 쿠폰 수정 뷰 Props

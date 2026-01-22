@@ -8,7 +8,7 @@ import {
   type EmailVerificationData,
   emailVerificationSchema,
 } from "@/entities/auth";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import { Button } from "@/shared/ui/button";
 import { Form } from "@/shared/ui/form";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/ui/tooltip";

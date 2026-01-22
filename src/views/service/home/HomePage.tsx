@@ -6,7 +6,7 @@ import {
   PerformanceListServer,
 } from "@/features/service/home";
 import { PerformanceListSkeleton } from "@/features/service/home/ui/PerformanceListSkeleton";
-import { PAGES } from "@/shared/constants/routes";
+import { PAGES } from "@/shared/config/routes";
 
 /**
  * 홈페이지 메타데이터

@@ -12,7 +12,7 @@ import {
   BookingStep,
   useBookingStepStore,
 } from "@/features/service/booking-process";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import { Button } from "@/shared/ui/button";
 import BookingTimer from "./BookingTimer";
 

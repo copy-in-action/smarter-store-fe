@@ -25,7 +25,7 @@ import {
   paymentFormSchema,
 } from "@/features/service/booking-payment/model/payment-form.schema";
 import { useBookingStepStore } from "@/features/service/booking-process";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import { Button } from "@/shared/ui/button";
 
 /**

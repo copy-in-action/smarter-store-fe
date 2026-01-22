@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PAGES } from "@/shared/constants/routes";
+import { PAGES } from "@/shared/config/routes";
 import CompanyDetailView from "@/views/admin/company/CompanyDetailView";
 
 export const metadata: Metadata = PAGES.ADMIN.COMPANY.DETAIL.metadata;

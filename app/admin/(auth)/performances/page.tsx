@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PAGES } from "@/shared/constants/routes";
+import { PAGES } from "@/shared/config/routes";
 import PerformanceListView from "@/views/admin/performance-management/PerformanceListView";
 
 /**

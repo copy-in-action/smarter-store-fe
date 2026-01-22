@@ -13,7 +13,7 @@ import {
   useGetPerformanceSchedule,
   useUpdatePerformanceSchedule,
 } from "@/features/admin/performance-schedule-management";
-import { PAGES } from "@/shared/constants/routes";
+import { PAGES } from "@/shared/config/routes";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import {

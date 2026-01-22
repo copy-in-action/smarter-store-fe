@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getPerformanceDetailForServer } from "@/entities/performance/api/performance.server.api";
-import { PAGES } from "@/shared/constants";
+import { PAGES } from "@/shared/config";
 import { PerformanceScheduleListView } from "@/views/admin/performance-schedule-management";
 
 /**
