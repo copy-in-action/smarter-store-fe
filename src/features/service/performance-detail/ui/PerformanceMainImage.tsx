@@ -36,7 +36,8 @@ export function PerformanceMainImage({
               className="inset-0 object-fill h-full aspect-[343/286] sm:aspect-[558/285]"
               aria-hidden
               width={"100%"}
-              loading="lazy"
+              sizes="(max-width: 916px) 100vw, 880px"
+              fetchPriority="high"
             />
             <div className="absolute inset-0 backdrop-blur-[50px]" />
 
@@ -47,7 +48,8 @@ export function PerformanceMainImage({
                   alt={`${title} 포스터`}
                   className="rounded-2xl"
                   fill
-                  loading="eager"
+                  sizes="(max-width: 640px) 70vw, 160px"
+                  priority
                 />
               </div>
             </div>

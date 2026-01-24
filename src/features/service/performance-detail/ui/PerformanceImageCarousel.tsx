@@ -42,12 +42,12 @@ export function PerformanceImageCarousel({
           <CarouselItem key={imageUrl}>
             <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-200">
               <Image
-                src={imageUrl || "/images/placeholder.jpg"}
+                src={imageUrl}
                 alt={`${title} 이미지 ${index + 1}`}
                 fill
                 className="object-cover"
-                loading="lazy"
-                unoptimized
+                sizes="(max-width: 640px) calc(100vw - 2rem), (max-width: 1024px) calc(100vw - 5rem), 800px"
+                priority
               />
             </div>
           </CarouselItem>

@@ -82,12 +82,15 @@ function PerformanceCard({
       <div className="space-y-3">
         <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-gray-200 group-hover:opacity-90 transition-opacity">
           <Image
-            src={performance.mainImageUrl || "/images/placeholder.jpg"}
+            src={performance?.mainImageUrl || ""}
             alt={performance.title}
             fill
             className="object-cover"
             loading="lazy"
-            unoptimized
+            sizes="(max-width: 640px) 50vw, 300px"
+            // onError={(event) => {
+            //   event.currentTarget.src = performance.mainImageUrl || "";
+            // }}
           />
         </div>
         <div className="w-full px-1 space-y-1">
