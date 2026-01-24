@@ -11,7 +11,11 @@ const nextConfig: NextConfig = {
       new URL("https://marketplace.canva.com/**"),
       new URL("https://ticketimage.interpark.com/Play/image/**"),
       new URL("https://image6.yanolja.com/**"),
+      new URL("https://supa.devhong.cc/storage/v1/object/public/ticket/**"),
     ],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    qualities: [75, 100],
   },
   /**
    * 개발 환경에서만 백엔드 API 프록시 설정

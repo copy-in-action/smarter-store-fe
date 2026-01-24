@@ -47,7 +47,9 @@ export function PerformanceDetailImage({
               className="w-full h-auto"
               width={800}
               height={2000}
-              unoptimized
+              sizes="(max-width: 639px) calc(90vw - 40px), (max-width: 911px) calc(100vw - 16px), 880px"
+              quality={100}
+              loading="lazy"
             />
           )}
         </div>
