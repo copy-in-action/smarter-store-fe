@@ -1,9 +1,8 @@
 "use client";
 
 /**
- * 인증 상태 관리 Provider
- * 서버 사이드에서 로그인 여부, 유저정보를 초기값을 받음.
- * 로그인 시 리턴받은 로그인 정보를 기반으로 user 값 설정
+ * User 엔티티 컨텍스트
+ * 사용자 인증 상태와 정보를 전역으로 관리합니다.
  */
 
 import { createContext, type ReactNode, useContext, useState } from "react";
@@ -45,6 +44,7 @@ interface AuthProviderProps {
 
 /**
  * 인증 상태를 전역으로 관리하는 Provider
+ * @description entities 레이어에서 정의하고, app 레이어에서 주입합니다
  */
 export const AuthProvider = ({
   children,
@@ -96,7 +96,8 @@ export const AuthProvider = ({
 
 /**
  * 인증 상태를 사용하는 훅
- * AuthProvider 내부에서만 사용 가능
+ * @description AuthProvider 내부에서만 사용 가능합니다
+ * @throws {Error} AuthProvider 외부에서 사용 시 에러 발생
  */
 export const useAuth = (): AuthContextValue => {
   const context = useContext(AuthContext);

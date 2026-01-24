@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useAuth } from "@/app/providers";
+import { useAuth } from "@/entities/user";
 import { loginUser } from "@/entities/auth";
 import { PAGES } from "@/shared/config";
 
