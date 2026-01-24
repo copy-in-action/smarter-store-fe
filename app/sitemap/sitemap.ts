@@ -23,7 +23,7 @@ export function collectSitemapPaths(
     if (node.siteMap && typeof node.path === "string") {
       result.push({
         url: `${baseUrl}${node.path === "/" ? "" : node.path}`,
-        lastModified: now,
+        lastModified: now.toISOString().split("T")[0],
         changeFrequency: node.siteMap.changeFrequency as
           | "always"
           | "hourly"

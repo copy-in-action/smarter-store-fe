@@ -48,7 +48,7 @@ export async function GET() {
     .map(
       (url) => `  <sitemap>
     <loc>${url}</loc>
-    <lastmod>${new Date().toISOString()}</lastmod>
+    <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
   </sitemap>`,
     )
     .join("\n");

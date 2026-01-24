@@ -46,8 +46,8 @@ export default async function sitemap(props: {
   return response.slice(startIndex, endIndex).map((performance) => ({
     url: `${SERVICE_DOMAIN}${PAGES.PERFORMANCE.DETAIL.path(performance.id)}`,
     lastModified: performance.updatedAt
-      ? new Date(performance.updatedAt)
-      : new Date(),
+      ? new Date(performance.updatedAt).toISOString().split("T")[0]
+      : new Date().toISOString().split("T")[0],
     changeFrequency: "daily",
     priority: 0.8,
   }));
