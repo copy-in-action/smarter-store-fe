@@ -129,6 +129,44 @@ export const deletePerformance = async (id: number, options?: RequestInit): Prom
 
 
 /**
+ * 모든 공연 목록(비공개 포함)을 조회합니다.
+
+**권한: ADMIN**
+ * @summary 전체 공연 목록 조회
+ */
+export type getAllPerformances1Response200 = {
+  data: PerformanceResponse[]
+  status: 200
+}
+    
+export type getAllPerformances1ResponseSuccess = (getAllPerformances1Response200) & {
+  headers: Headers;
+};
+;
+
+export type getAllPerformances1Response = (getAllPerformances1ResponseSuccess)
+
+export const getGetAllPerformances1Url = () => {
+
+
+  
+
+  return `https://ticket-api.devhong.cc/api/admin/performances`
+}
+
+export const getAllPerformances1 = async ( options?: RequestInit): Promise<getAllPerformances1Response> => {
+  
+  return orvalFetch<getAllPerformances1Response>(getGetAllPerformances1Url(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+/**
  * 새로운 공연 정보를 생성합니다.
 
 **권한: ADMIN**

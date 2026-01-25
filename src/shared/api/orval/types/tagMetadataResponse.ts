@@ -7,13 +7,11 @@
 **관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
-import type { SortObject } from './sortObject';
+import type { TagMetadataResponseTag } from './tagMetadataResponseTag';
 
-export interface PageableObject {
-  offset?: number;
-  sort?: SortObject[];
-  paged?: boolean;
-  pageNumber?: number;
-  pageSize?: number;
-  unpaged?: boolean;
+export interface TagMetadataResponse {
+  tag: TagMetadataResponseTag;
+  displayName: string;
+  displayOrder: number;
+  isRegionTag: boolean;
 }

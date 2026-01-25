@@ -17,7 +17,7 @@ import type {
 import { orvalFetch } from '../../fetch-wrapper';
 
 /**
- * 모든 공연 목록을 조회합니다.
+ * 모든 공연 목록을 조회합니다. (노출 설정된 공연만 조회)
 
 **권한: 누구나**
  * @summary 모든 공연 조회
