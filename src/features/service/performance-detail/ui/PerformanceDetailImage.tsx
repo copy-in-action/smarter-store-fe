@@ -50,6 +50,8 @@ export function PerformanceDetailImage({
               sizes="(max-width: 639px) calc(90vw - 40px), (max-width: 911px) calc(100vw - 16px), 880px"
               quality={100}
               loading="lazy"
+              placeholder="blur"
+              blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8VA8AAmkBc7YFeIIAAAAASUVORK5CYII="
             />
           )}
         </div>

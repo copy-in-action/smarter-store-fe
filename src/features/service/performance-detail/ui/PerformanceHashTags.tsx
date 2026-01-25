@@ -4,6 +4,7 @@
 
 "use client";
 
+import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
@@ -43,10 +44,18 @@ export function PerformanceHashTags() {
     }
   };
 
+  // 서버랜더링 시 해시태그가 보여 레이아웃 쉬프트 발생하므로 서버에서는 랜더링하지 않음
+  const [isInit, setIsInit] = useState(false);
+  useEffect(() => {
+    setIsInit(true);
+  }, []);
+
   return (
     <>
       <div
-        className="flex flex-nowrap gap-1.5 my-5 p-detail-wrapper overflow-auto scrollbar-hide sm:scrollbar-hide"
+        className={
+          "flex flex-nowrap gap-1.5 my-5 p-detail-wrapper overflow-auto scrollbar-hide sm:scrollbar-hide"
+        }
         ref={ref}
       >
         {hashTags.map((tag) => (
@@ -68,7 +77,7 @@ export function PerformanceHashTags() {
         id="performance-detail-hashtags"
         className={cn(
           "sticky sm:top-[101px] z-50 top-[91px] flex gap-4 bg-background border-b p-detail-wrapper overflow-auto scrollbar-hide",
-          inView && "hidden",
+          (inView || isInit) && "hidden",
         )}
       >
         {hashTags.map((tag) => (
