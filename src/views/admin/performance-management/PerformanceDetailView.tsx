@@ -2,10 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import {
-  useDeletePerformance,
-  usePerformance,
-} from "@/entities/performance";
+import { useDeletePerformance, usePerformance } from "@/entities/performance";
 import { PerformanceDetail } from "@/features/admin/performance-management";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
 import { PAGES } from "@/shared/config";
@@ -128,9 +125,11 @@ export function PerformanceDetailView({
     <div className="w-full max-w-4xl mx-auto">
       <div className="flex gap-3 justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">공연 상세</h1>
-        <Button variant="outline" onClick={handleBackToList}>
-          목록으로
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleBackToList}>
+            목록으로
+          </Button>
+        </div>
       </div>
 
       <PerformanceDetail

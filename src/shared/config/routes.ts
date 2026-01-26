@@ -454,6 +454,16 @@ const ADMIN_PAGES = {
         } as Metadata,
       },
     },
+    HOME: {
+      /** 홈 태그 순서 관리 */
+      TAG_ORDER: {
+        path: "/admin/home/tag-order",
+        metadata: {
+          title: "홈 태그 순서 관리 | 관리자",
+          description: "홈 화면 섹션별 태그 내 공연 순서를 관리하는 페이지",
+        } as Metadata,
+      },
+    },
   },
 } as const;
 
