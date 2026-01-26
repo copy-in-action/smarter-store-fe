@@ -10,6 +10,13 @@ export {
   getPerformanceList,
   updateExistingPerformance,
 } from "./api/performance.api";
+
+// 홈 태그 API 함수들
+export {
+  addPerformanceHomeTag,
+  deletePerformanceHomeTag,
+  getPerformanceHomeTags,
+} from "./api/performance-home-tag.api";
 export type {
   CreatePerformanceForm,
   PerformanceFilter,
@@ -30,3 +37,11 @@ export {
   useDeletePerformance,
   PERFORMANCE_QUERY_KEYS,
 } from "./api/performance.queries";
+
+// 홈 태그 React Query hooks
+export {
+  usePerformanceHomeTags,
+  useAddPerformanceHomeTag,
+  useDeletePerformanceHomeTag,
+  PERFORMANCE_HOME_TAG_QUERY_KEYS,
+} from "./api/performance-home-tag.queries";

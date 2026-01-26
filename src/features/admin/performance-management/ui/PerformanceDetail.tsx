@@ -1,13 +1,16 @@
 "use client";
 
-import { Calendar, Edit, Trash2 } from "lucide-react";
+import { Calendar, Edit, Tag, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import { usePerformanceHomeTags } from "@/entities/performance";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
 import { PAGES } from "@/shared/config";
 import { cn } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import { PerformanceHomeTagManagement } from "../../performance-home-tag-management";
 
 /**
  * 공연 상세 컴포넌트 속성
@@ -80,6 +83,13 @@ export function PerformanceDetail({
   onDelete,
   isAdminMode = false,
 }: PerformanceDetailProps) {
+  // 태그 관리 모달 상태
+  const [isTagModalOpen, setIsTagModalOpen] = useState(false);
+  // 공연 홈 태그 조회
+  const { data: homeTags, refetch: refetchHomeTags } = usePerformanceHomeTags(
+    performance.id,
+  );
+
   return (
     <div className="w-full max-w-4xl mx-auto">
       {/* 액션 버튼들 */}
@@ -92,6 +102,11 @@ export function PerformanceDetail({
               <Calendar className="w-4 h-4 mr-2" />
               회차 관리
             </Link>
+          </Button>
+          <Button variant="outline" onClick={() => setIsTagModalOpen(true)}>
+            {" "}
+            <Tag className="w-4 h-4 mr-2" />
+            태그 관리
           </Button>
           {onEdit && (
             <Button
@@ -115,7 +130,6 @@ export function PerformanceDetail({
           )}
         </div>
       )}
-
       <Card>
         <CardHeader>
           <div className="flex items-start justify-between">
@@ -205,6 +219,22 @@ export function PerformanceDetail({
               <h3 className="text-lg font-medium text-gray-900 border-b pb-2 mb-4">
                 상세 정보
               </h3>
+
+              {/* 홈 섹션 태그 표시 */}
+              {homeTags && homeTags.length > 0 && (
+                <div className="mb-6">
+                  <h4 className="font-medium text-gray-600 mb-2">
+                    홈 섹션 태그
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {homeTags.map((tag) => (
+                      <Badge key={tag.id} variant="secondary">
+                        {tag.sectionDisplayName}-{tag.tagDisplayName}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* 공연 설명 */}
               <div className="mb-6">
@@ -377,6 +407,17 @@ export function PerformanceDetail({
           </div>
         </CardContent>
       </Card>
+
+      {/* 태그 관리 모달 */}
+      <PerformanceHomeTagManagement
+        performanceId={performance.id}
+        performanceTitle={performance.title}
+        isOpen={isTagModalOpen}
+        onClose={() => setIsTagModalOpen(false)}
+        onSuccess={() => {
+          refetchHomeTags();
+        }}
+      />
     </div>
   );
 }
