@@ -4,9 +4,8 @@
 
 // API 함수
 export { getHomeSectionsMetadata } from "./api/home-section.api";
-
 // React Query hooks
 export {
-  useHomeSectionsMetadata,
   HOME_SECTION_QUERY_KEYS,
+  useHomeSectionsMetadata,
 } from "./api/home-section.queries";

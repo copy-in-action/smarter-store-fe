@@ -4,6 +4,8 @@ import {
   MainBanner,
   PerformanceCategory,
   PerformanceListServer,
+  SectionListServer,
+  SectionListSkeleton,
 } from "@/features/service/home";
 import { PerformanceListSkeleton } from "@/features/service/home/ui/PerformanceListSkeleton";
 import { PAGES } from "@/shared/config/routes";
@@ -34,6 +36,10 @@ export default async function HomePage() {
           <MainBanner />
         </Suspense>
       </section>
+
+      <Suspense fallback={<SectionListSkeleton />}>
+        <SectionListServer />
+      </Suspense>
 
       <section className="my-4 sm:my-20">
         <h2 className="mb-6 text-xl font-bold text-center">추천 공연</h2>
