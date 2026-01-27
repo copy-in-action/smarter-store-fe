@@ -16,7 +16,7 @@ export async function getHomeSectionsForServer(
   fetchOptions: RequestInit & { requireAuth?: boolean } = {},
 ): Promise<HomeSectionResponse[]> {
   const mergedOptions = {
-    requireAuth: true,
+    requireAuth: false,
     cache: "no-store" as RequestCache,
     ...fetchOptions,
   };
