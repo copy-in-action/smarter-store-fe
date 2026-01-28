@@ -7,17 +7,17 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { transformUserSelectedSeats } from "../lib/seat-transformers";
+import type { SeatTotalInfo } from "@/entities/booking";
 import { useCouponsQuery, useValidateCoupons } from "@/entities/coupon";
+import { BookingStep, useBookingStepStore } from "@/features/booking";
 import type { PerformanceResponse } from "@/shared/api/orval/types";
 import { PAGES } from "@/shared/config";
-import { BookingStep, useBookingStepStore } from "@/features/booking";
-import type { SeatTotalInfo } from "@/entities/booking";
-import { useBookingSeatSelection } from "../lib/useBookingSeatSelection";
-import { useBookingStepControl } from "../lib/useBookingStepControl";
 import { createPaymentConfirmationData } from "../lib/createPaymentConfirmationData";
 import { createPaymentRequestData } from "../lib/createPaymentRequestData";
+import { transformUserSelectedSeats } from "../lib/seat-transformers";
 import { transformToSeatCoupons } from "../lib/transform-booking-discount";
+import { useBookingSeatSelection } from "../lib/useBookingSeatSelection";
+import { useBookingStepControl } from "../lib/useBookingStepControl";
 import type { BookingDiscountFormData } from "../model/booking-discount.schema";
 import DiscountSelectionStep from "./DiscountSelectionStep";
 import SeatSelectionStep from "./SeatSelectionStep";
@@ -68,7 +68,7 @@ const BookingSeatingChart = ({
   const { seatChartConfig, toggleSeatSelection, clearSelection } =
     useBookingSeatSelection(
       performance.venue?.id || 0,
-      step === BookingStep.SEAT_SELECTION ? "view" : "payment",
+      step === BookingStep.SEAT_SELECTION && !isLoading, // 좌석 선택 단계이고 로딩 중이 아닐 때만 충돌 체크
       scheduleId,
     );
 
