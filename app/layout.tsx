@@ -1,17 +1,21 @@
 import type { Metadata } from "next";
 import { Inter, Noto_Sans_KR } from "next/font/google";
-import { AuthProvider, MSWProvider, QueryProvider } from "@/app/providers";
-import { Toaster } from "@/shared/ui/sonner";
-import "./globals.css";
 import { headers } from "next/headers";
+import {
+  AuthProvider,
+  BookingResetWatcher,
+  QueryProvider,
+} from "@/app/providers";
 import { getUserInfoServer } from "@/entities/user/api/user.server.api";
 import { AuthEventHandler, TokenRefreshManager } from "@/shared/auth-events";
-import { DeviceProvider } from "@/shared/lib/use-device";
 import {
   createOrganizationSchema,
   createWebsiteSchema,
   safeJsonLdStringify,
 } from "@/shared/lib/json-ld";
+import { DeviceProvider } from "@/shared/lib/use-device";
+import { Toaster } from "@/shared/ui/sonner";
+import "./globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -89,6 +93,7 @@ export default async function RootLayout({
             >
               <AuthEventHandler />
               <TokenRefreshManager />
+              <BookingResetWatcher />
               {children}
             </AuthProvider>
           </DeviceProvider>

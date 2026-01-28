@@ -32,7 +32,6 @@ export {
   useGetPerformanceSchedule,
 } from "./payment";
 // ===== Process (프로세스 관리 UI) =====
-export { BookingUnloadManager } from "./process/ui/BookingUnloadManager";
 export type { BookingDiscountFormData } from "./seating-chart";
 // ===== Seating Chart (좌석 선택 + 할인) =====
 export {
