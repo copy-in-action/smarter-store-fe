@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft, Loader2 } from "lucide-react";
-import { notFound, usePathname, useRouter } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
   type FieldError,
@@ -37,14 +37,10 @@ const BookingPayment = () => {
   const { prevStep, paymentConfirmation, paymentRequestData, reset } =
     useBookingStepStore();
   const router = useRouter();
-  const pathname = usePathname();
   const { user } = useAuth();
   const { data: schedule } = useGetPerformanceSchedule(
     paymentConfirmation?.scheduleId ?? 0,
   );
-
-  // popstate 이벤트 발생 여부를 추적하는 ref
-  const isPopStateRef = useRef(false);
 
   // 결제 진행 중 상태 (오버레이 표시용)
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
@@ -132,14 +128,16 @@ const BookingPayment = () => {
       onSuccess: (data) => {
         // API 성공 시 실제 결제 팝업 페이지로 이동
         if (popupRef.current && !popupRef.current.closed) {
-          const popupUrl = `/booking/payment/gateway?paymentId=${data.id}&bankName=${encodeURIComponent(bankName)}&amount=${amount}`;
+          const popupUrl = PAGES.BOOKING.PAYMENT.GATEWAY.path(
+            data.id,
+            encodeURIComponent(bankName),
+            amount,
+          );
           popupRef.current.location.href = popupUrl;
         } else {
           toast.error("결제 팝업이 닫혔습니다. 다시 시도해주세요.");
           setIsPaymentProcessing(false);
         }
-
-        console.log("Payment created:", data);
       },
       onError: (error) => {
         toast.error("결제 요청 생성에 실패했습니다.");
@@ -212,38 +210,6 @@ const BookingPayment = () => {
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
   }, [reset, router.replace, confirmBookingMutation]);
-
-  /**
-   * popstate 이벤트 감지 (브라우저 뒤로가기/앞으로가기)
-   * - 플래그를 설정하여 일반 페이지 이동과 구분
-   */
-  useEffect(() => {
-    const handlePopState = () => {
-      isPopStateRef.current = true;
-      // 다음 렌더 사이클 후 플래그 리셋
-      setTimeout(() => {
-        isPopStateRef.current = false;
-      }, 100);
-    };
-
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
-  }, []);
-
-  /**
-   * Step 3(결제 페이지)에서 다른 페이지로 이동 시 스토어 초기화
-   * - 브라우저 뒤로가기 (popstate)인 경우는 제외 (prevStep으로 처리)
-   * - 홈 버튼이나 다른 페이지로 이동하는 경우 전체 스토어 초기화
-   */
-  useEffect(() => {
-    /**
-     * pathname이 결제 페이지가 아니고, popstate 이벤트가 아닌 경우
-     * → 홈이나 다른 페이지로 일반 이동한 것이므로 스토어 초기화
-     */
-    if (pathname !== PAGES.BOOKING.PAYMENT.path && !isPopStateRef.current) {
-      reset();
-    }
-  }, [pathname, reset]);
 
   const paymentInfo = paymentConfirmation;
   if (!user) {
