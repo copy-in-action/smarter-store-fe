@@ -102,77 +102,45 @@ export function useSeatChart(
   }, [seatingChartData, scheduleData, scheduleId]);
 
   /**
-   * 예매 상태 업데이트 (실시간)
+   * 예매 상태 업데이트 (단순 setter)
+   * @param pendingSeats - 임시 점유 좌석
+   * @param reservedSeats - 예약 확정 좌석
    */
   const updateBookingStatus = useCallback(
-    (seatData: BookingStatusByServer) => {
-      const seats = (seatData.seats as SeatPosition[]).map((seat) => ({
-        row: seat.row - 1,
-        col: seat.col - 1,
-      }));
+    (pendingSeats: SeatPosition[], reservedSeats: SeatPosition[]) => {
+      setBookingStatus({ pendingSeats, reservedSeats });
 
-      // 점유 또는 예약 확정 시
-      if (seatData.action === "OCCUPIED" || seatData.action === "CONFIRMED") {
-        setBookingStatus((pre) => {
-          const targetSeats =
-            seatData.action === "OCCUPIED"
-              ? pre.pendingSeats
-              : pre.reservedSeats;
-          const newSeats = [...targetSeats, ...seats];
-
-          return {
-            ...pre,
-            [seatData.action === "OCCUPIED" ? "pendingSeats" : "reservedSeats"]:
-              newSeats,
-          };
-        });
-
-        // 사용자가 선택한 좌석 중 중복되는 것이 있는지 확인
-        if (mode === "view") {
-          setUserSelection((prevSelection) => {
-            const conflictingSeats = prevSelection.selectedSeats.filter(
-              (selected) =>
-                seats.some(
-                  (incoming) =>
-                    incoming.row === selected.row &&
-                    incoming.col === selected.col,
-                ),
-            );
-
-            if (conflictingSeats.length > 0) {
-              conflictingSeats.forEach((seat) => {
-                toast.error(
-                  `선택하신 ${seat.row + 1}행 ${seat.col + 1}열 좌석이 다른 사용자에 의해 '예매${seatData.action === "CONFIRMED" ? " 완료'" : " 진행 중' "}으로 번경 되었습니다.`,
-                  { id: "seating-chart-error" },
-                );
-              });
-
-              return {
-                selectedSeats: prevSelection.selectedSeats.filter(
-                  (selected) =>
-                    !seats.some(
-                      (incoming) =>
-                        incoming.row === selected.row &&
-                        incoming.col === selected.col,
-                    ),
-                ),
-              };
-            }
-            return prevSelection;
-          });
-        }
-      }
-
-      // 점유 해제
-      if (seatData.action === "RELEASED") {
-        setBookingStatus((pre) => {
-          const newPendingSeats = pre.pendingSeats.filter(
-            (preSeat) =>
-              !seats.some(
-                (seat) => seat.row === preSeat.row && seat.col === preSeat.col,
+      // 사용자 선택 좌석과 충돌 체크 (view 모드만)
+      if (mode === "view") {
+        setUserSelection((prevSelection) => {
+          const allConflictSeats = [...pendingSeats, ...reservedSeats];
+          const conflictingSeats = prevSelection.selectedSeats.filter(
+            (selected) =>
+              allConflictSeats.some(
+                (seat) =>
+                  seat.row === selected.row && seat.col === selected.col,
               ),
           );
-          return { ...pre, pendingSeats: newPendingSeats };
+
+          if (conflictingSeats.length > 0) {
+            conflictingSeats.forEach((seat) => {
+              toast.error(
+                `선택하신 ${seat.row + 1}행 ${seat.col + 1}열 좌석이 다른 사용자에 의해 예매되었습니다.`,
+                { id: "seating-chart-error" },
+              );
+            });
+
+            return {
+              selectedSeats: prevSelection.selectedSeats.filter(
+                (selected) =>
+                  !allConflictSeats.some(
+                    (seat) =>
+                      seat.row === selected.row && seat.col === selected.col,
+                  ),
+              ),
+            };
+          }
+          return prevSelection;
         });
       }
     },
@@ -208,9 +176,9 @@ export function useSeatChart(
   /**
    * 모든 선택 해제
    */
-  const clearSelection = () => {
+  const clearSelection = useCallback(() => {
     setUserSelection({ selectedSeats: [] });
-  };
+  }, []);
 
   /**
    * 완전한 좌석 차트 데이터 생성
