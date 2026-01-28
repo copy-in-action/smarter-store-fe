@@ -8,7 +8,6 @@ import type { SeatGrade } from "@/shared/api/orval/types";
 import { getSeatingChart } from "@/shared/api/orval/venue/venue";
 import type {
   BookingStatus,
-  BookingStatusByServer,
   SeatChartConfig,
   SeatPosition,
   StaticSeatVenue,
@@ -24,7 +23,7 @@ import { isSeatInState } from "./seat.utils";
  */
 export function useSeatChart(
   venueId: number,
-  mode: "view" | "payment",
+  enableConflictCheck: boolean,
   scheduleId?: number,
 ) {
   const [staticVenue, setStaticVenue] = useState<StaticSeatVenue | null>(null);
@@ -111,7 +110,7 @@ export function useSeatChart(
       setBookingStatus({ pendingSeats, reservedSeats });
 
       // 사용자 선택 좌석과 충돌 체크 (view 모드만)
-      if (mode === "view") {
+      if (enableConflictCheck) {
         setUserSelection((prevSelection) => {
           const allConflictSeats = [...pendingSeats, ...reservedSeats];
           const conflictingSeats = prevSelection.selectedSeats.filter(
@@ -144,7 +143,7 @@ export function useSeatChart(
         });
       }
     },
-    [mode],
+    [enableConflictCheck],
   );
 
   /**

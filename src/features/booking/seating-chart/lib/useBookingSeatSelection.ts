@@ -18,10 +18,10 @@ import { useSeatSSESubscription } from "./useSeatSSESubscription";
  */
 export function useBookingSeatSelection(
   venueId: number,
-  mode: "view" | "payment",
+  enableConflictCheck: boolean,
   scheduleId: number,
 ) {
-  const seatChartHook = useSeatChart(venueId, mode, scheduleId);
+  const seatChartHook = useSeatChart(venueId, enableConflictCheck, scheduleId);
   const { toggleSeatSelection, seatChartConfig, updateBookingStatus } =
     seatChartHook;
 
