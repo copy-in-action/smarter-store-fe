@@ -56,21 +56,19 @@ function TabsContainer({ tags }: { tags: HomeTagWithPerformancesResponse[] }) {
   }
 
   return (
-    <Tabs defaultValue={firstTag.tag}>
+    <Tabs defaultValue={firstTag.tag} className="mb-3">
       {/* 탭 리스트: 배경 제거, 텍스트 색상만 변경 */}
-      <div className="wrapper mx-4! px-0! sm:mx-10! sm:px-0! overflow-x-auto mb-3">
-        <TabsList className="h-auto gap-2 p-0 bg-transparent flex-nowrap w-max">
-          {sortedTags.map((tag) => (
-            <TabsTrigger
-              key={tag.tag}
-              value={tag.tag}
-              className="bg-gray-100 px-4 py-2.5 border-0 rounded-3xl shadow-none text-muted-foreground data-[state=active]:text-white data-[state=active]:font-extrabold data-[state=active]:bg-black data-[state=active]:shadow-none whitespace-nowrap"
-            >
-              {tag.displayName}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </div>
+      <TabsList className="h-auto gap-2 p-0 bg-transparent flex-nowrap w-full overflow-x-auto scrollbar-hide wrapper sm:px-10! px-4 justify-start">
+        {sortedTags.map((tag) => (
+          <TabsTrigger
+            key={tag.tag}
+            value={tag.tag}
+            className="bg-gray-100 px-4 py-2.5 border-0 rounded-3xl shadow-none text-muted-foreground data-[state=active]:text-white data-[state=active]:font-extrabold data-[state=active]:bg-black data-[state=active]:shadow-none whitespace-nowrap flex-0"
+          >
+            {tag.displayName}
+          </TabsTrigger>
+        ))}
+      </TabsList>
 
       {/* 탭 콘텐츠: 각 태그의 공연 리스트 */}
       {sortedTags.map((tag) => (
@@ -101,7 +99,7 @@ function SectionBlock({ section }: { section: HomeSectionResponse }) {
   return (
     <section className="my-4 sm:my-20">
       {/* 섹션 제목 */}
-      <h3 className="mb-1.5 text-2xl font-bold wrapper sm:px-10!">
+      <h3 className="mb-1.5 text-2xl font-bold wrapper sm:px-10! px-4">
         {section.displayName}
       </h3>
 
@@ -116,7 +114,7 @@ function SectionBlock({ section }: { section: HomeSectionResponse }) {
  */
 function SectionListEmpty() {
   return (
-    <section className="px-4 wrapper sm:px-10!">
+    <section className="px-4 wrapper sm:px-12!">
       <div className="flex items-center justify-center py-10">
         <div className="text-gray-500">섹션을 불러올 수 없습니다.</div>
       </div>

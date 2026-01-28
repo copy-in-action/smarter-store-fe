@@ -28,7 +28,9 @@ function groupItemsBySize<T>(arr: T[], size: number): T[][] {
  * 모바일에서는 4개씩 그룹화하여 2x2 형태로 표시
  * 데스크톱에서는 가로 스크롤 방식 사용
  */
-export function PerformanceCarousel({ performances }: PerformanceCarouselProps) {
+export function PerformanceCarousel({
+  performances,
+}: PerformanceCarouselProps) {
   const performanceGroups = groupItemsBySize(performances, 4);
 
   return (
