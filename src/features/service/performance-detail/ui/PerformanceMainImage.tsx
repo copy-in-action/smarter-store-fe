@@ -29,18 +29,21 @@ export function PerformanceMainImage({
       <div className="relative flex items-center justify-center overflow-hidden rounded-3xl sm:h-[285px]">
         {imageUrl && (
           <>
-            <Image
+            {/* 배경 이미지: img 태그 사용 (레이아웃 안정성) */}
+            {/** biome-ignore lint/performance/noImgElement: <explanation> */}
+            <img
               src={imageUrl}
-              alt={`${title} 배경`}
+              alt=""
               className="inset-0 object-fill h-full aspect-[343/286] sm:aspect-[558/285]"
               aria-hidden
-              fill
-              sizes="(max-width: 916px) 100vw, 880px"
-              priority
-              quality={75}
+              width={880}
+              height={285}
+              loading="eager"
+              decoding="async"
             />
             <div className="absolute inset-0 backdrop-blur-[50px]" />
 
+            {/* 포스터 이미지: Next.js Image 최적화 */}
             <div className="absolute h-[78%]">
               <div className="relative z-10 aspect-[158/223] h-full">
                 <Image
@@ -50,6 +53,7 @@ export function PerformanceMainImage({
                   fill
                   sizes="(max-width: 640px) 70vw, 160px"
                   priority
+                  quality={85}
                 />
               </div>
             </div>
