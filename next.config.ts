@@ -6,6 +6,12 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   output: process.platform === "win32" ? undefined : "standalone",
   allowedDevOrigins: ["*.devhong.cc"],
+
+  // 모던 브라우저 타겟팅 (불필요한 polyfill 제거)
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
+
   images: {
     remotePatterns: [
       new URL("https://marketplace.canva.com/**"),
@@ -52,6 +58,12 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizeCss: true,
     cssChunking: true,
+    // 대형 패키지의 사용하지 않는 코드 자동 제거 (tree-shaking)
+    optimizePackageImports: [
+      "lucide-react",      // 1000+ 아이콘 라이브러리 (효과 큼)
+      "date-fns",          // 날짜 유틸리티 (효과 중간)
+      "@tanstack/react-table", // 테이블 라이브러리 (효과 중간)
+    ],
   },
 };
 

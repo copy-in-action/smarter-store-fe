@@ -1,0 +1,19 @@
+# 모던 브라우저만 지원 (Lighthouse 권장)
+# ES2020+ 기능을 네이티브로 지원하는 브라우저
+
+# 프로덕션
+> 0.5%
+last 2 versions
+not dead
+not IE 11
+not op_mini all
+
+# Chrome 90+, Safari 14+, Firefox 88+ 등
+Chrome >= 90
+Safari >= 14
+Firefox >= 88
+Edge >= 90
+
+# 모바일
+iOS >= 14
+Android >= 90
