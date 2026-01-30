@@ -14,6 +14,7 @@ import type {
   PerformanceResponse,
   UpdatePerformanceRequest,
 } from "@/shared/api/orval/types";
+import { revalidatePerformancePages } from "@/shared/lib/revalidate";
 
 /**
  * 공연 쿼리 키 상수
@@ -65,11 +66,14 @@ export const useCreatePerformance = () => {
 
   return useMutation({
     mutationFn: createNewPerformance,
-    onSuccess: () => {
+    onSuccess: async () => {
       // 공연 목록 쿼리 무효화하여 새로고침
       queryClient.invalidateQueries({
         queryKey: PERFORMANCE_QUERY_KEYS.lists(),
       });
+
+      // 홈페이지 캐시 즉시 재생성 (신규 공연 즉시 노출)
+      await revalidatePerformancePages();
     },
   });
 };
@@ -88,7 +92,7 @@ export const useUpdatePerformance = () => {
       id: number;
       data: UpdatePerformanceRequest;
     }) => updateExistingPerformance(id, data),
-    onSuccess: (_, { id }) => {
+    onSuccess: async (_, { id }) => {
       // 공연 목록 쿼리 무효화하여 새로고침
       queryClient.invalidateQueries({
         queryKey: PERFORMANCE_QUERY_KEYS.lists(),
@@ -97,6 +101,9 @@ export const useUpdatePerformance = () => {
       queryClient.invalidateQueries({
         queryKey: PERFORMANCE_QUERY_KEYS.detail(id),
       });
+
+      // 홈페이지 캐시 즉시 재생성
+      await revalidatePerformancePages();
     },
   });
 };
@@ -109,7 +116,7 @@ export const useDeletePerformance = () => {
 
   return useMutation({
     mutationFn: deleteExistingPerformance,
-    onSuccess: (_, performanceId) => {
+    onSuccess: async (_, performanceId) => {
       // 공연 목록 쿼리 무효화하여 새로고침
       queryClient.invalidateQueries({
         queryKey: PERFORMANCE_QUERY_KEYS.lists(),
@@ -118,6 +125,9 @@ export const useDeletePerformance = () => {
       queryClient.removeQueries({
         queryKey: PERFORMANCE_QUERY_KEYS.detail(performanceId),
       });
+
+      // 홈페이지 캐시 즉시 재생성 (삭제된 공연 즉시 제거)
+      await revalidatePerformancePages();
     },
   });
 };
