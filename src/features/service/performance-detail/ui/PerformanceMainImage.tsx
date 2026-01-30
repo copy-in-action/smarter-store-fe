@@ -29,15 +29,15 @@ export function PerformanceMainImage({
       <div className="relative flex items-center justify-center overflow-hidden rounded-3xl sm:h-[285px]">
         {imageUrl && (
           <>
-            {/** biome-ignore lint/performance/noImgElement: <explanation> */}
-            <img
+            <Image
               src={imageUrl}
-              alt={`${title} 포스터`}
+              alt={`${title} 배경`}
               className="inset-0 object-fill h-full aspect-[343/286] sm:aspect-[558/285]"
               aria-hidden
-              width={"100%"}
+              fill
               sizes="(max-width: 916px) 100vw, 880px"
-              fetchPriority="high"
+              priority
+              quality={75}
             />
             <div className="absolute inset-0 backdrop-blur-[50px]" />
 

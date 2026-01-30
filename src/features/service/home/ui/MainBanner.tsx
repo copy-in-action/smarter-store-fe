@@ -27,7 +27,7 @@ const MainBanner = () => {
         }}
         contentClassName="-ml-2 lg:-ml-4"
       >
-        {banners.map((banner) => (
+        {banners.map((banner, index) => (
           <CarouselItem
             key={banner.id}
             className="pl-2 lg:pl-4 basis-11/12 sm:basis-8/12 lg:basis-1/2"
@@ -39,7 +39,8 @@ const MainBanner = () => {
                 fill
                 className="object-contain"
                 sizes="(max-width: 768px) 100vw, 50vw"
-                priority
+                priority={index > 2}
+                loading={index > 2 ? undefined : "lazy"}
               />
             </div>
           </CarouselItem>
