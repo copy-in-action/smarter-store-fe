@@ -40,7 +40,6 @@ const MainBanner = () => {
                 className="object-contain"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority={index < 2}
-                loading={index < 2 ? undefined : "lazy"}
               />
             </div>
           </CarouselItem>

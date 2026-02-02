@@ -99,9 +99,9 @@ function SectionBlock({ section }: { section: HomeSectionResponse }) {
   return (
     <section className="my-4 sm:my-20">
       {/* 섹션 제목 */}
-      <h3 className="mb-1.5 text-2xl font-bold wrapper sm:px-10! px-4">
+      <h2 className="mb-1.5 text-2xl font-bold wrapper sm:px-10! px-4">
         {section.displayName}
-      </h3>
+      </h2>
 
       {/* 태그 탭 컨테이너 */}
       <TabsContainer tags={section.tags} />
