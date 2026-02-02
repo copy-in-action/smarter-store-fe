@@ -127,55 +127,39 @@ node scripts/lighthouse-batch.js
 
 ---
 
-### 4.2 시나리오 2: E2E 사용자 시나리오 (Playwright)
+### 4.2 시나리오 2: E2E 예매 플로우 (Playwright)
 
-**목적**: 실제 사용자 행동을 시뮬레이션하여 전체 플로우 성능 측정
+**목적**: 실제 사용자의 예매 전 과정을 시뮬레이션하여 성능 측정
 
-**시나리오 A: 예매 플로우**
-```typescript
-// tests/e2e-performance/booking-flow.spec.ts
-
-test('예매 전체 플로우 성능 테스트', async ({ page }) => {
-  // 1. 홈페이지 접속
-  await page.goto('/');
-  await page.waitForLoadState('networkidle');
-
-  // 2. 공연 검색 및 선택
-  await page.click('[data-testid="performance-card-1"]');
-  await page.waitForLoadState('networkidle');
-
-  // 3. 회차 선택
-  await page.click('[data-testid="schedule-select"]');
-  await page.selectOption('[data-testid="schedule-select"]', '1');
-
-  // 4. 좌석 선택 페이지 이동
-  await page.click('[data-testid="select-seats-button"]');
-  await page.waitForLoadState('networkidle');
-
-  // 5. 좌석 선택 (좌석 배치도 렌더링 시간 측정)
-  const seatSelectionStart = Date.now();
-  await page.click('[data-seat-row="1"][data-seat-col="1"]');
-  const seatSelectionEnd = Date.now();
-  console.log(`좌석 선택 응답 시간: ${seatSelectionEnd - seatSelectionStart}ms`);
-
-  // 6. 다음 단계
-  await page.click('[data-testid="next-step-button"]');
-  await page.waitForLoadState('networkidle');
-
-  // 7. 결제 페이지
-  await page.waitForSelector('[data-testid="payment-form"]');
-});
-```
+**테스트 단계**:
+1. **로그인**: https://ticket.devhong.cc/auth/login/email?redirect=%2Fperformances%2F4 접속 → "로그인하기" 버튼 클릭
+2. **예매하기**: 리다이렉트된 공연 상세 페이지에서 "예매하기" 버튼 클릭
+3. **회차 선택**: 표시된 달력과 회차 모달에서 첫 번째 회차 선택 후 "예매하기" 버튼 클릭
+4. **좌석 선택**: 선택 가능한 좌석 2개 선택 후 "선택완료" 버튼 클릭
+5. **할인 적용**: 할인 항목 0번 인덱스 + 버튼 2번 클릭 후 "예매하기" 클릭
+6. **결제 처리**:
+   - 은행 선택 combobox 클릭 → 첫 번째 은행(0번 인덱스) 선택
+   - "전체 동의" 버튼 클릭
+   - "결제하기" 버튼 클릭
+   - 새 창(팝업)에서 "결제승인" 버튼 클릭
+   - Alert 확인 후 메인 페이지로 이동
 
 **측정 항목**:
-- 각 단계별 페이지 전환 시간
-- 좌석 선택 UI 반응 시간
+- 각 단계별 소요 시간 (로그인, 모달 표시, 회차 선택, 좌석 선택, 할인 적용, 결제 처리)
+- 페이지 전환 시간
+- 모달/팝업 표시 시간
 - 전체 플로우 완료 시간
 
 **성공 기준**:
-- [ ] 전체 플로우 완료 시간 < 30초
-- [ ] 각 페이지 전환 < 2초
-- [ ] 좌석 선택 반응 < 300ms
+- [x] 전체 플로우 완료 시간 < 30초
+- [x] 로그인 < 3초
+- [x] 모달 표시 < 2초
+- [x] 회차 선택 < 3초
+- [x] 좌석 선택 반응 < 500ms
+- [x] 할인 적용 < 1초
+- [x] 결제 처리 < 5초
+
+**구현 파일**: `e2e/booking-flow.spec.ts`
 
 ---
 
