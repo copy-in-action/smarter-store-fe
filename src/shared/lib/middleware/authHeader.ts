@@ -20,7 +20,7 @@ export const authHeaderMiddleware: MiddlewareFunction = (
   request: NextRequest,
   response?: NextResponse,
 ) => {
-  const { pathname } = request.nextUrl;
+  const { pathname, searchParams } = request.nextUrl;
 
   // /admin 경로는 제외 (관리자 인증은 별도 처리)
   if (pathname.startsWith("/admin")) {
@@ -41,8 +41,12 @@ export const authHeaderMiddleware: MiddlewareFunction = (
     console.log(
       `[Auth Header] 로그인 필요: ${pathname} - 로그인 페이지로 리다이렉트`,
     );
+
     const loginUrl = new URL(PAGES.AUTH.LOGIN.path, request.url);
-    loginUrl.searchParams.set("redirect", pathname);
+    const redirectPath = searchParams.toString()
+      ? `${pathname}?${searchParams.toString()}`
+      : pathname;
+    loginUrl.searchParams.set("redirect", redirectPath);
     return NextResponse.redirect(loginUrl);
   }
 

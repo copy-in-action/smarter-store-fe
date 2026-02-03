@@ -4,10 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { PAGES } from "@/shared/config";
-import {
-  AUTH_EVENTS,
-  type UnauthorizedEventData,
-} from "../lib/auth-events";
+import { AUTH_EVENTS, type UnauthorizedEventData } from "../lib/auth-events";
 
 /**
  * 인증 관련 이벤트를 전역적으로 처리하는 컴포넌트
@@ -23,7 +20,7 @@ export function AuthEventHandler() {
      */
     const handleUnauthorized = (event: CustomEvent<UnauthorizedEventData>) => {
       const { redirectUrl, message } = event.detail;
-      
+
       if (message) {
         toast.error(message);
       }
@@ -37,9 +34,11 @@ export function AuthEventHandler() {
      * 관리자 인증 실패 이벤트 핸들러
      * 관리자 로그인 페이지로 이동
      */
-    const handleAdminUnauthorized = (event: CustomEvent<{ message?: string }>) => {
+    const handleAdminUnauthorized = (
+      event: CustomEvent<{ message?: string }>,
+    ) => {
       const { message } = event.detail;
-      
+
       if (message) {
         toast.error(message);
       }
@@ -50,22 +49,22 @@ export function AuthEventHandler() {
     // 이벤트 리스너 등록
     window.addEventListener(
       AUTH_EVENTS.UNAUTHORIZED,
-      handleUnauthorized as EventListener
+      handleUnauthorized as EventListener,
     );
     window.addEventListener(
       AUTH_EVENTS.ADMIN_UNAUTHORIZED,
-      handleAdminUnauthorized as EventListener
+      handleAdminUnauthorized as EventListener,
     );
 
     // 클린업
     return () => {
       window.removeEventListener(
         AUTH_EVENTS.UNAUTHORIZED,
-        handleUnauthorized as EventListener
+        handleUnauthorized as EventListener,
       );
       window.removeEventListener(
         AUTH_EVENTS.ADMIN_UNAUTHORIZED,
-        handleAdminUnauthorized as EventListener
+        handleAdminUnauthorized as EventListener,
       );
     };
   }, [router]);
