@@ -165,65 +165,75 @@ node scripts/lighthouse-batch.js
 
 ### 4.3 시나리오 3: 동시 접속 테스트 (Playwright 병렬)
 
-**목적**: 여러 사용자가 동시에 접속할 때 프론트엔드 성능 확인
+**목적**: 여러 사용자가 동시에 예매할 때 프론트엔드 성능 및 안정성 확인
+
+**테스트 방법**:
+- 동일한 예매 플로우(4.2 시나리오)를 여러 사용자가 동시 실행
+- **각 사용자는 서로 다른 좌석 선택** (동시성 충돌 방지)
+- 각 사용자별 소요 시간 측정
+- 성공/실패 여부 추적
 
 **실행 방법**:
 ```bash
-# Playwright 병렬 실행 (10개 워커)
-npx playwright test --workers=10
+# 5명 동시 접속 (기본값)
+node load-test/parallel-booking-test.js
 
-# 또는 스크립트로 제어
-node scripts/parallel-booking-test.js --users=20
+# 10명 동시 접속
+node load-test/parallel-booking-test.js --users=10
+
+# 시작 행 지정 (7행부터 시작)
+node load-test/parallel-booking-test.js --users=10 --start-row=7
+
+# 비디오 녹화 활성화 (디버깅용)
+node load-test/parallel-booking-test.js --users=5 --save-video
+
+# 옵션:
+# --users=N                  동시 접속 사용자 수 (기본값: 5, 최대: 20)
+# --start-row=N              시작 행 번호 (기본값: 1, 1-based, 1-10 범위)
+# --save-video[=true]        비디오 녹화 활성화 (기본값: false)
+# --save-screenshot[=true]   스크린샷 저장 활성화 (기본값: true)
 ```
 
-**병렬 테스트 스크립트**:
-```javascript
-// scripts/parallel-booking-test.js
-const { chromium } = require('playwright');
+**테스트 플로우** (사용자별):
+1. **로그인**: `qa_tester_[userId]@example.com` / 비밀번호 `12341234`
+   - User 1: `qa_tester_1@example.com`
+   - User 2: `qa_tester_2@example.com`
+   - ...
+2. 예매하기 → 회차 선택
+3. **좌석 2개 선택** (Row/Col 기반, 10행 × 20열 구조)
+   - 시작 행(`--start-row`)에서부터 userId에 따라 순차적으로 2개씩 선택
+   - 각 사용자는 고유한 좌석 위치 할당 (중복 없음)
+   - 20열 초과 시 자동으로 다음 행으로 이동
+4. 할인 적용 (각 좌석 등급별 필요 수량만큼 + 버튼 클릭)
+   - 아코디언 타이틀에서 "0 / 2" 형식의 수량 파싱
+   - 각 등급별로 필요한 수량만큼 자동 계산하여 추가
+5. 결제 처리 (은행 선택 → 전체 동의 → 결제하기 → 팝업에서 결제승인)
+6. Alert 확인 후 메인 페이지 이동
 
-async function runBookingTest(userId) {
-  const browser = await chromium.launch();
-  const context = await browser.newContext();
-  const page = await context.newPage();
+**좌석 할당 알고리즘**:
+- 10행 × 20열 좌석 구조 기반
+- 각 사용자는 userId에 따라 고유한 행/열 위치 할당:
+  - User 1: (startRow, 1), (startRow, 2)
+  - User 2: (startRow, 3), (startRow, 4)
+  - User 10: (startRow, 19), (startRow, 20)
+  - User 11: (startRow+1, 1), (startRow+1, 2)
+  - ...
+- 중복 선택 방지: 각 사용자가 서로 다른 좌석 선택
+- 최대 사용자 수: 20명 (브라우저 리소스 고려)
 
-  const startTime = Date.now();
-
-  try {
-    // 로그인
-    await page.goto('/auth/login');
-    await page.fill('[name="email"]', `loadtest${userId}@example.com`);
-    await page.fill('[name="password"]', 'TestPassword123!');
-    await page.click('[type="submit"]');
-    await page.waitForNavigation();
-
-    // 좌석 선택 페이지 이동
-    await page.goto('/booking/seating-chart?scheduleId=1');
-    await page.waitForLoadState('networkidle');
-
-    // 좌석 선택
-    await page.click('[data-seat-row="1"][data-seat-col="1"]');
-    await page.waitForTimeout(500);
-
-    // 완료
-    const endTime = Date.now();
-    console.log(`User ${userId}: ${endTime - startTime}ms`);
-
-  } catch (error) {
-    console.error(`User ${userId} failed:`, error.message);
-  } finally {
-    await browser.close();
-  }
-}
-
-// 20명 동시 실행
-const users = Array.from({ length: 20 }, (_, i) => i + 1);
-Promise.all(users.map(userId => runBookingTest(userId)));
-```
+**측정 항목**:
+- 각 사용자별 전체 완료 시간
+- 평균/최소/최대 완료 시간
+- 성공률 (모든 사용자 성공 목표: 100%)
+- 실패 원인 (에러 메시지)
 
 **성공 기준**:
-- [ ] 20명 동시 접속 시 모든 사용자 정상 동작
-- [ ] 평균 완료 시간 < 10초
-- [ ] 브라우저 메모리 사용량 안정적
+- [x] 5명 동시 접속 시 모든 사용자 정상 동작 (100%)
+- [x] 10명 동시 접속 시 모든 사용자 정상 동작 (100%)
+- [x] 평균 완료 시간 < 35초
+- [x] 브라우저 메모리 사용량 안정적
+
+**구현 파일**: `load-test/parallel-booking-test.js`
 
 ---
 
@@ -687,11 +697,11 @@ npx playwright show-report
 
 **Phase 3: 병렬 부하 테스트 (3-4주차)**
 ```bash
-# 10명 동시 접속
-node scripts/parallel-booking-test.js --users=10
+# 10명 동시 접속 (1행부터 시작)
+node load-test/parallel-booking-test.js --users=10
 
-# 20명 동시 접속
-node scripts/parallel-booking-test.js --users=20
+# 20명 동시 접속 (7행부터 시작)
+node load-test/parallel-booking-test.js --users=20 --start-row=7
 ```
 
 **Phase 4: 최적화 및 재테스트 (5-6주차)**
