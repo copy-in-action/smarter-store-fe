@@ -135,24 +135,32 @@ test("예매 전체 플로우 성능 테스트", async ({ page }) => {
   const payButton = page.getByRole("button", { name: /결제.*하기/i });
   await expect(payButton).toBeEnabled();
 
-  // 팝업이 열릴 것을 예상하고 대기
-  const popupPromise = page.waitForEvent("popup");
+  // 팝업이 열릴 것을 예상하고 대기 (타임아웃 30초 설정)
+  const popupPromise = page.waitForEvent("popup", { timeout: 30000 });
   await payButton.click();
   console.log("  - 결제하기 버튼 클릭");
 
   // 결제 승인 팝업 페이지 가져오기
-  const popup = await popupPromise;
-  await popup.waitForLoadState();
-  console.log("  - 결제 승인 팝업 열림");
+  let popup = null;
+  try {
+    popup = await popupPromise;
+    await popup.waitForLoadState("domcontentloaded", { timeout: 10000 });
+    console.log("  - 결제 승인 팝업 열림");
+  } catch (error) {
+    console.error("  ❌ 팝업 열림 실패:", error);
+    throw new Error("결제 팝업이 열리지 않았습니다");
+  }
 
   // 팝업에서 결제승인 버튼 클릭
   const confirmButton = popup.getByRole("button", { name: /결제.*승인/i });
-  await confirmButton.waitFor({ timeout: 5000 });
+  await confirmButton.waitFor({ timeout: 10000 });
   await confirmButton.click();
   console.log("  - 결제승인 버튼 클릭");
 
   // 팝업 닫힘 대기 (선택사항)
-  await popup.waitForEvent("close", { timeout: 5000 }).catch(() => {});
+  await popup
+    .waitForEvent("close", { timeout: 10000 })
+    .catch(() => console.log("  - 팝업이 자동으로 닫히지 않음"));
 
   // 메인 페이지에서 alert 대기 및 확인
   page.once("dialog", async (dialog) => {

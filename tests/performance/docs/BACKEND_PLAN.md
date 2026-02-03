@@ -678,10 +678,10 @@ VALUES (1, '2026-02-15 19:00:00');
 k6 version
 
 # 단일 사용자 테스트 (사전 검증)
-k6 run --vus 1 --duration 30s load-test/booking-load-test.js
+k6 run --vus 1 --duration 30s tests/performance/backend/booking-load.js
 
 # 100명 동시 접속 테스트
-k6 run --vus 100 --duration 5m load-test/booking-load-test.js
+k6 run --vus 100 --duration 5m tests/performance/backend/booking-load.js
 
 # 환경 변수와 함께 실행
 k6 run \
@@ -689,7 +689,7 @@ k6 run \
   -e SCHEDULE_ID=1 \
   --vus 100 \
   --duration 5m \
-  load-test/booking-load-test.js
+  tests/performance/backend/booking-load.js
 ```
 
 #### 점진적 부하 증가
@@ -700,16 +700,16 @@ k6 run \
   --stage 3m:100 \
   --stage 2m:200 \
   --stage 1m:0 \
-  load-test/booking-load-test.js
+  tests/performance/backend/booking-load.js
 ```
 
 #### 결과 저장
 ```bash
 # JSON 형식으로 저장
-k6 run --out json=results.json load-test/booking-load-test.js
+k6 run --out json=results.json tests/performance/backend/booking-load.js
 
 # InfluxDB로 전송
-k6 run --out influxdb=http://localhost:8086/k6 load-test/booking-load-test.js
+k6 run --out influxdb=http://localhost:8086/k6 tests/performance/backend/booking-load.js
 ```
 
 ### 8.3 모니터링
