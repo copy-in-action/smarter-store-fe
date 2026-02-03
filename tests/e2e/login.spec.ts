@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test("Login and access seating chart", async ({ page }) => {
   // 1. 목표 URL 설정
   const targetPath = "/booking/seating-chart";
-  const targetParams = "scheduleId=30&performanceId=4";
+  const targetParams = "scheduleId=31&performanceId=4";
   const targetUrl = `${targetPath}?${targetParams}`;
 
   // 2. 리다이렉트 파라미터를 포함하여 로그인 페이지로 이동

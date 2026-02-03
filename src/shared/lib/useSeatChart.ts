@@ -125,7 +125,6 @@ export function useSeatChart(
             conflictingSeats.forEach((seat) => {
               toast.error(
                 `선택하신 ${seat.row + 1}행 ${seat.col + 1}열 좌석이 다른 사용자에 의해 예매되었습니다.`,
-                { id: "seating-chart-error" },
               );
             });
 
