@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useAuth } from "@/entities/user";
+import { getRefreshUrl } from "@/shared/api/orval/auth/auth";
 
 /**
  * 토큰 자동 갱신을 관리하는 컴포넌트
@@ -26,8 +27,11 @@ export function TokenRefreshManager() {
 
       isRefreshing.current = true;
 
+      const isDev = process.env.NODE_ENV === "development";
+      const refreshUrl = isDev ? "/api/auth/refresh" : getRefreshUrl();
+
       try {
-        const response = await fetch("/api/auth/refresh", {
+        const response = await fetch(refreshUrl, {
           method: "POST",
           credentials: "include",
         });
