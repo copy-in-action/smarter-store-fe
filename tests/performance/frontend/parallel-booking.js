@@ -416,18 +416,18 @@ const MAX_USERS = 20;
 // 유효성 검증
 if (isNaN(userCount) || userCount < 1 || userCount > MAX_USERS) {
   console.error(`사용자 수는 1~${MAX_USERS} 사이여야 합니다.`);
-  console.log(`\n사용법: node parallel-booking-test.js [옵션]`);
+  console.log(`\n사용법: node tests/performance/frontend/parallel-booking.js [옵션]`);
   console.log(`\n옵션:`);
   console.log(`  --users=N              동시 접속 사용자 수 (기본값: 5)`);
   console.log(`  --start-row=N          시작 행 번호 (기본값: 1, 1-based)`);
   console.log(`  --save-video[=true]    비디오 녹화 활성화 (기본값: false)`);
   console.log(`  --save-screenshot[=true] 스크린샷 저장 활성화 (기본값: true)`);
   console.log(`\n예시:`);
-  console.log(`  node parallel-booking-test.js --users=10`);
-  console.log(`  node parallel-booking-test.js --users=10 --start-row=1`);
-  console.log(`  node parallel-booking-test.js --users=10 --save-video`);
+  console.log(`  node tests/performance/frontend/parallel-booking.js --users=10`);
+  console.log(`  node tests/performance/frontend/parallel-booking.js --users=10 --start-row=1`);
+  console.log(`  node tests/performance/frontend/parallel-booking.js --users=10 --save-video`);
   console.log(
-    `  node parallel-booking-test.js --users=10 --start-row=1 --save-video --save-screenshot=false`,
+    `  node tests/performance/frontend/parallel-booking.js --users=10 --start-row=1 --save-video --save-screenshot=false`,
   );
   process.exit(1);
 }

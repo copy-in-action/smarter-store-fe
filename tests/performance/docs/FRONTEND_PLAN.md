@@ -161,6 +161,10 @@ node scripts/lighthouse-batch.js
 
 **구현 파일**: `e2e/booking-flow.spec.ts`
 
+**실행 방법**:
+```bash
+npx playwright test tests/e2e/booking-flow.spec.ts
+```
 ---
 
 ### 4.3 시나리오 3: 동시 접속 테스트 (Playwright 병렬)
@@ -176,16 +180,16 @@ node scripts/lighthouse-batch.js
 **실행 방법**:
 ```bash
 # 5명 동시 접속 (기본값)
-node load-test/parallel-booking-test.js
+node tests/performance/frontend/parallel-booking.js
 
 # 10명 동시 접속
-node load-test/parallel-booking-test.js --users=10
+node tests/performance/frontend/parallel-booking.js --users=10
 
 # 시작 행 지정 (7행부터 시작)
-node load-test/parallel-booking-test.js --users=10 --start-row=7
+node tests/performance/frontend/parallel-booking.js --users=10 --start-row=7
 
 # 비디오 녹화 활성화 (디버깅용)
-node load-test/parallel-booking-test.js --users=5 --save-video
+node tests/performance/frontend/parallel-booking.js --users=5 --save-video
 
 # 옵션:
 # --users=N                  동시 접속 사용자 수 (기본값: 5, 최대: 20)
@@ -233,7 +237,7 @@ node load-test/parallel-booking-test.js --users=5 --save-video
 - [x] 평균 완료 시간 < 35초
 - [x] 브라우저 메모리 사용량 안정적
 
-**구현 파일**: `load-test/parallel-booking-test.js`
+**구현 파일**: `tests/performance/frontend/parallel-booking.js`
 
 ---
 
@@ -362,7 +366,7 @@ k6에 브라우저 자동화 기능을 추가한 하이브리드 도구입니다
 ### 5.3 브라우저 부하 테스트 스크립트
 
 ```javascript
-// load-test/frontend-browser-test.js
+// tests/performance/frontend/browser-test.js
 import { browser } from 'k6/experimental/browser';
 import { check } from 'k6';
 
@@ -437,7 +441,7 @@ npx playwright install
 pnpm add -D lighthouse
 
 # 테스트 실행
-npx playwright test tests/e2e-performance/
+npx playwright test tests/e2e/
 ```
 
 ### 6.2 CI/CD 환경
@@ -470,7 +474,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run performance tests
-        run: npx playwright test tests/e2e-performance/
+        run: npx playwright test tests/e2e/
 
       - name: Run Lighthouse
         run: node scripts/lighthouse-batch.js
@@ -689,7 +693,7 @@ node scripts/lighthouse-batch.js
 **Phase 2: E2E 테스트 작성 (2주차)**
 ```bash
 # Playwright 테스트 작성
-npx playwright test tests/e2e-performance/
+npx playwright test tests/e2e/
 
 # 리포트 확인
 npx playwright show-report
@@ -698,10 +702,10 @@ npx playwright show-report
 **Phase 3: 병렬 부하 테스트 (3-4주차)**
 ```bash
 # 10명 동시 접속 (1행부터 시작)
-node load-test/parallel-booking-test.js --users=10
+node tests/performance/frontend/parallel-booking.js --users=10
 
 # 20명 동시 접속 (7행부터 시작)
-node load-test/parallel-booking-test.js --users=20 --start-row=7
+node tests/performance/frontend/parallel-booking.js --users=20 --start-row=7
 ```
 
 **Phase 4: 최적화 및 재테스트 (5-6주차)**
