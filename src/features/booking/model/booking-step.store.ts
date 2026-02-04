@@ -45,6 +45,8 @@ interface BookingStepState {
   > | null;
   /** 저장된 좌석 위치 (Step 3 → 2 복원용) */
   savedSeatPositions: SeatPosition[] | null;
+  /** 좌석 선택 초기화 플래그 (reset 시 좌석 상태 초기화 트리거) */
+  shouldClearSeats: boolean;
   /** Step 변경 */
   setStep: (step: BookingStep) => void;
   /** 예매 데이터 설정 */
@@ -59,6 +61,8 @@ interface BookingStepState {
   ) => void;
   /** 저장된 좌석 위치 설정 */
   setSavedSeatPositions: (seats: SeatPosition[] | null) => void;
+  /** 좌석 초기화 플래그 설정 */
+  setShouldClearSeats: (value: boolean) => void;
   /** 다음 Step으로 이동 */
   nextStep: () => void;
   /** 이전 Step으로 이동 */
@@ -75,6 +79,7 @@ const initialState: Pick<
   | "paymentConfirmation"
   | "paymentRequestData"
   | "savedSeatPositions"
+  | "shouldClearSeats"
 > = {
   step: BookingStep.SEAT_SELECTION,
   bookingData: null,
@@ -82,6 +87,7 @@ const initialState: Pick<
   paymentConfirmation: null,
   paymentRequestData: null,
   savedSeatPositions: null,
+  shouldClearSeats: false,
 };
 
 /**
@@ -99,6 +105,7 @@ export const useBookingStepStore = create<BookingStepState>()(
       setPaymentConfirmation: (data) => set({ paymentConfirmation: data }),
       setPaymentRequestData: (data) => set({ paymentRequestData: data }),
       setSavedSeatPositions: (seats) => set({ savedSeatPositions: seats }),
+      setShouldClearSeats: (value) => set({ shouldClearSeats: value }),
       nextStep: () =>
         set((state) => ({
           step: Math.min(state.step + 1, BookingStep.PAYMENT) as BookingStep,
@@ -113,7 +120,7 @@ export const useBookingStepStore = create<BookingStepState>()(
           paymentConfirmation: null,
           paymentRequestData: null,
         })),
-      reset: () => set(initialState),
+      reset: () => set({ ...initialState, shouldClearSeats: true }),
     }),
     {
       name: "booking-step-storage", // 세션 스토리지에 저장될 키
