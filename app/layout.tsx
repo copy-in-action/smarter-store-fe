@@ -102,7 +102,12 @@ export default async function RootLayout({
             </AuthProvider>
           </DeviceProvider>
         </QueryProvider>
-        <Toaster position="top-center" richColors theme="light" />
+        <Toaster
+          position="top-center"
+          richColors
+          theme="light"
+          visibleToasts={4}
+        />
         {/* </MSWProvider> */}
       </body>
     </html>

@@ -59,7 +59,9 @@ const calculateRemainingSeconds = (expiresAt: string): number => {
  * @returns 타이머 UI
  */
 const BookingTimer = memo(({ expiresAt, onExpire }: BookingTimerProps) => {
-  const [timeLeft, setTimeLeft] = useState(() => calculateRemainingSeconds(expiresAt));
+  const [timeLeft, setTimeLeft] = useState(() =>
+    calculateRemainingSeconds(expiresAt),
+  );
   const onExpireRef = useRef(onExpire);
   const hasExpiredRef = useRef(false);
   const expiresAtRef = useRef(expiresAt);

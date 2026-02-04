@@ -8,10 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { getPerformanceDetail } from "@/entities/performance/api/performance.api";
-import {
-  BookingStep,
-  useBookingStepStore,
-} from "@/features/booking";
+import { BookingStep, useBookingStepStore } from "@/features/booking";
 import { PAGES } from "@/shared/config";
 import { Button } from "@/shared/ui/button";
 import BookingTimer from "./BookingTimer";
@@ -106,14 +103,14 @@ const BookingHeader = () => {
   /**
    * 타이머 만료 핸들러
    * - 예매 시간 만료 알림 및 store 초기화
-   * - 페이지 이동 전에 상태를 먼저 정리하여 언마운트 시 hooks 오류 방지
+   * - reset()을 먼저 호출하여 좌석 초기화 플래그 설정 후 페이지 이동
    */
   const handleTimerExpire = useCallback(() => {
     alert(
       "결제가능 시간이 만료되었습니다. 선택하신 공연의 상세페이지로 이동합니다.",
     );
-    router.push(PAGES.PERFORMANCE.DETAIL.path(performanceId!.toString()));
-    reset();
+    reset(); // 먼저 호출하여 shouldClearSeats 플래그 설정
+    router.replace(PAGES.PERFORMANCE.DETAIL.path(performanceId!.toString()));
   }, [performanceId, reset, router]);
 
   /**

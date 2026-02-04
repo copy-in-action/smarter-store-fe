@@ -59,18 +59,36 @@ const BookingSeatingChart = ({
   const { data: couponData } = useCouponsQuery();
   const { mutateAsync: validateCouponsMutation } = useValidateCoupons();
 
-  const { savedSeatPositions, setSavedSeatPositions } = useBookingStepStore();
+  const {
+    savedSeatPositions,
+    setSavedSeatPositions,
+    shouldClearSeats,
+    setShouldClearSeats,
+  } = useBookingStepStore();
 
   /**
    * 좌석 차트 상태 중앙 관리
    * - SeatSelectionStep과 DiscountSelectionStep이 동일한 좌석 선택 상태 공유
+   * - shouldClearSeats가 true일 때는 충돌 체크 비활성화 (좌석 초기화 중)
    */
   const { seatChartConfig, toggleSeatSelection, clearSelection } =
     useBookingSeatSelection(
       performance.venue?.id || 0,
-      step === BookingStep.SEAT_SELECTION && !isLoading, // 좌석 선택 단계이고 로딩 중이 아닐 때만 충돌 체크
+      step === BookingStep.SEAT_SELECTION && !isLoading && !shouldClearSeats, // 좌석 선택 단계이고 로딩 중이 아니며 초기화 중이 아닐 때만 충돌 체크
       scheduleId,
     );
+
+  /**
+   * reset 호출 시 좌석 선택 초기화 처리
+   * - shouldClearSeats 플래그가 true일 때 좌석 상태 초기화
+   * - 초기화 완료 후 플래그를 false로 리셋하여 충돌 체크 재활성화
+   */
+  useEffect(() => {
+    if (shouldClearSeats) {
+      clearSelection();
+      setShouldClearSeats(false);
+    }
+  }, [shouldClearSeats, clearSelection, setShouldClearSeats]);
 
   /**
    * Step 3 → Step 2 복귀 시 저장된 좌석 위치 복원
