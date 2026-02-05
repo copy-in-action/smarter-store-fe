@@ -5,6 +5,7 @@
 
 import { X } from "lucide-react";
 import { Fragment } from "react";
+import type { UserSelectedSeat } from "@/entities/booking";
 import { Button } from "@/shared/ui/button";
 import {
   Item,
@@ -13,7 +14,6 @@ import {
   ItemDescription,
   ItemTitle,
 } from "@/shared/ui/item";
-import type {  UserSelectedSeat } from "@/entities/booking";
 
 /**
  * SelectSeatInfo Props
@@ -95,7 +95,7 @@ const SelectSeatInfo = ({
       </div>
 
       <Button
-        className="mt-auto"
+        className="mt-auto mb-4 lg:mb-0"
         disabled={userSelectedSeats.length === 0 || isLoading}
         size={"lg"}
         onClick={onComplete}

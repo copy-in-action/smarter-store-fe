@@ -9,6 +9,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft, Minus, Plus } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import type { GradeInfo } from "@/entities/booking";
+import { useBookingStepStore } from "@/features/booking";
 import type {
   AvailableCouponResponse,
   SeatGrade,
@@ -27,8 +29,6 @@ import {
   FormItem,
   FormMessage,
 } from "@/shared/ui/form";
-import { type  GradeInfo } from "@/entities/booking";
-import { useBookingStepStore } from "@/features/booking";
 import {
   type BookingDiscountFormData,
   createBookingDiscountSchema,
@@ -294,7 +294,7 @@ const BookingDiscountSelectionForm = ({
         <FormMessage>{form.formState.errors.root?.message}</FormMessage>
 
         {/* 최종 금액 및 예매하기 버튼 */}
-        <div className="flex justify-between pt-2 mt-auto ps-1 lg:pt-0">
+        <div className="flex justify-between pt-2 mt-auto mb-4 ps-1 lg:pt-0 lg:mb-0">
           <div>
             <p className="text-xs text-gray-400">티켓 금액</p>
             <p className="text-xl font-bold">{totalPrice.toLocaleString()}원</p>
