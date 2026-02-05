@@ -144,17 +144,23 @@ const PerformanceBookButton = ({ performanceId }: Props) => {
                 <DrawerDescription></DrawerDescription>
               </DrawerHeader>
               <div className="p-4 pb-0 max-h-[70dvh] overflow-auto">
-                <PerformanceScheduleContent
-                  date={date}
-                  setDate={setDate}
-                  endMonth={endMonth}
-                  disabledMatcher={disabledMatcher}
-                  isLoading={isLoading}
-                  selectedDatePerformances={selectedDatePerformances}
-                  isMobile={true}
-                  onSelectSchedule={handleSelectSchedule}
-                  selectedScheduleId={selectedScheduleId}
-                />
+                {!isLoading && performanceDates?.length === 0 ? (
+                  <div className="py-4 text-center">
+                    예매 가능한 공연 가능한 날짜가 없습니다.
+                  </div>
+                ) : (
+                  <PerformanceScheduleContent
+                    date={date}
+                    setDate={setDate}
+                    endMonth={endMonth}
+                    disabledMatcher={disabledMatcher}
+                    isLoading={isLoading}
+                    selectedDatePerformances={selectedDatePerformances}
+                    isMobile={true}
+                    onSelectSchedule={handleSelectSchedule}
+                    selectedScheduleId={selectedScheduleId}
+                  />
+                )}
               </div>
               <DrawerFooter>
                 <Button
@@ -187,17 +193,23 @@ const PerformanceBookButton = ({ performanceId }: Props) => {
               </DialogTitle>
             </DialogHeader>
             <div className="max-h-[calc(100% - 150px)]!">
-              <PerformanceScheduleContent
-                date={date}
-                setDate={setDate}
-                endMonth={endMonth}
-                disabledMatcher={disabledMatcher}
-                isLoading={isLoading}
-                selectedDatePerformances={selectedDatePerformances}
-                isMobile={false}
-                onSelectSchedule={handleSelectSchedule}
-                selectedScheduleId={selectedScheduleId}
-              />
+              {!isLoading && performanceDates?.length === 0 ? (
+                <div className="py-4 text-center">
+                  예매 가능한 공연 가능한 날짜가 없습니다.
+                </div>
+              ) : (
+                <PerformanceScheduleContent
+                  date={date}
+                  setDate={setDate}
+                  endMonth={endMonth}
+                  disabledMatcher={disabledMatcher}
+                  isLoading={isLoading}
+                  selectedDatePerformances={selectedDatePerformances}
+                  isMobile={true}
+                  onSelectSchedule={handleSelectSchedule}
+                  selectedScheduleId={selectedScheduleId}
+                />
+              )}
             </div>
             <DialogFooter>
               <Button
