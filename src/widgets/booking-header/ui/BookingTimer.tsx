@@ -116,9 +116,9 @@ const BookingTimer = memo(({ expiresAt, onExpire }: BookingTimerProps) => {
   };
 
   return (
-    <div className="flex items-center gap-2 font-semibold">
-      <span className="text-sm ">결제 가능 시간</span>
-      <span className={`text-lg ${getColorClass()}`}>
+    <div className="flex items-center gap-1 font-semibold">
+      <span className="text-sm grow-0 break-keep">결제 가능 시간</span>
+      <span className={`text-lg min-w-[4rem] ${getColorClass()} grow`}>
         {formatTime(timeLeft)}
       </span>
     </div>
