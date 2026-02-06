@@ -144,23 +144,18 @@ const PerformanceBookButton = ({ performanceId }: Props) => {
                 <DrawerDescription></DrawerDescription>
               </DrawerHeader>
               <div className="p-4 pb-0 max-h-[70dvh] overflow-auto">
-                {!isLoading && performanceDates?.length === 0 ? (
-                  <div className="py-4 text-center">
-                    예매 가능한 공연 가능한 날짜가 없습니다.
-                  </div>
-                ) : (
-                  <PerformanceScheduleContent
-                    date={date}
-                    setDate={setDate}
-                    endMonth={endMonth}
-                    disabledMatcher={disabledMatcher}
-                    isLoading={isLoading}
-                    selectedDatePerformances={selectedDatePerformances}
-                    isMobile={true}
-                    onSelectSchedule={handleSelectSchedule}
-                    selectedScheduleId={selectedScheduleId}
-                  />
-                )}
+                <PerformanceScheduleContent
+                  date={date}
+                  setDate={setDate}
+                  endMonth={endMonth}
+                  disabledMatcher={disabledMatcher}
+                  isLoading={isLoading}
+                  selectedDatePerformances={selectedDatePerformances}
+                  isMobile={true}
+                  onSelectSchedule={handleSelectSchedule}
+                  selectedScheduleId={selectedScheduleId}
+                  isRegisteredSchedule={performanceDates?.length !== 0}
+                />
               </div>
               <DrawerFooter>
                 <Button
@@ -193,23 +188,18 @@ const PerformanceBookButton = ({ performanceId }: Props) => {
               </DialogTitle>
             </DialogHeader>
             <div className="max-h-[calc(100% - 150px)]!">
-              {!isLoading && performanceDates?.length === 0 ? (
-                <div className="py-4 text-center">
-                  예매 가능한 공연 가능한 날짜가 없습니다.
-                </div>
-              ) : (
-                <PerformanceScheduleContent
-                  date={date}
-                  setDate={setDate}
-                  endMonth={endMonth}
-                  disabledMatcher={disabledMatcher}
-                  isLoading={isLoading}
-                  selectedDatePerformances={selectedDatePerformances}
-                  isMobile={true}
-                  onSelectSchedule={handleSelectSchedule}
-                  selectedScheduleId={selectedScheduleId}
-                />
-              )}
+              <PerformanceScheduleContent
+                date={date}
+                setDate={setDate}
+                endMonth={endMonth}
+                disabledMatcher={disabledMatcher}
+                isLoading={isLoading}
+                selectedDatePerformances={selectedDatePerformances}
+                isMobile={true}
+                onSelectSchedule={handleSelectSchedule}
+                selectedScheduleId={selectedScheduleId}
+                isRegisteredSchedule={performanceDates?.length !== 0}
+              />
             </div>
             <DialogFooter>
               <Button

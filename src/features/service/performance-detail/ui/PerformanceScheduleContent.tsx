@@ -1,3 +1,4 @@
+import { is } from "date-fns/locale";
 import { Calendar } from "@/shared/ui/calendar";
 import {
   Field,
@@ -34,6 +35,8 @@ interface PerformanceScheduleContentProps {
   onSelectSchedule: (scheduleId: string) => void;
   /** 선택된 공연 회차 ID */
   selectedScheduleId: number;
+  /** 등록된 회차 존재유무 */
+  isRegisteredSchedule: boolean;
 }
 
 /**
@@ -50,7 +53,16 @@ const PerformanceScheduleContent = ({
   isMobile = false,
   onSelectSchedule,
   selectedScheduleId,
+  isRegisteredSchedule,
 }: PerformanceScheduleContentProps) => {
+  if (!isRegisteredSchedule) {
+    return (
+      <div className="py-4 text-center">
+        예매 가능한 공연 가능한 날짜가 없습니다.
+      </div>
+    );
+  }
+
   return (
     <>
       <Calendar
