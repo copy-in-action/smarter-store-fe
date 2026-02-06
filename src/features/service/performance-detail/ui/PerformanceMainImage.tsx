@@ -53,7 +53,7 @@ export function PerformanceMainImage({
                   fill
                   sizes="(max-width: 640px) 70vw, 160px"
                   priority
-                  quality={85}
+                  quality={100}
                 />
               </div>
             </div>
