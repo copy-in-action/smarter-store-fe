@@ -129,7 +129,7 @@ const BookingHeader = () => {
     <div className="flex items-center justify-between my-4 wrapper">
       <h1 className="text-lg font-bold">{performance.title}</h1>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 ms-1 md:ms-auto">
         {bookingData?.expiresAt && (
           <BookingTimer
             expiresAt={bookingData.expiresAt}
