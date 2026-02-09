@@ -67,7 +67,14 @@ const BookingPayment = () => {
   // 예매 확정 mutation
   const { mutate: confirmBookingMutation } = useConfirmBooking();
 
-  const handleBackStep = () => {
+  /**
+   * 이전 단계로 돌아가기 핸들러
+   * 결제 진행 중에는 동작하지 않습니다.
+   * @param event - 클릭 이벤트
+   */
+  const handleBackStep = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
     if (isPaymentProcessing) return;
     prevStep();
     router.back();
@@ -75,8 +82,10 @@ const BookingPayment = () => {
 
   /**
    * 결제 폼 제출 처리
-   * - handleSubmit을 통과했으므로 폼 스키마 검증은 이미 완료됨
-   * @param formData - 검증된 폼 데이터
+   * 1. 팝업 창을 먼저 열어 팝업 차단을 방지합니다.
+   * 2. 결제 생성 API를 호출합니다.
+   * 3. 성공 시 결제 게이트웨이 페이지로 리다이렉트합니다.
+   * @param formData - 검증된 폼 데이터 (결제 수단, 약관 동의, 예약자 정보)
    */
   const onSubmit = (formData: PaymentFormData) => {
     // 스토어 데이터 검증 (폼 스키마와 무관)
@@ -150,6 +159,10 @@ const BookingPayment = () => {
     });
   };
 
+  /**
+   * 폼 검증 에러 처리 핸들러
+   * @param errors - 폼 검증 에러 객체
+   */
   const onSubmitError = (errors: FieldErrors<PaymentFormData>) => {
     const reserverInfoError = errors.reserverInfo;
     // 중첩 객체이므로
@@ -263,6 +276,7 @@ const BookingPayment = () => {
                 performance={paymentInfo.performance}
                 tickets={paymentInfo.ticketDetails}
                 showDateTime={schedule?.showDateTime || ""}
+                handleBackStep={handleBackStep}
               />
               <hr className="h-2 my-5 bg-gray-100 sm:h-[1px] mx-auto" />
 

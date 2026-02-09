@@ -115,6 +115,7 @@ const BookingHeader = () => {
 
   /**
    * 일정변경 버튼 클릭 핸들러
+   * 현재 선택된 일정을 변경하기 위해 이전 단계로 이동하거나 모달을 띄우는 로직이 들어갈 예정입니다.
    */
   const handleScheduleChange = () => {
     console.log("일정 변경 버튼 클릭");
@@ -126,7 +127,7 @@ const BookingHeader = () => {
   }
 
   return (
-    <div className="flex items-center justify-between my-4 wrapper">
+    <div className="flex md:items-center justify-between my-4 wrapper sticky top-[50px] bg-background z-10 py-4 flex-col md:flex-row">
       <h1 className="text-lg font-bold">{performance.title}</h1>
 
       <div className="flex items-center gap-4 ms-1 md:ms-auto">
