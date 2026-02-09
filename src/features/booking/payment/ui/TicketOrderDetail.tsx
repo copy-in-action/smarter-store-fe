@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
+import { ChevronLeft } from "lucide-react";
 import { useMemo } from "react";
 import { Fragment } from "react/jsx-runtime";
 import type { TicketDetail } from "@/entities/booking";
@@ -10,6 +11,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/shared/ui/accordion";
+import { Button } from "@/shared/ui/button";
 import { Skeleton } from "@/shared/ui/skeleton";
 
 /**
@@ -22,18 +24,30 @@ interface Props {
   tickets: TicketDetail[];
   /** 공연 일시 (ISO 8601 형식) */
   showDateTime: string;
+  /** 이전 단계로 돌아가는 핸들러 */
+  handleBackStep: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 /**
  * 티켓 주문 상세 컴포넌트
- * 공연 정보와 선택한 좌석 정보를 표시합니다
+ * 공연 정보와 선택한 좌석 정보를 표시합니다.
  * @param props - 컴포넌트 Props
  * @param props.performance - 공연 정보
  * @param props.tickets - 티켓 상세 목록
  * @param props.showDateTime - 공연 일시
+ * @param props.handleBackStep - 이전 단계로 돌아가는 함수
  * @returns 티켓 주문 상세 UI
  */
-const TicketOrderDetail = ({ performance, tickets, showDateTime }: Props) => {
+const TicketOrderDetail = ({
+  performance,
+  tickets,
+  showDateTime,
+  handleBackStep,
+}: Props) => {
+  /**
+   * 공연 일시 포맷팅
+   * 'yyyy-MM-dd(요일) hh:mm AM/PM' 형식으로 변환합니다.
+   */
   const showDate = useMemo(() => {
     if (showDateTime)
       return format(new Date(showDateTime), "yyyy-MM-dd(E) hh:mm a", {
@@ -46,10 +60,22 @@ const TicketOrderDetail = ({ performance, tickets, showDateTime }: Props) => {
     <section className="px-4">
       <Accordion type="single" collapsible defaultValue="ticket-detail">
         <AccordionItem value="ticket-detail">
-          <AccordionTrigger>
-            <h2 className="text-lg font-semibold">티켓 주문상세</h2>
-          </AccordionTrigger>
-
+          <div className="flex items-center w-full gap-2">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={handleBackStep}
+              className="lg:hidden"
+            >
+              <ChevronLeft className="size-6" />
+            </Button>
+            <div className="flex-1">
+              <AccordionTrigger className="flex-1 w-full text-lg font-semibold">
+                티켓 주문상세
+              </AccordionTrigger>
+            </div>
+          </div>
           <AccordionContent>
             {/* 공연 정보 */}
             <div className="mb-9">
