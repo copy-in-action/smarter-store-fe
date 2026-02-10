@@ -23,7 +23,7 @@ export function BookingPageWrapper({ children }: BookingPageWrapperProps) {
   const isBookingPage = pathname.startsWith("/booking");
 
   return (
-    <div className={cn({ "lg:block hidden": isBookingPage }, "w-full")}>
+    <div className={cn({ "sm:block hidden": isBookingPage }, "w-full")}>
       {children}
     </div>
   );

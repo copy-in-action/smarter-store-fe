@@ -17,7 +17,7 @@ import { SearchInput } from "./SearchInput";
  */
 export function Header() {
   return (
-    <header className="sticky z-50 sm:top-0 -top-5">
+    <header className="sticky z-50 sm:top-0 -top-2">
       <div
         className={cn(
           "w-full bg-background flex flex-col items-center justify-center pt-6 pb-2 mx-none wrapper",
