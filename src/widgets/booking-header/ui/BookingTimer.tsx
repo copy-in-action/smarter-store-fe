@@ -4,6 +4,7 @@
 "use client";
 
 import { intervalToDuration } from "date-fns";
+import { Timer } from "lucide-react";
 import { memo, useEffect, useRef, useState } from "react";
 
 /**
@@ -117,7 +118,10 @@ const BookingTimer = memo(({ expiresAt, onExpire }: BookingTimerProps) => {
 
   return (
     <div className="flex items-center gap-1 font-semibold">
-      <span className="text-sm grow-0 break-keep">결제 가능 시간</span>
+      <span className="hidden text-sm sm:block grow-0 break-keep">
+        결제 가능 시간
+      </span>
+      <Timer className="size-5 sm:hidden" />
       <span className={`text-lg min-w-[4rem] ${getColorClass()} grow`}>
         {formatTime(timeLeft)}
       </span>

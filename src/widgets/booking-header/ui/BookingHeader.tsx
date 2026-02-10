@@ -127,22 +127,24 @@ const BookingHeader = () => {
   }
 
   return (
-    <div className="flex md:items-center justify-between my-4 wrapper sticky top-[50px] bg-background z-10 py-4 flex-col md:flex-row">
-      <h1 className="text-lg font-bold">{performance.title}</h1>
+    <div className="sticky top-[52px] sm:top-[97px] bg-background py-0.5 z-10 wrapper">
+      <div className="flex items-center justify-between my-2">
+        <h1 className="text-base font-bold lg:text-lg">{performance.title}</h1>
 
-      <div className="flex items-center gap-4 ms-1 md:ms-auto">
-        {bookingData?.expiresAt && (
-          <BookingTimer
-            expiresAt={bookingData.expiresAt}
-            onExpire={handleTimerExpire}
-          />
-        )}
+        <div className="flex items-center gap-4 ms-1 md:ms-auto">
+          {bookingData?.expiresAt && (
+            <BookingTimer
+              expiresAt={bookingData.expiresAt}
+              onExpire={handleTimerExpire}
+            />
+          )}
 
-        {step === BookingStep.SEAT_SELECTION && (
-          <Button variant={"outline"} onClick={handleScheduleChange}>
-            일정변경
-          </Button>
-        )}
+          {step === BookingStep.SEAT_SELECTION && (
+            <Button variant={"outline"} onClick={handleScheduleChange}>
+              일정변경
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

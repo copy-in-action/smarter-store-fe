@@ -22,7 +22,7 @@ const BookingLayout = ({ children }: Props) => {
   return (
     <>
       <BookingHeader />
-      <div>{children}</div>
+      {children}
     </>
   );
 };
