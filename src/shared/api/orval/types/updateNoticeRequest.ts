@@ -14,16 +14,6 @@ import type { NoticeCategory } from './noticeCategory';
  */
 export interface UpdateNoticeRequest {
   category: NoticeCategory;
-  /**
-   * 제목
-   * @minLength 0
-   * @maxLength 255
-   */
-  title: string;
   /** 내용 */
   content: string;
-  /** 정렬 순서 */
-  displayOrder: number;
-  /** 활성화 여부 */
-  isActive: boolean;
 }

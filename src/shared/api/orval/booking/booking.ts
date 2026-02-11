@@ -8,6 +8,8 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
+  BookingDetailResponse,
+  BookingHistoryResponse,
   BookingResponse,
   BookingTimeResponse,
   ErrorResponse,
@@ -184,41 +186,41 @@ export const releaseBooking = async (releaseBookingRequest: ReleaseBookingReques
 
 
 /**
- * 진행 중인 예매의 남은 시간(초)을 조회합니다.
+ * 특정 예매 건의 상세 내역과 결제 정보를 조회합니다.
 
 **권한: USER**
- * @summary 예매 남은 시간 조회
+ * @summary 내 예매 상세 조회
  */
-export type getRemainingTimeResponse200 = {
-  data: BookingTimeResponse
+export type getBookingDetailResponse200 = {
+  data: BookingDetailResponse
   status: 200
 }
 
-export type getRemainingTimeResponse404 = {
-  data: ErrorResponse
+export type getBookingDetailResponse404 = {
+  data: BookingDetailResponse
   status: 404
 }
     
-export type getRemainingTimeResponseSuccess = (getRemainingTimeResponse200) & {
+export type getBookingDetailResponseSuccess = (getBookingDetailResponse200) & {
   headers: Headers;
 };
-export type getRemainingTimeResponseError = (getRemainingTimeResponse404) & {
+export type getBookingDetailResponseError = (getBookingDetailResponse404) & {
   headers: Headers;
 };
 
-export type getRemainingTimeResponse = (getRemainingTimeResponseSuccess | getRemainingTimeResponseError)
+export type getBookingDetailResponse = (getBookingDetailResponseSuccess | getBookingDetailResponseError)
 
-export const getGetRemainingTimeUrl = (bookingId: string,) => {
+export const getGetBookingDetailUrl = (bookingId: string,) => {
 
 
   
 
-  return `https://ticket-api.devhong.cc/api/bookings/${bookingId}/time`
+  return `https://ticket-api.devhong.cc/api/bookings/${bookingId}`
 }
 
-export const getRemainingTime = async (bookingId: string, options?: RequestInit): Promise<getRemainingTimeResponse> => {
+export const getBookingDetail = async (bookingId: string, options?: RequestInit): Promise<getBookingDetailResponse> => {
   
-  return orvalFetch<getRemainingTimeResponse>(getGetRemainingTimeUrl(bookingId),
+  return orvalFetch<getBookingDetailResponse>(getGetBookingDetailUrl(bookingId),
   {      
     ...options,
     method: 'GET'
@@ -269,6 +271,89 @@ export const cancelBooking = async (bookingId: string, options?: RequestInit): P
   {      
     ...options,
     method: 'DELETE'
+    
+    
+  }
+);}
+
+
+/**
+ * 진행 중인 예매의 남은 시간(초)을 조회합니다.
+
+**권한: USER**
+ * @summary 예매 남은 시간 조회
+ */
+export type getRemainingTimeResponse200 = {
+  data: BookingTimeResponse
+  status: 200
+}
+
+export type getRemainingTimeResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type getRemainingTimeResponseSuccess = (getRemainingTimeResponse200) & {
+  headers: Headers;
+};
+export type getRemainingTimeResponseError = (getRemainingTimeResponse404) & {
+  headers: Headers;
+};
+
+export type getRemainingTimeResponse = (getRemainingTimeResponseSuccess | getRemainingTimeResponseError)
+
+export const getGetRemainingTimeUrl = (bookingId: string,) => {
+
+
+  
+
+  return `https://ticket-api.devhong.cc/api/bookings/${bookingId}/time`
+}
+
+export const getRemainingTime = async (bookingId: string, options?: RequestInit): Promise<getRemainingTimeResponse> => {
+  
+  return orvalFetch<getRemainingTimeResponse>(getGetRemainingTimeUrl(bookingId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+/**
+ * 로그인한 사용자의 전체 예매 내역(확정/취소)을 조회합니다.
+
+**권한: USER**
+ * @summary 내 예매 내역 조회
+ */
+export type getMyBookingsResponse200 = {
+  data: BookingHistoryResponse[]
+  status: 200
+}
+    
+export type getMyBookingsResponseSuccess = (getMyBookingsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getMyBookingsResponse = (getMyBookingsResponseSuccess)
+
+export const getGetMyBookingsUrl = () => {
+
+
+  
+
+  return `https://ticket-api.devhong.cc/api/bookings/me`
+}
+
+export const getMyBookings = async ( options?: RequestInit): Promise<getMyBookingsResponse> => {
+  
+  return orvalFetch<getMyBookingsResponse>(getGetMyBookingsUrl(),
+  {      
+    ...options,
+    method: 'GET'
     
     
   }

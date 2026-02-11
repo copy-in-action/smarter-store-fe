@@ -8,50 +8,10 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
-  NoticeCategory,
-  NoticeGroupResponse,
-  NoticeResponse
+  NoticeGroupResponse
 } from '.././types';
 
 import { orvalFetch } from '../../fetch-wrapper';
-
-/**
- * 활성화된 모든 공지사항을 정렬 순서대로 조회합니다.
-
-**권한: 누구나**
- * @summary 활성화된 공지사항 목록 조회
- */
-export type getActiveNoticesResponse200 = {
-  data: NoticeResponse[]
-  status: 200
-}
-    
-export type getActiveNoticesResponseSuccess = (getActiveNoticesResponse200) & {
-  headers: Headers;
-};
-;
-
-export type getActiveNoticesResponse = (getActiveNoticesResponseSuccess)
-
-export const getGetActiveNoticesUrl = () => {
-
-
-  
-
-  return `https://ticket-api.devhong.cc/api/notices`
-}
-
-export const getActiveNotices = async ( options?: RequestInit): Promise<getActiveNoticesResponse> => {
-  
-  return orvalFetch<getActiveNoticesResponse>(getGetActiveNoticesUrl(),
-  {      
-    ...options,
-    method: 'GET'
-    
-    
-  }
-);}
-
 
 /**
  * 활성화된 공지사항을 카테고리별로 그룹화하여 조회합니다.
@@ -82,44 +42,6 @@ export const getGetActiveNoticesGroupedUrl = () => {
 export const getActiveNoticesGrouped = async ( options?: RequestInit): Promise<getActiveNoticesGroupedResponse> => {
   
   return orvalFetch<getActiveNoticesGroupedResponse>(getGetActiveNoticesGroupedUrl(),
-  {      
-    ...options,
-    method: 'GET'
-    
-    
-  }
-);}
-
-
-/**
- * 특정 카테고리의 활성화된 공지사항을 조회합니다.
-
-**권한: 누구나**
- * @summary 카테고리별 공지사항 조회
- */
-export type getActiveNoticesByCategoryResponse200 = {
-  data: NoticeResponse[]
-  status: 200
-}
-    
-export type getActiveNoticesByCategoryResponseSuccess = (getActiveNoticesByCategoryResponse200) & {
-  headers: Headers;
-};
-;
-
-export type getActiveNoticesByCategoryResponse = (getActiveNoticesByCategoryResponseSuccess)
-
-export const getGetActiveNoticesByCategoryUrl = (category: NoticeCategory,) => {
-
-
-  
-
-  return `https://ticket-api.devhong.cc/api/notices/category/${category}`
-}
-
-export const getActiveNoticesByCategory = async (category: NoticeCategory, options?: RequestInit): Promise<getActiveNoticesByCategoryResponse> => {
-  
-  return orvalFetch<getActiveNoticesByCategoryResponse>(getGetActiveNoticesByCategoryUrl(category),
   {      
     ...options,
     method: 'GET'

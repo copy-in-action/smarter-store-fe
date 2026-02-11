@@ -18,12 +18,8 @@ export interface NoticeResponse {
   category: NoticeCategory;
   /** 카테고리 설명 */
   categoryDescription: string;
-  /** 제목 */
-  title: string;
   /** 내용 */
   content: string;
-  /** 정렬 순서 */
-  displayOrder: number;
   /** 활성화 여부 */
   isActive: boolean;
   /** 생성일시 */

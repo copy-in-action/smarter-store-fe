@@ -9,7 +9,6 @@
  */
 import type {
   ErrorResponse,
-  PaymentCancelRequest,
   PaymentCompleteRequest,
   PaymentCreateRequest,
   PaymentDetailResponse,
@@ -107,46 +106,6 @@ export const completePayment = async (id: string,
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       paymentCompleteRequest,)
-  }
-);}
-
-
-/**
- * 결제 완료된 건에 대해 취소를 요청합니다.
-
-**권한: USER**
- * @summary 결제 취소
- */
-export type cancelPaymentResponse200 = {
-  data: PaymentResponse
-  status: 200
-}
-    
-export type cancelPaymentResponseSuccess = (cancelPaymentResponse200) & {
-  headers: Headers;
-};
-;
-
-export type cancelPaymentResponse = (cancelPaymentResponseSuccess)
-
-export const getCancelPaymentUrl = (id: string,) => {
-
-
-  
-
-  return `https://ticket-api.devhong.cc/api/payments/${id}/cancel`
-}
-
-export const cancelPayment = async (id: string,
-    paymentCancelRequest: PaymentCancelRequest, options?: RequestInit): Promise<cancelPaymentResponse> => {
-  
-  return orvalFetch<cancelPaymentResponse>(getCancelPaymentUrl(id),
-  {      
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      paymentCancelRequest,)
   }
 );}
 

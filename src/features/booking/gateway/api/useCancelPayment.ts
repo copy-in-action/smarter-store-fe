@@ -1,18 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
-import { cancelPayment } from "@/shared/api/orval/payment/payment";
-import type { PaymentCancelRequest } from "@/shared/api/orval/types";
+import { cancelBooking } from "@/shared/api/orval/booking/booking";
 
 /**
  * 결제 취소 Mutation
  */
 export const useCancelPayment = () => {
   return useMutation({
-    mutationFn: ({
-      id,
-      data,
-    }: {
-      id: string;
-      data: PaymentCancelRequest;
-    }) => cancelPayment(id, data),
+    mutationFn: ({ id }: { id: string }) => cancelBooking(id),
   });
 };

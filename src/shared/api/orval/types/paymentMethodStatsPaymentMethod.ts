@@ -8,6 +8,9 @@
  * OpenAPI spec version: 1.0.0
  */
 
+/**
+ * 결제 수단
+ */
 export type PaymentMethodStatsPaymentMethod = typeof PaymentMethodStatsPaymentMethod[keyof typeof PaymentMethodStatsPaymentMethod];
 
 
