@@ -214,8 +214,13 @@ export const SERVICE_PAGES = {
         description: "공연을 최종 결제합니다.",
       } as Metadata,
       GATEWAY: {
-        path: (paymentId: string, bankName: string, amount: number) =>
-          `/booking/payment/gateway?paymentId=${paymentId}&bankName=${bankName}&amount=${amount}`,
+        path: (
+          paymentId: string,
+          bankName: string,
+          amount: number,
+          expiresAt: string,
+        ) =>
+          `/booking/payment/gateway?paymentId=${paymentId}&bankName=${bankName}&amount=${amount}${expiresAt ? `&expiresAt=${expiresAt}` : ""}`,
         metadata: {
           title: `PG사 결제 처리`,
           description: "공연을 최종 결제합니다.",

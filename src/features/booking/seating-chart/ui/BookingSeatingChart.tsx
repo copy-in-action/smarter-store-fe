@@ -71,12 +71,16 @@ const BookingSeatingChart = ({
    * - SeatSelectionStep과 DiscountSelectionStep이 동일한 좌석 선택 상태 공유
    * - shouldClearSeats가 true일 때는 충돌 체크 비활성화 (좌석 초기화 중)
    */
-  const { seatChartConfig, toggleSeatSelection, clearSelection } =
-    useBookingSeatSelection(
-      performance.venue?.id || 0,
-      step === BookingStep.SEAT_SELECTION && !isLoading && !shouldClearSeats, // 좌석 선택 단계이고 로딩 중이 아니며 초기화 중이 아닐 때만 충돌 체크
-      scheduleId,
-    );
+  const {
+    seatChartConfig,
+    toggleSeatSelection,
+    clearSelection,
+    isSnapshotReceived,
+  } = useBookingSeatSelection(
+    performance.venue?.id || 0,
+    step === BookingStep.SEAT_SELECTION && !isLoading && !shouldClearSeats, // 좌석 선택 단계이고 로딩 중이 아니며 초기화 중이 아닐 때만 충돌 체크
+    scheduleId,
+  );
 
   /**
    * reset 호출 시 좌석 선택 초기화 처리
@@ -208,7 +212,7 @@ const BookingSeatingChart = ({
           toggleSeatSelection={toggleSeatSelection}
           clearSelection={clearSelection}
           onComplete={handleCompleteSelection}
-          isLoading={isLoading}
+          isLoading={isLoading && isSnapshotReceived}
         />
       )}
       {step === BookingStep.DISCOUNT_SELECTION && bookingData && (

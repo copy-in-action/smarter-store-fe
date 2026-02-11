@@ -98,6 +98,8 @@ const BookingPayment = () => {
     const bankName = formData.bankCode || "";
 
     const amount = paymentConfirmation?.payment.totalAmount || 0;
+    const expiresAt =
+      useBookingStepStore.getState().bookingData?.expiresAt || "";
 
     // 1. 팝업 선오픈 (팝업 차단 방지)
     const width = 450;
@@ -141,6 +143,7 @@ const BookingPayment = () => {
             data.id,
             encodeURIComponent(bankName),
             amount,
+            expiresAt,
           );
           popupRef.current.location.href = popupUrl;
         } else {
@@ -208,6 +211,9 @@ const BookingPayment = () => {
           } else {
             toast.error("예매 정보를 찾을 수 없습니다.");
           }
+        } else if (status === "EXPIRED") {
+          // 결제 시간 만료 시 오버레이만 해제
+          // BookingHeader에서 alert 및 페이지 이동 처리
         } else if (status === "CANCEL") {
           toast.warning("결제가 취소되었습니다.");
         } else {
