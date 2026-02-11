@@ -4,7 +4,7 @@
  */
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { getSubscribeSeatEventsUrl } from "@/shared/api/orval/schedule/schedule";
 import type {
@@ -27,6 +27,8 @@ export function useSeatSSESubscription(
 ) {
   const pendingSeatsRef = useRef<SeatPosition[]>([]);
   const reservedSeatsRef = useRef<SeatPosition[]>([]);
+  // 초기 데이터 설정 여부 상태
+  const [isSnapshotReceived, setIsSnapshotReceived] = useState(false);
 
   useEffect(() => {
     if (!scheduleId) return;
@@ -60,6 +62,7 @@ export function useSeatSSESubscription(
 
         // 한 번에 업데이트 (race condition 방지)
         updateBookingStatus(pendingSeats, reservedSeats);
+        setIsSnapshotReceived(true);
       } catch (error) {
         console.error("SSE snapshot 메시지 파싱 에러:", error);
       }
@@ -144,6 +147,9 @@ export function useSeatSSESubscription(
       // cleanup 시 ref 초기화
       pendingSeatsRef.current = [];
       reservedSeatsRef.current = [];
+      setIsSnapshotReceived(false);
     };
   }, [scheduleId, updateBookingStatus]);
+
+  return { isSnapshotReceived };
 }

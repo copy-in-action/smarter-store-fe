@@ -54,7 +54,7 @@ const calculateRemainingSeconds = (expiresAt: string): number => {
 /**
  * 예매 결제 가능 시간을 카운트다운으로 표시하는 타이머 컴포넌트
  * - expiresAt을 기준으로 1초마다 남은 시간 계산
- * - 0초가 되면 onExpire 콜백 호출
+ * - 0초가 되면 onExpire 콜백 호출 (화면 업데이트 후)
  * - React.memo로 메모이제이션되어 expiresAt 변경 시에만 리렌더링
  * @param props - 컴포넌트 Props
  * @returns 타이머 UI
@@ -65,44 +65,44 @@ const BookingTimer = memo(({ expiresAt, onExpire }: BookingTimerProps) => {
   );
   const onExpireRef = useRef(onExpire);
   const hasExpiredRef = useRef(false);
-  const expiresAtRef = useRef(expiresAt);
 
   // onExpire 함수의 최신 버전을 ref에 저장
   useEffect(() => {
     onExpireRef.current = onExpire;
   }, [onExpire]);
 
-  // expiresAt이 변경되면 timeLeft 재계산 및 만료 플래그 리셋
+  // expiresAt 변경 시 타이머 재설정
   useEffect(() => {
-    expiresAtRef.current = expiresAt;
-    setTimeLeft(calculateRemainingSeconds(expiresAt));
+    // 만료 상태 리셋
     hasExpiredRef.current = false;
-  }, [expiresAt]);
 
-  useEffect(() => {
     /**
-     * 1초마다 expiresAt 기준으로 남은 시간 재계산
-     * - 0초가 되면 타이머 중지 및 onExpire 호출 (한 번만)
+     * 타이머 업데이트 함수
+     * - 남은 시간 계산 및 상태 업데이트만 수행
      */
-    if (timeLeft <= 0) {
-      if (!hasExpiredRef.current) {
-        hasExpiredRef.current = true;
-        onExpireRef.current?.();
-      }
-      return;
-    }
-
-    const timer = setInterval(() => {
-      const remaining = calculateRemainingSeconds(expiresAtRef.current);
+    const updateTimer = () => {
+      const remaining = calculateRemainingSeconds(expiresAt);
       setTimeLeft(remaining);
+    };
 
-      if (remaining <= 0 && !hasExpiredRef.current) {
-        hasExpiredRef.current = true;
-        onExpireRef.current?.();
-      }
-    }, 1000);
+    // 초기 업데이트
+    updateTimer();
+
+    // 1초마다 업데이트
+    const timer = setInterval(updateTimer, 1000);
 
     return () => clearInterval(timer);
+  }, [expiresAt]);
+
+  /**
+   * timeLeft가 0이 되었을 때 onExpire 호출
+   * - 별도 effect로 분리하여 렌더링 완료 후 실행 보장
+   */
+  useEffect(() => {
+    if (timeLeft <= 0 && !hasExpiredRef.current) {
+      hasExpiredRef.current = true;
+      onExpireRef.current?.();
+    }
   }, [timeLeft]);
 
   /**

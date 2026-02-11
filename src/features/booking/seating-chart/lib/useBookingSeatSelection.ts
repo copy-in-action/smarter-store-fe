@@ -28,7 +28,10 @@ export function useBookingSeatSelection(
   /**
    * SSE 구독으로 실시간 좌석 상태 업데이트
    */
-  useSeatSSESubscription(scheduleId, updateBookingStatus);
+  const { isSnapshotReceived } = useSeatSSESubscription(
+    scheduleId,
+    updateBookingStatus,
+  );
 
   /**
    * 좌석 선택/해제 토글 (최대 4개 제한)
@@ -63,5 +66,6 @@ export function useBookingSeatSelection(
   return {
     ...seatChartHook,
     toggleSeatSelection: toggleSeatSelectionWithLimit,
+    isSnapshotReceived,
   };
 }

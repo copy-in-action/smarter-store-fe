@@ -55,14 +55,6 @@ const PerformanceScheduleContent = ({
   selectedScheduleId,
   isRegisteredSchedule,
 }: PerformanceScheduleContentProps) => {
-  if (!isRegisteredSchedule) {
-    return (
-      <div className="py-4 text-center">
-        예매 가능한 공연 가능한 날짜가 없습니다.
-      </div>
-    );
-  }
-
   return (
     <>
       <Calendar
@@ -79,6 +71,10 @@ const PerformanceScheduleContent = ({
       {/* 회차 선택 */}
       {isLoading ? (
         <div className="py-4 text-center">로딩 중...</div>
+      ) : !isRegisteredSchedule ? (
+        <div className="py-4 text-center">
+          예매 가능한 공연 가능한 날짜가 없습니다.
+        </div>
       ) : (
         <RadioGroup
           value={selectedScheduleId === 0 ? "" : selectedScheduleId.toString()}
