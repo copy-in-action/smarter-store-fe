@@ -7,13 +7,7 @@
 **관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
-import type { NoticeCategory } from './noticeCategory';
 
-/**
- * 공지사항 생성 요청
- */
-export interface CreateNoticeRequest {
-  category: NoticeCategory;
-  /** 내용 */
-  content: string;
-}
+export type CancelBooking1Params = {
+cancelReason?: string;
+};

@@ -8,6 +8,9 @@
  * OpenAPI spec version: 1.0.0
  */
 
+/**
+ * 할인 유형
+ */
 export type DiscountStatsDiscountType = typeof DiscountStatsDiscountType[keyof typeof DiscountStatsDiscountType];
 
 

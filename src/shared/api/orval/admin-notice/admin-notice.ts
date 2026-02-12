@@ -10,6 +10,7 @@
 import type {
   CreateNoticeRequest,
   NoticeResponse,
+  NoticeStatusRequest,
   UpdateNoticeRequest
 } from '.././types';
 
@@ -210,6 +211,48 @@ export const createNotice = async (createNoticeRequest: CreateNoticeRequest, opt
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       createNoticeRequest,)
+  }
+);}
+
+
+/**
+ * 공지사항의 활성화 상태를 수정합니다. `isActive=true`로 전환 시 동일 카테고리의 다른 공지사항은 자동으로 비활성화됩니다.
+
+**권한: ADMIN**
+
+**[Audit Log]** 이 작업은 감사 로그에 기록됩니다.
+ * @summary [관리자] 공지사항 상태 수정
+ */
+export type updateNoticeStatusResponse200 = {
+  data: NoticeResponse
+  status: 200
+}
+    
+export type updateNoticeStatusResponseSuccess = (updateNoticeStatusResponse200) & {
+  headers: Headers;
+};
+;
+
+export type updateNoticeStatusResponse = (updateNoticeStatusResponseSuccess)
+
+export const getUpdateNoticeStatusUrl = (id: number,) => {
+
+
+  
+
+  return `https://ticket-api.devhong.cc/api/admin/notices/${id}/status`
+}
+
+export const updateNoticeStatus = async (id: number,
+    noticeStatusRequest: NoticeStatusRequest, options?: RequestInit): Promise<updateNoticeStatusResponse> => {
+  
+  return orvalFetch<updateNoticeStatusResponse>(getUpdateNoticeStatusUrl(id),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      noticeStatusRequest,)
   }
 );}
 

@@ -9,12 +9,22 @@
  */
 import type { PaymentMethodStatsPaymentMethod } from './paymentMethodStatsPaymentMethod';
 
+/**
+ * 결제 수단별 통계 응답
+ */
 export interface PaymentMethodStats {
+  /** 통계 ID */
   id: number;
+  /** 결제 수단 */
   paymentMethod: PaymentMethodStatsPaymentMethod;
+  /** 날짜 */
   date: string;
+  /** 결제 건수 */
   transactionCount: number;
+  /** 총 결제 금액 */
   totalAmount: number;
+  /** 평균 결제 금액 */
   avgAmount: number;
+  /** 수정일시 */
   updatedAt: string;
 }

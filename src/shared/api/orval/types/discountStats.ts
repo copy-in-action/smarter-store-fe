@@ -9,12 +9,22 @@
  */
 import type { DiscountStatsDiscountType } from './discountStatsDiscountType';
 
+/**
+ * 할인 수단별 통계 응답
+ */
 export interface DiscountStats {
+  /** 통계 ID */
   id: number;
+  /** 할인 유형 */
   discountType: DiscountStatsDiscountType;
+  /** 날짜 */
   date: string;
+  /** 사용 횟수 */
   usageCount: number;
+  /** 총 할인 금액 */
   totalDiscountAmount: number;
+  /** 평균 할인 금액 */
   avgDiscountAmount: number;
+  /** 수정일시 */
   updatedAt: string;
 }

@@ -8,16 +8,30 @@
  * OpenAPI spec version: 1.0.0
  */
 
+/**
+ * 일별 매출 통계 응답
+ */
 export interface DailySalesStats {
+  /** 날짜 */
   date: string;
+  /** 총 매출액 */
   totalSales: number;
+  /** 총 거래 건수 */
   totalTransactions: number;
+  /** 총 판매 티켓 수 */
   totalTickets: number;
+  /** 총 할인 금액 */
   totalDiscounts: number;
+  /** 총 환불 금액 */
   totalRefunds: number;
+  /** 순 매출액 (총 매출액 - 총 환불 금액) */
   netSales: number;
+  /** 건당 평균 결제 금액 */
   avgOrderValue: number;
+  /** 티켓당 평균 판매 금액 */
   avgTicketPrice: number;
+  /** 취소 거래 건수 */
   cancelledTransactions: number;
+  /** 수정일시 */
   updatedAt: string;
 }

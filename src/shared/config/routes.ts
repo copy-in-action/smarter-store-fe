@@ -231,29 +231,44 @@ export const SERVICE_PAGES = {
 
   /** 마이페이지 */
   MY: {
-    /** 마이페이지 메인 */
-    INDEX: {
-      path: "/my",
-      metadata: {
-        title: "마이페이지",
-        description: "주문 내역, 찜 목록 등을 확인하세요",
-      } as Metadata,
-    },
+    path: "/mypage",
+    metadata: createMetadata(
+      "마이페이지",
+      "예매 내역, 찜 목록 등을 확인하세요",
+    ),
+
     /** 주문 내역 */
     ORDERS: {
-      path: "/my/orders",
-      metadata: {
-        title: "주문 내역",
-        description: "지금까지의 주문 내역을 확인하세요",
-      } as Metadata,
+      path: "/mypage/orders",
+      metadata: createMetadata(
+        "주문 내역",
+        "지금까지의 주문 내역을 확인하세요",
+      ),
     },
     /** 찜 목록 */
     LIKES: {
-      path: "/my/likes",
-      metadata: {
-        title: "찜 목록",
-        description: "관심 있는 상품들을 모아보세요",
-      } as Metadata,
+      path: "/mypage/likes",
+      metadata: createMetadata("찜 목록", "관심 있는 공연들을 모아보세요"),
+    },
+    /** 예매 내역 */
+    BOOKINGS: {
+      /** 예매 내역 리스트 */
+      LIST: {
+        path: "/mypage/bookings",
+        metadata: createMetadata(
+          "예매 내역",
+          "나의 공연 예매 내역을 확인하세요",
+        ),
+      },
+      /** 예매 상세 */
+      DETAIL: {
+        path: (bookingId: string) => `/mypage/bookings/${bookingId}`,
+        metadata: (performanceTitle?: string) =>
+          createMetadata(
+            performanceTitle ? `${performanceTitle} 예매 상세` : "예매 상세",
+            "예매 상세 정보를 확인하세요",
+          ),
+      },
     },
   },
 

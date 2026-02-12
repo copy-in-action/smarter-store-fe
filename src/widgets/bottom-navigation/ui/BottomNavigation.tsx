@@ -3,6 +3,7 @@
 import { Heart, Home, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { PAGES } from "@/shared/config";
 import { cn } from "@/shared/lib/utils";
 import type {
   BottomNavigationItem,
@@ -16,19 +17,19 @@ const navigationItems: BottomNavigationItem[] = [
   {
     id: "home",
     label: "홈",
-    href: "/",
+    href: PAGES.HOME.path,
     icon: Home,
   },
   {
     id: "like",
     label: "찜",
-    href: "/wishlist",
+    href: PAGES.MY.LIKES.path,
     icon: Heart,
   },
   {
     id: "my",
     label: "마이",
-    href: "/my",
+    href: PAGES.MY.path,
     icon: User,
   },
 ];

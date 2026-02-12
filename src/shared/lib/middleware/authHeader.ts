@@ -7,9 +7,7 @@ import type { MiddlewareFunction } from "./chainMiddleware";
  * 로그인이 필수인 경로 목록
  * accessToken과 refreshToken이 모두 있어야 접근 가능
  */
-const PROTECTED_ROUTES = [
-  PAGES.BOOKING.SEATING_CHART.path, // 좌석 선택
-];
+const PROTECTED_ROUTES = ["booking", "/mypage"];
 
 /**
  * 인증 상태 헤더 설정 미들웨어

@@ -9,9 +9,9 @@
  */
 
 /**
- * 결제 취소 요청
+ * 공지사항 상태 수정 요청
  */
-export interface PaymentCancelRequest {
-  /** 취소 사유 */
-  reason: string;
+export interface NoticeStatusRequest {
+  /** 활성화 여부 */
+  isActive: boolean;
 }

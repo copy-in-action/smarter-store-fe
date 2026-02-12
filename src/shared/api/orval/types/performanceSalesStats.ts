@@ -8,15 +8,28 @@
  * OpenAPI spec version: 1.0.0
  */
 
+/**
+ * 공연별 매출 통계 응답
+ */
 export interface PerformanceSalesStats {
+  /** 통계 ID */
   id: number;
+  /** 공연 ID */
   performanceId: number;
+  /** 날짜 */
   date: string;
+  /** 총 매출액 */
   totalRevenue: number;
+  /** 판매 티켓 수 */
   ticketsSold: number;
+  /** 전체 좌석 수 */
   totalSeats: number;
+  /** 좌석 점유율 (%) */
   occupancyRate: number;
+  /** 티켓 평균 판매 가격 */
   avgTicketPrice: number;
+  /** 총 할인 금액 */
   totalDiscountAmount: number;
+  /** 수정일시 */
   updatedAt: string;
 }

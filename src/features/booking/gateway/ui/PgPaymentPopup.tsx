@@ -83,88 +83,27 @@ export const PgPaymentPopup = () => {
    * 결제 취소 처리
    */
   const handleCancel = () => {
-    if (!paymentId) {
-      // ID가 없으면 그냥 닫기
-      if (window.opener) {
-        window.opener.postMessage(
-          { type: "PAYMENT_RESULT", status: "CANCEL" },
-          "*",
-        );
-        window.close();
-      }
-      return;
+    if (window.opener) {
+      window.opener.postMessage(
+        { type: "PAYMENT_RESULT", status: "CANCEL" },
+        "*",
+      );
     }
-
-    cancelPayment(
-      { id: paymentId, data: { reason: "사용자 취소" } },
-      {
-        onSuccess: () => {
-          if (window.opener) {
-            window.opener.postMessage(
-              { type: "PAYMENT_RESULT", status: "CANCEL" },
-              "*",
-            );
-            window.close();
-          }
-        },
-        onError: (error) => {
-          console.error("결제 취소 실패:", error);
-          // 취소 API 실패 시에도 일단 창은 닫거나 사용자에게 알림
-          toast.error("결제 취소 처리에 실패했습니다.");
-          // 실패했더라도 팝업 닫기는 진행 (UX 결정 필요)
-
-          if (window.opener) {
-            window.opener.postMessage(
-              { type: "PAYMENT_RESULT", status: "CANCEL" },
-              "*",
-            );
-            window.close();
-          }
-        },
-      },
-    );
+    window.close();
   };
 
   /**
    * 만료 시 자동 취소 처리
    */
   const handleAutoCancel = useCallback(() => {
-    if (!paymentId) {
-      // 결제 ID가 없으면 그냥 팝업 닫기
-      if (window.opener) {
-        window.opener.postMessage(
-          { type: "PAYMENT_RESULT", status: "EXPIRED" },
-          "*",
-        );
-        window.close();
-      }
-      return;
+    if (window.opener) {
+      window.opener.postMessage(
+        { type: "PAYMENT_RESULT", status: "EXPIRED" },
+        "*",
+      );
     }
-
-    // 취소 API 호출
-    cancelPayment(
-      { id: paymentId, data: { reason: "결제 시간 만료" } },
-      {
-        onSuccess: () => {
-          if (window.opener) {
-            window.opener.postMessage(
-              { type: "PAYMENT_RESULT", status: "EXPIRED" },
-              "*",
-            );
-          }
-        },
-        onError: () => {
-          // 실패해도 팝업은 닫기
-          if (window.opener) {
-            window.opener.postMessage(
-              { type: "PAYMENT_RESULT", status: "EXPIRED" },
-              "*",
-            );
-          }
-        },
-      },
-    );
-  }, [paymentId, cancelPayment]);
+    window.close();
+  }, []);
 
   /**
    * 만료 후 닫기 버튼 핸들러
