@@ -6,8 +6,10 @@
 export type {
   BookingDetailResponse,
   BookingHistoryResponse,
-  BookingStatus,
 } from "./api/booking.api";
+
+// enum re-export (런타임 값 - export type 불가)
+export { BookingStatus } from "./api/booking.api";
 // API 및 타입 export
 export {
   cancelBooking,

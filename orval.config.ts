@@ -20,6 +20,7 @@ export default defineConfig({
           path: "./src/shared/api/fetch-wrapper.ts",
           name: "orvalFetch",
         },
+        enumGenerationType: "enum",
       },
     },
   },

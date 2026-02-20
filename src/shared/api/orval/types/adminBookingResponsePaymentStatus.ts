@@ -11,15 +11,12 @@
 /**
  * 결제 상태
  */
-export type AdminBookingResponsePaymentStatus = typeof AdminBookingResponsePaymentStatus[keyof typeof AdminBookingResponsePaymentStatus];
+export enum AdminBookingResponsePaymentStatus {
+  PENDING= 'PENDING',
+  COMPLETED= 'COMPLETED',
+  FAILED= 'FAILED',
+  CANCELLED= 'CANCELLED',
+  REFUNDED= 'REFUNDED',
+  PARTIAL_REFUNDED= 'PARTIAL_REFUNDED',
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const AdminBookingResponsePaymentStatus = {
-  PENDING: 'PENDING',
-  COMPLETED: 'COMPLETED',
-  FAILED: 'FAILED',
-  CANCELLED: 'CANCELLED',
-  REFUNDED: 'REFUNDED',
-  PARTIAL_REFUNDED: 'PARTIAL_REFUNDED',
-} as const;
+}

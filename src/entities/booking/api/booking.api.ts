@@ -15,6 +15,8 @@ export type {
   BookingDetailResponse,
   BookingHistoryResponse,
   BookingSeatResponse,
-  BookingStatus,
   PaymentDetailResponse,
 } from "@/shared/api/orval/types";
+
+// enum re-export (런타임 값 - export type 불가)
+export { BookingStatus } from "@/shared/api/orval/types";

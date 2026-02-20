@@ -11,18 +11,15 @@
 /**
  * 결제 수단
  */
-export type PaymentResponsePaymentMethod = typeof PaymentResponsePaymentMethod[keyof typeof PaymentResponsePaymentMethod];
+export enum PaymentResponsePaymentMethod {
+  CREDIT_CARD= 'CREDIT_CARD',
+  DEBIT_CARD= 'DEBIT_CARD',
+  BANK_TRANSFER= 'BANK_TRANSFER',
+  VIRTUAL_ACCOUNT= 'VIRTUAL_ACCOUNT',
+  KAKAO_PAY= 'KAKAO_PAY',
+  NAVER_PAY= 'NAVER_PAY',
+  TOSS_PAY= 'TOSS_PAY',
+  PAYCO= 'PAYCO',
+  POINT= 'POINT',
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const PaymentResponsePaymentMethod = {
-  CREDIT_CARD: 'CREDIT_CARD',
-  DEBIT_CARD: 'DEBIT_CARD',
-  BANK_TRANSFER: 'BANK_TRANSFER',
-  VIRTUAL_ACCOUNT: 'VIRTUAL_ACCOUNT',
-  KAKAO_PAY: 'KAKAO_PAY',
-  NAVER_PAY: 'NAVER_PAY',
-  TOSS_PAY: 'TOSS_PAY',
-  PAYCO: 'PAYCO',
-  POINT: 'POINT',
-} as const;
+}

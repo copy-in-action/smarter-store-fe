@@ -11,15 +11,12 @@
 /**
  * 감사 로그 카테고리
  */
-export type AuditCategory = typeof AuditCategory[keyof typeof AuditCategory];
+export enum AuditCategory {
+  AUTH= 'AUTH',
+  ACCOUNT= 'ACCOUNT',
+  BOOKING= 'BOOKING',
+  PAYMENT= 'PAYMENT',
+  ADMIN= 'ADMIN',
+  SEAT= 'SEAT',
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const AuditCategory = {
-  AUTH: 'AUTH',
-  ACCOUNT: 'ACCOUNT',
-  BOOKING: 'BOOKING',
-  PAYMENT: 'PAYMENT',
-  ADMIN: 'ADMIN',
-  SEAT: 'SEAT',
-} as const;
+}

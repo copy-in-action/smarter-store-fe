@@ -1,14 +1,16 @@
 /**
  * 결제 요청 데이터 생성 유틸리티
  */
+
+import type { SeatTotalInfo } from "@/entities/booking";
 import type {
+  AppliedDiscountDtoType,
   AvailableCouponResponse,
   BookingResponse,
   CouponValidateResponse,
   PaymentCreateRequest,
   PerformanceResponse,
 } from "@/shared/api/orval/types";
-import type { SeatTotalInfo  } from "@/entities/booking";
 
 /**
  * 예매 데이터와 할인 검증 결과를 서버 전송용 결제 요청 데이터로 변환
@@ -35,7 +37,7 @@ export function createPaymentRequestData(
    * 할인 정보 변환: validationResponse.results → AppliedDiscountDto[]
    */
   const discounts = validationResponse.results.map((result) => ({
-    type: "COUPON" as const,
+    type: "COUPON" as AppliedDiscountDtoType,
     name: couponMap.get(result.couponId!) || "할인",
     amount: result.discountAmount,
     couponId: result.couponId,

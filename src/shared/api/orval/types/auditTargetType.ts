@@ -11,17 +11,14 @@
 /**
  * 감사 로그 대상 타입
  */
-export type AuditTargetType = typeof AuditTargetType[keyof typeof AuditTargetType];
+export enum AuditTargetType {
+  USER= 'USER',
+  BOOKING= 'BOOKING',
+  PAYMENT= 'PAYMENT',
+  PERFORMANCE= 'PERFORMANCE',
+  SCHEDULE= 'SCHEDULE',
+  VENUE= 'VENUE',
+  SEAT= 'SEAT',
+  NOTICE= 'NOTICE',
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const AuditTargetType = {
-  USER: 'USER',
-  BOOKING: 'BOOKING',
-  PAYMENT: 'PAYMENT',
-  PERFORMANCE: 'PERFORMANCE',
-  SCHEDULE: 'SCHEDULE',
-  VENUE: 'VENUE',
-  SEAT: 'SEAT',
-  NOTICE: 'NOTICE',
-} as const;
+}

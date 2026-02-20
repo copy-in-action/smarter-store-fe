@@ -17,7 +17,8 @@ import { ChevronDown, Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useRef, useState } from "react";
 import type { DateRange } from "react-day-picker";
-import type { BookingStatus } from "@/entities/booking";
+import { BookingStatus } from "@/entities/booking";
+import { ALL_STATUSES, STATUS_OPTIONS } from "../model/booking-status";
 import { Button } from "@/shared/ui/button";
 import {
   DropdownMenu,
@@ -57,18 +58,6 @@ interface DataTableProps<TData, TValue> {
   isLoading?: boolean;
 }
 
-/**
- * 예매 상태 옵션
- */
-const STATUS_OPTIONS: { value: BookingStatus; label: string }[] = [
-  { value: "PENDING", label: "결제 대기" },
-  { value: "CONFIRMED", label: "예매 확정" },
-  { value: "CANCELLED", label: "취소됨" },
-  { value: "EXPIRED", label: "만료됨" },
-];
-
-/** 모든 상태 값 배열 */
-const ALL_STATUSES = STATUS_OPTIONS.map((option) => option.value);
 
 /**
  * searchParams에서 상태 배열 파싱

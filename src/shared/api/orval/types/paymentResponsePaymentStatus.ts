@@ -11,15 +11,12 @@
 /**
  * 결제 상태
  */
-export type PaymentResponsePaymentStatus = typeof PaymentResponsePaymentStatus[keyof typeof PaymentResponsePaymentStatus];
+export enum PaymentResponsePaymentStatus {
+  PENDING= 'PENDING',
+  COMPLETED= 'COMPLETED',
+  FAILED= 'FAILED',
+  CANCELLED= 'CANCELLED',
+  REFUNDED= 'REFUNDED',
+  PARTIAL_REFUNDED= 'PARTIAL_REFUNDED',
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const PaymentResponsePaymentStatus = {
-  PENDING: 'PENDING',
-  COMPLETED: 'COMPLETED',
-  FAILED: 'FAILED',
-  CANCELLED: 'CANCELLED',
-  REFUNDED: 'REFUNDED',
-  PARTIAL_REFUNDED: 'PARTIAL_REFUNDED',
-} as const;
+}

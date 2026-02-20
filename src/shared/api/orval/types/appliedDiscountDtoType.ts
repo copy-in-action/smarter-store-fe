@@ -11,15 +11,12 @@
 /**
  * 할인 유형 (COUPON, POINT, PROMOTION)
  */
-export type AppliedDiscountDtoType = typeof AppliedDiscountDtoType[keyof typeof AppliedDiscountDtoType];
+export enum AppliedDiscountDtoType {
+  COUPON= 'COUPON',
+  PROMOTION= 'PROMOTION',
+  GRADE= 'GRADE',
+  POINT= 'POINT',
+  WELFARE= 'WELFARE',
+  ETC= 'ETC',
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const AppliedDiscountDtoType = {
-  COUPON: 'COUPON',
-  PROMOTION: 'PROMOTION',
-  GRADE: 'GRADE',
-  POINT: 'POINT',
-  WELFARE: 'WELFARE',
-  ETC: 'ETC',
-} as const;
+}

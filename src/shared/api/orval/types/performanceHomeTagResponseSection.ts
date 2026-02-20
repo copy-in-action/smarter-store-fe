@@ -11,13 +11,10 @@
 /**
  * 상위 섹션 코드
  */
-export type PerformanceHomeTagResponseSection = typeof PerformanceHomeTagResponseSection[keyof typeof PerformanceHomeTagResponseSection];
+export enum PerformanceHomeTagResponseSection {
+  POPULAR_TICKET= 'POPULAR_TICKET',
+  DATE_COURSE= 'DATE_COURSE',
+  RECOMMENDED= 'RECOMMENDED',
+  REGION= 'REGION',
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const PerformanceHomeTagResponseSection = {
-  POPULAR_TICKET: 'POPULAR_TICKET',
-  DATE_COURSE: 'DATE_COURSE',
-  RECOMMENDED: 'RECOMMENDED',
-  REGION: 'REGION',
-} as const;
+}

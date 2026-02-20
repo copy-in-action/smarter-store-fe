@@ -3,8 +3,13 @@
 > 이 프로젝트는 **FSD(Feature-Sliced Design)** 아키텍처를 따릅니다.
 > FSD는 비즈니스 기능 중심으로 코드를 구조화하는 방법론입니다.
 >
-> **핵심**: Layer(계층) → Slice(도메인) → Segment(목적)으로 코드를 조직하며,
+> **핵심**: Layer(계층) → Service Type(서비스 종류) → Slice(도메인) → Segment(목적)으로 코드를 조직하며,
 > 상위 레이어는 하위 레이어로만 의존할 수 있습니다.
+>
+> **프로젝트 특징**:
+> - `src/views/`는 FSD의 `pages` 레이어에 해당합니다
+> - `views/`와 `features/` 하위에 서비스 종류별 분류 폴더(`admin`, `service`, `booking` 등)가 있습니다
+> - `entities/`는 서비스 종류별 분류 없이 순수 도메인만 관리합니다
 
 ## 🚀 필수 준수 사항
 
@@ -16,6 +21,7 @@
 ### FSD 아키텍처
 - ✅ **3대 원칙**: Public API, Isolation(격리), Needs Driven(비즈니스 중심)
 - ✅ **레이어 의존성**: 상위 레이어만 하위 레이어 import 가능 (같은 레이어 간 직접 참조 금지)
+- ✅ **Service Type 분류**: views/features 하위에 admin, service, booking 등 서비스 종류별 폴더 사용
 - ✅ **Public API**: index.ts를 통한 export만 허용 (내부 경로 접근 금지)
 - ✅ **Segment 네이밍**: 목적 중심 (ui/api/model/lib/config) 사용, 기술 분류(components/hooks/types) 금지
 - ✅ **Export 최소화**: 메인 컴포넌트, 외부 필요 타입/API만 노출 (내부 구현 세부사항 금지)
@@ -36,7 +42,7 @@
 ```
 app       ← 최상위 (앱 전역 설정)
   ↓
-pages     ← 화면/페이지
+views     ← 화면/페이지 (FSD의 pages 레이어에 해당)
   ↓
 widgets   ← 자체완결 UI 블록
   ↓
@@ -54,27 +60,31 @@ shared    ← 최하위 (공통 인프라)
 | 레이어 | 역할 | 포함 내용 | 예시 |
 |--------|------|-----------|------|
 | **app** (필수) | 앱 전역 설정 | Provider, 글로벌 스타일 | QueryProvider, layout.tsx |
-| **pages** (필수) | 페이지/화면 | UI 렌더링, 데이터 페칭 | booking-detail, product-list |
+| **views** (필수) | 페이지/화면 | UI 렌더링, 데이터 페칭 | admin/performance-list, service/booking-detail |
 | **widgets** (선택) | 재사용 UI 블록 | 헤더, 푸터, 사이드바 | header, admin-sidebar |
-| **features** (선택) | 사용자 기능 | 폼, API 호출, 인터랙션 | booking-payment, login-form |
+| **features** (선택) | 사용자 기능 | 폼, API 호출, 인터랙션 | admin/performance-form, booking/payment |
 | **entities** (선택) | 비즈니스 개념 | 도메인 타입, CRUD API, 스키마 | product, booking, venue |
 | **shared** (필수) | 공통 인프라 | API 클라이언트, UI 키트, 유틸 | button, routes, format |
 
-## FSD 3단계 구조: Layer → Slice → Segment
+## FSD 4단계 구조: Layer → Service Type → Slice → Segment
+
+**이 프로젝트는 서비스 종류별 분류를 추가한 4단계 구조를 사용합니다**
 
 ```
 📂 features/              # Layer: 계층 (책임도별 수평 분할)
-  📂 booking-payment/     # Slice: 슬라이스 (도메인별 수직 분할)
-    📂 ui/                # Segment: 세그먼트 (목적별 분류)
-    📂 api/
-    📂 model/
-    📄 index.ts           # Public API
+  📂 admin/               # Service Type: 서비스 종류 (admin, service 등)
+    📂 performance-form/  # Slice: 슬라이스 (도메인별 수직 분할)
+      📂 ui/              # Segment: 세그먼트 (목적별 분류)
+      📂 api/
+      📂 model/
+      📄 index.ts         # Public API
 ```
 
 | 구조 | 정의 | 규칙 | 예시 |
 |------|------|------|------|
-| **Layer** | 책임도별 수평 분할 | 상위 → 하위만 의존 | `features`, `entities`, `shared` |
-| **Slice** | 도메인별 수직 분할 | 같은 레이어 내 직접 참조 금지 | `booking-payment`, `product` |
+| **Layer** | 책임도별 수평 분할 | 상위 → 하위만 의존 | `views`, `features`, `entities`, `shared` |
+| **Service Type** | 서비스 종류별 분류 | views와 features에서만 사용 | `admin`, `service`, `booking` |
+| **Slice** | 도메인별 수직 분할 | 같은 레이어 내 직접 참조 금지 | `performance-form`, `booking-detail` |
 | **Segment** | 목적별 분류 | 목적 중심 네이밍 | `ui`, `api`, `model` (⭕) / `components`, `hooks` (❌) |
 
 ### 실제 프로젝트 구조 예시
@@ -85,28 +95,47 @@ src/
 │   ├── providers/                # 전역 Provider
 │   └── styles/                   # 글로벌 스타일
 │
-├── pages/                        # Layer: 페이지 (Next.js App Router는 app/ 사용)
-│   └── booking-detail/           # Slice: 예약 상세 페이지
-│       ├── ui/                   # Segment: UI
-│       │   └── BookingDetailPage.tsx
-│       └── index.ts
+├── views/                        # Layer: 페이지 (FSD의 pages에 해당)
+│   ├── admin/                    # Service Type: 관리자
+│   │   ├── performance-list/     # Slice: 공연 목록 페이지
+│   │   │   ├── ui/               # Segment: UI
+│   │   │   │   └── PerformanceListPage.tsx
+│   │   │   └── index.ts
+│   │   └── venue-detail/         # Slice: 공연장 상세 페이지
+│   │       ├── ui/
+│   │       └── index.ts
+│   └── service/                  # Service Type: 서비스
+│       ├── booking-detail/       # Slice: 예약 상세 페이지
+│       │   ├── ui/
+│       │   │   └── BookingDetailPage.tsx
+│       │   └── index.ts
+│       └── performance-detail/   # Slice: 공연 상세 페이지
 │
 ├── widgets/                      # Layer: 재사용 UI 블록
 │   ├── admin-sidebar/            # Slice: 관리자 사이드바
 │   └── header/                   # Slice: 헤더
 │
 ├── features/                     # Layer: 사용자 기능
-│   ├── booking-payment/          # Slice: 예약 결제
-│   │   ├── ui/                   # Segment: UI 컴포넌트
-│   │   │   ├── BookingPayment.tsx        # 메인 컴포넌트 (export)
-│   │   │   └── PaymentMethod.tsx         # 내부 컴포넌트 (export X)
-│   │   ├── api/                  # Segment: API
-│   │   │   ├── payment.api.ts
-│   │   │   └── payment.queries.ts
-│   │   ├── model/                # Segment: 비즈니스 로직
-│   │   │   └── payment.schema.ts
-│   │   └── index.ts              # Public API
-│   └── performance-form/         # Slice: 공연 폼
+│   ├── admin/                    # Service Type: 관리자
+│   │   ├── performance-form/     # Slice: 공연 폼
+│   │   │   ├── ui/               # Segment: UI 컴포넌트
+│   │   │   │   ├── PerformanceForm.tsx    # 메인 컴포넌트 (export)
+│   │   │   │   └── PerformanceFormField.tsx # 내부 컴포넌트 (export X)
+│   │   │   ├── api/              # Segment: API
+│   │   │   │   ├── performance.api.ts
+│   │   │   │   └── performance.queries.ts
+│   │   │   ├── model/            # Segment: 비즈니스 로직
+│   │   │   │   └── performance-form.schema.ts
+│   │   │   └── index.ts          # Public API
+│   │   └── venue-form/           # Slice: 공연장 폼
+│   ├── booking/                  # Service Type: 예약
+│   │   └── payment/              # Slice: 예약 결제
+│   │       ├── ui/
+│   │       ├── api/
+│   │       ├── model/
+│   │       └── index.ts
+│   └── service/                  # Service Type: 서비스
+│       └── performance-search/   # Slice: 공연 검색
 │
 ├── entities/                     # Layer: 비즈니스 개념
 │   ├── booking/                  # Slice: 예약 도메인
@@ -175,10 +204,10 @@ features (폼 로직)  →  entities (도메인)  →  shared (인프라)
    ❌ reverse           ❌ reverse
 
 // ✅ features → entities
-import { createProductSchema } from '@/entities/product';
+import { createPerformanceSchema } from '@/entities/performance';
 
 // ❌ entities → features (불가능!)
-import { productFormSchema } from '@/features/product-form';
+import { performanceFormSchema } from '@/features/admin/performance-form';
 ```
 
 | | Entities | Features |
@@ -222,7 +251,7 @@ export type UpdatePerformanceForm = z.infer<typeof updatePerformanceSchema>;
 **목적**: UI 입력 처리 및 서버 데이터로 변환
 
 ```typescript
-// src/features/performance-form/model/performance-form.schema.ts
+// src/features/admin/performance-form/model/performance-form.schema.ts
 import { createPerformanceSchema } from "@/entities/performance";
 import { z } from 'zod';
 
@@ -278,14 +307,24 @@ import { Input } from '@/shared/ui/input';
 
 ### 슬라이스 내부 구조
 ```typescript
+# views와 features 레이어 (서비스 타입 포함)
+service-type/        # admin, service, booking 등
+└── feature-name/
+    ├── ui/              # UI 컴포넌트
+    ├── api/             # API 메서드 및 쿼리 hooks
+    │   ├── xxx.api.ts   # API 함수 (fetch, axios 등)
+    │   └── xxx.queries.ts  # React Query hooks (useQuery, useMutation)
+    ├── model/           # 타입, 스키마, 비즈니스 로직
+    ├── lib/             # 유틸리티
+    └── index.ts         # Public API
+
+# entities 레이어 (서비스 타입 없음)
 feature-name/
-├── ui/              # UI 컴포넌트
-├── api/             # API 메서드 및 쿼리 hooks
-│   ├── xxx.api.ts   # API 함수 (fetch, axios 등)
-│   └── xxx.queries.ts  # React Query hooks (useQuery, useMutation)
-├── model/           # 타입, 스키마, 비즈니스 로직
-├── lib/             # 유틸리티
-└── index.ts         # Public API
+├── ui/
+├── api/
+├── model/
+├── lib/
+└── index.ts
 ```
 
 ### Public API Export 전략 (index.ts)
@@ -317,20 +356,20 @@ export type { CreateProductForm, UpdateProductForm } from './model/product.schem
 
 #### Features Layer 예시
 ```typescript
-// src/features/product-form/index.ts
+// src/features/admin/performance-form/index.ts
 
 // ✅ 메인 컴포넌트만 export (내부 하위 컴포넌트는 노출 X)
-export { ProductForm } from './ui/ProductForm';
+export { PerformanceForm } from './ui/PerformanceForm';
 
 // ✅ API 및 쿼리 hooks (feature 레벨 로직)
-export { useCreateProductMutation, useUpdateProductMutation } from './api/product.queries';
+export { useCreatePerformanceMutation, useUpdatePerformanceMutation } from './api/performance.queries';
 
 // ✅ 타입 및 스키마 (외부에서 사용할 것만)
-export type { ProductFormInput, ProductFormData } from './model/product-form.schema';
-export { productFormSchema } from './model/product-form.schema';
+export type { PerformanceFormInput, PerformanceFormData } from './model/performance-form.schema';
+export { performanceFormSchema } from './model/performance-form.schema';
 
 // ❌ 내부 구현 세부사항은 노출하지 않음
-// - 하위 UI 컴포넌트 (ProductFormField, ProductFormActions 등)
+// - 하위 UI 컴포넌트 (PerformanceFormField, PerformanceFormActions 등)
 // - lib 유틸리티 함수
 // - 내부에서만 사용하는 타입
 ```
@@ -361,12 +400,23 @@ export type { HeaderProps } from './ui/Header';
 ### Import 규칙
 ```typescript
 // ✅ 올바른 import (Public API 사용)
-import { ProductCard, useProductsQuery } from '@/entities/product';
-import { ProductForm } from '@/features/product-form';
+// entities (서비스 타입 없음)
+import { BookingCard, useBookingsQuery } from '@/entities/booking';
+import { PerformanceCard } from '@/entities/performance';
+
+// features (서비스 타입 포함)
+import { PerformanceForm } from '@/features/admin/performance-form';
+import { BookingPayment } from '@/features/booking/payment';
+import { PerformanceSearch } from '@/features/service/performance-search';
+
+// views (서비스 타입 포함)
+import { PerformanceListPage } from '@/views/admin/performance-list';
+import { BookingDetailPage } from '@/views/service/booking-detail';
 
 // ❌ 직접 접근 금지 (내부 구조 의존)
-import { ProductCard } from '@/entities/product/ui/ProductCard';
-import { useProductsQuery } from '@/entities/product/api/product.queries';
+import { BookingCard } from '@/entities/booking/ui/BookingCard';
+import { PerformanceForm } from '@/features/admin/performance-form/ui/PerformanceForm';
+import { useBookingsQuery } from '@/entities/booking/api/booking.queries';
 ```
 
 ### Shared/UI 특수 규칙
@@ -471,9 +521,13 @@ if (user.role === 'admin') {
   - [ ] Isolation: 상위/동일 레이어 의존 금지
   - [ ] Needs Driven: 비즈니스 중심 구조화
 - [ ] **레이어 의존성**: 상위 레이어만 하위 레이어 import 가능
+  - [ ] views → features (⭕)
   - [ ] features → entities (⭕)
   - [ ] entities → features (❌)
-  - [ ] features → features (❌)
+  - [ ] features → features (❌ - 같은 레이어 간 직접 참조 금지)
+- [ ] **Service Type 분류**: views와 features 레이어에만 적용
+  - [ ] admin/, service/, booking/ 등으로 분류
+  - [ ] entities는 서비스 타입 분류 없이 순수 도메인만 관리
 - [ ] **Segment 네이밍**: 목적 중심 이름 사용
   - [ ] ui/, api/, model/, lib/, config/ 사용
   - [ ] components/, hooks/, types/, utils/ 금지
