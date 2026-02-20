@@ -25,6 +25,7 @@ import {
   type PaymentFormData,
   paymentFormSchema,
 } from "@/features/booking/payment/model/payment-form.schema";
+import { PaymentCreateRequestPaymentMethod } from "@/shared/api/orval/types";
 import { PAGES } from "@/shared/config";
 import { Button } from "@/shared/ui/button";
 
@@ -52,7 +53,7 @@ const BookingPayment = () => {
     resolver: zodResolver(paymentFormSchema),
     defaultValues: {
       isAgreed: false,
-      paymentMethod: "VIRTUAL_ACCOUNT",
+      paymentMethod: PaymentCreateRequestPaymentMethod.VIRTUAL_ACCOUNT,
       bankCode: undefined,
       reserverInfo: {
         name: user?.username,

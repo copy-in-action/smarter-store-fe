@@ -11,13 +11,10 @@
 /**
  * 예매 상태 (PENDING: 결제 대기중, CONFIRMED: 예매 확정, CANCELLED: 예매 취소, EXPIRED: 시간 만료)
  */
-export type BookingStatus = typeof BookingStatus[keyof typeof BookingStatus];
+export enum BookingStatus {
+  PENDING= 'PENDING',
+  CONFIRMED= 'CONFIRMED',
+  CANCELLED= 'CANCELLED',
+  EXPIRED= 'EXPIRED',
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const BookingStatus = {
-  PENDING: 'PENDING',
-  CONFIRMED: 'CONFIRMED',
-  CANCELLED: 'CANCELLED',
-  EXPIRED: 'EXPIRED',
-} as const;
+}

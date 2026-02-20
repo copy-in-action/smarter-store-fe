@@ -11,14 +11,11 @@
 /**
  * 좌석 등급 (VIP: VIP석, R: R석, S: S석, A: A석, B: B석)
  */
-export type SeatGrade = typeof SeatGrade[keyof typeof SeatGrade];
+export enum SeatGrade {
+  VIP= 'VIP',
+  R= 'R',
+  S= 'S',
+  A= 'A',
+  B= 'B',
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const SeatGrade = {
-  VIP: 'VIP',
-  R: 'R',
-  S: 'S',
-  A: 'A',
-  B: 'B',
-} as const;
+}

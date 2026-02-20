@@ -4,7 +4,8 @@ import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { CalendarIcon, ChevronDown, X } from "lucide-react";
 import type { DateRange } from "react-day-picker";
-import type { BookingStatus } from "@/entities/booking";
+import { BookingStatus } from "@/entities/booking";
+import { STATUS_OPTIONS } from "../model/booking-status";
 import { useIsMobile } from "@/shared/lib/use-device";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
@@ -12,15 +13,6 @@ import { Calendar } from "@/shared/ui/calendar";
 import { Checkbox } from "@/shared/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 
-/**
- * 예매 상태 옵션
- */
-const STATUS_OPTIONS: { value: BookingStatus; label: string }[] = [
-  { value: "PENDING", label: "결제 대기" },
-  { value: "CONFIRMED", label: "예매 확정" },
-  { value: "CANCELLED", label: "취소됨" },
-  { value: "EXPIRED", label: "만료됨" },
-];
 
 interface BookingFilterProps {
   /** 날짜 범위 */

@@ -11,15 +11,12 @@
 /**
  * 할인 유형
  */
-export type DiscountStatsDiscountType = typeof DiscountStatsDiscountType[keyof typeof DiscountStatsDiscountType];
+export enum DiscountStatsDiscountType {
+  COUPON= 'COUPON',
+  PROMOTION= 'PROMOTION',
+  GRADE= 'GRADE',
+  POINT= 'POINT',
+  WELFARE= 'WELFARE',
+  ETC= 'ETC',
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const DiscountStatsDiscountType = {
-  COUPON: 'COUPON',
-  PROMOTION: 'PROMOTION',
-  GRADE: 'GRADE',
-  POINT: 'POINT',
-  WELFARE: 'WELFARE',
-  ETC: 'ETC',
-} as const;
+}

@@ -11,6 +11,11 @@ import type {
 } from "@/shared/api/orval/types";
 import type { SeatPosition } from "@/shared/lib/seat.types";
 
+export {
+  AppliedDiscountDtoType,
+  PaymentCreateRequestPaymentMethod,
+} from "@/shared/api/orval/types";
+
 /**
  * 사용자가 선택한 좌석 정보
  * 용도: UI 표시, 가격 계산

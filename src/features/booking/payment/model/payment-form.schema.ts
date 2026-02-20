@@ -4,6 +4,7 @@
  */
 
 import { z } from "zod";
+import { PaymentCreateRequestPaymentMethod } from "@/shared/api/orval/types";
 
 /**
  * 결제 폼 스키마
@@ -19,12 +20,7 @@ export const paymentFormSchema = z
       message: "약관에 동의해주세요",
     }),
     /** 결제 수단 */
-    paymentMethod: z.enum([
-      "VIRTUAL_ACCOUNT",
-      "CREDIT_CARD",
-      "KAKAO_PAY",
-      "TOSS_PAY",
-    ]),
+    paymentMethod: z.enum(PaymentCreateRequestPaymentMethod),
     /** 무통장 입금 은행 코드 */
     bankCode: z.string().optional(),
     /** 예약자 정보 */

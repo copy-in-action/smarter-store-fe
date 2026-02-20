@@ -11,13 +11,10 @@
 /**
  * 섹션 코드 (예: POPULAR_TICKET, DATE_COURSE)
  */
-export type HomeSectionResponseSection = typeof HomeSectionResponseSection[keyof typeof HomeSectionResponseSection];
+export enum HomeSectionResponseSection {
+  POPULAR_TICKET= 'POPULAR_TICKET',
+  DATE_COURSE= 'DATE_COURSE',
+  RECOMMENDED= 'RECOMMENDED',
+  REGION= 'REGION',
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const HomeSectionResponseSection = {
-  POPULAR_TICKET: 'POPULAR_TICKET',
-  DATE_COURSE: 'DATE_COURSE',
-  RECOMMENDED: 'RECOMMENDED',
-  REGION: 'REGION',
-} as const;
+}

@@ -2,10 +2,12 @@
 
 import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
-import type {
+import {
   SeatGrade,
-  VenueSeatCapacityRequest,
+  type VenueSeatCapacityRequest,
 } from "@/shared/api/orval/types";
+import { extractSeatGradeInfo } from "@/shared/lib/seat.converters";
+import type { SeatChartConfig, StaticSeatVenue } from "@/shared/lib/seat.types";
 import {
   Accordion,
   AccordionContent,
@@ -17,11 +19,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import { Textarea } from "@/shared/ui/textarea";
-import type {
-  SeatChartConfig,
-  StaticSeatVenue,
-} from "@/shared/lib/seat.types";
-import { extractSeatGradeInfo } from "@/shared/lib/seat.converters";
 import SeatChart from "./SeatChart";
 
 interface StaticSeatChartProps {
@@ -69,7 +66,12 @@ export function StaticSeatChart({
    */
   const addSeatType = () => {
     // 사용 가능한 등급 목록
-    const availableGrades: SeatGrade[] = ["VIP", "R", "S", "A", "B"];
+    const availableGrades: SeatGrade[] = [
+      SeatGrade.VIP,
+      SeatGrade.R,
+      SeatGrade.S,
+      SeatGrade.A,
+    ];
     const usedGrades = Object.keys(formData.seatTypes) as SeatGrade[];
     const unusedGrades = availableGrades.filter(
       (grade) => !usedGrades.includes(grade),

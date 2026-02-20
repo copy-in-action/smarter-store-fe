@@ -26,7 +26,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 const paymentMethods: {
   id: number;
   label: string;
-  value: PaymentResponsePaymentMethod;
+  value: keyof typeof PaymentResponsePaymentMethod;
 }[] = [
   {
     id: 1,

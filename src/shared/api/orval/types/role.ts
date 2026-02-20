@@ -11,11 +11,8 @@
 /**
  * 사용자 역할 (USER: 일반 사용자, ADMIN: 관리자)
  */
-export type Role = typeof Role[keyof typeof Role];
+export enum Role {
+  USER= 'USER',
+  ADMIN= 'ADMIN',
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const Role = {
-  USER: 'USER',
-  ADMIN: 'ADMIN',
-} as const;
+}

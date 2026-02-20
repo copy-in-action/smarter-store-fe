@@ -1,4 +1,4 @@
-import type { SeatingChartResponse } from "../../orval/types";
+import { SeatGrade, type SeatingChartResponse } from "../../orval/types";
 
 /**
  * 좌석 배치도 목 데이터
@@ -38,25 +38,25 @@ export const mockSeatingCharts: Map<number, SeatingChartResponse> = new Map([
         {
           id: 1,
           venueId: 2,
-          seatGrade: "VIP",
+          seatGrade: SeatGrade.VIP,
           capacity: 60, // 3행 × 20열
         },
         {
           id: 2,
           venueId: 2,
-          seatGrade: "R",
+          seatGrade: SeatGrade.R,
           capacity: 60, // 3행 × 20열
         },
         {
           id: 3,
           venueId: 2,
-          seatGrade: "S",
+          seatGrade: SeatGrade.S,
           capacity: 40, // 2행 × 20열
         },
         {
           id: 4,
           venueId: 2,
-          seatGrade: "A",
+          seatGrade: SeatGrade.A,
           capacity: 40, // 2행 × 20열
         },
       ],

@@ -1,4 +1,5 @@
 import { addDays, formatISO } from "date-fns";
+import { SeatGrade } from "../../orval/types";
 import type { PerformanceScheduleResponse } from "../../orval/types";
 
 /**
@@ -43,10 +44,10 @@ export const mockPerformanceSchedules: Map<
         createdAt: formatISO(now),
         updatedAt: formatISO(now),
         ticketOptions: [
-          { id: 1, seatGrade: "VIP", price: 150000 },
-          { id: 2, seatGrade: "R", price: 120000 },
-          { id: 3, seatGrade: "S", price: 90000 },
-          { id: 4, seatGrade: "A", price: 70000 },
+          { id: 1, seatGrade: SeatGrade.VIP, price: 150000 },
+          { id: 2, seatGrade: SeatGrade.R, price: 120000 },
+          { id: 3, seatGrade: SeatGrade.S, price: 90000 },
+          { id: 4, seatGrade: SeatGrade.A, price: 70000 },
         ],
       },
       // 3일 뒤 - 오후 3시
@@ -66,10 +67,10 @@ export const mockPerformanceSchedules: Map<
         createdAt: formatISO(now),
         updatedAt: formatISO(now),
         ticketOptions: [
-          { id: 5, seatGrade: "VIP", price: 150000 },
-          { id: 6, seatGrade: "R", price: 120000 },
-          { id: 7, seatGrade: "S", price: 90000 },
-          { id: 8, seatGrade: "A", price: 70000 },
+          { id: 5, seatGrade: SeatGrade.VIP, price: 150000 },
+          { id: 6, seatGrade: SeatGrade.R, price: 120000 },
+          { id: 7, seatGrade: SeatGrade.S, price: 90000 },
+          { id: 8, seatGrade: SeatGrade.A, price: 70000 },
         ],
       },
       // 3일 뒤 - 오후 4시
@@ -89,10 +90,10 @@ export const mockPerformanceSchedules: Map<
         createdAt: formatISO(now),
         updatedAt: formatISO(now),
         ticketOptions: [
-          { id: 9, seatGrade: "VIP", price: 150000 },
-          { id: 10, seatGrade: "R", price: 120000 },
-          { id: 11, seatGrade: "S", price: 90000 },
-          { id: 12, seatGrade: "A", price: 70000 },
+          { id: 9, seatGrade: SeatGrade.VIP, price: 150000 },
+          { id: 10, seatGrade: SeatGrade.R, price: 120000 },
+          { id: 11, seatGrade: SeatGrade.S, price: 90000 },
+          { id: 12, seatGrade: SeatGrade.A, price: 70000 },
         ],
       },
       // 4일 뒤 - 오후 2시
@@ -112,10 +113,10 @@ export const mockPerformanceSchedules: Map<
         createdAt: formatISO(now),
         updatedAt: formatISO(now),
         ticketOptions: [
-          { id: 13, seatGrade: "VIP", price: 150000 },
-          { id: 14, seatGrade: "R", price: 120000 },
-          { id: 15, seatGrade: "S", price: 90000 },
-          { id: 16, seatGrade: "A", price: 70000 },
+          { id: 13, seatGrade: SeatGrade.VIP, price: 150000 },
+          { id: 14, seatGrade: SeatGrade.R, price: 120000 },
+          { id: 15, seatGrade: SeatGrade.S, price: 90000 },
+          { id: 16, seatGrade: SeatGrade.A, price: 70000 },
         ],
       },
       // 4일 뒤 - 오후 3시
@@ -135,10 +136,10 @@ export const mockPerformanceSchedules: Map<
         createdAt: formatISO(now),
         updatedAt: formatISO(now),
         ticketOptions: [
-          { id: 17, seatGrade: "VIP", price: 150000 },
-          { id: 18, seatGrade: "R", price: 120000 },
-          { id: 19, seatGrade: "S", price: 90000 },
-          { id: 20, seatGrade: "A", price: 70000 },
+          { id: 17, seatGrade: SeatGrade.VIP, price: 150000 },
+          { id: 18, seatGrade: SeatGrade.R, price: 120000 },
+          { id: 19, seatGrade: SeatGrade.S, price: 90000 },
+          { id: 20, seatGrade: SeatGrade.A, price: 70000 },
         ],
       },
     ],

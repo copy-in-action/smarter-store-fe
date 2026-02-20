@@ -8,13 +8,10 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type SectionMetadataResponseSection = typeof SectionMetadataResponseSection[keyof typeof SectionMetadataResponseSection];
+export enum SectionMetadataResponseSection {
+  POPULAR_TICKET= 'POPULAR_TICKET',
+  DATE_COURSE= 'DATE_COURSE',
+  RECOMMENDED= 'RECOMMENDED',
+  REGION= 'REGION',
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const SectionMetadataResponseSection = {
-  POPULAR_TICKET: 'POPULAR_TICKET',
-  DATE_COURSE: 'DATE_COURSE',
-  RECOMMENDED: 'RECOMMENDED',
-  REGION: 'REGION',
-} as const;
+}
