@@ -9,6 +9,7 @@
  */
 import type { PaymentResponse } from './paymentResponse';
 import type { PaymentItemResponse } from './paymentItemResponse';
+import type { PaymentDiscountResponse } from './paymentDiscountResponse';
 import type { PgInfoResponse } from './pgInfoResponse';
 
 /**
@@ -18,5 +19,7 @@ export interface PaymentDetailResponse {
   payment: PaymentResponse;
   /** 결제 항목 목록 (티켓 등) */
   items: PaymentItemResponse[];
+  /** 할인 적용 상세 내역 */
+  discounts: PaymentDiscountResponse[];
   pgInfo?: PgInfoResponse;
 }

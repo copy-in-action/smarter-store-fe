@@ -11,7 +11,7 @@
 /**
  * 할인 유형 (COUPON, POINT, PROMOTION)
  */
-export enum AppliedDiscountDtoType {
+export enum PaymentDiscountRequestType {
   COUPON= 'COUPON',
   PROMOTION= 'PROMOTION',
   GRADE= 'GRADE',

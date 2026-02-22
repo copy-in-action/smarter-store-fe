@@ -13,6 +13,8 @@ import type { SeatGrade } from './seatGrade';
  * 결제 항목 정보
  */
 export interface PaymentItemResponse {
+  /** 공연 ID */
+  performanceId: number;
   /** 공연명 */
   performanceTitle: string;
   seatGrade: SeatGrade;
@@ -22,6 +24,10 @@ export interface PaymentItemResponse {
   row: number;
   /** 열 번호 */
   col: number;
+  /** 좌석 원가 */
+  unitPrice: number;
+  /** 항목 할인 금액 */
+  discountAmount: number;
   /** 항목 최종 금액 (할인 적용 후) */
   finalPrice: number;
 }

@@ -7,14 +7,14 @@
 **관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
-import type { AppliedDiscountDtoType } from './appliedDiscountDtoType';
+import type { PaymentDiscountRequestType } from './paymentDiscountRequestType';
 
 /**
  * 적용된 할인 정보
  */
-export interface AppliedDiscountDto {
+export interface PaymentDiscountRequest {
   /** 할인 유형 (COUPON, POINT, PROMOTION) */
-  type: AppliedDiscountDtoType;
+  type: PaymentDiscountRequestType;
   /** 할인 명칭 (통계 및 스냅샷 보존용) */
   name: string;
   /** 적용된 할인 금액 (수량이 아닌 KRW 단위 금액) */
