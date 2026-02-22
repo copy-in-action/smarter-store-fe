@@ -24,6 +24,12 @@ export interface PaymentResponse {
   paymentMethod: PaymentResponsePaymentMethod;
   /** 결제 상태 */
   paymentStatus: PaymentResponsePaymentStatus;
+  /** 할인 전 금액 (원가) */
+  originalPrice: number;
+  /** 총 할인 금액 */
+  discountAmount: number;
+  /** 예매 수수료 */
+  bookingFee: number;
   /** 최종 결제 금액 */
   finalPrice: number;
   /** 결제 요청 일시 */

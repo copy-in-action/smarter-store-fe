@@ -2,9 +2,12 @@
  * 결제 요청 데이터 생성 유틸리티
  */
 
-import type { SeatTotalInfo } from "@/entities/booking";
 import type {
-  AppliedDiscountDtoType,
+  PaymentDiscountRequestType,
+  SeatTotalInfo,
+} from "@/entities/booking";
+
+import type {
   AvailableCouponResponse,
   BookingResponse,
   CouponValidateResponse,
@@ -37,7 +40,7 @@ export function createPaymentRequestData(
    * 할인 정보 변환: validationResponse.results → AppliedDiscountDto[]
    */
   const discounts = validationResponse.results.map((result) => ({
-    type: "COUPON" as AppliedDiscountDtoType,
+    type: "COUPON" as PaymentDiscountRequestType,
     name: couponMap.get(result.couponId!) || "할인",
     amount: result.discountAmount,
     couponId: result.couponId,

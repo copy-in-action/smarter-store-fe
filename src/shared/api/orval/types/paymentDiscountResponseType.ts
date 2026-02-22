@@ -9,9 +9,14 @@
  */
 
 /**
- * 공지사항 수정 요청
+ * 할인 유형
  */
-export interface UpdateNoticeRequest {
-  /** 내용 */
-  content: string;
+export enum PaymentDiscountResponseType {
+  COUPON= 'COUPON',
+  PROMOTION= 'PROMOTION',
+  GRADE= 'GRADE',
+  POINT= 'POINT',
+  WELFARE= 'WELFARE',
+  ETC= 'ETC',
+
 }

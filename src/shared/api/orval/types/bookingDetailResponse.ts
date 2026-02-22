@@ -19,6 +19,8 @@ export interface BookingDetailResponse {
   bookingId: string;
   /** 예매 번호 */
   bookingNumber: string;
+  /** 공연 ID */
+  performanceId: number;
   /** 공연 제목 */
   performanceTitle: string;
   /** 공연 메인 이미지 URL */

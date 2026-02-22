@@ -12,8 +12,8 @@ import type {
 import type { SeatPosition } from "@/shared/lib/seat.types";
 
 export {
-  AppliedDiscountDtoType,
   PaymentCreateRequestPaymentMethod,
+  PaymentDiscountRequestType,
 } from "@/shared/api/orval/types";
 
 /**

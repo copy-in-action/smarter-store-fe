@@ -492,6 +492,25 @@ const ADMIN_PAGES = {
         } as Metadata,
       },
     },
+    NOTICES: {
+      /** 공지사항 목록 */
+      LIST: {
+        path: "/admin/notices",
+        metadata: {
+          title: "공지사항 관리 | 관리자",
+          description:
+            "등록된 공지사항을 관리하고 새로운 공지사항을 추가할 수 있습니다.",
+        } as Metadata,
+      },
+      /** 공지사항 생성 */
+      CREATE: {
+        path: "/admin/notices/create",
+        metadata: {
+          title: "공지사항 등록 | 관리자",
+          description: "새로운 공지사항을 등록하는 관리자 페이지",
+        } as Metadata,
+      },
+    },
   },
 } as const;
 

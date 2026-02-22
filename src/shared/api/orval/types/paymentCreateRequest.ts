@@ -8,7 +8,7 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { PaymentCreateRequestPaymentMethod } from './paymentCreateRequestPaymentMethod';
-import type { AppliedDiscountDto } from './appliedDiscountDto';
+import type { PaymentDiscountRequest } from './paymentDiscountRequest';
 
 /**
  * 결제 생성 요청
@@ -29,5 +29,5 @@ export interface PaymentCreateRequest {
   /** 결제 약관 동의 여부 */
   isAgreed: boolean;
   /** 적용된 할인 목록 */
-  discounts: AppliedDiscountDto[];
+  discounts: PaymentDiscountRequest[];
 }

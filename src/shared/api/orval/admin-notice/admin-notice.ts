@@ -9,6 +9,7 @@
  */
 import type {
   CreateNoticeRequest,
+  NoticeGroupResponse,
   NoticeResponse,
   NoticeStatusRequest,
   UpdateNoticeRequest
@@ -253,6 +254,44 @@ export const updateNoticeStatus = async (id: number,
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       noticeStatusRequest,)
+  }
+);}
+
+
+/**
+ * 비활성화된 항목을 포함하여 카테고리별로 그룹화된 목록을 조회합니다.
+
+**권한: ADMIN**
+ * @summary [관리자] 카테고리별 공지사항 목록 조회
+ */
+export type getAllNoticesGroupedResponse200 = {
+  data: NoticeGroupResponse[]
+  status: 200
+}
+    
+export type getAllNoticesGroupedResponseSuccess = (getAllNoticesGroupedResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getAllNoticesGroupedResponse = (getAllNoticesGroupedResponseSuccess)
+
+export const getGetAllNoticesGroupedUrl = () => {
+
+
+  
+
+  return `https://ticket-api.devhong.cc/api/admin/notices/grouped`
+}
+
+export const getAllNoticesGrouped = async ( options?: RequestInit): Promise<getAllNoticesGroupedResponse> => {
+  
+  return orvalFetch<getAllNoticesGroupedResponse>(getGetAllNoticesGroupedUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
   }
 );}
 
