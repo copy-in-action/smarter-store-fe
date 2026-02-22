@@ -88,7 +88,7 @@ const PerformanceBookingNotice = ({
           </DialogHeader>
 
           {/* 스크롤 가능한 공지사항 목록 영역 */}
-          <ScrollArea className="sm:max-h-[90dvh] sm:h-[500px] pe-3">
+          <ScrollArea className="flex-1 overflow-auto sm:max-h-[90dvh] sm:h-[500px] sm:pe-3">
             <Accordion
               type="multiple"
               className="my-0.5"
