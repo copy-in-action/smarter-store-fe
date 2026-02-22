@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  Bell,
   Gift,
   Home,
   Music,
@@ -20,11 +21,6 @@ export const adminSidebarData: SidebarData = {
     avatar: "/images/avatars/admin.jpg",
   },
   navMain: [
-    {
-      title: "대시보드",
-      url: "/admin/dashboard",
-      icon: BarChart3,
-    },
     {
       title: "공연",
       url: "#",
@@ -97,6 +93,21 @@ export const adminSidebarData: SidebarData = {
       ],
     },
     {
+      title: "공지사항",
+      url: "#",
+      icon: Bell,
+      items: [
+        {
+          title: "공지사항 리스트",
+          url: PAGES.ADMIN.NOTICES.LIST.path,
+        },
+        {
+          title: "공지사항 추가",
+          url: PAGES.ADMIN.NOTICES.CREATE.path,
+        },
+      ],
+    },
+    {
       title: "설정",
       url: "/admin/settings",
       icon: Settings,
@@ -144,10 +155,7 @@ export function getActiveSidebarData(pathname: string): SidebarData {
     }
 
     // 단일 메뉴인 경우 - 대시보드는 정확히 일치할 때만 활성화
-    const isActive =
-      item.url === "/admin/dashboard"
-        ? pathname === "/admin/dashboard" || pathname === "/admin"
-        : pathname === item.url;
+    const isActive = pathname === item.url;
 
     return {
       ...item,
