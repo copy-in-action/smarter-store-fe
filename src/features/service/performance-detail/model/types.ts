@@ -2,7 +2,10 @@
  * 서비스 페이지 공연 상세 관련 타입 정의
  */
 
-import type { PerformanceResponse } from "@/shared/api/orval/types";
+import type {
+  NoticeGroupResponse,
+  PerformanceResponse,
+} from "@/shared/api/orval/types";
 
 /**
  * 공연 상세 페이지 컴포넌트 속성
@@ -10,6 +13,8 @@ import type { PerformanceResponse } from "@/shared/api/orval/types";
 export interface ServicePerformanceDetailProps {
   /** 공연 정보 */
   performance: PerformanceResponse;
+  /** 카테고리별 그룹화된 공지사항 목록 */
+  noticesGrouped: NoticeGroupResponse[];
 }
 
 /**
