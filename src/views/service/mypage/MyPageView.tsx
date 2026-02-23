@@ -61,9 +61,11 @@ export default function MyPageView() {
     <div className="wrapper mt-4 pb-4">
       {/* 헤더 */}
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">마이페이지</h1>
-        <p className="text-muted-foreground">
-          나의 공연 예매와 관심 목록을 관리하세요
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
+          마이페이지
+        </h1>{" "}
+        <p className="text-muted-foreground text-sm mt-2">
+          내 정보를 확인 및 수정 할 수 있습니다.
         </p>
       </div>
 
@@ -75,8 +77,8 @@ export default function MyPageView() {
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="space-y-3 flex-1">
-                    <CardTitle className="text-2xl">{item.title}</CardTitle>
-                    <CardDescription className="text-base">
+                    <CardTitle className="sm:text-xl">{item.title}</CardTitle>
+                    <CardDescription className="sm:text-base">
                       {item.description}
                     </CardDescription>
                   </div>
