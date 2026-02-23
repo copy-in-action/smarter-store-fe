@@ -30,13 +30,12 @@ export const createCouponFormSchema = createCouponSchema
 
 /**
  * 쿠폰 수정 폼 스키마 (isActive 포함)
+ * PUT 메소드 사용으로 모든 필드 필수
  */
-export const updateCouponFormSchema = createCouponFormSchema
-  .safeExtend({
-    /** 활성화 여부 */
-    isActive: z.boolean().optional(),
-  })
-  .partial();
+export const updateCouponFormSchema = createCouponFormSchema.safeExtend({
+  /** 활성화 여부 */
+  isActive: z.boolean(),
+});
 
 /**
  * 쿠폰 생성 폼 타입

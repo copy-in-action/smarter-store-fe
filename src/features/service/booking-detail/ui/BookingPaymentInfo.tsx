@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import type { BookingDetailResponse } from "@/entities/booking";
 import { formatCurrency } from "@/shared/lib/format";
 import {
@@ -78,20 +79,36 @@ export function BookingPaymentInfo({ booking }: BookingPaymentInfoProps) {
                 {formatCurrency(booking.paymentDetail.payment.finalPrice)}
               </span>
             </div>
+
+            {/* 결제항목 */}
             {booking.paymentDetail.items.length > 0 && (
               <div className="pt-3 border-t">
                 <p className="text-semibold text-black mb-2">결제 항목</p>
-                {booking.paymentDetail.items.map((item) => (
-                  <div
-                    key={item.row + item.col}
-                    className="flex justify-between text-sm py-1"
-                  >
-                    <span>
-                      {item.seatGrade}석 {item.col}열 {item.row}번
-                    </span>
-                    <span>{formatCurrency(item.finalPrice)}</span>
-                  </div>
-                ))}
+                {booking.paymentDetail.items.map((item, index) => {
+                  const discount = booking.paymentDetail?.discounts[index];
+                  const discountAmount = discount?.amount || 0;
+
+                  return (
+                    <div
+                      key={item.row + item.col}
+                      className="flex justify-between text-sm py-1"
+                    >
+                      <span>
+                        {item.seatGrade}석 {item.col}열 {item.row}번 -{" "}
+                        {discount?.name}
+                        {discountAmount > 0 &&
+                          ` (-${formatCurrency(discountAmount)})`}
+                      </span>
+                      <span>{formatCurrency(item.finalPrice)}</span>
+                    </div>
+                  );
+                })}
+                <div className="flex justify-between text-sm py-1">
+                  <span>예매 수수료</span>
+                  <span>
+                    {formatCurrency(booking.paymentDetail.payment.bookingFee)}
+                  </span>
+                </div>
               </div>
             )}
           </div>

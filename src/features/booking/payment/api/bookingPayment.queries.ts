@@ -1,4 +1,5 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { bookingQueryKeys } from "@/entities/booking";
 import { confirmBooking } from "@/shared/api/orval/booking/booking";
 import { createPayment } from "@/shared/api/orval/payment/payment";
 import { getSchedule } from "@/shared/api/orval/schedule/schedule";
@@ -41,13 +42,24 @@ export const useCreatePayment = () => {
 
 /**
  * 예매를 최종 확정하는 mutation
+ * - 성공 시 예매 내역 캐시를 자동으로 무효화하여 최신 데이터 반영
  * @returns 예매 확정 mutation
  */
 export const useConfirmBooking = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (bookingId: string): Promise<BookingResponse> => {
       const response = await confirmBooking(bookingId);
       return response.data as BookingResponse;
+    },
+    onSuccess: (_, bookingId) => {
+      // 예매 내역 목록 캐시 무효화 (마이페이지 예매 이력)
+      queryClient.invalidateQueries({ queryKey: bookingQueryKeys.my() });
+      // 예매 상세 캐시 무효화
+      queryClient.invalidateQueries({
+        queryKey: bookingQueryKeys.detail(bookingId),
+      });
     },
   });
 };
