@@ -21,7 +21,7 @@ export default function MyBookingsListView() {
     <div className="wrapper py-4">
       <div className="mb-6">
         <Breadcrumb>
-          <BreadcrumbList className="text-2xl font-bold tracking-tight">
+          <BreadcrumbList className="text-xl sm:text-2xl font-bold tracking-tight">
             <BreadcrumbItem>
               <BreadcrumbLink asChild className="text-black">
                 <Link href={PAGES.MY.path}>마이 페이지</Link>

@@ -24,6 +24,8 @@ export const bookingQueryKeys = {
 
 /**
  * 내 예매 내역 목록을 조회합니다
+ * - refetchOnWindowFocus: 페이지 재진입 시 최신 데이터 자동 갱신 (보조 수단)
+ * - staleTime: 1분간 fresh 상태 유지 (불필요한 refetch 방지)
  * @returns 예매 내역 목록 쿼리
  */
 export function useMyBookingsQuery() {
@@ -36,6 +38,7 @@ export function useMyBookingsQuery() {
       }
       throw new Error("예매 내역 조회에 실패했습니다");
     },
+    staleTime: 1000 * 60, // 1분
   });
 }
 

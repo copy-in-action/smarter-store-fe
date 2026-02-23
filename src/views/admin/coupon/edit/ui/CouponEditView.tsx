@@ -35,23 +35,12 @@ export function CouponEditView({ couponId }: CouponEditViewProps) {
   const updateCoupon = useUpdateCoupon();
 
   /**
-   * 폼 제출 핸들러 (변경된 필드만 서버 포맷으로 전달됨)
-   * @param formData - dirtyFields만 포함된 데이터 (ISO String 포맷)
+   * 폼 제출 핸들러
+   * PUT 메소드: 전체 필드가 ISO String 포맷으로 전달됨
+   * @param updateData - 전체 필드 포함된 데이터 (ISO String 포맷)
    */
-  const handleSubmit = async (formData: Partial<CouponUpdateRequest>) => {
+  const handleSubmit = async (updateData: CouponUpdateRequest) => {
     try {
-      // 패칭된 값이 없을 순 없지만 타입 에러를 해결하기 위해 추가.
-      if (!data) return;
-      // 전체 필드 구성 (변경된 필드 + 기존 필드)
-      const updateData: CouponUpdateRequest = {
-        name: formData.name ?? data.name,
-        discountRate: formData.discountRate ?? data.discountRate,
-        validFrom: formData.validFrom ?? data.validFrom,
-        validUntil: formData.validUntil ?? data.validUntil,
-        isActive: formData.isActive ?? data.isActive,
-        sortOrder: formData.sortOrder ?? data.sortOrder,
-      };
-
       await updateCoupon.mutateAsync({ id: couponId, data: updateData });
       toast.success("쿠폰이 수정되었습니다.");
       router.push(PAGES.ADMIN.COUPON.DETAIL.path(couponId));

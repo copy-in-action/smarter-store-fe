@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 import { toast } from "sonner";
@@ -139,7 +140,15 @@ export function BookingDetailView({ bookingId }: BookingDetailViewProps) {
 
         <div className="flex items-start justify-between">
           <div className="space-y-1">
-            <p className="text-xl">{booking.performanceTitle}</p>
+            <p className="text-xl">
+              <Link
+                href={PAGES.PERFORMANCE.DETAIL.path(booking.performanceId)}
+                className="hover:underline hover:underline-offset-4"
+                target="_blank"
+              >
+                {booking.performanceTitle}
+              </Link>
+            </p>
             <p className="text-gray-400">예매번호: {booking.bookingNumber}</p>
           </div>
           <BookingStatusBadge status={booking.status} className="p-2" />

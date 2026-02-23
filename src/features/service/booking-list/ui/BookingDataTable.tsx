@@ -17,8 +17,7 @@ import { ChevronDown, Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useRef, useState } from "react";
 import type { DateRange } from "react-day-picker";
-import { BookingStatus } from "@/entities/booking";
-import { ALL_STATUSES, STATUS_OPTIONS } from "../model/booking-status";
+import type { BookingStatus } from "@/entities/booking";
 import { Button } from "@/shared/ui/button";
 import {
   DropdownMenu,
@@ -39,6 +38,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/ui/table";
+import { ALL_STATUSES, STATUS_OPTIONS } from "../model/booking-status";
 import { BookingFilter } from "./BookingFilter";
 
 /** 페이지당 항목 수 */
@@ -57,7 +57,6 @@ interface DataTableProps<TData, TValue> {
   /** 로딩 상태 */
   isLoading?: boolean;
 }
-
 
 /**
  * searchParams에서 상태 배열 파싱
@@ -316,6 +315,7 @@ export function BookingDataTable<TData, TValue>({
                 <Search className="w-4 h-4" />
               </InputGroupAddon>
               <InputGroupInput
+                className="placeholder:text-sm"
                 placeholder={searchPlaceholder}
                 value={globalFilter ?? ""}
                 onChange={(event) => handleSearchChange(event.target.value)}

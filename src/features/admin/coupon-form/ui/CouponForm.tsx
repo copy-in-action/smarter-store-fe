@@ -38,10 +38,10 @@ type CreateProps = {
 type EditProps = {
   /** 수정 모드 */
   mode: "edit";
-  /** 초기값 (YYYY-MM-DD 형식) */
-  initialValues: Partial<UpdateCouponFormInput>;
-  /** 제출 핸들러 (변경된 필드만, 서버 포맷으로 변환됨) */
-  onSubmit: (data: Partial<CouponCreateRequest>) => Promise<void>;
+  /** 초기값 (YYYY-MM-DD 형식, 모든 필드 필수) */
+  initialValues: UpdateCouponFormInput;
+  /** 제출 핸들러 (PUT 메소드: 전체 필드, 서버 포맷으로 변환됨) */
+  onSubmit: (data: CouponUpdateRequest) => Promise<void>;
   /** 로딩 상태 */
   isLoading?: boolean;
 };
@@ -66,21 +66,24 @@ export function CouponForm({
 }: CouponFormProps) {
   /**
    * 기본 초기값 설정
-   * 수정 모드일 때만 isActive 포함
+   * - 생성 모드: 빈 값
+   * - 수정 모드: initialValues 그대로 사용 (모든 필드 필수)
    */
   const getDefaultValues = ():
     | CreateCouponFormInput
     | UpdateCouponFormInput => {
+    if (mode === "edit") {
+      return initialValues;
+    }
     return {
-      name: initialValues?.name ?? "",
-      validFrom: initialValues?.validFrom ?? "",
-      validUntil: initialValues?.validUntil ?? "",
-      discountRate: initialValues?.discountRate ?? 0,
-      sortOrder: initialValues?.sortOrder ?? 0,
-      ...(mode === "edit" && { isActive: initialValues?.isActive ?? true }),
+      name: "",
+      validFrom: "",
+      validUntil: "",
+      discountRate: 0,
+      sortOrder: 0,
     };
   };
-  console.log("🚀 ~ CouponForm ~ getDefaultValues():", getDefaultValues());
+
   const form = useForm<CreateCouponFormInput | UpdateCouponFormInput>({
     resolver: zodResolver(
       mode === "edit" ? updateCouponFormSchema : createCouponFormSchema,
@@ -99,34 +102,26 @@ export function CouponForm({
 
   /**
    * 폼 제출 핸들러
-   * dirtyFields를 활용해 변경된 필드만 추출 및 서버 포맷으로 변환
-   * @param data - 검증된 폼 데이터
+   * PUT 메소드 사용: 전체 데이터를 서버 포맷으로 변환하여 전송
+   * @param values - 검증된 폼 데이터
    */
   const handleOnSubmit = async (
     values: CouponFormInput | UpdateCouponFormInput,
   ) => {
     if (mode === "edit") {
       const data = values as UpdateCouponFormInput;
-      // 수정 모드: 변경된 필드만 추출 (Type-Safe하게 처리)
-      const { dirtyFields } = form.formState;
-      const dirtyData: Partial<CouponUpdateRequest> = {};
-
-      Object.keys(dirtyFields).forEach((key) => {
-        const k = key as keyof UpdateCouponFormInput;
-        const value = data[k];
-
-        if (value === undefined) return;
-
-        if (k === "validFrom" || k === "validUntil") {
-          dirtyData[k] = formatToApi(value as string);
-        } else {
-          (dirtyData as any)[k] = value;
-        }
-      });
-
-      await onSubmit(dirtyData);
+      // 수정 모드: 전체 데이터를 서버 포맷으로 변환 (PUT 메소드)
+      const updateData: CouponUpdateRequest = {
+        name: data.name,
+        discountRate: data.discountRate,
+        validFrom: formatToApi(data.validFrom),
+        validUntil: formatToApi(data.validUntil),
+        sortOrder: data.sortOrder,
+        isActive: data.isActive,
+      };
+      await onSubmit(updateData);
     } else {
-      // 생성 모드: 타입 단언을 통해 CreateInput임을 명시
+      // 생성 모드: 전체 데이터를 서버 포맷으로 변환
       const data = values as CreateCouponFormInput;
       const createData: CouponCreateRequest = {
         name: data.name,
@@ -245,7 +240,9 @@ export function CouponForm({
                 id="isActive"
                 checked={form.watch("isActive") ?? true}
                 onCheckedChange={(checked) =>
-                  form.setValue("isActive", checked as boolean)
+                  form.setValue("isActive", checked as boolean, {
+                    shouldDirty: true,
+                  })
                 }
               />
               <label

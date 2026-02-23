@@ -19,7 +19,7 @@ export function BookingListContainer() {
   const columns = createBookingColumns();
 
   return (
-    <div className="wrapper my-4 pb-4">
+    <div className="my-4 pb-4">
       {/* 에러 표시 */}
       {isError && (
         <div className="p-4 border border-destructive rounded-md bg-destructive/10">
