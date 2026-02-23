@@ -23,7 +23,7 @@ export function BookingPaymentInfo({ booking }: BookingPaymentInfoProps) {
       {/* 좌석 정보 */}
       {!booking.paymentDetail && (
         <div>
-          <h2 className="font-bold text-2xl mb-2">좌석</h2>
+          <h2 className="mb-2 text-lg font-bold sm:text-xl">좌석</h2>
 
           <div className="space-y-2">
             {booking.seats.map((seat) => (
@@ -45,9 +45,9 @@ export function BookingPaymentInfo({ booking }: BookingPaymentInfoProps) {
       {/* 결제 정보 */}
       {booking.paymentDetail && (
         <div>
-          <h2 className="font-bold text-2xl mb-2">결제</h2>
+          <h2 className="mb-2 text-lg font-bold sm:text-xl">결제</h2>
 
-          <div className="space-y-3">
+          <div className="space-y-3 text-sm sm:text-base">
             <div className="flex justify-between">
               <span className="text-muted-foreground">결제 방법</span>
               <span className="font-medium">
@@ -75,7 +75,7 @@ export function BookingPaymentInfo({ booking }: BookingPaymentInfoProps) {
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">결제 금액</span>
-              <span className="text-lg font-bold">
+              <span className="font-bold text-primary">
                 {formatCurrency(booking.paymentDetail.payment.finalPrice)}
               </span>
             </div>
@@ -83,7 +83,7 @@ export function BookingPaymentInfo({ booking }: BookingPaymentInfoProps) {
             {/* 결제항목 */}
             {booking.paymentDetail.items.length > 0 && (
               <div className="pt-3 border-t">
-                <p className="text-semibold text-black mb-2">결제 항목</p>
+                <p className="mb-2 text-black text-semibold">결제 항목</p>
                 {booking.paymentDetail.items.map((item, index) => {
                   const discount = booking.paymentDetail?.discounts[index];
                   const discountAmount = discount?.amount || 0;
@@ -91,19 +91,22 @@ export function BookingPaymentInfo({ booking }: BookingPaymentInfoProps) {
                   return (
                     <div
                       key={item.row + item.col}
-                      className="flex justify-between text-sm py-1"
+                      className="flex justify-between py-1 text-sm"
                     >
                       <span>
-                        {item.seatGrade}석 {item.col}열 {item.row}번 -{" "}
+                        {item.seatGrade}석 {item.col}열 {item.row}번 [
                         {discount?.name}
                         {discountAmount > 0 &&
                           ` (-${formatCurrency(discountAmount)})`}
+                        ]
                       </span>
-                      <span>{formatCurrency(item.finalPrice)}</span>
+                      <span className="min-w-20 text-end">
+                        {formatCurrency(item.finalPrice)}
+                      </span>
                     </div>
                   );
                 })}
-                <div className="flex justify-between text-sm py-1">
+                <div className="flex justify-between py-1 text-sm">
                   <span>예매 수수료</span>
                   <span>
                     {formatCurrency(booking.paymentDetail.payment.bookingFee)}

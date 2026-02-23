@@ -88,7 +88,7 @@ export function BookingDetailView({ bookingId }: BookingDetailViewProps) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <div className="w-12 h-12 mx-auto border-b-2 rounded-full animate-spin border-primary"></div>
           <p className="mt-4 text-muted-foreground">
             예매 정보를 불러오는 중...
           </p>
@@ -103,8 +103,8 @@ export function BookingDetailView({ bookingId }: BookingDetailViewProps) {
         <Button variant="ghost" onClick={handleBackToList} className="gap-2">
           목록
         </Button>
-        <div className="p-8 border border-destructive rounded-md bg-destructive/10 text-center">
-          <p className="text-destructive font-medium">
+        <div className="p-8 text-center border rounded-md border-destructive bg-destructive/10">
+          <p className="font-medium text-destructive">
             {error?.message || "예매 정보를 불러올 수 없습니다."}
           </p>
         </div>
@@ -136,11 +136,11 @@ export function BookingDetailView({ bookingId }: BookingDetailViewProps) {
         </div>
 
         {/* 기본 정보 카드 */}
-        <h1 className="font-bold text-2xl mb-2">공연</h1>
+        <h1 className="mb-2 text-xl font-bold sm:text-2xl">공연</h1>
 
-        <div className="flex items-start justify-between">
+        <div className="flex items-start justify-between gap-0.5">
           <div className="space-y-1">
-            <p className="text-xl">
+            <p className="text-lg sm:text-xl">
               <Link
                 href={PAGES.PERFORMANCE.DETAIL.path(booking.performanceId)}
                 className="hover:underline hover:underline-offset-4"
@@ -149,7 +149,9 @@ export function BookingDetailView({ bookingId }: BookingDetailViewProps) {
                 {booking.performanceTitle}
               </Link>
             </p>
-            <p className="text-gray-400">예매번호: {booking.bookingNumber}</p>
+            <p className="text-sm text-gray-400 sm:text-base">
+              예매번호: {booking.bookingNumber}
+            </p>
           </div>
           <BookingStatusBadge status={booking.status} className="p-2" />
         </div>
@@ -157,13 +159,13 @@ export function BookingDetailView({ bookingId }: BookingDetailViewProps) {
         <div className="grid grid-cols-2 gap-4 mt-4 mb-10">
           <div>
             <p className="text-sm text-muted-foreground">공연 일시</p>
-            <p className="font-medium">
+            <p className="text-sm font-medium sm:text-base">
               {formatDate(booking.showDateTime, "YYYY-MM-DD HH:mm")}
             </p>
           </div>
           <div>
             <p className="text-sm text-muted-foreground">예매 일시</p>
-            <p className="font-medium">
+            <p className="text-sm font-medium sm:text-base">
               {formatDate(booking.createdAt, "YYYY-MM-DD HH:mm")}
             </p>
           </div>
@@ -191,7 +193,7 @@ export function BookingDetailView({ bookingId }: BookingDetailViewProps) {
             <AlertDialogCancel>취소</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmCancel}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 text-white"
+              className="text-white bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               확인
             </AlertDialogAction>

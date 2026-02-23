@@ -28,10 +28,10 @@ export default function MyBookingDetailView({
   bookingId,
 }: MyBookingDetailViewProps) {
   return (
-    <div className="wrapper py-4">
+    <div className="py-4 wrapper">
       <div className="mb-6">
         <Breadcrumb>
-          <BreadcrumbList className="text-2xl font-bold tracking-tight">
+          <BreadcrumbList className="text-xl font-bold tracking-tight sm:text-2xl">
             <BreadcrumbItem>
               <BreadcrumbLink asChild className="text-black">
                 <Link href={PAGES.MY.path}>마이 페이지</Link>
@@ -51,7 +51,7 @@ export default function MyBookingDetailView({
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <p className="text-muted-foreground text-sm mt-2">
+        <p className="mt-2 text-sm text-muted-foreground">
           예매 상세 정보를 확인하고 관리하세요.
         </p>
       </div>
