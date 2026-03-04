@@ -9,6 +9,13 @@ import {
 import PerformanceDetailView from "@/views/service/performances/PerformanceDetailView";
 
 /**
+ * ISR (Incremental Static Regeneration) 설정
+ * - 300초(5분)마다 자동 재검증 (백그라운드)
+ * - 관리자가 공연 수정/삭제 시 On-Demand Revalidation으로 즉시 업데이트
+ */
+export const revalidate = 300;
+
+/**
  * 공연 상세 페이지 속성
  */
 interface PageProps {

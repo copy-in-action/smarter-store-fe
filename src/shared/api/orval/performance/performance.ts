@@ -57,7 +57,7 @@ export const getAllPerformances = async ( options?: RequestInit): Promise<getAll
 /**
  * ID로 특정 공연의 정보를 조회합니다.
 
-**권한: 누구나**
+**권한: 누구나 (로그인 시 찜 여부 포함)**
  * @summary 단일 공연 조회
  */
 export type getPerformanceResponse200 = {

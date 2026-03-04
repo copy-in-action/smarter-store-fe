@@ -9,12 +9,13 @@
  */
 
 /**
- * 예매 상태 (PENDING: 결제 대기중, CONFIRMED: 예매 확정, CANCELLED: 예매 취소, EXPIRED: 시간 만료)
+ * 예매 상태 (PENDING: 결제 대기중, CONFIRMED: 예매 확정, CANCELLED: 예매 취소, EXPIRED: 시간 만료, RELEASED: 점유 해제)
  */
 export enum BookingStatus {
   PENDING= 'PENDING',
   CONFIRMED= 'CONFIRMED',
   CANCELLED= 'CANCELLED',
   EXPIRED= 'EXPIRED',
+  RELEASED= 'RELEASED',
 
 }

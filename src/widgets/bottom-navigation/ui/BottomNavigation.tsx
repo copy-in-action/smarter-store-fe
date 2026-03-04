@@ -23,7 +23,7 @@ const navigationItems: BottomNavigationItem[] = [
   {
     id: "like",
     label: "찜",
-    href: PAGES.MY.LIKES.path,
+    href: PAGES.WISHLIST.path,
     icon: Heart,
   },
   {

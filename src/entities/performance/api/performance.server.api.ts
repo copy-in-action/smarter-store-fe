@@ -19,7 +19,6 @@ export async function getPerformancesForServer(
 ): Promise<PerformanceResponse[]> {
   const mergedOptions = {
     requireAuth: false,
-    cache: "no-store" as RequestCache,
     ...fetchOptions,
   };
 
@@ -43,7 +42,6 @@ export async function getPerformanceDetailForServer(
 ): Promise<PerformanceResponse> {
   const mergedOptions = {
     requireAuth: false,
-    cache: "no-store" as RequestCache,
     ...fetchOptions,
   };
 

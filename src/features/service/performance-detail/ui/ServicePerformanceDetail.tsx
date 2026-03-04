@@ -2,6 +2,7 @@
  * 서비스 페이지용 공연 상세 컴포넌트
  */
 
+import { PerformanceWishlistButton } from "@/features/service/performance-wishlist";
 import { ScrollSpyClient } from "../lib/useScrollSpy";
 import type { ServicePerformanceDetailProps } from "../model/types";
 import PerformanceBookButton from "./PerformanceBookButton";
@@ -32,6 +33,10 @@ export function ServicePerformanceDetail({
       />
       {/* 제목 섹션 */}
       <PerformanceTitle title={performance.title} />
+      {/* 액션 아이콘 영역 (찜하기, 공유하기 등) */}
+      <div className="flex gap-3 p-detail-wrapper">
+        <PerformanceWishlistButton performanceId={performance.id} />
+      </div>
       {/* 해시태그 네비게이션 */}
       <PerformanceHashTags />
       {/* 주요 정보 섹션 */}

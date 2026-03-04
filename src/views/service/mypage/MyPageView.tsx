@@ -41,7 +41,7 @@ export default function MyPageView() {
       title: "찜 목록",
       description: "관심 있는 공연들을 모아보세요",
       icon: <Heart className="w-8 h-8" />,
-      href: PAGES.MY.LIKES.path,
+      href: PAGES.WISHLIST.path,
     },
     {
       title: "회원 정보",

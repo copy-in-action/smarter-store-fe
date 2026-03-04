@@ -229,6 +229,15 @@ export const SERVICE_PAGES = {
     },
   },
 
+  /** 찜 목록 */
+  WISHLIST: {
+    path: "/wishlist",
+    metadata: createMetadata(
+      "찜한 공연",
+      "관심 있는 공연들을 모아보세요. 찜한 공연의 정보와 예매 일정을 한눈에 확인할 수 있습니다.",
+    ),
+  },
+
   /** 마이페이지 */
   MY: {
     path: "/mypage",
@@ -244,11 +253,6 @@ export const SERVICE_PAGES = {
         "주문 내역",
         "지금까지의 주문 내역을 확인하세요",
       ),
-    },
-    /** 찜 목록 */
-    LIKES: {
-      path: "/mypage/likes",
-      metadata: createMetadata("찜 목록", "관심 있는 공연들을 모아보세요"),
     },
     /** 예매 내역 */
     BOOKINGS: {

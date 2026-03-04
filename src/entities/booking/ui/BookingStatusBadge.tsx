@@ -25,6 +25,7 @@ const STATUS_CONFIG: Record<
   CONFIRMED: { label: "예매 확정", variant: "default" },
   CANCELLED: { label: "취소됨", variant: "destructive" },
   EXPIRED: { label: "만료됨", variant: "secondary" },
+  RELEASED: { label: "점유 해제", variant: "secondary" },
 };
 
 /**
