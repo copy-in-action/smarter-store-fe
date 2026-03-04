@@ -14,7 +14,7 @@ import type {
   PerformanceResponse,
   UpdatePerformanceRequest,
 } from "@/shared/api/orval/types";
-import { revalidatePerformancePages } from "@/shared/lib/revalidate";
+import { revalidatePerformancePages } from "@/shared/lib/revalidate-server";
 
 /**
  * 공연 쿼리 키 상수
@@ -102,8 +102,8 @@ export const useUpdatePerformance = () => {
         queryKey: PERFORMANCE_QUERY_KEYS.detail(id),
       });
 
-      // 홈페이지 캐시 즉시 재생성
-      await revalidatePerformancePages();
+      // 홈페이지 + 해당 공연 상세 페이지 재검증
+      await revalidatePerformancePages(id);
     },
   });
 };
@@ -126,8 +126,8 @@ export const useDeletePerformance = () => {
         queryKey: PERFORMANCE_QUERY_KEYS.detail(performanceId),
       });
 
-      // 홈페이지 캐시 즉시 재생성 (삭제된 공연 즉시 제거)
-      await revalidatePerformancePages();
+      // 홈페이지 + 삭제된 공연 상세 페이지 재검증
+      await revalidatePerformancePages(performanceId);
     },
   });
 };
