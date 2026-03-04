@@ -469,9 +469,9 @@ const PROTECTED_ROUTES = [
 ```
 
 **테스트:**
-- [ ] 비로그인 상태에서 `/wishlist` 접속 → 로그인 페이지 리다이렉트
-- [ ] 로그인 후 `/wishlist` 접속 → 정상 접근
-- [ ] redirect 쿼리 파라미터 확인
+- [x] 비로그인 상태에서 `/wishlist` 접속 → 로그인 페이지 리다이렉트
+- [x] 로그인 후 `/wishlist` 접속 → 정상 접근
+- [x] redirect 쿼리 파라미터 확인
 
 #### Task 1-2: entities/wishlist 생성
 
@@ -529,12 +529,12 @@ src/features/service/performance-wishlist/
 ```
 
 **구현 내용:**
-- [ ] `PerformanceWishlistButton.tsx`: UI 컴포넌트
+- [x] `PerformanceWishlistButton.tsx`: UI 컴포넌트
   - 로그인 상태 체크
   - Skeleton UI (로딩 상태)
   - Heart 아이콘 (찜 상태별)
   - 클릭 핸들러
-- [ ] `usePerformanceWishlist.ts`: 비즈니스 로직
+- [x] `usePerformanceWishlist.ts`: 비즈니스 로직
   - 찜 여부 조회 (useWishlistStatusQuery)
   - 찜 토글 (useWishlistToggleMutation)
   - 에러 처리
@@ -565,10 +565,10 @@ export function ServicePerformanceDetail({ performance }) {
 ```
 
 #### Task 2-3: 테스트
-- [ ] 비로그인: 버튼 클릭 → 로그인 페이지 리다이렉트
-- [ ] 로그인: 찜하기 토글 → 즉시 UI 업데이트 (Optimistic)
-- [ ] 에러 시: 롤백 + 토스트 메시지
-- [ ] 새로고침: 찜 상태 유지 확인
+- [x] 비로그인: 버튼 클릭 → 로그인 페이지 리다이렉트
+- [x] 로그인: 찜하기 토글 → 즉시 UI 업데이트 (Optimistic)
+- [x] 에러 시: 롤백 + 토스트 메시지
+- [x] 새로고침: 찜 상태 유지 확인
 
 ---
 
@@ -587,9 +587,9 @@ src/views/service/wishlist/
 ```
 
 **구현 내용:**
-- [ ] `WishlistPage.tsx`: 메인 페이지 (서버 컴포넌트)
-- [ ] `WishlistGrid.tsx`: 무한 스크롤 그리드 (클라이언트)
-- [ ] `WishlistEmptyState.tsx`: 빈 상태 UI
+- [x] `WishlistPage.tsx`: 메인 페이지 (서버 컴포넌트)
+- [x] `WishlistGrid.tsx`: 무한 스크롤 그리드 (클라이언트)
+- [x] `WishlistEmptyState.tsx`: 빈 상태 UI
 
 #### Task 3-2: 라우트 생성
 
@@ -624,11 +624,11 @@ export const PAGES = {
 ```
 
 #### Task 3-4: 테스트
-- [ ] 비로그인: 접근 차단 → 로그인 페이지
-- [ ] 로그인: 찜 목록 조회
-- [ ] 무한 스크롤 동작 확인
-- [ ] 빈 상태 UI 확인
-- [ ] 공연 카드 클릭 → 상세 페이지 이동
+- [x] 비로그인: 접근 차단 → 로그인 페이지
+- [x] 로그인: 찜 목록 조회
+- [x] 무한 스크롤 동작 확인
+- [x] 빈 상태 UI 확인
+- [x] 공연 카드 클릭 → 상세 페이지 이동
 
 ---
 
@@ -639,20 +639,6 @@ export const PAGES = {
 - [ ] **Flow 2:** 공연 상세에서 찜하기 → 찜 목록 페이지 확인 → 찜 해제
 - [ ] **Flow 3:** 찜 목록에서 공연 카드 클릭 → 상세 페이지 → 찜 상태 확인
 - [ ] **Flow 4:** 네트워크 에러 시뮬레이션 → 에러 처리 확인
-
-#### Task 4-2: 성능 측정
-- [ ] Lighthouse 실행 (공연 상세 페이지)
-  - LCP < 2.5s
-  - CLS < 0.1
-  - FID < 100ms
-- [ ] Network 탭에서 TTFB 확인
-  - 공연 상세 (캐시 히트): < 200ms
-  - 찜 여부 체크: < 500ms
-
-#### Task 4-3: 접근성 검사
-- [ ] 키보드 네비게이션 (Tab, Enter)
-- [ ] 스크린 리더 (NVDA/JAWS)
-- [ ] 색상 대비 (WCAG AA)
 
 ---
 
@@ -669,19 +655,19 @@ export const PAGES = {
 | **LCP** | 2.3s | 1.8s | 1.9s | < 2.5s |
 
 ### 9.2 사용자 경험
-- [ ] 비로그인 사용자가 찜 버튼 클릭 시 로그인 페이지로 리다이렉트
-- [ ] 로그인 후 원래 페이지로 복귀
-- [ ] 찜하기 클릭 시 즉시 UI 반응 (< 100ms)
-- [ ] 에러 발생 시 명확한 피드백 (토스트 메시지)
-- [ ] 레이아웃 시프트 없음 (Skeleton UI)
+- [x] 비로그인 사용자가 찜 버튼 클릭 시 로그인 페이지로 리다이렉트
+- [x] 로그인 후 원래 페이지로 복귀
+- [x] 찜하기 클릭 시 즉시 UI 반응 (< 100ms)
+- [x] 에러 발생 시 명확한 피드백 (토스트 메시지)
+- [x] 레이아웃 시프트 없음 (Skeleton UI)
 
 ### 9.3 기술적 품질
-- [ ] FSD 아키텍처 준수
-- [ ] JSDoc 주석 100% (함수, 인터페이스)
-- [ ] React Query 캐싱 전략 적용
-- [ ] Optimistic Updates 정상 동작
-- [ ] 에러 처리 및 롤백 완료
-- [ ] 서버/클라이언트 컴포넌트 분리
+- [x] FSD 아키텍처 준수
+- [x] JSDoc 주석 100% (함수, 인터페이스)
+- [x] React Query 캐싱 전략 적용
+- [x] Optimistic Updates 정상 동작
+- [x] 에러 처리 및 롤백 완료
+- [x] 서버/클라이언트 컴포넌트 분리
 
 ---
 

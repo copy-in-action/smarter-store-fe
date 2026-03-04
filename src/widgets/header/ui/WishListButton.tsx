@@ -9,14 +9,14 @@ import { Button } from "@/shared/ui/button";
 /**
  * 찜하기 버튼 컴포넌트
  */
-export function LikeButton() {
+export function WishListButton() {
   const { isAuthenticated } = useAuth();
   const router = useRouter();
   return (
     <Button
       onClick={() => {
         isAuthenticated
-          ? router.push(PAGES.MY.LIKES.path)
+          ? router.push(PAGES.WISHLIST.path)
           : router.push(PAGES.AUTH.LOGIN.path);
       }}
       variant="ghost"

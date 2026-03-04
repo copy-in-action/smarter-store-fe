@@ -123,14 +123,14 @@ export function useWishlistInfiniteQuery(
   return useInfiniteQuery({
     queryKey: [...WISHLIST_QUERY_KEYS.list(), params],
     queryFn: ({ pageParam = 0 }) =>
-      getMyWishlists({ ...params, page: pageParam, size: params?.size || 20 }),
-    getNextPageParam: (lastPage) => {
-      const data = lastPage.data;
-      // hasNext가 있고 true인 경우 다음 페이지 반환
-      if (data && "page" in data && "hasNext" in data) {
-        return data.hasNext ? (data.page as number) + 1 : undefined;
-      }
-      return undefined;
+      getMyWishlists({
+        ...params,
+        page: pageParam,
+        size: params?.size || 20,
+      }).then((res) => res.data),
+    getNextPageParam: (lastPage, _, lastPageParam) => {
+      const meta = lastPage.meta;
+      return meta.hasNextPage ? lastPageParam + 1 : undefined;
     },
     initialPageParam: 0,
     staleTime: 1000 * 60 * 3, // 3분

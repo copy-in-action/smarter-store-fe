@@ -4,10 +4,10 @@ import { cn } from "@/shared/lib/utils";
 import { Logo } from "@/shared/ui/Logo";
 import { BookingPageWrapper } from "./BookingPageWrapper";
 import { CartButton } from "./CartButton";
-import { LikeButton } from "./LikeButton";
 import { MyButton } from "./MyButton";
 import { RecentViewButton } from "./RecentViewButton";
 import { SearchInput } from "./SearchInput";
+import { WishListButton } from "./WishListButton";
 
 /**
  * 메인 헤더 컴포넌트
@@ -52,7 +52,7 @@ export function Header() {
             )}
           >
             <MyButton />
-            <LikeButton />
+            <WishListButton />
             <CartButton />
             <RecentViewButton />
           </div>
