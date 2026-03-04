@@ -38,6 +38,5 @@ export {
   BookingSeatingChart,
   createBookingDiscountSchema,
   useAvailableSchedulesByDate,
-  useCancelBooking,
   useStartBooking,
 } from "./seating-chart";

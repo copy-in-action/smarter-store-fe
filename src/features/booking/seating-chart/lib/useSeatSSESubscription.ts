@@ -27,8 +27,15 @@ export function useSeatSSESubscription(
 ) {
   const pendingSeatsRef = useRef<SeatPosition[]>([]);
   const reservedSeatsRef = useRef<SeatPosition[]>([]);
+  // updateBookingStatus 함수의 최신 버전을 항상 참조 (useEffect 재실행 방지)
+  const updateBookingStatusRef = useRef(updateBookingStatus);
   // 초기 데이터 설정 여부 상태
   const [isSnapshotReceived, setIsSnapshotReceived] = useState(false);
+
+  // updateBookingStatus가 변경될 때마다 ref 업데이트
+  useEffect(() => {
+    updateBookingStatusRef.current = updateBookingStatus;
+  }, [updateBookingStatus]);
 
   useEffect(() => {
     if (!scheduleId) return;
@@ -61,7 +68,7 @@ export function useSeatSSESubscription(
         reservedSeatsRef.current = reservedSeats;
 
         // 한 번에 업데이트 (race condition 방지)
-        updateBookingStatus(pendingSeats, reservedSeats);
+        updateBookingStatusRef.current(pendingSeats, reservedSeats);
         setIsSnapshotReceived(true);
       } catch (error) {
         console.error("SSE snapshot 메시지 파싱 에러:", error);
@@ -95,8 +102,14 @@ export function useSeatSSESubscription(
           // 예약 확정 추가
           updatedReserved = [...updatedReserved, ...seats];
         } else if (data.action === "RELEASED") {
-          // 임시 점유 해제
+          // 좌석 점유/예약 해제 (pendingSeats와 reservedSeats 모두에서 제거)
           updatedPending = updatedPending.filter(
+            (preSeat) =>
+              !seats.some(
+                (seat) => seat.row === preSeat.row && seat.col === preSeat.col,
+              ),
+          );
+          updatedReserved = updatedReserved.filter(
             (preSeat) =>
               !seats.some(
                 (seat) => seat.row === preSeat.row && seat.col === preSeat.col,
@@ -109,7 +122,7 @@ export function useSeatSSESubscription(
         reservedSeatsRef.current = updatedReserved;
 
         // 한 번에 업데이트 (race condition 방지)
-        updateBookingStatus(updatedPending, updatedReserved);
+        updateBookingStatusRef.current(updatedPending, updatedReserved);
       } catch (error) {
         console.error("SSE seat-update 메시지 파싱 에러:", error);
       }
@@ -149,7 +162,7 @@ export function useSeatSSESubscription(
       reservedSeatsRef.current = [];
       setIsSnapshotReceived(false);
     };
-  }, [scheduleId, updateBookingStatus]);
+  }, [scheduleId]); // updateBookingStatus는 ref로 관리하므로 의존성에서 제거
 
   return { isSnapshotReceived };
 }

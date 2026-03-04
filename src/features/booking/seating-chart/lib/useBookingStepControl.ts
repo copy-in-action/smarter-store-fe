@@ -3,12 +3,9 @@
  */
 
 import { useEffect } from "react";
-import {
-  BookingStep,
-  useBookingStepStore,
-} from "@/features/booking";
+import { useReleaseBookingMutation } from "@/entities/booking";
+import { BookingStep, useBookingStepStore } from "@/features/booking";
 import type { StartBookingRequest } from "@/shared/api/orval/types";
-import { useCancelBooking } from "../api/useCancelBooking";
 import { useStartBooking } from "../api/useStartBooking";
 
 /**
@@ -32,8 +29,8 @@ export const useBookingStepControl = (scheduleId: number) => {
   } = useBookingStepStore();
 
   const { mutate: startBooking, isPending: isStarting } = useStartBooking();
-  const { mutate: cancelBooking, isPending: isCanceling } = useCancelBooking();
-
+  const { mutate: releaseBooking, isPending: isReleasing } =
+    useReleaseBookingMutation();
   /**
    * 좌석 선택 완료 핸들러
    * - 선택된 좌석 데이터를 서버로 전송 (좌석 점유 API)
@@ -74,15 +71,18 @@ export const useBookingStepControl = (scheduleId: number) => {
       return;
     }
     if (step === BookingStep.DISCOUNT_SELECTION && bookingData) {
-      cancelBooking(bookingData.bookingId, {
-        onSuccess: () => {
-          reset();
-          prevStep();
+      releaseBooking(
+        { bookingId: bookingData.bookingId },
+        {
+          onSuccess: () => {
+            reset();
+            prevStep();
+          },
+          onError: (error) => {
+            console.error("좌석 점유 해제 실패:", error);
+          },
         },
-        onError: (error) => {
-          console.error("좌석 점유 해제 실패:", error);
-        },
-      });
+      );
     } else {
       prevStep();
     }
@@ -100,10 +100,12 @@ export const useBookingStepControl = (scheduleId: number) => {
 
     const handlePopState = () => {
       // 2. 뒤로 가기 감지 (Lock이 풀리면서 이벤트 발생)
-      if (confirm("예매를 취소하고 나가시겠습니까? 선택한 좌석은 해제됩니다.")) {
+      if (
+        confirm("예매를 취소하고 나가시겠습니까? 선택한 좌석은 해제됩니다.")
+      ) {
         // [확인]: 초기화 및 진짜 뒤로 가기 수행
         if (bookingData) {
-          cancelBooking(bookingData.bookingId);
+          releaseBooking({ bookingId: bookingData.bookingId });
         }
         reset();
 
@@ -119,15 +121,15 @@ export const useBookingStepControl = (scheduleId: number) => {
     return () => {
       window.removeEventListener("popstate", handlePopState);
     };
-  }, [step, bookingData, cancelBooking, reset]);
+  }, [step, bookingData, releaseBooking, reset]);
 
   return {
     step,
     setStep,
     bookingData,
-    isLoading: isStarting || isCanceling,
+    isLoading: isStarting || isReleasing,
     isStarting,
-    isCanceling,
+    isReleasing,
     handleCompleteSelection,
     handleBackStep,
     reset,

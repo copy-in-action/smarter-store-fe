@@ -21,6 +21,7 @@ export {
   useBookingDetailQuery,
   useCancelBookingMutation,
   useMyBookingsQuery,
+  useReleaseBookingMutation,
 } from "./api/booking.queries";
 // 기존 타입 export (유지)
 export type {
