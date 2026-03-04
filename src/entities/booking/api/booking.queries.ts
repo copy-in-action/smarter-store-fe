@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { releaseBooking } from "@/shared/api/orval/booking/booking";
 import {
   type BookingDetailResponse,
   type BookingHistoryResponse,
@@ -20,6 +21,9 @@ export const bookingQueryKeys = {
   /** 특정 예매 상세 쿼리 */
   detail: (bookingId: string) =>
     [...bookingQueryKeys.details(), bookingId] as const,
+  /** 예매 점유해제 쿼리 */
+  release: (bookingId: string) =>
+    [...bookingQueryKeys.all, "release", bookingId] as const,
 };
 
 /**
@@ -83,5 +87,23 @@ export function useCancelBookingMutation() {
         queryKey: bookingQueryKeys.detail(bookingId),
       });
     },
+  });
+}
+
+/**
+ * 예매 좌석 점유 해제 뮤테이션
+ */
+export function useReleaseBookingMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ bookingId }: { bookingId: string }): Promise<void> => {
+      const response = await releaseBooking({ bookingId });
+      if (response.status === 200) {
+        return;
+      }
+      throw new Error("예매 좌석 점유 해제에 실패했습니다");
+    },
+    onSuccess: (_, bookingId) => {},
   });
 }

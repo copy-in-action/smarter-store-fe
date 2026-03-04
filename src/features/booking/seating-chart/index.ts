@@ -4,7 +4,6 @@
 
 // API
 export { useAvailableSchedulesByDate } from "./api/bookingSeatingChart.queries";
-export { useCancelBooking } from "./api/useCancelBooking";
 export { useStartBooking } from "./api/useStartBooking";
 
 // Schemas
