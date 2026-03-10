@@ -1,5 +1,5 @@
 // Model exports
-export type { BannerInfo, CategoryInfo } from "./model";
+export type { BannerInfo } from "./model";
 export { banners, categories } from "./model";
 
 // UI exports - 배너 및 카테고리

@@ -2,7 +2,6 @@
  * Performance 엔티티 Public API
  */
 
-// API 함수들 (순수 API, React Query 훅 제외)
 export {
   createNewPerformance,
   deleteExistingPerformance,
@@ -10,13 +9,34 @@ export {
   getPerformanceList,
   updateExistingPerformance,
 } from "./api/performance.api";
+export {
+  PERFORMANCE_QUERY_KEYS,
+  useCreatePerformance,
+  useDeletePerformance,
+  usePerformance,
+  usePerformances,
+  useUpdatePerformance,
+} from "./api/performance.queries";
 
-// 홈 태그 API 함수들
 export {
   addPerformanceHomeTag,
   deletePerformanceHomeTag,
   getPerformanceHomeTags,
 } from "./api/performance-home-tag.api";
+
+export {
+  PERFORMANCE_HOME_TAG_QUERY_KEYS,
+  useAddPerformanceHomeTag,
+  useDeletePerformanceHomeTag,
+  usePerformanceHomeTags,
+} from "./api/performance-home-tag.queries";
+export {
+  CATEGORY_OPTIONS,
+  PERFORMANCE_CATEGORIES,
+} from "./model/category.data";
+// 카테고리
+export type { PerformanceCategory } from "./model/category.types";
+// 스키마
 export type {
   CreatePerformanceForm,
   PerformanceFilter,
@@ -27,21 +47,3 @@ export {
   performanceFilterSchema,
   updatePerformanceSchema,
 } from "./model/performance.schema";
-
-// React Query hooks
-export {
-  usePerformances,
-  usePerformance,
-  useCreatePerformance,
-  useUpdatePerformance,
-  useDeletePerformance,
-  PERFORMANCE_QUERY_KEYS,
-} from "./api/performance.queries";
-
-// 홈 태그 React Query hooks
-export {
-  usePerformanceHomeTags,
-  useAddPerformanceHomeTag,
-  useDeletePerformanceHomeTag,
-  PERFORMANCE_HOME_TAG_QUERY_KEYS,
-} from "./api/performance-home-tag.queries";

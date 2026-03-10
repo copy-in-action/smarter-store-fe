@@ -7,13 +7,7 @@
 **관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
-import type { SortObject } from './sortObject';
 
-export interface PageableObject {
-  offset?: number;
-  sort?: SortObject[];
-  pageNumber?: number;
-  paged?: boolean;
-  pageSize?: number;
-  unpaged?: boolean;
-}
+export type AutocompleteParams = {
+keyword?: string;
+};

@@ -41,7 +41,7 @@ export function Header() {
         </div>
         <BookingPageWrapper>
           <div className={cn("h-10", "sm:max-w-xl sm:h-14 sm:ms-6 sm:me-4")}>
-            <SearchInput />
+            <SearchInput inputClassName="placeholder:text-sm sm:placeholder:text-lg" />
           </div>
         </BookingPageWrapper>
         <BookingPageWrapper>

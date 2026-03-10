@@ -7,13 +7,13 @@
 **관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
-import type { SortObject } from './sortObject';
 
-export interface PageableObject {
-  offset?: number;
-  sort?: SortObject[];
-  pageNumber?: number;
-  paged?: boolean;
-  pageSize?: number;
-  unpaged?: boolean;
+/**
+ * 공연 검색 정렬 방식
+ */
+export enum PerformanceSearchSort {
+  BOOKING_COUNT= 'BOOKING_COUNT',
+  END_DATE_ASC= 'END_DATE_ASC',
+  CREATED_AT_DESC= 'CREATED_AT_DESC',
+
 }
