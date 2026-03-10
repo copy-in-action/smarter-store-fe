@@ -7,8 +7,16 @@
 **관리자 대시보드**: [매출 현황 대시보드](/admin/dashboard.html)
  * OpenAPI spec version: 1.0.0
  */
-import type { PerformanceSearchRequest } from './performanceSearchRequest';
+import type { PerformanceSearchStatus } from './performanceSearchStatus';
+import type { Region } from './region';
+import type { PerformanceSearchSort } from './performanceSearchSort';
 
 export type SearchParams = {
-request: PerformanceSearchRequest;
+keyword?: string;
+status?: PerformanceSearchStatus[];
+category?: string[];
+region?: Region[];
+sort?: PerformanceSearchSort;
+page?: number;
+size?: number;
 };

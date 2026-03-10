@@ -40,11 +40,19 @@ export type searchResponseSuccess = (searchResponse200) & {
 
 export type searchResponse = (searchResponseSuccess)
 
-export const getSearchUrl = (params: SearchParams,) => {
+export const getSearchUrl = (params?: SearchParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
+    const explodeParameters = ["status","category","region"];
+
+    if (Array.isArray(value) && explodeParameters.includes(key)) {
+      value.forEach((v) => {
+        normalizedParams.append(key, v === null ? 'null' : v.toString());
+      });
+      return;
+    }
+      
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
@@ -55,7 +63,7 @@ export const getSearchUrl = (params: SearchParams,) => {
   return stringifiedParams.length > 0 ? `https://ticket-api.devhong.cc/api/performances/search?${stringifiedParams}` : `https://ticket-api.devhong.cc/api/performances/search`
 }
 
-export const search = async (params: SearchParams, options?: RequestInit): Promise<searchResponse> => {
+export const search = async (params?: SearchParams, options?: RequestInit): Promise<searchResponse> => {
   
   return orvalFetch<searchResponse>(getSearchUrl(params),
   {      

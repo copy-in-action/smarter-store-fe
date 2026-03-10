@@ -113,7 +113,6 @@ export * from './performanceSalesResponse';
 export * from './performanceSalesStats';
 export * from './performanceScheduleResponse';
 export * from './performanceSearchListResponse';
-export * from './performanceSearchRequest';
 export * from './performanceSearchResponse';
 export * from './performanceSearchSort';
 export * from './performanceSearchStatus';
