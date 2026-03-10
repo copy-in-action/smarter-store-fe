@@ -160,15 +160,9 @@ export type PerformanceFormData = CreatePerformanceFormData;
 
 /**
  * 공연 카테고리 옵션
+ * entities/performance에서 가져온 공통 데이터 사용
  */
-export const PERFORMANCE_CATEGORIES = [
-  { value: "뮤지컬", label: "뮤지컬" },
-  { value: "콘서트", label: "콘서트" },
-  { value: "연극", label: "연극" },
-  { value: "전시/행사", label: "전시/행사" },
-  { value: "클래식/무용", label: "클래식/무용" },
-  { value: "아동/가족", label: "아동/가족" },
-] as const;
+export { CATEGORY_OPTIONS as PERFORMANCE_CATEGORIES } from "@/entities/performance";
 
 /**
  * 공연 관람 연령 옵션
