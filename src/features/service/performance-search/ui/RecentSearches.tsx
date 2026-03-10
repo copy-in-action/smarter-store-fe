@@ -1,39 +1,53 @@
 "use client";
 
 import { Clock, X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import {
+  clearRecentSearches,
   getRecentSearches,
   removeRecentSearch,
-  clearRecentSearches,
 } from "../model/recent-search";
 import type { RecentSearch } from "../model/search.types";
 
 /**
- * 최근 검색 컴포넌트 Props
+ * 최근 검색 영역 컴포넌트 Props
  */
 interface RecentSearchesProps {
-  /** 검색어 클릭 시 호출되는 함수 */
-  onSearchClick: (keyword: string) => void;
+  /** 검색어 클릭 시 호출될 콜백 */
+  onSearchClick?: (keyword: string) => void;
+  /** 키보드 네비게이션으로 선택된 항목 인덱스 (-1: 선택 없음) */
+  selectedIndex?: number;
+  /** 아이템 개수 변경 시 호출될 콜백 */
+  onItemCountChange?: (count: number) => void;
 }
 
 /**
  * 최근 검색 영역 컴포넌트
- * 최근 검색어 목록을 표시하고 관리합니다
- * @param props - 컴포넌트 props
- * @returns 최근 검색 UI
+ * - 최근 검색어 목록 표시 (최대 4개, 최신순)
+ * - 개별 삭제 및 전체 삭제 기능
+ * - 쿠키 기반 저장
  */
-export function RecentSearches({ onSearchClick }: RecentSearchesProps) {
+export function RecentSearches({
+  onSearchClick,
+  selectedIndex = -1,
+  onItemCountChange,
+}: RecentSearchesProps) {
   const [searches, setSearches] = useState<RecentSearch[]>([]);
 
+  // 컴포넌트 마운트 시 최근 검색어 로드
   useEffect(() => {
     setSearches(getRecentSearches());
   }, []);
 
+  // 부모에게 아이템 개수 보고
+  useEffect(() => {
+    onItemCountChange?.(searches.length);
+  }, [searches, onItemCountChange]);
+
   /**
    * 개별 검색어 삭제 핸들러
-   * @param keyword - 삭제할 검색어
    */
   const handleRemove = (keyword: string) => {
     removeRecentSearch(keyword);
@@ -41,13 +55,21 @@ export function RecentSearches({ onSearchClick }: RecentSearchesProps) {
   };
 
   /**
-   * 전체 검색어 삭제 핸들러
+   * 전체 삭제 핸들러
    */
   const handleClearAll = () => {
     clearRecentSearches();
     setSearches([]);
   };
 
+  /**
+   * 검색어 클릭 핸들러
+   */
+  const handleSearchClick = (keyword: string) => {
+    onSearchClick?.(keyword);
+  };
+
+  // 빈 상태
   if (searches.length === 0) {
     return (
       <div className="p-4 text-center text-sm text-muted-foreground">
@@ -57,9 +79,10 @@ export function RecentSearches({ onSearchClick }: RecentSearchesProps) {
   }
 
   return (
-    <div className="w-full p-4">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold">최근 검색</h3>
+    <div className="py-2">
+      {/* 헤더 */}
+      <div className="flex items-center justify-between px-4 py-2">
+        <h3 className="text-sm font-medium">최근 검색</h3>
         <Button
           variant="ghost"
           size="sm"
@@ -70,31 +93,45 @@ export function RecentSearches({ onSearchClick }: RecentSearchesProps) {
         </Button>
       </div>
 
-      <ul className="space-y-2">
-        {searches.map((search) => (
-          <li
+      {/* 검색어 목록 */}
+      <div className="space-y-1" role="listbox">
+        {searches.map((search, index) => (
+          <div
             key={search.keyword}
-            className="flex items-center justify-between group"
+            role="option"
+            tabIndex={-1}
+            aria-selected={index === selectedIndex}
+            data-autocomplete-index={index}
+            onClick={() => handleSearchClick(search.keyword)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSearchClick(search.keyword);
+            }}
+            className={cn(
+              "flex items-center gap-3 px-4 py-2 transition-colors group cursor-pointer",
+              index === selectedIndex ? "bg-accent" : "hover:bg-accent",
+            )}
           >
-            <button
-              onClick={() => onSearchClick(search.keyword)}
-              className="flex items-center gap-2 flex-1 text-left hover:text-blue-600 transition-colors"
-            >
-              <Clock className="size-4 text-muted-foreground" />
-              <span className="text-sm">{search.keyword}</span>
-            </button>
+            {/* 시계 아이콘 + 검색어 */}
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <Clock className="w-4 h-4 text-muted-foreground shrink-0" />
+              <span className="text-sm truncate">{search.keyword}</span>
+            </div>
 
+            {/* 개별 삭제 버튼 */}
             <Button
               variant="ghost"
-              size="icon"
-              onClick={() => handleRemove(search.keyword)}
-              className="size-6 opacity-0 group-hover:opacity-100 transition-opacity"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleRemove(search.keyword);
+              }}
+              className="h-auto p-1 opacity-0 group-hover:opacity-100 transition-opacity"
             >
-              <X className="size-4" />
+              <X className="w-4 h-4 text-muted-foreground" />
             </Button>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

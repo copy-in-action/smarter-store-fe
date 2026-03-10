@@ -1,40 +1,74 @@
 "use client";
 
+import { Popover, PopoverAnchor, PopoverContent } from "@/shared/ui/popover";
+import { PerformanceResults } from "./PerformanceResults";
 import { RecentSearches } from "./RecentSearches";
 
 /**
- * 검색 자동완성 컴포넌트 Props
+ * 검색 자동완성 팝오버 컴포넌트 Props
  */
 interface SearchAutocompleteProps {
-  /** 현재 검색어 */
-  searchQuery: string;
-  /** 검색 실행 함수 */
-  onSearch: (keyword: string) => void;
+  /** 검색 키워드 (디바운싱 적용된 값) */
+  keyword: string;
+  /** 팝오버 열림 상태 */
+  open: boolean;
+  /** 팝오버 열림 상태 변경 핸들러 */
+  onOpenChange: (open: boolean) => void;
+  /** 검색어 클릭 시 호출될 콜백 */
+  onSearchClick?: (keyword: string) => void;
+  /** 공연 클릭 시 호출될 콜백 */
+  onPerformanceClick?: () => void;
+  /** 키보드 네비게이션으로 선택된 항목 인덱스 (-1: 선택 없음) */
+  selectedIndex?: number;
+  /** 자동완성 아이템 개수 변경 시 호출될 콜백 */
+  onItemCountChange?: (count: number) => void;
+  /** Popover Anchor 요소 */
+  children: React.ReactNode;
+  /** 외부 상호작용 시 호출될 콜백 */
+  onInteractOutside?: (event: Event) => void;
 }
 
 /**
- * 검색 자동완성 영역 컴포넌트
- * 검색어 입력 여부에 따라 최근 검색 또는 검색 결과를 표시합니다
- * @param props - 컴포넌트 props
- * @returns 자동완성 UI
+ * 검색 자동완성 팝오버 컴포넌트
+ * - 검색어 미입력: 최근 검색 영역 표시
+ * - 검색어 입력: 공연 검색 결과 표시 (최대 6개)
  */
 export function SearchAutocomplete({
-  searchQuery,
-  onSearch,
+  keyword,
+  open,
+  onOpenChange,
+  onSearchClick,
+  onPerformanceClick,
+  selectedIndex = -1,
+  onItemCountChange,
+  children,
+  onInteractOutside,
 }: SearchAutocompleteProps) {
-  const trimmedQuery = searchQuery.trim();
-
-  /**
-   * 검색어가 없으면 최근 검색을 표시
-   * 검색어가 있으면 추후 PerformanceResults 표시 (현재는 최근 검색만 구현)
-   */
-  if (!trimmedQuery) {
-    return <RecentSearches onSearchClick={onSearch} />;
-  }
-
   return (
-    <div className="p-4 text-center text-sm text-muted-foreground">
-      검색 결과는 추후 구현 예정입니다
-    </div>
+    <Popover open={open} onOpenChange={onOpenChange} modal={false}>
+      <PopoverAnchor asChild>{children}</PopoverAnchor>
+      <PopoverContent
+        className="w-[var(--radix-popover-trigger-width)] p-0"
+        align="start"
+        sideOffset={4}
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        onInteractOutside={onInteractOutside}
+      >
+        {!keyword ? (
+          <RecentSearches
+            onSearchClick={onSearchClick}
+            selectedIndex={selectedIndex}
+            onItemCountChange={onItemCountChange}
+          />
+        ) : (
+          <PerformanceResults
+            keyword={keyword}
+            onPerformanceClick={onPerformanceClick}
+            selectedIndex={selectedIndex}
+            onItemCountChange={onItemCountChange}
+          />
+        )}
+      </PopoverContent>
+    </Popover>
   );
 }
