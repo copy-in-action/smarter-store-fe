@@ -44,7 +44,7 @@ export function PerformanceHashTags() {
     }
   };
 
-  // 서버랜더링 시 해시태그가 보여 레이아웃 쉬프트 발생하므로 서버에서는 랜더링하지 않음
+  // 서버 렌더링 시 sticky 해시태그가 보여 레이아웃 시프트 발생하므로 초기화 전에는 숨김
   const [isInit, setIsInit] = useState(false);
   useEffect(() => {
     setIsInit(true);
@@ -76,8 +76,8 @@ export function PerformanceHashTags() {
       <div
         id="performance-detail-hashtags"
         className={cn(
-          "sticky sm:top-[101px] z-50 top-[91px] flex gap-4 bg-background border-b p-detail-wrapper overflow-auto scrollbar-hide",
-          (inView || isInit) && "hidden",
+          "sticky sm:top-[101px] z-50 top-[101px] flex gap-4 bg-background border-b p-detail-wrapper overflow-auto scrollbar-hide",
+          (inView || !isInit) && "hidden",
         )}
       >
         {hashTags.map((tag) => (
