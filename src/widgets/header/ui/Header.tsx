@@ -3,9 +3,7 @@ import { PAGES } from "@/shared/config";
 import { cn } from "@/shared/lib/utils";
 import { Logo } from "@/shared/ui/Logo";
 import { BookingPageWrapper } from "./BookingPageWrapper";
-import { CartButton } from "./CartButton";
 import { MyButton } from "./MyButton";
-import { RecentViewButton } from "./RecentViewButton";
 import { SearchInput } from "./SearchInput";
 import { WishListButton } from "./WishListButton";
 
@@ -33,13 +31,8 @@ export function Header() {
           <Link href={PAGES.HOME.path}>
             <Logo />
           </Link>
-          <span className="absolute right-0 mb-2 sm:hidden">
-            <BookingPageWrapper>
-              <CartButton />
-            </BookingPageWrapper>
-          </span>
         </div>
-        <BookingPageWrapper>
+        <BookingPageWrapper className="grow-1 w-full">
           <div className={cn("h-10", "sm:max-w-xl sm:h-14 sm:ms-6 sm:me-4")}>
             <SearchInput inputClassName="placeholder:text-sm sm:placeholder:text-lg" />
           </div>
@@ -53,8 +46,6 @@ export function Header() {
           >
             <MyButton />
             <WishListButton />
-            <CartButton />
-            <RecentViewButton />
           </div>
         </BookingPageWrapper>
       </div>
