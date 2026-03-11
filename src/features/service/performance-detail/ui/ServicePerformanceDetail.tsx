@@ -32,7 +32,10 @@ export function ServicePerformanceDetail({
         title={performance.title}
       />
       {/* 제목 섹션 */}
-      <PerformanceTitle title={performance.title} />
+      <div className="flex gap-2">
+        {/* 해시태그 네비게이션 */}
+        <PerformanceTitle title={performance.title} />
+      </div>
       {/* 액션 아이콘 영역 (찜하기, 공유하기 등) */}
       <div className="flex gap-3 p-detail-wrapper">
         <PerformanceWishlistButton performanceId={performance.id} />
