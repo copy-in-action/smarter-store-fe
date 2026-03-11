@@ -7,6 +7,7 @@ import {
   type PerformanceSearchStatus,
   type Region,
 } from "@/shared/api/orval/types";
+import { PAGES } from "@/shared/config";
 import { FilterBar } from "./FilterBar";
 import { FilterDialog, type FilterState } from "./FilterDialog";
 import { SearchHeader } from "./SearchHeader";
@@ -24,7 +25,7 @@ export function SearchResultsPage() {
   const searchParams = useSearchParams();
 
   // URL에서 상태 읽기
-  const keyword = searchParams.get("q") ?? "";
+  const keyword = searchParams.get("q") || "";
   const statusParams = searchParams.getAll(
     "status",
   ) as PerformanceSearchStatus[];
@@ -53,37 +54,18 @@ export function SearchResultsPage() {
     newFilters: FilterState,
     newSort?: PerformanceSearchSort,
   ) => {
-    const params = new URLSearchParams();
-
-    // 검색어 추가
-    if (keyword) {
-      params.set("q", keyword);
-    }
-
-    // 필터 추가
-    if (newFilters.status?.length) {
-      newFilters.status.forEach((s) => {
-        params.append("status", s);
-      });
-    }
-    if (newFilters.category?.length) {
-      newFilters.category.forEach((c) => {
-        params.append("category", c);
-      });
-    }
-    if (newFilters.region?.length) {
-      newFilters.region.forEach((r) => {
-        params.append("region", r);
-      });
-    }
-
-    // 정렬 추가
     const finalSort = newSort ?? sortParam;
-    if (finalSort) {
-      params.set("sort", finalSort);
-    }
 
-    router.push(`/search?${params.toString()}`);
+    // PAGES 상수를 사용하여 검색 URL 생성
+    const searchPath = PAGES.SEARCH.path({
+      q: keyword || undefined,
+      category: newFilters.category?.length ? newFilters.category : undefined,
+      status: newFilters.status?.length ? newFilters.status : undefined,
+      region: newFilters.region?.length ? newFilters.region : undefined,
+      sort: finalSort || undefined,
+    });
+
+    router.push(searchPath);
   };
 
   /**
@@ -120,12 +102,6 @@ export function SearchResultsPage() {
 
     updateURL(newFilters);
   };
-
-  // 검색어가 없으면 홈으로 리다이렉트
-  if (!keyword) {
-    router.push("/");
-    return null;
-  }
 
   return (
     <div className="min-h-screen bg-background">

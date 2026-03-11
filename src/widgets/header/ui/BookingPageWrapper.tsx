@@ -9,6 +9,7 @@ import { cn } from "@/shared/lib/utils";
 interface BookingPageWrapperProps {
   /** 래핑할 콘텐츠 */
   children: React.ReactNode;
+  className?: string;
 }
 
 /**
@@ -18,12 +19,15 @@ interface BookingPageWrapperProps {
  * @param props.children - 래핑할 콘텐츠
  * @returns 조건부 렌더링되는 래퍼
  */
-export function BookingPageWrapper({ children }: BookingPageWrapperProps) {
+export function BookingPageWrapper({
+  children,
+  className,
+}: BookingPageWrapperProps) {
   const pathname = usePathname();
   const isBookingPage = pathname.startsWith("/booking");
 
   return (
-    <div className={cn({ "sm:block hidden": isBookingPage }, "w-full")}>
+    <div className={cn({ "sm:block hidden": isBookingPage }, className)}>
       {children}
     </div>
   );
