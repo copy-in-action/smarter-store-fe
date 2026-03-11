@@ -158,6 +158,56 @@ export const SERVICE_PAGES = {
     },
   },
 
+  /** 검색 */
+  SEARCH: {
+    path: (params?: {
+      q?: string;
+      category?: string | string[];
+      status?: string | string[];
+      region?: string | string[];
+      sort?: string;
+    }) => {
+      const searchParams = new URLSearchParams();
+
+      if (params?.q) searchParams.set("q", params.q);
+      if (params?.category) {
+        const categories = Array.isArray(params.category)
+          ? params.category
+          : [params.category];
+        categories.forEach((c) => {
+          searchParams.append("category", c);
+        });
+      }
+      if (params?.status) {
+        const statuses = Array.isArray(params.status)
+          ? params.status
+          : [params.status];
+        statuses.forEach((s) => {
+          searchParams.append("status", s);
+        });
+      }
+      if (params?.region) {
+        const regions = Array.isArray(params.region)
+          ? params.region
+          : [params.region];
+        regions.forEach((r) => {
+          searchParams.append("region", r);
+        });
+      }
+      if (params?.sort) searchParams.set("sort", params.sort);
+
+      const query = searchParams.toString();
+      return `/search${query ? `?${query}` : ""}`;
+    },
+    metadata: (keyword?: string) =>
+      createMetadata(
+        keyword ? `${keyword} 검색 결과` : "공연 검색",
+        keyword
+          ? `${keyword} 관련 공연을 검색한 결과입니다.`
+          : "원하는 공연을 검색해보세요.",
+      ),
+  },
+
   /** 공연 관련 */
   PERFORMANCE: {
     /** 공연 목록 */

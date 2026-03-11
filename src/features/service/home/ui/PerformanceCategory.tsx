@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { PAGES } from "@/shared/config";
 import { Carousel, CarouselContent, CarouselItem } from "@/shared/ui/carousel";
 
 import { categories } from "../model";
@@ -10,6 +11,15 @@ import { categories } from "../model";
  * 공연 카테고리 캐러셀 컴포넌트
  */
 const PerformanceCategory = () => {
+  /**
+   * 카테고리별 링크 경로 생성
+   * @param categoryValue - 카테고리 값 (예: "뮤지컬", "콘서트")
+   * @returns 링크 경로
+   */
+  const getCategoryLink = (categoryValue: string) => {
+    return PAGES.SEARCH.path({ category: categoryValue });
+  };
+
   return (
     <Carousel
       opts={{
@@ -30,7 +40,7 @@ const PerformanceCategory = () => {
           >
             <div className="flex flex-col items-center space-y-2 cursor-pointer group grow">
               <Link
-                href={`#${category.value}`}
+                href={getCategoryLink(category.value)}
                 className="relative w-full aspect-[4/5] overflow-hidden transition-shadow bg-gray-100 rounded-full shadow-sm group-hover:shadow-md"
               >
                 <Image
