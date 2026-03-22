@@ -40,13 +40,6 @@ export default async function HomePage() {
       <Suspense fallback={<SectionListSkeleton />}>
         <SectionListServer />
       </Suspense>
-
-      <section className="my-4 sm:my-20">
-        <h2 className="mb-6 text-xl font-bold text-center">추천 공연</h2>
-        <Suspense fallback={<PerformanceListSkeleton />}>
-          <PerformanceListServer />
-        </Suspense>
-      </section>
     </div>
   );
 }
