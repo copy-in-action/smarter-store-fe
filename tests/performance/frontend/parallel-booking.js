@@ -2,6 +2,8 @@ const { chromium } = require("playwright");
 const fs = require("fs");
 const path = require("path");
 
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://ticket.devhong.cc";
+
 // 테스트 결과 디렉토리 생성
 const resultsDir = "./test-results";
 const videosDir = path.join(resultsDir, "videos");
@@ -55,7 +57,7 @@ async function runBookingTest(userId, options = {}) {
     // 1. 로그인
     currentStep = "로그인 페이지 접속";
     await page.goto(
-      "https://ticket.devhong.cc/auth/login/email?redirect=%2Fperformances%2F4",
+      `${BASE_URL}/auth/login/email?redirect=%2Fperformances%2F4`,
     );
 
     currentStep = "로그인 정보 입력";
@@ -233,7 +235,7 @@ async function runBookingTest(userId, options = {}) {
       await dialog.accept();
     });
 
-    await page.waitForURL("https://ticket.devhong.cc/", { timeout: 10000 });
+    await page.waitForURL(`${BASE_URL}/`, { timeout: 10000 });
 
     currentStep = "완료";
     success = true;

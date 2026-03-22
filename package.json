@@ -78,7 +78,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
-    "baseline-browser-mapping": "^2.9.19",
+    "baseline-browser-mapping": "^2.10.10",
     "chrome-launcher": "^1.2.1",
     "dotenv": "^17.2.3",
     "lighthouse": "^13.0.1",

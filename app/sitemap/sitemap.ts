@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { SERVICE_PAGES } from "@/shared/config";
+import { SERVICE_PAGES, SITE_URL } from "@/shared/config";
 
 type PageNode = {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -47,9 +47,6 @@ export function collectSitemapPaths(
   return result;
 }
 
-//FIXME: 환경변수로 도메인 변경하게 수정
 export default function sitemap(): MetadataRoute.Sitemap {
-  const SERVICE_DOMAIN = "https://ticket.devhong.cc";
-
-  return [...collectSitemapPaths(SERVICE_PAGES, SERVICE_DOMAIN)];
+  return [...collectSitemapPaths(SERVICE_PAGES, SITE_URL)];
 }

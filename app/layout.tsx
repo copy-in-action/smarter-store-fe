@@ -8,6 +8,7 @@ import {
 } from "@/app/providers";
 import { getUserInfoServer } from "@/entities/user/api/user.server.api";
 import { AuthEventHandler, TokenRefreshManager } from "@/shared/auth-events";
+import { SITE_URL } from "@/shared/config";
 import {
   createOrganizationSchema,
   createWebsiteSchema,
@@ -58,13 +59,13 @@ export default async function RootLayout({
   const websiteSchema = createWebsiteSchema(
     "CIA 티켓",
     "뮤지컬, 콘서트, 연극, 클래식 등 다양한 공연 정보와 할인 티켓을 만나보세요. 최신 공연 소식과 특가 이벤트를 놓치지 마세요!",
-    "https://ticket.devhong.cc",
+    SITE_URL,
   );
 
   const organizationSchema = createOrganizationSchema(
     "Copy in Action",
-    "https://ticket.devhong.cc",
-    "https://ticket.devhong.cc/images/logo.png",
+    SITE_URL,
+    `${SITE_URL}/images/logo.png`,
   );
 
   return (

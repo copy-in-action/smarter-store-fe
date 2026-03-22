@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getPerformancesForServer } from "@/entities/performance/api/performance.server.api";
-import { PAGES } from "@/shared/config";
+import { PAGES, SITE_URL } from "@/shared/config";
 
 const MAX_URLS_PER_SITEMAP = 50000;
 
@@ -29,7 +29,6 @@ export async function generateSitemaps() {
 export default async function sitemap(props: {
   id: Promise<string>;
 }): Promise<MetadataRoute.Sitemap> {
-  const SERVICE_DOMAIN = "https://ticket.devhong.cc";
   const id = Number(await props.id);
 
   // FIXME: 공연 수만 가져온는 API 필요 - 전체 데이터를 가져오는 것은 비효율적
@@ -44,7 +43,7 @@ export default async function sitemap(props: {
   const endIndex = Math.min(startIndex + MAX_URLS_PER_SITEMAP, response.length);
 
   return response.slice(startIndex, endIndex).map((performance) => ({
-    url: `${SERVICE_DOMAIN}${PAGES.PERFORMANCE.DETAIL.path(performance.id)}`,
+    url: `${SITE_URL}${PAGES.PERFORMANCE.DETAIL.path(performance.id)}`,
     lastModified: performance.updatedAt
       ? new Date(performance.updatedAt).toISOString().split("T")[0]
       : new Date().toISOString().split("T")[0],

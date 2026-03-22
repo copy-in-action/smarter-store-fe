@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { loginRequestSchema } from "@/entities/auth";
 import type { LoginRequest } from "@/shared/api/orval/types";
-import { PAGES } from "@/shared/config";
+import { PAGES, SITE_DOMAIN } from "@/shared/config";
 import { Button } from "@/shared/ui/button";
 import { Form } from "@/shared/ui/form";
 import { ValidatedField } from "@/shared/ui/ValidatedField";
@@ -53,7 +53,7 @@ export function EmailLoginForm({ redirectUrl }: EmailLoginFormProps) {
           control={form.control}
           name="email"
           label="이메일(아이디)"
-          placeholder="nol@ticket.devhong.cc"
+          placeholder={`nol@${SITE_DOMAIN}`}
           type="email"
         />
 
