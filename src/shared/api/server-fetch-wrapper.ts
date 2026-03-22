@@ -48,6 +48,12 @@ export async function serverFetch<T = any>(
     "Content-Type": "application/json",
   };
 
+  // Vercel 배포 검증 헤더 추가 (Cloudflare 보안 우회용)
+  if (process.env.VERCEL_DEPLOYMENT_VERIFY_TOKEN) {
+    defaultHeaders["x-vercel-verify"] =
+      process.env.VERCEL_DEPLOYMENT_VERIFY_TOKEN;
+  }
+
   if (requireAuth || requireAdmin) {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value; // httpOnly 쿠키 확인
