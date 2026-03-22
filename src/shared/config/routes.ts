@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SITE_URL } from "./site";
 
 /**
  * 공통 메타데이터 설정
@@ -36,7 +37,7 @@ function createMetadata(
     description,
     keywords: BASE_METADATA.keywords,
     openGraph: {
-      images: ["https://ticket.devhong.cc/images/meta/open-graph.png"],
+      images: [`${SITE_URL}/images/meta/open-graph.png`],
       title: fullTitle,
       description,
       type: BASE_METADATA.type,

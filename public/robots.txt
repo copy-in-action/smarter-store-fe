@@ -1,4 +1,0 @@
-User-Agent: *
-Allow: /
-
-Sitemap: https://ticket.devhong.cc/sitemap.xml

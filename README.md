@@ -114,12 +114,32 @@ pnpm install
 
 ### 환경변수 설정
 
-`.env.local` 파일을 생성하고 다음 내용을 추가합니다:
+`.env.example` 파일을 복사하여 `.env.local` 파일을 생성하고 값을 설정합니다:
 
 ```bash
-# API 서버 URL
-NEXT_PUBLIC_API_SERVER=http://localhost:8000/api
+# .env.example 파일 복사
+cp .env.example .env.local
+
+# 또는 Windows에서
+copy .env.example .env.local
 ```
+
+주요 환경변수:
+
+```bash
+# 사이트 기본 URL (배포 환경에 맞게 변경)
+NEXT_PUBLIC_SITE_URL=https://yourdomain.com
+
+# API 서버 URL
+NEXT_PUBLIC_API_SERVER=https://your-api-server.com
+
+# 개발 환경 API 서버 URL
+NEXT_PUBLIC_API_DEV_SERVER=http://localhost:8080
+```
+
+**Vercel 배포 시 주의사항:**
+- Vercel 프로젝트 설정에서 `NEXT_PUBLIC_SITE_URL`을 배포 도메인으로 설정해야 합니다
+- 예: `https://yourdomain.com` 또는 `https://your-project.vercel.app`
 
 ### 개발 서버 실행
 

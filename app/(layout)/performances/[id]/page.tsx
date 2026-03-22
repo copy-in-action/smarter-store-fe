@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPerformanceDetailForServer } from "@/entities/performance/api/performance.server.api";
-import { PAGES } from "@/shared/config/routes";
+import { PAGES, SITE_URL } from "@/shared/config";
 import {
   createPerformanceSchema,
   safeJsonLdStringify,
@@ -66,7 +66,7 @@ export default async function PerformanceDetailPage({ params }: PageProps) {
           : undefined,
       performer: performance.producer || undefined,
       image: performance.mainImageUrl || undefined,
-      url: `https://ticket.devhong.cc/performances/${performanceId}`,
+      url: `${SITE_URL}/performances/${performanceId}`,
       category: performance.category || undefined, // 카테고리 정보 추가
     });
   } catch (error) {

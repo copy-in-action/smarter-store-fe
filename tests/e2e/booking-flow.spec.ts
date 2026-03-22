@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://ticket.devhong.cc";
+
 /**
  * 예매 전체 플로우 성능 테스트
  * 로그인부터 결제 승인까지 실제 사용자의 예매 프로세스를 시뮬레이션
@@ -12,7 +14,7 @@ test("예매 전체 플로우 성능 테스트", async ({ page }) => {
   const loginStart = Date.now();
 
   await page.goto(
-    "https://ticket.devhong.cc/auth/login/email?redirect=%2Fperformances%2F4",
+    `${BASE_URL}/auth/login/email?redirect=%2Fperformances%2F4`,
   );
 
   // 로그인 버튼 클릭 (테스트 계정 정보가 이미 설정되어 있음)
@@ -170,7 +172,7 @@ test("예매 전체 플로우 성능 테스트", async ({ page }) => {
   });
 
   // 메인 페이지로 이동 대기
-  await expect(page).toHaveURL("https://ticket.devhong.cc/", {
+  await expect(page).toHaveURL(`${BASE_URL}/`, {
     timeout: 10000,
   });
   const paymentTime = Date.now() - paymentStart;

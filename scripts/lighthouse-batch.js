@@ -10,16 +10,18 @@ const chromeLauncher = require("chrome-launcher");
 const fs = require("fs");
 const path = require("path");
 
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://ticket.devhong.cc";
+
 // 측정할 페이지 목록
 const pages = [
-  { name: "Home", url: "https://ticket.devhong.cc" },
+  { name: "Home", url: BASE_URL },
   {
     name: "Performance-Detail",
-    url: "https://ticket.devhong.cc/performances/67",
+    url: `${BASE_URL}/performances/67`,
   },
   // 인증이 필요한 페이지는 제외 (추후 authenticated flow로 테스트 가능)
-  // { name: 'Booking-Seating', url: 'https://ticket.devhong.cc/booking/seating-chart?scheduleId=1' },
-  // { name: 'Booking-Payment', url: 'https://ticket.devhong.cc/booking/payment' },
+  // { name: 'Booking-Seating', url: `${BASE_URL}/booking/seating-chart?scheduleId=1` },
+  // { name: 'Booking-Payment', url: `${BASE_URL}/booking/payment` },
 ];
 
 /**
