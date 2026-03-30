@@ -3,54 +3,65 @@
 ## 개요
 Next.js App Router를 사용한 동적 사이트맵 생성 시스템으로, 대량의 공연 데이터를 효율적으로 처리합니다.
 
-## Next.js Sitemap 자동 생성 원리
+## ⚠️ Next.js 15/16 중요 이슈: sitemap.ts vs route.ts
 
-**Next.js는 `sitemap.ts` 파일을 감지하면 자동으로 해당 경로에 sitemap.xml을 생성합니다:**
+### Next.js 15/16의 중첩 sitemap.ts 버그
 
-- `app/sitemap.ts` → `/sitemap.xml`
-- `app/sitemap/sitemap.ts` → `/sitemap/sitemap.xml`
-- `app/sitemap/performance/sitemap.ts` → `/sitemap/performance/sitemap.xml`
+**문제:**
+- Next.js 15/16에서 중첩된 `sitemap.ts` 구조가 **Vercel 배포 시 404 에러** 발생
+- 로컬 개발 환경에서는 정상 작동하나, 프로덕션 배포 시 실패
+- 관련 이슈: [Next.js #72787](https://github.com/vercel/next.js/issues/72787), [#72808](https://github.com/vercel/next.js/issues/72808)
 
-**동적 사이트맵 생성 (중요한 URL 구조 변화):**
-- `generateSitemaps()` 함수가 **없는 경우**: `/sitemap/performance/sitemap.xml` (단일 파일)
-- `generateSitemaps()` 함수가 **있는 경우**: `/sitemap/performance/sitemap/0.xml`, `/sitemap/performance/sitemap/1.xml` 등
-
-⚠️ **핵심**: `generateSitemaps()` 함수가 있으면 Next.js가 자동으로 URL 중간에 `sitemap` 폴더를 추가합니다!
-
-**URL 구조 비교:**
+**영향받는 구조:**
 ```
-정적 사이트맵: app/sitemap.ts → /sitemap.xml
-정적 사이트맵: app/some/path/sitemap.ts → /some/path/sitemap.xml
-
-동적 사이트맵: app/some/path/sitemap.ts + generateSitemaps() → /some/path/sitemap/[id].xml
+❌ app/sitemap/sitemap.ts → /sitemap/sitemap.xml (404 on Vercel)
+❌ app/sitemap/performance/sitemap.ts + generateSitemaps() → /sitemap/performance/sitemap/[id].xml (404 on Vercel)
 ```
+
+**해결 방법:**
+```
+✅ app/sitemap.xml/route.ts → /sitemap.xml (정상 작동)
+✅ app/sitemap/sitemap.xml/route.ts → /sitemap/sitemap.xml (정상 작동)
+✅ app/sitemap/performance/sitemap/[id].xml/route.ts → /sitemap/performance/sitemap/[id].xml (정상 작동)
+```
+
+### route.ts 방식 채택 이유
+
+1. **Vercel 배포 안정성**: 프로덕션 환경에서 404 에러 방지
+2. **명시적 경로 제어**: URL 구조를 파일 시스템에서 명확히 표현
+3. **동적 라우팅 지원**: `[id].xml` 형태의 동적 세그먼트 사용 가능
+4. **XML 직접 생성**: Response 객체로 XML을 직접 제어 가능
 
 ## 파일 구조
 
 ```
 app/
-├── sitemap.ts                              # 메인 사이트맵 인덱스 (/sitemap.xml)
-├── sitemap/
-│   ├── sitemap.ts                         # 정적 페이지 사이트맵
-│   └── performance/
-│       ├── sitemap.ts                     # 동적 공연 사이트맵
+├── sitemap.xml/
+│   └── route.ts                          # 메인 사이트맵 인덱스 (/sitemap.xml)
+└── sitemap/
+    ├── sitemap.xml/
+    │   └── route.ts                      # 정적 페이지 사이트맵 (/sitemap/sitemap.xml)
+    └── performance/
+        └── sitemap/
+            └── [id].xml/
+                └── route.ts              # 동적 공연 사이트맵 (/sitemap/performance/sitemap/[id].xml)
 ```
 
 ## URL 구조
 
 ### 메인 사이트맵 인덱스
 - **URL**: `/sitemap.xml`
-- **파일**: `app/sitemap.ts`
+- **파일**: `app/sitemap.xml/route.ts`
 - **역할**: 모든 하위 사이트맵들의 인덱스 목록 제공(동적으로 만들어진 공연 사이트맵 포함)
 
 ### 정적 페이지 사이트맵
 - **URL**: `/sitemap/sitemap.xml`
-- **파일**: `app/sitemap/sitemap.ts`
+- **파일**: `app/sitemap/sitemap.xml/route.ts`
 - **역할**: 홈 등 정적 페이지 URL 목록
 
 ### 공연 동적 사이트맵
 - **URL 패턴**: `/sitemap/performance/sitemap/0.xml`, `/sitemap/performance/sitemap/1.xml`, ...
-- **파일**: `app/sitemap/performance/sitemap.ts`
+- **파일**: `app/sitemap/performance/sitemap/[id].xml/route.ts`
 - **역할**: 실제 공연 상세 페이지 URL들을 5만개씩 분할하여 제공
 
 ## 공연 동적 사이트맵 시스템
@@ -60,40 +71,87 @@ app/
 - **분할 로직**: `Math.ceil(총 공연 수 / 50000)`로 필요한 사이트맵 개수 계산
 - **ID 생성**: 0, 1, 2, ... 순차적으로 생성
 
-### generateSitemaps() 함수
+### generateStaticParams() 함수 (route.ts)
 ```typescript
-export async function generateSitemaps() {
+// app/sitemap/performance/sitemap/[id].xml/route.ts
+
+export async function generateStaticParams() {
+  try {
+    const response = await getPerformancesForServer({
+      next: { revalidate: 3600 },
+      cache: "default",
+    });
+
+    if (!response) return [];
+
+    const totalSitemaps = Math.ceil(response.length / MAX_URLS_PER_SITEMAP);
+
+    return Array.from({ length: totalSitemaps }, (_, index) => ({
+      id: String(index),
+    }));
+  } catch (error) {
+    console.error("Failed to generate sitemap params:", error);
+    return [];
+  }
+}
+```
+
+### 동적 사이트맵 XML 생성 (route.ts)
+```typescript
+// app/sitemap/performance/sitemap/[id].xml/route.ts
+
+export async function GET(
+  _request: Request,
+  props: { params: Promise<{ id: string }> },
+) {
+  const SERVICE_DOMAIN = "https://ticket.devhong.cc";
+  const { id } = await props.params;
+  const sitemapId = Number(id);
+
   const response = await getPerformancesForServer({
     next: { revalidate: 3600 },
     cache: "default",
   });
 
-  if (!response) return [];
+  if (!response) {
+    return new Response(
+      `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+</urlset>`,
+      { headers: { "Content-Type": "application/xml" } }
+    );
+  }
 
-  const totalSitemaps = Math.ceil(response.length / MAX_URLS_PER_SITEMAP);
-
-  return Array.from({ length: totalSitemaps }, (_, index) => ({
-    id: index,
-  }));
-}
-```
-
-### 동적 사이트맵 생성
-```typescript
-export default async function sitemap(props: {
-  id: Promise<string>;
-}): Promise<MetadataRoute.Sitemap> {
-  const id = Number(await props.id);
-  
-  const startIndex = id * MAX_URLS_PER_SITEMAP;
+  const startIndex = sitemapId * MAX_URLS_PER_SITEMAP;
   const endIndex = Math.min(startIndex + MAX_URLS_PER_SITEMAP, response.length);
-  
-  return response.slice(startIndex, endIndex).map((performance) => ({
-    url: `${SERVICE_DOMAIN}/performance/${performance.id}`,
-    lastModified: performance.updatedAt ? new Date(performance.updatedAt) : new Date(),
+
+  const sitemapData = response.slice(startIndex, endIndex).map((performance) => ({
+    url: `${SERVICE_DOMAIN}${PAGES.PERFORMANCE.DETAIL.path(performance.id)}`,
+    lastModified: performance.updatedAt
+      ? new Date(performance.updatedAt).toISOString().split("T")[0]
+      : new Date().toISOString().split("T")[0],
     changeFrequency: "daily",
     priority: 0.8,
   }));
+
+  // XML 직접 생성
+  const urlEntries = sitemapData.map(
+    (entry) => `  <url>
+    <loc>${entry.url}</loc>
+    <lastmod>${entry.lastModified}</lastmod>
+    <changefreq>${entry.changeFrequency}</changefreq>
+    <priority>${entry.priority}</priority>
+  </url>`
+  ).join("\n");
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urlEntries}
+</urlset>`;
+
+  return new Response(xml, {
+    headers: { "Content-Type": "application/xml" },
+  });
 }
 ```
 
@@ -168,20 +226,54 @@ const performances = await getPerformancesForServer({
 });
 ```
 
-## 빌드 결과 확인
+## 빌드 및 배포 결과 확인
 
-성공적으로 설정된 경우 빌드 출력에서 다음과 같은 사이트맵들을 확인할 수 있습니다:
+### 로컬 개발 환경
+```bash
+pnpm dev
+```
+
+테스트 URL:
+- http://localhost:3000/sitemap.xml
+- http://localhost:3000/sitemap/sitemap.xml
+- http://localhost:3000/sitemap/performance/sitemap/0.xml
+
+### 프로덕션 빌드
+```bash
+pnpm build
+```
+
+성공적으로 설정된 경우 빌드 출력에서 다음과 같은 라우트들을 확인할 수 있습니다:
 
 ```
 ├ ○ /sitemap.xml
 ├ ○ /sitemap/sitemap.xml
-├ ○ /sitemap/performance/sitemap/0.xml
-├ ○ /sitemap/performance/sitemap/1.xml
+├ λ /sitemap/performance/sitemap/[id].xml
 └ ...
 ```
+
+범례:
+- `○` (Static): 정적 페이지 (빌드 시 생성)
+- `λ` (Server): 서버 사이드 렌더링
+
+### Vercel 배포 확인
+
+배포 후 다음 URL들이 모두 정상 작동하는지 확인:
+
+```
+https://your-domain.vercel.app/sitemap.xml ✅
+https://your-domain.vercel.app/sitemap/sitemap.xml ✅
+https://your-domain.vercel.app/sitemap/performance/sitemap/0.xml ✅
+```
+
+**주의사항:**
+- sitemap.ts 방식은 로컬에서 작동하더라도 Vercel 배포 시 404 발생 가능
+- 반드시 Vercel 배포 후 실제 URL 접근 테스트 필요
+- Google Search Console에 sitemap.xml 등록 시 인덱스 URL만 등록
 
 ## SEO 최적화 효과
 
 1. **검색엔진 크롤링 효율성**: 모든 공연 페이지가 사이트맵에 포함되어 검색엔진이 쉽게 발견할 수 있습니다.
 2. **대량 데이터 처리**: 5만개씩 분할하여 검색엔진 권장사항을 준수합니다.
-3. **자동 업데이트**: 새로운 공연가 추가되면 자동으로 사이트맵에 포함됩니다.
+3. **자동 업데이트**: 새로운 공연이 추가되면 자동으로 사이트맵에 포함됩니다.
+4. **프로덕션 안정성**: route.ts 방식으로 Vercel 배포 시에도 안정적으로 작동합니다.
