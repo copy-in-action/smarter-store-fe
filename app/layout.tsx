@@ -71,6 +71,13 @@ export default async function RootLayout({
   return (
     <html lang="ko">
       <head>
+        {/* Vercel 환경에서만 Google Search Console 인증 메타 태그 추가 */}
+        {process.env.VERCEL && (
+          <meta
+            name="google-site-verification"
+            content="Lez8tLbS7gYWj5SaY9-W2-dnehpaCHUA4jvB8IKx-qg"
+          />
+        )}
         <script
           type="application/ld+json"
           // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
