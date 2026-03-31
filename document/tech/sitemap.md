@@ -42,9 +42,8 @@ app/
     ├── sitemap.xml/
     │   └── route.ts                      # 정적 페이지 사이트맵 (/sitemap/sitemap.xml)
     └── performance/
-        └── sitemap/
-            └── [id].xml/
-                └── route.ts              # 동적 공연 사이트맵 (/sitemap/performance/sitemap/[id].xml)
+        └── [id].xml/
+            └── route.ts                  # 동적 공연 사이트맵 (/sitemap/performance/[id].xml)
 ```
 
 ## URL 구조
@@ -60,8 +59,8 @@ app/
 - **역할**: 홈 등 정적 페이지 URL 목록
 
 ### 공연 동적 사이트맵
-- **URL 패턴**: `/sitemap/performance/sitemap/0.xml`, `/sitemap/performance/sitemap/1.xml`, ...
-- **파일**: `app/sitemap/performance/sitemap/[id].xml/route.ts`
+- **URL 패턴**: `/sitemap/performance/0.xml`, `/sitemap/performance/1.xml`, ...
+- **파일**: `app/sitemap/performance/[id].xml/route.ts`
 - **역할**: 실제 공연 상세 페이지 URL들을 5만개씩 분할하여 제공
 
 ## 공연 동적 사이트맵 시스템
