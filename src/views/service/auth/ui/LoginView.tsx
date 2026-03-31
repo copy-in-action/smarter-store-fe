@@ -3,6 +3,7 @@
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "sonner";
 import AppleIcon from "@/../public/icons/apple.svg";
 import GoogleIcon from "@/../public/icons/google.svg";
 import KakaoIcon from "@/../public/icons/kakao.svg";
@@ -43,6 +44,10 @@ export function LoginView({ redirectUrl }: LoginViewProps) {
     },
   ];
 
+  const handleOauthLogin = () => {
+    toast.info("'이메일로 시작하기'로 로그인 하시기 바랍니다.");
+  };
+
   return (
     <div className="mb-12 auth-wrapper sm:mb-[120px]">
       {/* 상단 영역 */}
@@ -68,6 +73,7 @@ export function LoginView({ redirectUrl }: LoginViewProps) {
             variant={"outline"}
             key={oAuth.title}
             className="relative px-2"
+            onClick={handleOauthLogin}
           >
             <Image
               src={oAuth.icon}
@@ -81,7 +87,7 @@ export function LoginView({ redirectUrl }: LoginViewProps) {
 
         <div className="py-3 mx-auto">
           <Link
-            href={`${PAGES.AUTH.LOGIN.EMAIL.path}${redirectUrl ? `?redirect=${encodeURIComponent(redirectUrl)}` : ''}`}
+            href={`${PAGES.AUTH.LOGIN.EMAIL.path}${redirectUrl ? `?redirect=${encodeURIComponent(redirectUrl)}` : ""}`}
             className="flex flex-wrap items-center p-2 text-sm font-semibold hover:bg-gray-100"
           >
             이메일로 시작하기 <ChevronRight size={18} />

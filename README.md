@@ -3,6 +3,35 @@
 Next.js 기반의 티켓팅 프론트엔드 프로젝트
 FSD (Feature-Sliced Design) 아키텍처 적용
 
+## 주요 기능
+
+### 일반 사용자
+- **공연 검색 및 탐색**: 키워드 검색, 카테고리별 공연 조회
+- **공연 리스트**: 인기 티켓, 장르별 티켓 목록
+- **공연 상세**: 공연 정보, 장소, 기간, 시간, 연령 제한 등 상세 정보 조회
+- **찜 기능**: 관심 공연 저장 및 관리
+- **공연 예매**: 좌석 선택 및 예매
+- **결제**: 예약자 정보 입력 및 결제 (무통장, 신용카드, 카카오페이, 토스페이)
+
+### 관리자
+- **공연 관리**: 공연 등록, 수정, 삭제
+- **예매 관리**: 예매 현황 조회 및 관리
+- **사용자 관리**: 회원 정보 관리
+
+## 스크린샷
+
+### 메인 페이지 (공연 리스트)
+![메인 페이지](document/screenshot/main.png)
+
+### 공연 상세
+![공연 상세](document/screenshot/detail.png)
+
+### 좌석 선택
+![좌석 선택](document/screenshot/ticket.png)
+
+### 결제
+![결제](document/screenshot/payment.png)
+
 ## 기술 스택
 
 ### 핵심 프레임워크
@@ -20,6 +49,10 @@ FSD (Feature-Sliced Design) 아키텍처 적용
 ### API 통신
 - **REST API** - 별도 API 서버와 통신
 - **fetch API** - Next.js 내장 fetch 사용 (캐싱, revalidation)
+- **Orval** - OpenAPI 스펙 기반 타입 및 API 클라이언트 자동 생성
+  - Zod 스키마 자동 생성 (`@orval/zod`)
+  - TypeScript 타입 자동 생성
+  - 태그별 API 파일 분리 (tags-split mode)
 
 ### 코드 품질
 - **Biome 2.2.0** - Linter & Formatter
@@ -71,33 +104,6 @@ smarter-store-fe/
 └── tsconfig.json               # TypeScript 설정
 ```
 
-### FSD 레이어 규칙
-
-#### 1. shared (공유 레이어)
-- 프로젝트 전체에서 사용되는 공통 코드
-- 다른 레이어에 의존하지 않음
-
-#### 2. entities (엔티티 레이어)
-- 비즈니스 엔티티 (Product, User, Order 등)
-- shared에만 의존
-
-#### 3. features (기능 레이어)
-- 사용자 시나리오와 기능 (로그인, 장바구니 추가 등)
-- shared, entities에 의존
-
-#### 4. widgets (위젯 레이어)
-- 독립적인 UI 블록 (Header, Footer 등)
-- shared, entities, features에 의존
-
-#### 5. views (페이지 레이어)
-- 페이지 단위 컴포넌트
-- 모든 하위 레이어 사용 가능
-- **주의**: Next.js의 `app/` 폴더와 분리됨
-
-#### 6. app (앱 레이어)
-- Next.js App Router (라우팅)
-- Providers, 전역 설정
-- views를 import하여 사용
 
 ## 시작하기
 
@@ -161,8 +167,47 @@ pnpm build
 # 프로덕션 서버 실행
 pnpm start
 
+# API 타입 및 클라이언트 자동 생성 (Orval)
+pnpm orval
+
 # Shadcn UI 컴포넌트 추가
 pnpm dlx shadcn@latest add button
+```
+
+### API 자동 생성 (Orval)
+
+프로젝트는 OpenAPI 스펙 기반으로 TypeScript 타입과 API 클라이언트 코드를 자동 생성합니다.
+
+#### 설정 파일
+- `orval.config.ts` - Orval 설정
+
+#### 자동 생성 위치
+- API 클라이언트: `src/shared/api/orval/`
+- TypeScript 타입: `src/shared/api/orval/types/`
+
+#### 생성 방법
+```bash
+# OpenAPI 스펙에서 API 코드 자동 생성
+pnpm orval
+```
+
+#### 주요 특징
+- OpenAPI 문서에서 자동으로 TypeScript 타입 생성
+- Zod 스키마 자동 생성으로 런타임 타입 검증
+- 태그별로 API 파일 분리 (예: `performance-controller.ts`, `user-controller.ts`)
+- Custom fetch wrapper (`src/shared/api/fetch-wrapper.ts`) 사용
+- API 서버 URL 환경변수로 관리
+
+#### 사용 예시
+```typescript
+// 자동 생성된 API 사용
+import { getPerformanceList } from '@/shared/api/orval/performance-controller';
+
+// 타입 안전한 API 호출
+const performances = await getPerformanceList({
+  page: 0,
+  size: 10,
+});
 ```
 
 ## 개발 가이드
