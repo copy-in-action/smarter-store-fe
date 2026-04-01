@@ -68,9 +68,16 @@ export default async function RootLayout({
     `${SITE_URL}/images/logo.png`,
   );
 
+  const naverSearchAdvisor = process.env.VERCEL
+    ? "f7f9b4e146226b41f1faea50447b75d7d794c18a"
+    : "66ceef669c54c028edcbfd6abe45d894f534f7d8";
+
   return (
     <html lang="ko">
       <head>
+        {/* naver seo */}
+        <meta name="naver-site-verification" content={naverSearchAdvisor} />
+
         {/* Vercel 환경에서만 Google Search Console 인증 메타 태그 추가 */}
         {process.env.VERCEL && (
           <meta
