@@ -69,7 +69,7 @@ export default async function RootLayout({
   );
 
   const naverSearchAdvisor = process.env.VERCEL
-    ? "f7f9b4e146226b41f1faea50447b75d7d794c18a"
+    ? "1f3bdf0249a6fadbcbc87932ced5588f837dfe2d"
     : "66ceef669c54c028edcbfd6abe45d894f534f7d8";
 
   return (
