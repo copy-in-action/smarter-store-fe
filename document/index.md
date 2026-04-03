@@ -24,6 +24,12 @@
 | 공지사항 CRUD | [prd/admin-notices/prd.md](prd/admin-notices/prd.md) | ✅ 완료 | - |
 | 홈 태그 관리 (지정 + 순서) | [prd/admin-tag-management/prd.md](prd/admin-tag-management/prd.md) | 🟡 태그 지정 완료 / 순서 관리 미구현 | 2026-03-18 |
 
+### 테스트
+
+| 기능 | 문서 | 상태 | 최종 수정 |
+|------|------|------|-----------|
+| SearchInput 컴포넌트 테스트 | [prd/search-input-test/prd.md](prd/search-input-test/prd.md) | 🔲 미구현 | 2026-04-03 |
+
 ### 인프라
 
 | 기능 | 문서 | 상태 | 최종 수정 |
