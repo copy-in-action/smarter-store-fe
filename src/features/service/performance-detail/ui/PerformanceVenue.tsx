@@ -12,7 +12,7 @@ const PerformanceVenue = ({ venue }: PerformanceVenueProps) => {
       className="text-sm scroll-mt-36 performance-section p-detail-wrapper"
       id="venue"
     >
-      <h3 className="text-lg font-semibold mb-2 py-3.5">장소</h3>
+      <h2 className="text-lg font-semibold mb-2 py-3.5">장소</h2>
       <p className="mb-4 text-base font-bold">
         {venue?.name || "설정된 공연장이 없습니다."}
       </p>

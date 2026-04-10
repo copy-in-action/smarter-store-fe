@@ -70,14 +70,14 @@ const PerformanceBookingNotice = ({
       <Dialog>
         {/* 다이얼로그 트리거: '예매 안내사항' 헤더 영역 */}
         <DialogTrigger asChild>
-          <h3 className="text-lg font-semibold mb-2 py-1 flex items-center justify-between cursor-pointer">
+          <h2 className="text-lg font-semibold mb-2 py-1 flex items-center justify-between cursor-pointer">
             <div className="flex items-center gap-3">
               <BookCheck />
               예매 안내사항
             </div>
 
             <ChevronRight />
-          </h3>
+          </h2>
         </DialogTrigger>
 
         {/* 다이얼로그 상세 내용 */}

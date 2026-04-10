@@ -616,7 +616,7 @@ export const PAGES = {
   WISHLIST: {
     path: "/wishlist",
     metadata: {
-      title: "찜한 공연 | CIA",
+      title: "찜한 공연 | YEME",
       description: "관심 있는 공연을 모아보세요",
     },
   },

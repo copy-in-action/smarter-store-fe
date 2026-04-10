@@ -5,7 +5,7 @@ import { SITE_URL } from "./site";
  * 공통 메타데이터 설정
  */
 const BASE_METADATA = {
-  siteName: "CIA 티켓",
+  siteName: "YEME",
   locale: "ko_KR",
   type: "website" as const,
   keywords: [
@@ -28,7 +28,7 @@ function createMetadata(
   description: string,
   additionalOptions?: Partial<Metadata>,
 ): Metadata {
-  const fullTitle = title.includes("CIA")
+  const fullTitle = title.includes("YEME")
     ? title
     : `${title} | ${BASE_METADATA.siteName}`;
 
@@ -63,7 +63,7 @@ export const SERVICE_PAGES = {
   HOME: {
     path: "/",
     metadata: createMetadata(
-      "CIA 티켓 - 공연 예매의 모든 것",
+      "YEME",
       "뮤지컬, 콘서트, 연극, 클래식 등 다양한 공연 정보와 할인 티켓을 만나보세요. 최신 공연 소식과 특가 이벤트를 놓치지 마세요!",
       {
         alternates: {
@@ -87,7 +87,7 @@ export const SERVICE_PAGES = {
     LOGIN: {
       path: "/auth/login",
       metadata: {
-        description: "CIA에 로그인하고 스마트한 쇼핑을 시작하세요",
+        description: "YEME에 로그인하고 스마트한 쇼핑을 시작하세요",
       } as Metadata,
       siteMap: {
         priority: 0.5,
@@ -98,7 +98,7 @@ export const SERVICE_PAGES = {
         path: "/auth/login/email",
         metadata: {
           title: "이메일 로그인",
-          description: "이메일로 CIA에 로그인하고 스마트한 쇼핑을 시작하세요",
+          description: "이메일로 YEME에 로그인하고 스마트한 쇼핑을 시작하세요",
         } as Metadata,
         siteMap: {
           priority: 0.5,
@@ -116,10 +116,6 @@ export const SERVICE_PAGES = {
             title: "회원가입 - 정보 입력",
             description: "이름과 휴대폰 번호를 입력해주세요",
           } as Metadata,
-          siteMap: {
-            priority: 0.5,
-            changeFrequency: "daily" as const,
-          },
         },
 
         /** 이메일 인증 (3단계) */
@@ -345,14 +341,14 @@ const ADMIN_PAGES = {
   ADMIN: {
     path: "/admin",
     metadata: {
-      title: "관리자 | CIA",
-      description: "CIA 관리자 페이지",
+      title: "관리자 | YEME",
+      description: "YEME 관리자 페이지",
     } as Metadata,
     AUTH: {
       LOGIN: {
         path: "/admin/auth/login",
         metadata: {
-          title: "관리자 로그인 | CIA",
+          title: "관리자 로그인 | YEME",
           description: "관리자 계정으로 로그인하여 시스템을 관리하세요",
         } as Metadata,
       },
