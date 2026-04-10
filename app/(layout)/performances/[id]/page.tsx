@@ -101,7 +101,7 @@ export async function generateMetadata({
 
   if (Number.isNaN(performanceId) || performanceId <= 0) {
     return {
-      title: "페이지를 찾을 수 없습니다 | CIA",
+      title: "페이지를 찾을 수 없습니다 | YEME",
       description: "요청하신 페이지를 찾을 수 없습니다.",
     };
   }
@@ -140,7 +140,7 @@ export async function generateMetadata({
     console.error("메타데이터 생성 실패:", error);
 
     return {
-      title: "공연 정보 | CIA",
+      title: "공연 정보 | YEME",
       description: "공연 상세 정보를 확인하세요.",
     };
   }

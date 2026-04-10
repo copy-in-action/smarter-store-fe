@@ -34,7 +34,7 @@ const notoSansKR = Noto_Sans_KR({
 });
 
 export const metadata: Metadata = {
-  title: "CIA 티켓",
+  title: "YEME",
   description:
     "뮤지컬, 콘서트, 연극, 클래식 등 다양한 공연 정보와 할인 티켓을 만나보세요. 최신 공연 소식과 특가 이벤트를 놓치지 마세요!",
 };
@@ -57,7 +57,7 @@ export default async function RootLayout({
 
   // JSON-LD 구조화 데이터 생성
   const websiteSchema = createWebsiteSchema(
-    "CIA 티켓",
+    "YEME",
     "뮤지컬, 콘서트, 연극, 클래식 등 다양한 공연 정보와 할인 티켓을 만나보세요. 최신 공연 소식과 특가 이벤트를 놓치지 마세요!",
     SITE_URL,
   );

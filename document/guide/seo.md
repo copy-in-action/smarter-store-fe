@@ -27,7 +27,7 @@
 export const SERVICE_PAGES = {
   HOME: {
     path: "/",
-    title: "CIA 티켓 - 공연 예매",
+    title: "YEME",
     description: "뮤지컬, 콘서트, 연극, 클래식 공연 예매",
     keywords: "공연 예매, 뮤지컬, 콘서트, 연극",
     priority: 1.0,
@@ -37,14 +37,14 @@ export const SERVICE_PAGES = {
       include: true,
     },
     openGraph: {
-      title: "CIA 티켓",
+      title: "YEME",
       description: "...",
       images: ["/images/meta/open-graph.png"],
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: "CIA 티켓",
+      title: "YEME",
       description: "...",
       images: ["/images/meta/open-graph.png"],
     },
@@ -78,7 +78,7 @@ export async function generateMetadata({
   const performance = await getPerformanceDetail(id);
 
   return {
-    title: `${performance.name} | CIA 티켓`,
+    title: `${performance.name} | YEME`,
     description: performance.description?.slice(0, 160),
     openGraph: {
       title: performance.name,
