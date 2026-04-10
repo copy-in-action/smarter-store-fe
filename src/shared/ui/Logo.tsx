@@ -23,7 +23,6 @@ export function Logo({
       viewBox="0 0 98 36"
       fill="none"
       role="img"
-      aria-label="CIA 티켓"
       className={className}
       width={width}
     >

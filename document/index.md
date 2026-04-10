@@ -29,6 +29,7 @@
 | 기능 | 문서 | 상태 | 최종 수정 |
 |------|------|------|-----------|
 | 공연 캐싱 전략 (ISR + On-Demand) | [prd/performance-caching/prd.md](prd/performance-caching/prd.md) | ✅ 완료 | - |
+| SEO 최적화 | [prd/seo/prd.md](prd/seo/prd.md) | 🟡 부분 완료 (헤딩 구조 수정 필요) | 2026-04-10 |
 
 ---
 
@@ -66,3 +67,4 @@
 | [guide/fsd-architecture.md](guide/fsd-architecture.md) | FSD 구조 및 디렉토리 예시 |
 | [guide/zod-schema.md](guide/zod-schema.md) | Zod 스키마 설계 |
 | [guide/import-rules.md](guide/import-rules.md) | Import & Export 규칙 |
+| [guide/seo.md](guide/seo.md) | SEO 최적화 개발 가이드 |

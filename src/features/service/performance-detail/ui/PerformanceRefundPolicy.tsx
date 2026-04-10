@@ -12,7 +12,7 @@ const PerformanceRefundPolicy = ({
       className="text-sm performance-section p-detail-wrapper"
       id="refundPolicy"
     >
-      <h3 className="text-lg font-semibold mb-2 py-3.5">취소 및 환불 규정</h3>
+      <h2 className="text-lg font-semibold mb-2 py-3.5">취소 및 환불 규정</h2>
 
       {refundPolicy ? (
         <div
