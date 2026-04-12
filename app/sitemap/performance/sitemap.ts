@@ -39,6 +39,10 @@ export default async function sitemap(props: {
 }): Promise<MetadataRoute.Sitemap> {
   const id = await props.id;
   const sitemapId = Number(id);
+  console.log("[sitemap/performance/sitemap] called", {
+    id: sitemapId,
+    time: new Date().toISOString(),
+  });
 
   try {
     const response = await getPerformancesForServer({

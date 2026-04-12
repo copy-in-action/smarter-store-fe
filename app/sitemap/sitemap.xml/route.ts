@@ -58,7 +58,12 @@ export function collectSitemapPaths(
 /**
  * 정적 페이지들의 sitemap XML 생성
  */
-export async function GET() {
+export async function GET(request: Request) {
+  console.log("[sitemap/sitemap.xml] GET called", {
+    url: request.url,
+    userAgent: request.headers.get("user-agent"),
+    time: new Date().toISOString(),
+  });
   const sitemapData = collectSitemapPaths(SERVICE_PAGES, SITE_URL);
 
   // XML 생성
