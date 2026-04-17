@@ -177,7 +177,7 @@ export function SearchInput({ inputClassName }: SearchInputProps = {}) {
     >
       <InputGroup className="h-full border-blue-600 rounded-full sm:bg-gray-100 sm:border-transparent">
         <InputGroupAddon align="inline-start">
-          <Search className="size-4" />
+          <Search className="size-4" aria-label="검색 아이콘" />
         </InputGroupAddon>
         <InputGroupInput
           value={searchQuery}
