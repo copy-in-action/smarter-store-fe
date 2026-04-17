@@ -25,31 +25,31 @@
 
 ### 2.1 렌더링
 
-- [ ] 초기 렌더링 시 placeholder `"어디로 떠나볼까요 ?"` 표시
-- [ ] `searchParams.q` 값이 있으면 input 초기값으로 설정
-- [ ] `searchParams.q` 값이 없으면 input 초기값 빈 문자열
+- [x] 초기 렌더링 시 placeholder `"어디로 떠나볼까요 ?"` 표시
+- [x] `searchParams.q` 값이 있으면 input 초기값으로 설정
+- [x] `searchParams.q` 값이 없으면 input 초기값 빈 문자열
 
 ### 2.2 X 버튼 (검색어 지우기)
 
-- [ ] 입력값이 없을 때 X 버튼 미노출
-- [ ] 입력값이 있을 때 X 버튼 노출
-- [ ] X 버튼 클릭 시 input 값 초기화
+- [x] 입력값이 없을 때 X 버튼 미노출
+- [x] 입력값이 있을 때 X 버튼 노출
+- [x] X 버튼 클릭 시 input 값 초기화
 
 ### 2.3 handleSearch 경계값 (Unit)
 
-- [ ] 빈 문자열 입력 후 Enter → 검색 미실행 (router.push 미호출)
-- [ ] 공백만 입력 후 Enter → trim 후 검색 미실행
-- [ ] 정상 키워드 입력 후 Enter → `router.push('/search?q=키워드')` 호출
-- [ ] 키워드 앞뒤 공백 → trim 적용 후 검색 실행
+- [x] 빈 문자열 입력 후 Enter → 검색 미실행 (router.push 미호출)
+- [x] 공백만 입력 후 Enter → trim 후 검색 미실행
+- [x] 정상 키워드 입력 후 Enter → `router.push('/search?q=키워드')` 호출
+- [x] 키워드 앞뒤 공백 → trim 적용 후 검색 실행
 
 ### 2.4 키보드 네비게이션 (Unit)
 
-- [ ] IME 조합 중(`isComposing: true`) ArrowDown → selectedIndex 변경 없음
-- [ ] 팝업 닫힌 상태에서 ArrowDown → selectedIndex 변경 없음
-- [ ] ArrowDown 연속 → 마지막 항목에서 더 이상 증가하지 않음 (경계값)
-- [ ] ArrowUp → 첫 번째 항목(0)에서 -1로 돌아옴 (선택 해제)
-- [ ] ArrowUp → 이미 -1이면 -1 유지
-- [ ] Escape → 팝업 닫힘, selectedIndex -1 리셋
+- [x] IME 조합 중(`isComposing: true`) ArrowDown → selectedIndex 변경 없음
+- [x] 팝업 닫힌 상태에서 ArrowDown → selectedIndex 변경 없음
+- [x] ArrowDown 연속 → 마지막 항목에서 더 이상 증가하지 않음 (경계값)
+- [x] ArrowUp → 첫 번째 항목(0)에서 -1로 돌아옴 (선택 해제)
+- [x] ArrowUp → 이미 -1이면 -1 유지
+- [x] Escape → 팝업 닫힘, selectedIndex -1 리셋
 
 ### 2.5 포커스 / 팝업 상태
 
@@ -120,7 +120,7 @@
 
 ## 6. 구현 체크리스트
 
-- [ ] `src/widgets/header/ui/__tests__/SearchInput.test.tsx` 작성
+- [x] `src/widgets/header/ui/__tests__/SearchInput.test.tsx` 작성
 - [ ] `src/widgets/header/ui/__tests__/SearchInput.integration.test.tsx` 작성
 - [ ] `tests/e2e/search.spec.ts` 작성
 - [ ] MSW handler 추가 (자동완성 API)

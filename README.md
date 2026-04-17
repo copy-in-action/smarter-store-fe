@@ -222,6 +222,61 @@ const performances = await getPerformanceList({
 - Public API를 통한 export
 - Shadcn UI 컴포넌트는 `shared/ui`에 설치
 
+### AI 개발 환경 (Claude Code)
+
+프로젝트는 Claude Code와 QMD(Quick Markdown Documents)를 사용하여 문서 기반 개발을 지원합니다.
+
+#### QMD 설정 (신규 환경)
+
+1. **QMD 설치**
+```bash
+npm install -g @tobilu/qmd
+```
+
+2. **MCP 설정 파일 생성**
+```bash
+# Windows
+mkdir %USERPROFILE%\.config\claude
+```
+
+`%USERPROFILE%\.config\claude\mcp_config.json` 파일 생성:
+```json
+{
+  "mcpServers": {
+    "qmd": {
+      "command": "qmd",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+3. **문서 컬렉션 추가 및 인덱싱**
+```bash
+# 프로젝트 document 폴더를 QMD에 추가
+qmd collection add document [프로젝트경로]/document
+
+# 벡터 임베딩 생성 (최초 1회)
+qmd embed
+```
+
+4. **설정 확인**
+```bash
+# QMD 상태 확인
+qmd status
+
+# 검색 테스트
+qmd query "FSD 아키텍처"
+```
+
+5. **Claude Code 재시작**
+- Claude Code를 재시작하면 QMD MCP 서버가 자동으로 활성화됩니다.
+
+#### 작동 방식
+- Claude Code가 기능 구현 전 `qmd query`로 관련 문서를 자동 검색
+- 대용량 문서(PRD, 가이드)에서 필요한 부분만 로드하여 토큰 절약
+- 약 26개 문서, 11,000+ 줄의 문서를 효율적으로 관리
+
 ## 문제 해결
 
 ### 빌드 에러

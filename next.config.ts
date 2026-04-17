@@ -43,17 +43,8 @@ const nextConfig: NextConfig = {
     ];
   },
   async headers() {
-    return [
-      {
-        source: "/_next/static/(.*)",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
-          },
-        ],
-      },
-    ];
+    // Next.js가 /_next/static/(.*)에 대해 자동으로 최적 캐싱 처리
+    return [];
   },
   experimental: {
     optimizeCss: true,

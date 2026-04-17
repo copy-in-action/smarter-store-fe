@@ -72,3 +72,4 @@
 | [guide/fsd-architecture.md](guide/fsd-architecture.md) | FSD 구조 및 디렉토리 예시 |
 | [guide/zod-schema.md](guide/zod-schema.md) | Zod 스키마 설계 |
 | [guide/import-rules.md](guide/import-rules.md) | Import & Export 규칙 |
+| [guide/testing-guide.md](guide/testing-guide.md) | 테스트 작성 가이드 (Vitest + React Testing Library) |
