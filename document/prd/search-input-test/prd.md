@@ -53,8 +53,8 @@
 
 ### 2.5 포커스 / 팝업 상태
 
-- [ ] input focus 시 `isOpen` true (자동완성 팝업 열림)
-- [ ] 입력값 변경 시 `selectedIndex` -1 리셋
+- [x] input focus 시 `isOpen` true (자동완성 팝업 열림)
+- [x] 입력값 변경 시 `selectedIndex` -1 리셋
 
 ---
 

@@ -292,4 +292,31 @@ describe("SearchInput", () => {
       expect(autocomplete).toHaveAttribute("data-selected-index", "-1");
     });
   });
+
+  describe("포커스 / 팝업 상태", () => {
+    test("input focus 시 `isOpen` true (자동완성 팝업 열림)", () => {
+      mockSearchParams();
+      render(<SearchInput />);
+      const searchInput = getSearchInput();
+      fireEvent.focus(searchInput);
+      expect(screen.getByTestId("search-autocomplete")).toHaveAttribute(
+        "data-open",
+        "true",
+      );
+    });
+
+    test("입력값 변경 시 selectedIndex3 -1 리셋", () => {
+      mockSearchParams();
+      render(<SearchInput />);
+      const searchInput = getSearchInput();
+      fireEvent.change(searchInput, { target: { value: "서울" } });
+      fireEvent.focus(searchInput);
+      fireEvent.keyDown(searchInput, { key: "ArrowDown" });
+
+      fireEvent.change(searchInput, { target: { value: "부산" } });
+
+      const autoComplete = screen.getByTestId("search-autocomplete");
+      expect(autoComplete).toHaveAttribute("data-selected-index", "-1");
+    });
+  });
 });
