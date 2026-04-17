@@ -9,7 +9,12 @@ const MAX_URLS_PER_SITEMAP = 50000;
 /**
  * 사이트맵 인덱스 XML 생성 - 모든 하위 사이트맵들의 목록
  */
-export async function GET() {
+export async function GET(request: Request) {
+  console.log("[sitemap.xml] GET called", {
+    url: request.url,
+    userAgent: request.headers.get("user-agent"),
+    time: new Date().toISOString(),
+  });
   const BASE_URL = SITE_URL;
 
   // 정적 사이트맵 목록

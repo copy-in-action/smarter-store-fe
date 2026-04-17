@@ -3,12 +3,10 @@ import { Suspense } from "react";
 import {
   MainBanner,
   PerformanceCategory,
-  PerformanceListServer,
   SectionListServer,
   SectionListSkeleton,
 } from "@/features/service/home";
-import { PerformanceListSkeleton } from "@/features/service/home/ui/PerformanceListSkeleton";
-import { PAGES } from "@/shared/config/routes";
+import { PAGES } from "@/shared/config";
 
 /**
  * 홈페이지 메타데이터
@@ -21,7 +19,7 @@ export const metadata: Metadata = PAGES.HOME.metadata;
 export default async function HomePage() {
   return (
     <div className="">
-      <h1 className="my-10 text-2xl font-bold text-center">CIA 티켓</h1>
+      <h1 className="my-10 text-2xl font-bold text-center">YEME</h1>
 
       <section className="my-4 sm:my-10">
         <PerformanceCategory />

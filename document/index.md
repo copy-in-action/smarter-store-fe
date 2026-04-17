@@ -35,6 +35,7 @@
 | 기능 | 문서 | 상태 | 최종 수정 |
 |------|------|------|-----------|
 | 공연 캐싱 전략 (ISR + On-Demand) | [prd/performance-caching/prd.md](prd/performance-caching/prd.md) | ✅ 완료 | - |
+| SEO 최적화 | [prd/seo/prd.md](prd/seo/prd.md) | 🔴 색인 이슈 발생 (메인 도메인) | 2026-04-10 |
 
 ---
 
@@ -62,6 +63,7 @@
 | [tech/next-image.md](tech/next-image.md) | Next.js 이미지 최적화 |
 | [tech/orval.md](tech/orval.md) | Orval 설정 |
 | [tech/performance-seo-checklist.md](tech/performance-seo-checklist.md) | 공연 상세 SEO 체크리스트 |
+| [tech/seo-indexing-issues.md](tech/seo-indexing-issues.md) | 🔴 SEO 색인 이슈 분석 및 해결 |
 | [tech/seat-chart-library.md](tech/seat-chart-library.md) | 좌석 배치도 라이브러리 |
 | [tech/sitemap.md](tech/sitemap.md) | 사이트맵 설정 |
 
@@ -73,3 +75,4 @@
 | [guide/zod-schema.md](guide/zod-schema.md) | Zod 스키마 설계 |
 | [guide/import-rules.md](guide/import-rules.md) | Import & Export 규칙 |
 | [guide/testing-guide.md](guide/testing-guide.md) | 테스트 작성 가이드 (Vitest + React Testing Library) |
+| [guide/seo.md](guide/seo.md) | SEO 최적화 개발 가이드 |

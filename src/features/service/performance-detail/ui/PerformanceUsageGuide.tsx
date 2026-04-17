@@ -8,7 +8,7 @@ const PerformanceUsageGuide = ({ usageGuide }: PerformanceUsageGuideProps) => {
       className="text-sm scroll-mt-36 performance-section p-detail-wrapper"
       id="usageGuide"
     >
-      <h3 className="text-lg font-semibold mb-2 py-3.5">이용안내</h3>
+      <h2 className="text-lg font-semibold mb-2 py-3.5">이용안내</h2>
 
       {usageGuide ? (
         <p className="leading-relaxed whitespace-pre-wrap">{usageGuide}</p>

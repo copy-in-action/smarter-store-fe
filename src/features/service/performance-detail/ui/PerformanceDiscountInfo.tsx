@@ -10,7 +10,7 @@ const PerformanceDiscountInfo = ({
       className="text-sm scroll-mt-36 performance-section p-detail-wrapper"
       id="discountInfo"
     >
-      <h3 className="text-lg font-semibold mb-2 py-3.5">할인정보</h3>
+      <h2 className="text-lg font-semibold mb-2 py-3.5">할인정보</h2>
 
       {discountInfo ? (
         <p className="leading-relaxed whitespace-pre-wrap">{discountInfo}</p>
