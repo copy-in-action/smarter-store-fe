@@ -5,9 +5,28 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
-    environment: "jsdom",
-    globals: true, // describe, test, expect 등 전역 사용 + 자동 cleanup
-    include: ["src/**/*.{test,spec}.{ts,tsx}"],
-    setupFiles: ["./tests/setup.tsx"],
+    projects: [
+      {
+        plugins: [tsconfigPaths(), react()],
+        test: {
+          name: "unit",
+          globals: true,
+          environment: "jsdom",
+          include: ["src/**/*.test.{ts,tsx}"],
+          exclude: ["src/**/*.integration.test.{ts,tsx}"],
+          setupFiles: ["./tests/setup/unit.setup.tsx"],
+        },
+      },
+      {
+        plugins: [tsconfigPaths(), react()],
+        test: {
+          name: "integration",
+          globals: true,
+          environment: "jsdom",
+          include: ["src/**/*.integration.test.{ts,tsx}"],
+          setupFiles: ["./tests/setup/integration.setup.tsx"],
+        },
+      },
+    ],
   },
 });

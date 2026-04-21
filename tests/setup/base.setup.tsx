@@ -2,8 +2,6 @@ import "@testing-library/jest-dom/vitest";
 import type React from "react";
 import { vi } from "vitest";
 
-// globals: true 설정으로 React Testing Library가 자동 cleanup 수행
-
 vi.mock("next/image", () => ({
   default: ({
     src,
@@ -14,6 +12,7 @@ vi.mock("next/image", () => ({
     alt: string;
     [key: string]: unknown;
   }) => (
+    // biome-ignore lint/performance/noImgElement: intentional mock for next/image
     <img src={typeof src === "object" ? src.src : src} alt={alt} {...props} />
   ),
 }));
@@ -33,7 +32,7 @@ export const mockRouterFunctions = {
 
 vi.mock("next/navigation", () => ({
   useRouter: () => mockRouterFunctions,
-  useSearchParams: vi.fn(() => new URLSearchParams()), // 빈 URLSearchParams 반환 (실제 객체)
+  useSearchParams: vi.fn(() => new URLSearchParams()),
   usePathname: vi.fn().mockReturnValue("/"),
 }));
 
