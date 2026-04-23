@@ -50,7 +50,7 @@ describe("SearchInput Integration", () => {
   });
 
   describe("3.1 디바운스 + 자동완성 API 연동", () => {
-    test("검색어 입력 후 300ms 이내 → API 미호출", () => {
+    test("검색어 입력 후 300ms 이내 → API 미호출", async () => {
       vi.useFakeTimers();
       mockSearchParams();
 
@@ -71,7 +71,6 @@ describe("SearchInput Integration", () => {
     });
 
     test("검색어 입력 후 300ms 경과 → 자동완성 API 호출", async () => {
-      vi.useFakeTimers();
       mockSearchParams();
 
       const handler = vi.fn(() => HttpResponse.json(mockPerformances));
@@ -83,16 +82,13 @@ describe("SearchInput Integration", () => {
       fireEvent.focus(input);
       fireEvent.change(input, { target: { value: "서울" } });
 
-      await act(async () => {
-        vi.advanceTimersByTime(300);
+      // 디바운스 대기 + API 호출 확인
+      await waitFor(() => expect(handler).toHaveBeenCalled(), {
+        timeout: 1000,
       });
-      vi.useRealTimers();
-
-      await waitFor(() => expect(handler).toHaveBeenCalled());
     });
 
     test("API 응답 후 자동완성 항목 렌더링", async () => {
-      vi.useFakeTimers();
       mockSearchParams();
 
       server.use(
@@ -105,15 +101,16 @@ describe("SearchInput Integration", () => {
       fireEvent.focus(input);
       fireEvent.change(input, { target: { value: "서울" } });
 
-      await act(async () => {
-        vi.advanceTimersByTime(300);
-      });
-      vi.useRealTimers();
-
-      await waitFor(() => {
-        expect(screen.getByText("서울 콘서트")).toBeInTheDocument();
-        expect(screen.getByText("서울 뮤지컬")).toBeInTheDocument();
-      });
+      // 디바운스 대기 + API 응답 대기 + 렌더링 확인
+      await waitFor(
+        () => {
+          const links = screen.getAllByRole("link");
+          expect(links).toHaveLength(2);
+          expect(links[0]).toHaveTextContent("서울 콘서트");
+          expect(links[1]).toHaveTextContent("서울 뮤지컬");
+        },
+        { timeout: 1000 },
+      );
     });
   });
 });

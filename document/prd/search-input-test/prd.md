@@ -64,9 +64,9 @@
 
 ### 3.1 디바운스 + 자동완성 API 연동
 
-- [ ] 검색어 입력 후 300ms 이내 → API 미호출
-- [ ] 검색어 입력 후 300ms 경과 → 자동완성 API 호출
-- [ ] API 응답 후 자동완성 항목 렌더링
+- [x] 검색어 입력 후 300ms 이내 → API 미호출
+- [x] 검색어 입력 후 300ms 경과 → 자동완성 API 호출
+- [x] API 응답 후 자동완성 항목 렌더링
 
 ### 3.2 검색 실행 흐름
 
@@ -121,7 +121,7 @@
 ## 6. 구현 체크리스트
 
 - [x] `src/widgets/header/ui/__tests__/SearchInput.test.tsx` 작성
-- [ ] `src/widgets/header/ui/__tests__/SearchInput.integration.test.tsx` 작성
+- [x] `src/widgets/header/ui/__tests__/SearchInput.integration.test.tsx` 작성 (3.1 완료, 3.2-3.4 진행 중)
 - [ ] `tests/e2e/search.spec.ts` 작성
-- [ ] MSW handler 추가 (자동완성 API)
+- [x] MSW handler 추가 (자동완성 API) - 기존 핸들러 활용
 - [ ] `document/index.md` 등록
