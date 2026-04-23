@@ -1,8 +1,8 @@
 import { createEvent, fireEvent, render, screen } from "@testing-library/react";
+import { mockRouterFunctions } from "@tests/setup/unit.setup";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { mockRouterFunctions } from "../../../../../tests/setup";
 import { SearchInput } from "../SearchInput";
 
 vi.mock("@/features/service/performance-search", () => ({

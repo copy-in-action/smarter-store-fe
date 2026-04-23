@@ -1,8 +1,9 @@
-import { getPerformanceHandler } from "./performance.handlers";
 import {
   getScheduleDatesHandler,
   getSchedulesHandler,
 } from "./performance-schedule.handlers";
+import { getAutocompleteHandler } from "./performance-search-autocomplete.handlers";
+import { getPerformanceHandler } from "./performance.handlers";
 import { scheduleHandlers } from "./schedule.handlers";
 import { venueHandlers } from "./venue.handlers";
 
@@ -11,6 +12,9 @@ import { venueHandlers } from "./venue.handlers";
  * 특정 API만 모킹하려면 필요한 핸들러만 추가하세요
  *
  * 사용 가능한 핸들러:
+ * [공연 검색]
+ * - getAutocompleteHandler: GET /api/performances/search/autocomplete
+ *
  * [공연 정보]
  * - getPerformanceHandler: GET /api/performances/:id
  *
@@ -29,9 +33,10 @@ import { venueHandlers } from "./venue.handlers";
  * - venueHandlers: GET /api/venues/:id/seating-chart
  */
 export const handlers = [
-  // getPerformanceHandler, // 공연 상세 정보 조회
-  // getSchedulesHandler, // 회차 목록 조회
-  // getScheduleDatesHandler, // 예매 가능한 날짜 목록 조회
-  // ...scheduleHandlers, // 회차 정보 조회
-  // ...venueHandlers, // 좌석 배치도 조회
+  getAutocompleteHandler, // 검색 자동완성
+  getPerformanceHandler, // 공연 상세 정보 조회
+  getSchedulesHandler, // 회차 목록 조회
+  getScheduleDatesHandler, // 예매 가능한 날짜 목록 조회
+  ...scheduleHandlers, // 회차 정보 조회
+  ...venueHandlers, // 좌석 배치도 조회
 ];
