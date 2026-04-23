@@ -68,20 +68,20 @@
 - [x] 검색어 입력 후 300ms 경과 → 자동완성 API 호출
 - [x] API 응답 후 자동완성 항목 렌더링
 
-### 3.2 검색 실행 흐름
+### 3.2 자동완성 항목 클릭
 
-- [ ] 자동완성 항목 클릭 → `addRecentSearch` 호출
-- [ ] 자동완성 항목 클릭 → `router.push` 실행
-- [ ] 자동완성 항목 클릭 → 팝업 닫힘, 입력값 초기화
+- [x] 자동완성 항목 클릭 → 팝업 닫힘, 입력값 초기화
+- [x] 자동완성 항목 클릭 → `addRecentSearch` 호출 안 됨 (공연 상세로 직접 이동이므로)
 
-### 3.3 외부 클릭 처리
+### 3.3 Enter로 검색 실행
 
-- [ ] `InputGroup` 내부 클릭 → 팝업 유지 (`handleInteractOutside`)
-- [ ] `InputGroup` 외부 클릭 → 팝업 닫힘
+- [x] Enter 입력 → `addRecentSearch(trimmedKeyword)` 호출
+- [x] Enter 입력 → `router.push('/search?q=키워드')` 실행
 
-### 3.4 최근 검색어 저장
+### 3.4 클릭 상호작용
 
-- [ ] 검색 실행 시 `addRecentSearch(trimmedKeyword)` 호출
+- [x] `InputGroup` 내부 클릭 → 팝업 유지
+- **외부 클릭 → 팝업 닫힘**: E2E 테스트로 이동 (Radix UI `onInteractOutside` 동작은 Integration 레벨에서 검증 어려움)
 
 ---
 
@@ -93,14 +93,20 @@
 
 - [ ] 검색창 클릭 → 자동완성 팝업 노출
 - [ ] 검색어 입력 → 자동완성 항목 노출
-- [ ] 자동완성 항목 클릭 → 검색 결과 페이지 이동
+- [ ] 자동완성 항목 클릭 → 공연 상세 페이지 이동
+- [ ] Enter 입력 → 검색 결과 페이지 이동
 
-### 4.2 키보드 검색 플로우
+### 4.2 팝업 상호작용
 
-- [ ] 검색어 입력 → ArrowDown으로 항목 선택 → Enter → 검색 결과 페이지 이동
-- [ ] Escape → 팝업 닫힘
+- [ ] `InputGroup` 외부 클릭 → 팝업 닫힘
+- [ ] Escape 키 입력 → 팝업 닫힘
 
-### 4.3 최근 검색어
+### 4.3 키보드 네비게이션
+
+- [ ] 검색어 입력 → ArrowDown으로 항목 선택 → Enter → 공연 상세 페이지 이동
+- [ ] ArrowUp/ArrowDown → 항목 선택 하이라이트 이동
+
+### 4.4 최근 검색어
 
 - [ ] 검색 실행 후 재포커스 → 최근 검색어 노출
 - [ ] 최근 검색어 클릭 → 해당 검색어로 검색 결과 페이지 이동
@@ -120,8 +126,9 @@
 
 ## 6. 구현 체크리스트
 
-- [x] `src/widgets/header/ui/__tests__/SearchInput.test.tsx` 작성
-- [x] `src/widgets/header/ui/__tests__/SearchInput.integration.test.tsx` 작성 (3.1 완료, 3.2-3.4 진행 중)
-- [ ] `tests/e2e/search.spec.ts` 작성
+- [x] `src/widgets/header/ui/__tests__/SearchInput.test.tsx` 작성 (단위 테스트 완료)
+- [x] `src/widgets/header/ui/__tests__/SearchInput.integration.test.tsx` 작성 (3.1-3.4 완료)
+- [ ] `tests/e2e/search.spec.ts` 작성 (E2E 테스트 대기)
 - [x] MSW handler 추가 (자동완성 API) - 기존 핸들러 활용
+- [x] 테스트 가이드 문서 업데이트 (API Mocking, Integration Testing 섹션 추가)
 - [ ] `document/index.md` 등록
