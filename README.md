@@ -73,6 +73,9 @@ FSD (Feature-Sliced Design) 아키텍처 적용
 ### 관리자 배치도 설정
 <img src="document/screenshot/admin_venues.png" alt="관리자 배치도 설정" width="900" />
 
+### naver SEO
+<img src="document/screenshot/seo_naver.png" alt="네이버 검색" width="900" />
+
 ## 기술 스택
 
 ### 핵심 프레임워크
