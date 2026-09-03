@@ -1,0 +1,28 @@
+# pnpm 설정
+#
+# pnpm 11부터 의존성의 빌드 스크립트(postinstall 등)는 기본적으로 차단되며,
+# 허용 여부를 명시하지 않으면 설치가 ERR_PNPM_IGNORED_BUILDS로 실패한다.
+# 아래 목록으로 패키지별 실행 여부를 명시한다. (`pnpm approve-builds`로도 편집 가능)
+
+allowBuilds:
+  # 빌드 필요 - 프로덕션
+  # Next.js 이미지 최적화. standalone 서버 런타임에 필요하다.
+  sharp: true
+  # @sentry/nextjs → @sentry/bundler-plugin-core 경유.
+  # 빌드 시 소스맵 업로드에 사용한다.
+  "@sentry/cli": true
+
+  # 빌드 필요 - 개발/테스트
+  # vitest, vite 툴링의 네이티브 바이너리.
+  esbuild: true
+  # postinstall이 public/mockServiceWorker.js를 생성한다.
+  # 현재 MSWProvider는 비활성 상태지만, 재활성화 시 혼란을 막기 위해 허용해 둔다.
+  msw: true
+
+  # 빌드 불필요
+  # E2E용 브라우저 바이너리(수백 MB). 배포 빌드에는 쓰이지 않는다.
+  "@playwright/browser-chromium": false
+  "@playwright/browser-firefox": false
+  "@playwright/browser-webkit": false
+  # @executeautomation/playwright-mcp-server의 전이 의존성.
+  protobufjs: false
