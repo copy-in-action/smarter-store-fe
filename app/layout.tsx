@@ -33,7 +33,21 @@ const notoSansKR = Noto_Sans_KR({
   preload: true,
 });
 
+/**
+ * 네이버 웹마스터 도구 사이트 인증 토큰 (ticket.devhong.cc)
+ *
+ * 구글 인증은 메인 도메인 DNS TXT 레코드로 처리하므로 meta 태그를 두지 않는다.
+ */
+const NAVER_SITE_VERIFICATION = "66ceef669c54c028edcbfd6abe45d894f534f7d8";
+
 export const metadata: Metadata = {
+  /**
+   * 메타데이터의 상대 URL(`alternates.canonical` 등)을 절대 URL로 변환하는 기준 도메인.
+   *
+   * 미설정 시 Next.js는 상대 경로를 그대로 출력해 `<link rel="canonical" href="/">`처럼
+   * 무효한 canonical이 렌더링되므로 반드시 지정한다.
+   */
+  metadataBase: new URL(SITE_URL),
   title: "YEME",
   description:
     "뮤지컬, 콘서트, 연극, 클래식 등 다양한 공연 정보와 할인 티켓을 만나보세요. 최신 공연 소식과 특가 이벤트를 놓치지 마세요!",
@@ -68,23 +82,14 @@ export default async function RootLayout({
     `${SITE_URL}/images/logo.png`,
   );
 
-  const naverSearchAdvisor = process.env.VERCEL
-    ? "1f3bdf0249a6fadbcbc87932ced5588f837dfe2d"
-    : "66ceef669c54c028edcbfd6abe45d894f534f7d8";
-
   return (
     <html lang="ko">
       <head>
         {/* naver seo */}
-        <meta name="naver-site-verification" content={naverSearchAdvisor} />
-
-        {/* Vercel 환경에서만 Google Search Console 인증 메타 태그 추가 */}
-        {process.env.VERCEL && (
-          <meta
-            name="google-site-verification"
-            content="Lez8tLbS7gYWj5SaY9-W2-dnehpaCHUA4jvB8IKx-qg"
-          />
-        )}
+        <meta
+          name="naver-site-verification"
+          content={NAVER_SITE_VERIFICATION}
+        />
         <script
           type="application/ld+json"
           // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>

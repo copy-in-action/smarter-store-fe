@@ -109,8 +109,9 @@ export async function generateMetadata({
   try {
     const performance = await getPerformanceDetailForServer(performanceId);
 
-    // routes.ts의 메타데이터 생성 함수 사용
+    // routes.ts의 메타데이터 생성 함수 사용 (canonical URL 포함)
     const baseMetadata = PAGES.PERFORMANCE.DETAIL.metadata(
+      performanceId,
       performance.title,
       performance.description?.substring(0, 160),
     );
@@ -139,9 +140,13 @@ export async function generateMetadata({
   } catch (error) {
     console.error("메타데이터 생성 실패:", error);
 
+    // API 조회에 실패해도 페이지는 렌더링되므로 canonical은 유지한다
     return {
       title: "공연 정보 | YEME",
       description: "공연 상세 정보를 확인하세요.",
+      alternates: {
+        canonical: PAGES.PERFORMANCE.DETAIL.path(performanceId),
+      },
     };
   }
 }
