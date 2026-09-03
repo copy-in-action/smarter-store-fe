@@ -22,20 +22,45 @@ const BASE_METADATA = {
 
 /**
  * 메타데이터 생성 헬퍼 함수
+ *
+ * @param title - 페이지 제목 ("YEME"가 포함되지 않으면 사이트명을 접미사로 붙인다)
+ * @param description - 페이지 설명 (meta description / OG / 트위터에 공통 사용)
+ * @param canonicalPath - 정규 URL 경로 (예: `/performances/12`).
+ *   루트 layout의 `metadataBase`를 기준으로 절대 URL로 변환된다.
+ *   색인 대상이 아닌 페이지(로그인 필요, 관리자 등)는 생략한다.
+ * @param additionalOptions - 추가로 덮어쓸 메타데이터
+ * @returns Next.js `Metadata` 객체
  */
 function createMetadata(
   title: string,
   description: string,
+  canonicalPath?: string,
   additionalOptions?: Partial<Metadata>,
 ): Metadata {
   const fullTitle = title.includes("YEME")
     ? title
     : `${title} | ${BASE_METADATA.siteName}`;
 
+  /**
+   * `openGraph`/`twitter`/`alternates`는 아래에서 기본값과 병합하므로 분리한다.
+   * 분리하지 않고 `...additionalOptions`를 마지막에 펼치면 병합 결과가 통째로
+   * 덮어써져 og:title, og:description 등 기본 태그가 사라진다.
+   */
+  const { openGraph, twitter, alternates, ...restOptions } =
+    additionalOptions ?? {};
+
+  const resolvedAlternates = {
+    ...(canonicalPath ? { canonical: canonicalPath } : {}),
+    ...alternates,
+  };
+
   return {
     title: fullTitle,
     description,
     keywords: BASE_METADATA.keywords,
+    ...(Object.keys(resolvedAlternates).length > 0
+      ? { alternates: resolvedAlternates }
+      : {}),
     openGraph: {
       images: [`${SITE_URL}/images/meta/open-graph.png`],
       title: fullTitle,
@@ -43,15 +68,16 @@ function createMetadata(
       type: BASE_METADATA.type,
       locale: BASE_METADATA.locale,
       siteName: BASE_METADATA.siteName,
-      ...additionalOptions?.openGraph,
+      ...(canonicalPath ? { url: canonicalPath } : {}),
+      ...openGraph,
     },
     twitter: {
       card: "summary_large_image",
       title: fullTitle,
       description,
-      ...additionalOptions?.twitter,
+      ...twitter,
     },
-    ...additionalOptions,
+    ...restOptions,
   };
 }
 
@@ -65,10 +91,8 @@ export const SERVICE_PAGES = {
     metadata: createMetadata(
       "YEME",
       "뮤지컬, 콘서트, 연극, 클래식 등 다양한 공연 정보와 할인 티켓을 만나보세요. 최신 공연 소식과 특가 이벤트를 놓치지 마세요!",
+      "/",
       {
-        alternates: {
-          canonical: "/",
-        },
         other: {
           robots: "index, follow",
           googlebot: "index, follow",
@@ -196,12 +220,23 @@ export const SERVICE_PAGES = {
       const query = searchParams.toString();
       return `/search${query ? `?${query}` : ""}`;
     },
+    /**
+     * 검색 결과 페이지 메타데이터
+     *
+     * canonical은 쿼리 파라미터를 제외한 `/search`로 고정한다.
+     * 키워드/필터/정렬 조합마다 URL이 무한히 생성되므로, 이를 모두 색인시키면
+     * 중복 콘텐츠로 취급된다.
+     *
+     * @param keyword - 검색어 (없으면 기본 문구 사용)
+     * @returns Next.js `Metadata` 객체
+     */
     metadata: (keyword?: string) =>
       createMetadata(
         keyword ? `${keyword} 검색 결과` : "공연 검색",
         keyword
           ? `${keyword} 관련 공연을 검색한 결과입니다.`
           : "원하는 공연을 검색해보세요.",
+        "/search",
       ),
   },
 
@@ -213,15 +248,29 @@ export const SERVICE_PAGES = {
       metadata: createMetadata(
         "공연 목록",
         "뮤지컬, 콘서트, 연극, 클래식 등 다양한 공연을 만나보세요.",
+        "/performances",
       ),
     },
     /** 공연 상세 (동적) */
     DETAIL: {
       path: (id: string | number) => `/performances/${id}`,
-      metadata: (performanceTitle: string, description?: string) =>
+      /**
+       * 공연 상세 페이지 메타데이터
+       *
+       * @param id - 공연 ID (canonical URL 생성에 사용)
+       * @param performanceTitle - 공연 제목
+       * @param description - 공연 설명 (없으면 제목 기반 기본 문구 사용)
+       * @returns Next.js `Metadata` 객체
+       */
+      metadata: (
+        id: string | number,
+        performanceTitle: string,
+        description?: string,
+      ) =>
         createMetadata(
           performanceTitle,
           description || `${performanceTitle} 공연 정보를 확인하세요.`,
+          `/performances/${id}`,
           {
             openGraph: {
               type: "article",

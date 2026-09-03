@@ -199,9 +199,28 @@
 - ⚠️ 기본 OG 이미지 크기 최적화 필요 (1200x630)
 - 📝 **조치 필요**: `/public/images/meta/open-graph.png` 확인 및 최적화
 
-#### 3.2.3 Canonical URL
-- ⚠️ 중복 콘텐츠 발생 가능한 페이지에서 canonical URL 미설정
-- 📝 **조치 필요**: 검색 페이지, 필터링 페이지 등 canonical 설정
+#### 3.2.3 Canonical URL (🔴 원인 규명 완료 — 2026-09-04)
+
+**홈페이지 canonical이 무효 상태로 렌더링됨**
+- 현재 출력: `<link rel="canonical" href="/" />` — 절대 URL이 아니므로 구글이 무시
+- 📊 **증거**: Lighthouse SEO 92점, 유일한 실패 항목이
+  `Document does not have a valid rel=canonical / Is not an absolute URL (/)`
+- 🔍 **원인**: `app/layout.tsx`의 root metadata에 `metadataBase` 미설정
+  - `routes.ts`의 `canonical: "/"`는 상대 경로
+  - Next.js 16.2.1 `resolve-url.js:105` — `metadataBase ? resolveUrl(url, metadataBase) : url`
+    → `metadataBase`가 없으면 `resolveUrl`을 호출하지 않고 원본 문자열 `/`를 그대로 반환
+  - `resolveUrl` 내부의 localhost fallback(`:78-79`)은 canonical 경로에서 도달하지 않음
+  - OG/트위터 이미지는 `${SITE_URL}/...` 절대 경로라 영향 없음
+
+**홈(`/`) 외 전 페이지 canonical 부재**
+- `alternates.canonical` 사용처는 `routes.ts` 단 1곳(`SERVICE_PAGES.HOME`)
+- 공연 상세(`/performances/[id]`): SEO 핵심 페이지인데 미설정
+- 검색(`/search`): `q`/`category[]`/`status[]`/`region[]`/`sort` 조합으로 URL이 무한 증식하며,
+  `robots.ts`가 `allow: "/"`라 전부 색인 가능 → 중복 콘텐츠 위험
+
+**`/search`는 metadata export 자체가 없음** 🟡
+- `PAGES.SEARCH.metadata()`가 정의만 되고 호출되지 않아
+  root layout의 `title: "YEME"`를 그대로 상속
 
 #### 3.2.4 검색 엔진 색인 (🔴 Critical Issue)
 - 🔴 **메인 도메인 (ticket.devhong.cc)**
@@ -209,6 +228,8 @@
   - ❌ 사이트맵 "가져올 수 없음" 상태
   - ⚠️ 네이버는 메인 페이지만 색인
   - 🔍 **원인 추정**: Cloudflare 설정 이슈 가능성
+  - 📝 §3.2.3의 무효 canonical(`href="/"`)이 직접 원인일 가능성은 낮으나
+    (구글은 무효 canonical을 보통 무시함), 색인 복구를 검증하기 전에 제거해야 할 노이즈
 
 - ✅ **테스트 도메인 (smarter-store-fe-t5bl.vercel.app)**
   - ⚠️ 구글은 메인/로그인 페이지만 색인
@@ -247,6 +268,7 @@
 |------|------|-----------|
 | **메인 도메인 색인 복구** | 검색 유입 중단, 비즈니스 영향 큼 | [seo-indexing-issues.md](../../tech/seo-indexing-issues.md) |
 | **Cloudflare 설정 점검** | Bot Fight Mode 등이 크롤러 차단 가능성 | [seo-indexing-issues.md](../../tech/seo-indexing-issues.md) |
+| **`metadataBase` 설정** | 홈 canonical이 무효값 `/`로 렌더링 — Lighthouse 실패 확인 | §3.2.3 |
 
 ### 4.2 긴급 (High Priority)
 
@@ -260,7 +282,7 @@
 
 | 항목 | 이유 | 예상 소요 시간 |
 |------|------|----------------|
-| **Canonical URL 설정** | 중복 콘텐츠 방지 | 2시간 |
+| **페이지별 Canonical URL 설정** | 중복 콘텐츠 방지 (`metadataBase`는 §4.1로 승격) | 2시간 |
 | **이미지 alt 텍스트 점검** | 접근성 및 이미지 검색 | 3-4시간 |
 | **성능 개선** | Core Web Vitals 개선 | 4-8시간 |
 
@@ -276,6 +298,23 @@
 ## 5. 구현 체크리스트
 
 ### 5.1 긴급 개선 사항 (Critical)
+
+- [x] **`metadataBase` 설정 및 canonical 정상화** (§3.2.3) — 2026-09-04
+  - [x] `app/layout.tsx` root metadata에 `metadataBase: new URL(SITE_URL)` 추가
+  - [x] `createMetadata()`에 `canonicalPath` 인자 추가 → `alternates.canonical` 자동 주입
+  - [x] 정적 페이지(`routes.ts`)에 canonical 경로 지정 (홈 `/`, 검색 `/search`, 공연 목록 `/performances`)
+  - [x] 공연 상세 `generateMetadata`에 canonical 추가 (API 실패 fallback 경로 포함)
+  - [x] `/search`에 `generateMetadata` 추가 (canonical은 파라미터 없는 `/search`로 고정)
+  - [x] 죽은 Vercel 분기 정리 (구글 인증 meta 태그 제거, 네이버 토큰 상수화)
+  - [x] `createMetadata` 스프레드 순서 버그 수정
+        (`...additionalOptions`가 병합된 `openGraph`/`twitter`를 통째로 덮어써
+        공연 상세에서 og:title·og:description·og:site_name·og:locale이 누락되던 문제)
+  - [x] 렌더링된 `<link rel="canonical">`이 절대 URL인지 확인 (dev 서버 실측)
+        - `/` → `https://ticket.devhong.cc`
+        - `/search?q=...&sort=...&category=...` → `https://ticket.devhong.cc/search`
+        - `/performances/4` → `https://ticket.devhong.cc/performances/4`
+  - [ ] 배포 후 Lighthouse SEO canonical 항목 통과 확인 (현재 92점 → 100점 예상)
+  - [ ] 구글 검색 콘솔 URL 검사로 canonical 인식 확인
 
 - [ ] **메인 도메인 색인 복구**
   - [ ] Cloudflare Bot Fight Mode 설정 확인
@@ -308,11 +347,12 @@
 
 ### 5.3 중요 개선 사항
 
-- [ ] **Canonical URL 설정**
-  - [ ] 중복 콘텐츠 가능성 있는 페이지 식별
-  - [ ] 검색 페이지 canonical 설정
-  - [ ] 필터링 페이지 canonical 설정
-  - [ ] 정렬 파라미터 페이지 canonical 설정
+- [ ] **Canonical URL 후속 점검** (기본 설정은 §5.1에서 처리)
+  - [x] 중복 콘텐츠 가능성 있는 페이지 식별 (`/search` 쿼리 파라미터 조합)
+  - [ ] 색인 불필요 경로(`/admin`, `/auth`, `/mypage`, `/booking`) robots 정책 재검토
+  - [ ] 공연 목록(`/performances`) 라우트 신설 여부 결정
+        (현재 `PAGES.PERFORMANCE.LIST.metadata`만 정의되고 라우트 없음)
+  - [ ] 구글 검색 콘솔에서 "대체 페이지(적절한 표준 태그 포함)" 리포트 확인
 
 - [ ] **이미지 alt 텍스트 점검**
   - [ ] 모든 이미지 alt 텍스트 검토
@@ -374,3 +414,5 @@
 |------|-----------|--------|
 | 2026-04-10 | 최초 작성 | Claude Code |
 | 2026-04-10 | 헤딩 구조 수정 완료, 색인 이슈 추가 | Claude Code |
+| 2026-09-04 | canonical 무효 원인 규명(`metadataBase` 미설정), Lighthouse 증거 반영 | Claude Code |
+| 2026-09-04 | `metadataBase` 추가, 페이지별 canonical 적용, OG 병합 버그 수정 | Claude Code |

@@ -35,7 +35,7 @@
 | 기능 | 문서 | 상태 | 최종 수정 |
 |------|------|------|-----------|
 | 공연 캐싱 전략 (ISR + On-Demand) | [prd/performance-caching/prd.md](prd/performance-caching/prd.md) | ✅ 완료 | - |
-| SEO 최적화 | [prd/seo/prd.md](prd/seo/prd.md) | 🔴 색인 이슈 발생 (메인 도메인) | 2026-04-10 |
+| SEO 최적화 | [prd/seo/prd.md](prd/seo/prd.md) | 🔴 색인 이슈 발생 (메인 도메인) / canonical 수정 중 | 2026-09-04 |
 
 ---
 
